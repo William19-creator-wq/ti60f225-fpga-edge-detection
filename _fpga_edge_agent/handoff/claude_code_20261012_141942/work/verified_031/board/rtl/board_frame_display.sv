@@ -1,0 +1,166 @@
+// 同一已完成 RGB/edge 帧按行读出，经双时钟 FIFO 呈现。帧指针只在新扫描请求锁定。
+module board_frame_display(
+    input wire core_clk,video_clk,safe_reset_n,enable,has_frame,
+    input wire [31:0] source_base,result_base,input wire [2:0] mode,
+    input wire [3:0] box_valid,is_circle,input wire [3:0][10:0] box_x0,box_y0,box_x1,box_y1,
+    output wire frame_begin,
+    output wire span_req_valid,input wire span_req_ready,output reg [31:0] span_addr,output wire [13:0] span_bytes,
+    input wire data_valid,output wire data_ready,input wire [127:0] data,
+    input wire done_valid,output wire done_ready,input wire [1:0] outcome,
+    output reg fault,output reg [47:0] rgb_pair,output reg rgb_vs,rgb_hs,rgb_de
+);
+    localparam IDLE=0,EREQ=1,EDATA=2,RREQ=3,RDATA=4;
+    (* ASYNC_REG="TRUE" *) reg [1:0] core_reset_pipe;
+    always @(posedge core_clk or negedge safe_reset_n)
+        if(!safe_reset_n)core_reset_pipe<=2'b11;else core_reset_pipe<={core_reset_pipe[0],1'b0};
+    wire rst=|core_reset_pipe;
+    reg [2:0] state;
+    reg [31:0] src,dst;reg [10:0] row;reg [9:0] pair_index;
+    reg [3:0] edge_word;
+    reg edge_receiving;
+    reg [2:0] edge_piece;
+    reg [127:0] edge_chunk;
+    reg [15:0] edge_rows[0:127];
+    reg [15:0] edge_read_word;
+    reg [255:0] reservoir;reg [5:0] bytes;reg rgb_closed;
+    reg [7:0] request_tag,locked_tag;
+    reg [2:0] frame_mode;
+    reg [3:0] frame_box_valid,frame_is_circle;
+    reg [3:0][10:0] frame_x0,frame_y0,frame_x1,frame_y1;
+    reg request_toggle;
+    (* ASYNC_REG="TRUE" *) reg [1:0] request_sync;
+    reg request_seen;
+    (* ASYNC_REG="TRUE" *) reg [7:0] tag_meta,tag_sync;
+    reg [10:0] h,v;
+    wire active=h>=96&&h<1056&&v>=41&&v<1121;
+    wire [10:0] scan_x=(h-11'd96)<<1,scan_y=v-11'd41;
+    wire requested=request_sync[1]!=request_seen;
+    assign frame_begin=!rst&&enable&&has_frame&&state==IDLE&&requested;
+    assign span_req_valid=!rst&&enable&&(state==EREQ||state==RREQ);
+    assign span_bytes=state==EREQ?14'd240:14'd5760;
+    assign done_ready=!rst&&((state==EDATA&&!edge_receiving&&!data_valid)||state==RDATA);
+    wire fifo_ready,fifo_overflow,fifo_valid,fifo_rd_fault;
+    wire [79:0] fifo_data;
+    wire push=!rst&&state==RDATA&&bytes>=6&&pair_index<960&&fifo_ready;
+    assign data_ready=!rst&&((state==EDATA&&!edge_receiving)||(state==RDATA&&bytes<=16));
+    wire take=data_valid&&data_ready;
+    wire [47:0] memory_pair=reservoir[47:0];
+    // DDR 连续字节为 R,G,B；公共 RGB packed 为 0xRRGGBB。
+    wire [47:0] color_pair={memory_pair[31:24],memory_pair[39:32],memory_pair[47:40],memory_pair[7:0],memory_pair[15:8],memory_pair[23:16]};
+    wire [9:0] next_pair_index=pair_index+{9'd0,push};
+    // 同沿预取下一个pair所在的16位字，跨8个pair边界时不会使用上一字。
+    always @(posedge core_clk)begin
+        edge_read_word<=edge_rows[next_pair_index[9:3]];
+        if(!rst&&state==EDATA&&edge_receiving)
+            edge_rows[{edge_word,edge_piece}]<=edge_chunk[edge_piece*16+:16];
+    end
+    wire [1:0] edges=edge_read_word[pair_index[2:0]*2+:2];
+    reg [47:0] rendered_pair;
+    reg [15:0] luminance;
+    reg [10:0] px;
+    reg [23:0] pixel;
+    reg label_pixel;reg [7:0] glyph;
+    always @*begin
+        rendered_pair=color_pair;luminance=0;px=0;pixel=0;label_pixel=0;glyph=0;
+        for(integer lane=0;lane<2;lane=lane+1)begin
+            px={pair_index,1'b0}+11'(lane);pixel=color_pair[lane*24+:24];
+            luminance=16'd77*{8'd0,pixel[23:16]}+16'd150*{8'd0,pixel[15:8]}+16'd29*{8'd0,pixel[7:0]}+16'd128;
+            case(frame_mode)
+                1:pixel={3{luminance[15:8]}};
+                2:pixel=px<960?{3{luminance[15:8]}}:(edges[lane]?24'hffffff:24'd0);
+                3:pixel=edges[lane]?24'hffffff:24'd0;
+                4,5:if(edges[lane])pixel=24'hff0000;
+                default:begin end
+            endcase
+            if(frame_mode==5)for(integer b=0;b<4;b=b+1)begin
+                if(frame_box_valid[b]&&px>=frame_x0[b]&&px<=frame_x1[b]&&row>=frame_y0[b]&&row<=frame_y1[b])begin
+                    if(px==frame_x0[b]||px==frame_x1[b]||row==frame_y0[b]||row==frame_y1[b])pixel=frame_is_circle[b]?24'h00ff00:24'hffff00;
+                    if(px>=frame_x0[b]+2&&px<frame_x0[b]+10&&row>=frame_y0[b]+2&&row<frame_y0[b]+10)begin
+                        case(row-frame_y0[b]-2)
+                            0,7:glyph=frame_is_circle[b]?8'h3c:8'h7c;
+                            1,2:glyph=frame_is_circle[b]?8'h42:8'h42;
+                            3:glyph=frame_is_circle[b]?8'h40:8'h7c;
+                            4:glyph=frame_is_circle[b]?8'h40:8'h48;
+                            5:glyph=frame_is_circle[b]?8'h42:8'h44;
+                            default:glyph=frame_is_circle[b]?8'h42:8'h42;
+                        endcase
+                        label_pixel=glyph[7-(px-frame_x0[b]-2)];if(label_pixel)pixel=24'hffffff;
+                    end
+                end
+            end
+            rendered_pair[lane*24+:24]=pixel;
+        end
+    end
+    wire old_record=fifo_data[79:72]!=request_tag;
+    wire matching=fifo_data[79:72]==request_tag&&fifo_data[71:61]==scan_y&&fifo_data[60:50]==scan_x;
+    wire past_record=fifo_data[79:72]==request_tag&&(fifo_data[71:61]<scan_y||(fifo_data[71:61]==scan_y&&fifo_data[60:50]<scan_x));
+    wire pop=fifo_valid&&(old_record||(active&&(matching||past_record)));
+    video_async_fifo #(.WIDTH(80),.DEPTH(2048)) pixels(
+        .cold_reset_n(safe_reset_n),.wr_clk(core_clk),.rd_clk(video_clk),
+        .wr_valid(push),.wr_data({locked_tag,row,{pair_index,1'b0},edges,rendered_pair}),
+        .wr_ready(fifo_ready),.wr_overflow(fifo_overflow),.rd_ready(pop),.rd_valid(fifo_valid),.rd_data(fifo_data),.rd_fault(fifo_rd_fault));
+    reg [255:0] next_reservoir;reg [6:0] next_bytes;
+    always @*begin
+        next_reservoir=push?(reservoir>>48):reservoir;
+        next_bytes={1'b0,bytes}-(push?7'd6:7'd0);
+        if(take&&state==RDATA)begin
+            next_reservoir=next_reservoir|({128'd0,data}<<({next_bytes,3'b0}));next_bytes=next_bytes+7'd16;
+        end
+    end
+    always @(posedge core_clk or negedge safe_reset_n)begin
+        if(!safe_reset_n)begin request_sync<=0;tag_meta<=0;tag_sync<=0;end
+        else begin request_sync<={request_sync[0],request_toggle};tag_meta<=request_tag;tag_sync<=tag_meta;end
+    end
+    always @(posedge core_clk)begin
+        if(rst)begin
+            state<=IDLE;src<=0;dst<=0;row<=0;pair_index<=0;edge_word<=0;
+            edge_receiving<=0;edge_piece<=0;edge_chunk<=0;
+            reservoir<=0;bytes<=0;rgb_closed<=0;request_seen<=0;locked_tag<=0;fault<=0;span_addr<=0;
+            frame_mode<=0;frame_box_valid<=0;frame_is_circle<=0;frame_x0<=0;frame_y0<=0;frame_x1<=0;frame_y1<=0;
+        end else begin
+            if(fifo_overflow)fault<=1;
+            if(state==IDLE&&requested)begin
+                request_seen<=request_sync[1];
+                if(enable&&has_frame)begin
+                    frame_mode<=mode;frame_box_valid<=box_valid;frame_is_circle<=is_circle;
+                    frame_x0<=box_x0;frame_y0<=box_y0;frame_x1<=box_x1;frame_y1<=box_y1;
+                    src<=source_base;dst<=result_base;locked_tag<=tag_sync;row<=0;span_addr<=result_base;state<=EREQ;
+                end
+            end
+            case(state)
+                EREQ:if(span_req_ready)begin edge_word<=0;edge_receiving<=0;edge_piece<=0;state<=EDATA;end
+                EDATA:begin
+                    if(take)begin edge_chunk<=data;edge_receiving<=1;edge_piece<=0;end
+                    if(edge_receiving)begin
+                        if(edge_piece==7)begin edge_receiving<=0;edge_word<=edge_word+1'b1;end
+                        else edge_piece<=edge_piece+1'b1;
+                    end
+                    if(done_valid&&done_ready)begin
+                        if(outcome!=0||edge_word!=15)begin fault<=1;state<=IDLE;end
+                        else begin span_addr<=src+row*32'd5760;state<=RREQ;end
+                    end
+                end
+                RREQ:if(span_req_ready)begin reservoir<=0;bytes<=0;pair_index<=0;rgb_closed<=0;state<=RDATA;end
+                RDATA:begin
+                    reservoir<=next_reservoir;bytes<=next_bytes[5:0];
+                    if(push)pair_index<=pair_index+1'b1;
+                    if(done_valid)begin rgb_closed<=1;if(outcome!=0)begin fault<=1;state<=IDLE;end end
+                    if(rgb_closed&&bytes==0&&pair_index==960)begin
+                        if(row==1079)state<=IDLE;
+                        else begin row<=row+1'b1;span_addr<=dst+(row+11'd1)*32'd240;state<=EREQ;end
+                    end
+                end
+                default:begin end
+            endcase
+        end
+    end
+    always @(posedge video_clk or negedge safe_reset_n)begin
+        if(!safe_reset_n)begin h<=0;v<=0;request_toggle<=0;request_tag<=0;rgb_pair<=0;rgb_vs<=0;rgb_hs<=0;rgb_de<=0;end
+        else begin
+            if(h==1099)begin h<=0;if(v==1124)v<=0;else v<=v+1'b1;end else h<=h+1'b1;
+            if(h==0&&v==0)begin request_toggle<=!request_toggle;request_tag<=request_tag+1'b1;end
+            rgb_vs<=v<5;rgb_hs<=h<22;rgb_de<=active;
+            rgb_pair<=active&&fifo_valid&&matching?fifo_data[47:0]:48'd0;
+        end
+    end
+endmodule

@@ -1,0 +1,5 @@
+onerror {quit -code 1}
+onbreak {set rc 1; if {![catch {examine -radix binary /tb_r2_algorithm_top/finished} value] && $value eq "1"} {set rc 0}; quit -code $rc}
+log /tb_r2_algorithm_top/clk_25m /tb_r2_algorithm_top/key1_n /tb_r2_algorithm_top/led0 /tb_r2_algorithm_top/led1 /tb_r2_algorithm_top/chosen/dut/rst /tb_r2_algorithm_top/chosen/dut/job_start /tb_r2_algorithm_top/chosen/dut/cj /tb_r2_algorithm_top/chosen/dut/in_valid /tb_r2_algorithm_top/chosen/dut/in_ready /tb_r2_algorithm_top/chosen/dut/class_valid /tb_r2_algorithm_top/chosen/dut/class_ready /tb_r2_algorithm_top/chosen/dut/grad_valid /tb_r2_algorithm_top/chosen/dut/grad_ready /tb_r2_algorithm_top/chosen/dut/status_valid /tb_r2_algorithm_top/chosen/dut/status_ready /tb_r2_algorithm_top/chosen/dut/status_payload /tb_r2_algorithm_top/chosen/dut/terminal_done /tb_r2_algorithm_top/chosen/dut/last_crc /tb_r2_algorithm_top/chosen/dut/job_controller/k /tb_r2_algorithm_top/chosen/dut/job_controller/state /tb_r2_algorithm_top/chosen/dut/observer/busy /tb_r2_algorithm_top/chosen/dut/observer/chunk_index /tb_r2_algorithm_top/chosen/dut/observer/record_shift
+run -all
+quit -code 1

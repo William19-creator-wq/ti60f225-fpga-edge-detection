@@ -1,0 +1,682 @@
+
+Efinix report_timing Report
+Version: 2026.1.132
+Date: Thu Oct  8 20:01:09 2026
+
+Copyright (C) 2013 - 2026 Efinix, Inc. All rights reserved.
+
+User command: foreach transition $transitions {
+ set name [lindex $transition 0];set starts [endpoint_union [lindex $transition 1]];set ends [endpoint_union [lindex $transition 2]]
+ puts "DATA_${name}_SOURCE_COUNT=[llength $starts]";puts "DATA_${name}_DEST_COUNT=[llength $ends]"
+ if {[llength $starts] == 0 || [llength $ends] == 0} {error "Data endpoint collection empty"}
+ report_timing -setup -from $starts -to $ends -npaths 8 -nworst 1 -file angle_${name}_setup.rpt
+ report_timing -hold -from $starts -to $ends -npaths 8 -nworst 1 -file angle_${name}_hold.rpt
+}
+
+Timing Model: I3
+	process : typical
+	temperature : -40C to 100C
+	voltage : 0.95 +/-30mV
+	speedgrade : 3
+	technology : t16ff
+	status : final
+
+Summary:
+
+ Path #  | Slack(ns) |              Start Pin              |            End Pin            |  Launch Clock   |  Capture Clock
+==============================================================================================================================
+ 1       |  35.785   | arithmetic/projection_sum[8]~FF|CLK | arithmetic/rounded_q[10]~FF|D | core_25m (RISE) | core_25m (RISE)
+ 2       |  35.920   | arithmetic/projection_sum[8]~FF|CLK | arithmetic/rounded_q[11]~FF|D | core_25m (RISE) | core_25m (RISE)
+ 3       |  35.923   | arithmetic/projection_sum[8]~FF|CLK | arithmetic/rounded_q[8]~FF|D  | core_25m (RISE) | core_25m (RISE)
+ 4       |  35.981   | arithmetic/projection_sum[8]~FF|CLK | arithmetic/rounded_q[12]~FF|D | core_25m (RISE) | core_25m (RISE)
+ 5       |  36.132   | arithmetic/projection_sum[8]~FF|CLK | arithmetic/rounded_q[9]~FF|D  | core_25m (RISE) | core_25m (RISE)
+ 6       |  36.267   | arithmetic/projection_sum[8]~FF|CLK | arithmetic/rounded_q[7]~FF|D  | core_25m (RISE) | core_25m (RISE)
+ 7       |  36.581   | arithmetic/projection_sum[8]~FF|CLK | arithmetic/rounded_q[6]~FF|D  | core_25m (RISE) | core_25m (RISE)
+ 8       |  36.935   | arithmetic/projection_sum[8]~FF|CLK | arithmetic/rounded_q[5]~FF|D  | core_25m (RISE) | core_25m (RISE)
+
+++++ Path 1 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 35.785 ns (required time - arrival time)                       
+Path Start      : arithmetic/projection_sum[8]~FF|CLK                            
+Path End        : arithmetic/rounded_q[10]~FF|D                                  
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 4.086 ns                                                       
+Logic Levels    : 12                                                             
+
+Launch Clock Path Delay        : 2.065
++ Clock To Q + Data Path Delay : 4.086
+--------------------------------------
+End-of-path arrival time       : 6.151
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.003
+---------------------------------------
+End-of-path required time      : 41.936
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)           Netlist Resource(s)
+========================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                            
+  (0,164)    input            0.126        0.126     clk_25m                            
+             net (fo=1721)    1.939        2.065     clk_25m                            
+  (118,86)   EFX_FF           0.000        2.065     arithmetic/projection_sum[8]~FF|CLK
+
+Data Path
+  Location    Delay Type    Incr(ns)     Path(ns)          Netlist Resource(s)
+=====================================================================================
+ (118,86)    EFX_FF (Tco)    0.130        0.130     arithmetic/projection_sum[8]~FF|Q
+             net (fo=1)      0.406        0.536     arithmetic/projection_sum[8]     
+ (113,84)    EFX_LUT4        0.061        0.597     LUT__6897|in[2]                  
+ (113,84)    EFX_LUT4        0.000        0.597     LUT__6897|out                    
+             net (fo=1)      0.191        0.788     n3760                            
+ (113,87)    EFX_LUT4        0.061        0.849     LUT__6898|in[2]                  
+ (113,87)    EFX_LUT4        0.000        0.849     LUT__6898|out                    
+             net (fo=1)      0.061        0.910     n3761                            
+ (113,86)    EFX_LUT4        0.061        0.971     LUT__6900|in[2]                  
+ (113,86)    EFX_LUT4        0.000        0.971     LUT__6900|out                    
+             net (fo=4)      0.310        1.281     n3763                            
+ (113,97)    EFX_LUT4        0.061        1.342     LUT__8721|in[3]                  
+ (113,97)    EFX_LUT4        0.000        1.342     LUT__8721|out                    
+             net (fo=2)      0.061        1.403     n4507                            
+ (113,96)    EFX_LUT4        0.061        1.464     LUT__8722|in[1]                  
+ (113,96)    EFX_LUT4        0.000        1.464     LUT__8722|out                    
+             net (fo=4)      0.565        2.029     n4508                            
+ (115,101)   EFX_LUT4        0.061        2.090     LUT__8723|in[3]                  
+ (115,101)   EFX_LUT4        0.000        2.090     LUT__8723|out                    
+             net (fo=4)      0.418        2.508     n4509                            
+ (112,103)   EFX_LUT4        0.061        2.569     LUT__8727|in[2]                  
+ (112,103)   EFX_LUT4        0.000        2.569     LUT__8727|out                    
+             net (fo=1)      0.061        2.630     n4511                            
+ (112,102)   EFX_LUT4        0.061        2.691     LUT__8728|in[0]                  
+ (112,102)   EFX_LUT4        0.000        2.691     LUT__8728|out                    
+             net (fo=1)      0.497        3.188     arithmetic/rounding/magnitude[27]
+ (128,106)   EFX_ADD         0.052        3.240     arithmetic/rounding/add_10/i9|I0 
+ (128,106)   EFX_ADD         0.000        3.240     arithmetic/rounding/add_10/i9|CO 
+             net (fo=1)      0.000        3.240     arithmetic/rounding/add_10/n18   
+ (128,107)   EFX_ADD         0.097        3.337     arithmetic/rounding/add_10/i10|CI
+ (128,107)   EFX_ADD         0.000        3.337     arithmetic/rounding/add_10/i10|O 
+             net (fo=3)      0.407        3.744     arithmetic/rounding/rounded[9]   
+ (129,105)   EFX_LUT4        0.063        3.807     LUT__7631|in[0]                  
+ (129,105)   EFX_LUT4        0.000        3.807     LUT__7631|out                    
+             net (fo=1)      0.218        4.025     n4188                            
+ (130,105)   EFX_LUT4        0.061        4.086     LUT__7632|in[0]                  
+ (130,105)   EFX_LUT4        0.000        4.086     LUT__7632|out                    
+             net (fo=1)      0.000        4.086     arithmetic/round_result[10]      
+ (130,105)   EFX_FF          0.000        4.086     arithmetic/rounded_q[10]~FF|D    
+
+Capture Clock Path
+  Location     Delay Type     Incr(ns)     Path(ns)         Netlist Resource(s)
+=====================================================================================
+ (0,164)     input              0.000       0.000     clk_25m                        
+ (0,164)     input              0.126       0.126     clk_25m                        
+             net (fo=1721)      1.939       2.065     clk_25m                        
+ (130,105)   EFX_FF             0.000       2.065     arithmetic/rounded_q[10]~FF|CLK
+ (130,105)   EFX_FF (Setup)    -0.003       2.062     arithmetic/rounded_q[10]~FF    
+
+++++ Path 2 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 35.920 ns (required time - arrival time)                       
+Path Start      : arithmetic/projection_sum[8]~FF|CLK                            
+Path End        : arithmetic/rounded_q[11]~FF|D                                  
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 3.951 ns                                                       
+Logic Levels    : 12                                                             
+
+Launch Clock Path Delay        : 2.065
++ Clock To Q + Data Path Delay : 3.951
+--------------------------------------
+End-of-path arrival time       : 6.016
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.003
+---------------------------------------
+End-of-path required time      : 41.936
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)           Netlist Resource(s)
+========================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                            
+  (0,164)    input            0.126        0.126     clk_25m                            
+             net (fo=1721)    1.939        2.065     clk_25m                            
+  (118,86)   EFX_FF           0.000        2.065     arithmetic/projection_sum[8]~FF|CLK
+
+Data Path
+  Location    Delay Type    Incr(ns)     Path(ns)          Netlist Resource(s)
+=====================================================================================
+ (118,86)    EFX_FF (Tco)    0.130        0.130     arithmetic/projection_sum[8]~FF|Q
+             net (fo=1)      0.406        0.536     arithmetic/projection_sum[8]     
+ (113,84)    EFX_LUT4        0.061        0.597     LUT__6897|in[2]                  
+ (113,84)    EFX_LUT4        0.000        0.597     LUT__6897|out                    
+             net (fo=1)      0.191        0.788     n3760                            
+ (113,87)    EFX_LUT4        0.061        0.849     LUT__6898|in[2]                  
+ (113,87)    EFX_LUT4        0.000        0.849     LUT__6898|out                    
+             net (fo=1)      0.061        0.910     n3761                            
+ (113,86)    EFX_LUT4        0.061        0.971     LUT__6900|in[2]                  
+ (113,86)    EFX_LUT4        0.000        0.971     LUT__6900|out                    
+             net (fo=4)      0.310        1.281     n3763                            
+ (113,97)    EFX_LUT4        0.061        1.342     LUT__8721|in[3]                  
+ (113,97)    EFX_LUT4        0.000        1.342     LUT__8721|out                    
+             net (fo=2)      0.061        1.403     n4507                            
+ (113,96)    EFX_LUT4        0.061        1.464     LUT__8722|in[1]                  
+ (113,96)    EFX_LUT4        0.000        1.464     LUT__8722|out                    
+             net (fo=4)      0.565        2.029     n4508                            
+ (115,101)   EFX_LUT4        0.061        2.090     LUT__8723|in[3]                  
+ (115,101)   EFX_LUT4        0.000        2.090     LUT__8723|out                    
+             net (fo=4)      0.418        2.508     n4509                            
+ (112,103)   EFX_LUT4        0.061        2.569     LUT__8727|in[2]                  
+ (112,103)   EFX_LUT4        0.000        2.569     LUT__8727|out                    
+             net (fo=1)      0.061        2.630     n4511                            
+ (112,102)   EFX_LUT4        0.061        2.691     LUT__8728|in[0]                  
+ (112,102)   EFX_LUT4        0.000        2.691     LUT__8728|out                    
+             net (fo=1)      0.497        3.188     arithmetic/rounding/magnitude[27]
+ (128,106)   EFX_ADD         0.052        3.240     arithmetic/rounding/add_10/i9|I0 
+ (128,106)   EFX_ADD         0.000        3.240     arithmetic/rounding/add_10/i9|CO 
+             net (fo=1)      0.000        3.240     arithmetic/rounding/add_10/n18   
+ (128,107)   EFX_ADD         0.097        3.337     arithmetic/rounding/add_10/i10|CI
+ (128,107)   EFX_ADD         0.000        3.337     arithmetic/rounding/add_10/i10|O 
+             net (fo=3)      0.370        3.707     arithmetic/rounding/rounded[9]   
+ (125,105)   EFX_LUT4        0.061        3.768     LUT__7633|in[1]                  
+ (125,105)   EFX_LUT4        0.000        3.768     LUT__7633|out                    
+             net (fo=2)      0.122        3.890     n4189                            
+ (125,101)   EFX_LUT4        0.061        3.951     LUT__7634|in[0]                  
+ (125,101)   EFX_LUT4        0.000        3.951     LUT__7634|out                    
+             net (fo=1)      0.000        3.951     arithmetic/round_result[11]      
+ (125,101)   EFX_FF          0.000        3.951     arithmetic/rounded_q[11]~FF|D    
+
+Capture Clock Path
+  Location     Delay Type     Incr(ns)     Path(ns)         Netlist Resource(s)
+=====================================================================================
+ (0,164)     input              0.000       0.000     clk_25m                        
+ (0,164)     input              0.126       0.126     clk_25m                        
+             net (fo=1721)      1.939       2.065     clk_25m                        
+ (125,101)   EFX_FF             0.000       2.065     arithmetic/rounded_q[11]~FF|CLK
+ (125,101)   EFX_FF (Setup)    -0.003       2.062     arithmetic/rounded_q[11]~FF    
+
+++++ Path 3 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 35.923 ns (required time - arrival time)                       
+Path Start      : arithmetic/projection_sum[8]~FF|CLK                            
+Path End        : arithmetic/rounded_q[8]~FF|D                                   
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 3.948 ns                                                       
+Logic Levels    : 12                                                             
+
+Launch Clock Path Delay        : 2.065
++ Clock To Q + Data Path Delay : 3.948
+--------------------------------------
+End-of-path arrival time       : 6.013
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.003
+---------------------------------------
+End-of-path required time      : 41.936
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)           Netlist Resource(s)
+========================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                            
+  (0,164)    input            0.126        0.126     clk_25m                            
+             net (fo=1721)    1.939        2.065     clk_25m                            
+  (118,86)   EFX_FF           0.000        2.065     arithmetic/projection_sum[8]~FF|CLK
+
+Data Path
+  Location    Delay Type    Incr(ns)     Path(ns)          Netlist Resource(s)
+=====================================================================================
+ (118,86)    EFX_FF (Tco)    0.130        0.130     arithmetic/projection_sum[8]~FF|Q
+             net (fo=1)      0.406        0.536     arithmetic/projection_sum[8]     
+ (113,84)    EFX_LUT4        0.061        0.597     LUT__6897|in[2]                  
+ (113,84)    EFX_LUT4        0.000        0.597     LUT__6897|out                    
+             net (fo=1)      0.191        0.788     n3760                            
+ (113,87)    EFX_LUT4        0.061        0.849     LUT__6898|in[2]                  
+ (113,87)    EFX_LUT4        0.000        0.849     LUT__6898|out                    
+             net (fo=1)      0.061        0.910     n3761                            
+ (113,86)    EFX_LUT4        0.061        0.971     LUT__6900|in[2]                  
+ (113,86)    EFX_LUT4        0.000        0.971     LUT__6900|out                    
+             net (fo=4)      0.310        1.281     n3763                            
+ (113,97)    EFX_LUT4        0.061        1.342     LUT__8721|in[3]                  
+ (113,97)    EFX_LUT4        0.000        1.342     LUT__8721|out                    
+             net (fo=2)      0.061        1.403     n4507                            
+ (113,96)    EFX_LUT4        0.061        1.464     LUT__8722|in[1]                  
+ (113,96)    EFX_LUT4        0.000        1.464     LUT__8722|out                    
+             net (fo=4)      0.532        1.996     n4508                            
+ (115,103)   EFX_LUT4        0.061        2.057     LUT__8731|in[2]                  
+ (115,103)   EFX_LUT4        0.000        2.057     LUT__8731|out                    
+             net (fo=1)      0.235        2.292     n4512                            
+ (113,103)   EFX_LUT4        0.061        2.353     LUT__8732|in[0]                  
+ (113,103)   EFX_LUT4        0.000        2.353     LUT__8732|out                    
+             net (fo=1)      0.292        2.645     arithmetic/rounding/magnitude[24]
+ (128,103)   EFX_ADD         0.052        2.697     arithmetic/rounding/add_10/i6|I0 
+ (128,103)   EFX_ADD         0.000        2.697     arithmetic/rounding/add_10/i6|CO 
+             net (fo=1)      0.000        2.697     arithmetic/rounding/add_10/n12   
+ (128,104)   EFX_ADD         0.097        2.794     arithmetic/rounding/add_10/i7|CI 
+ (128,104)   EFX_ADD         0.000        2.794     arithmetic/rounding/add_10/i7|O  
+             net (fo=2)      0.265        3.059     arithmetic/rounding/rounded[6]   
+ (129,100)   EFX_LUT4        0.063        3.122     LUT__7626|in[0]                  
+ (129,100)   EFX_LUT4        0.000        3.122     LUT__7626|out                    
+             net (fo=2)      0.118        3.240     n4186                            
+ (127,100)   EFX_LUT4        0.061        3.301     LUT__7628|in[2]                  
+ (127,100)   EFX_LUT4        0.000        3.301     LUT__7628|out                    
+             net (fo=4)      0.586        3.887     n4187                            
+ (131,102)   EFX_LUT4        0.061        3.948     LUT__7629|in[0]                  
+ (131,102)   EFX_LUT4        0.000        3.948     LUT__7629|out                    
+             net (fo=1)      0.000        3.948     arithmetic/round_result[8]       
+ (131,102)   EFX_FF          0.000        3.948     arithmetic/rounded_q[8]~FF|D     
+
+Capture Clock Path
+  Location     Delay Type     Incr(ns)     Path(ns)        Netlist Resource(s)
+====================================================================================
+ (0,164)     input              0.000       0.000     clk_25m                       
+ (0,164)     input              0.126       0.126     clk_25m                       
+             net (fo=1721)      1.939       2.065     clk_25m                       
+ (131,102)   EFX_FF             0.000       2.065     arithmetic/rounded_q[8]~FF|CLK
+ (131,102)   EFX_FF (Setup)    -0.003       2.062     arithmetic/rounded_q[8]~FF    
+
+++++ Path 4 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 35.981 ns (required time - arrival time)                       
+Path Start      : arithmetic/projection_sum[8]~FF|CLK                            
+Path End        : arithmetic/rounded_q[12]~FF|D                                  
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 3.890 ns                                                       
+Logic Levels    : 12                                                             
+
+Launch Clock Path Delay        : 2.065
++ Clock To Q + Data Path Delay : 3.890
+--------------------------------------
+End-of-path arrival time       : 5.955
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.003
+---------------------------------------
+End-of-path required time      : 41.936
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)           Netlist Resource(s)
+========================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                            
+  (0,164)    input            0.126        0.126     clk_25m                            
+             net (fo=1721)    1.939        2.065     clk_25m                            
+  (118,86)   EFX_FF           0.000        2.065     arithmetic/projection_sum[8]~FF|CLK
+
+Data Path
+  Location    Delay Type    Incr(ns)     Path(ns)          Netlist Resource(s)
+=====================================================================================
+ (118,86)    EFX_FF (Tco)    0.130        0.130     arithmetic/projection_sum[8]~FF|Q
+             net (fo=1)      0.406        0.536     arithmetic/projection_sum[8]     
+ (113,84)    EFX_LUT4        0.061        0.597     LUT__6897|in[2]                  
+ (113,84)    EFX_LUT4        0.000        0.597     LUT__6897|out                    
+             net (fo=1)      0.191        0.788     n3760                            
+ (113,87)    EFX_LUT4        0.061        0.849     LUT__6898|in[2]                  
+ (113,87)    EFX_LUT4        0.000        0.849     LUT__6898|out                    
+             net (fo=1)      0.061        0.910     n3761                            
+ (113,86)    EFX_LUT4        0.061        0.971     LUT__6900|in[2]                  
+ (113,86)    EFX_LUT4        0.000        0.971     LUT__6900|out                    
+             net (fo=4)      0.310        1.281     n3763                            
+ (113,97)    EFX_LUT4        0.061        1.342     LUT__8721|in[3]                  
+ (113,97)    EFX_LUT4        0.000        1.342     LUT__8721|out                    
+             net (fo=2)      0.061        1.403     n4507                            
+ (113,96)    EFX_LUT4        0.061        1.464     LUT__8722|in[1]                  
+ (113,96)    EFX_LUT4        0.000        1.464     LUT__8722|out                    
+             net (fo=4)      0.565        2.029     n4508                            
+ (115,101)   EFX_LUT4        0.061        2.090     LUT__8723|in[3]                  
+ (115,101)   EFX_LUT4        0.000        2.090     LUT__8723|out                    
+             net (fo=4)      0.418        2.508     n4509                            
+ (112,103)   EFX_LUT4        0.061        2.569     LUT__8727|in[2]                  
+ (112,103)   EFX_LUT4        0.000        2.569     LUT__8727|out                    
+             net (fo=1)      0.061        2.630     n4511                            
+ (112,102)   EFX_LUT4        0.061        2.691     LUT__8728|in[0]                  
+ (112,102)   EFX_LUT4        0.000        2.691     LUT__8728|out                    
+             net (fo=1)      0.497        3.188     arithmetic/rounding/magnitude[27]
+ (128,106)   EFX_ADD         0.052        3.240     arithmetic/rounding/add_10/i9|I0 
+ (128,106)   EFX_ADD         0.000        3.240     arithmetic/rounding/add_10/i9|CO 
+             net (fo=1)      0.000        3.240     arithmetic/rounding/add_10/n18   
+ (128,107)   EFX_ADD         0.097        3.337     arithmetic/rounding/add_10/i10|CI
+ (128,107)   EFX_ADD         0.000        3.337     arithmetic/rounding/add_10/i10|O 
+             net (fo=3)      0.370        3.707     arithmetic/rounding/rounded[9]   
+ (125,105)   EFX_LUT4        0.061        3.768     LUT__7633|in[1]                  
+ (125,105)   EFX_LUT4        0.000        3.768     LUT__7633|out                    
+             net (fo=2)      0.061        3.829     n4189                            
+ (125,104)   EFX_LUT4        0.061        3.890     LUT__7635|in[0]                  
+ (125,104)   EFX_LUT4        0.000        3.890     LUT__7635|out                    
+             net (fo=1)      0.000        3.890     arithmetic/round_result[12]      
+ (125,104)   EFX_FF          0.000        3.890     arithmetic/rounded_q[12]~FF|D    
+
+Capture Clock Path
+  Location     Delay Type     Incr(ns)     Path(ns)         Netlist Resource(s)
+=====================================================================================
+ (0,164)     input              0.000       0.000     clk_25m                        
+ (0,164)     input              0.126       0.126     clk_25m                        
+             net (fo=1721)      1.939       2.065     clk_25m                        
+ (125,104)   EFX_FF             0.000       2.065     arithmetic/rounded_q[12]~FF|CLK
+ (125,104)   EFX_FF (Setup)    -0.003       2.062     arithmetic/rounded_q[12]~FF    
+
+++++ Path 5 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 36.132 ns (required time - arrival time)                       
+Path Start      : arithmetic/projection_sum[8]~FF|CLK                            
+Path End        : arithmetic/rounded_q[9]~FF|D                                   
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 3.739 ns                                                       
+Logic Levels    : 12                                                             
+
+Launch Clock Path Delay        : 2.065
++ Clock To Q + Data Path Delay : 3.739
+--------------------------------------
+End-of-path arrival time       : 5.804
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.003
+---------------------------------------
+End-of-path required time      : 41.936
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)           Netlist Resource(s)
+========================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                            
+  (0,164)    input            0.126        0.126     clk_25m                            
+             net (fo=1721)    1.939        2.065     clk_25m                            
+  (118,86)   EFX_FF           0.000        2.065     arithmetic/projection_sum[8]~FF|CLK
+
+Data Path
+  Location    Delay Type    Incr(ns)     Path(ns)          Netlist Resource(s)
+=====================================================================================
+ (118,86)    EFX_FF (Tco)    0.130        0.130     arithmetic/projection_sum[8]~FF|Q
+             net (fo=1)      0.406        0.536     arithmetic/projection_sum[8]     
+ (113,84)    EFX_LUT4        0.061        0.597     LUT__6897|in[2]                  
+ (113,84)    EFX_LUT4        0.000        0.597     LUT__6897|out                    
+             net (fo=1)      0.191        0.788     n3760                            
+ (113,87)    EFX_LUT4        0.061        0.849     LUT__6898|in[2]                  
+ (113,87)    EFX_LUT4        0.000        0.849     LUT__6898|out                    
+             net (fo=1)      0.061        0.910     n3761                            
+ (113,86)    EFX_LUT4        0.061        0.971     LUT__6900|in[2]                  
+ (113,86)    EFX_LUT4        0.000        0.971     LUT__6900|out                    
+             net (fo=4)      0.310        1.281     n3763                            
+ (113,97)    EFX_LUT4        0.061        1.342     LUT__8721|in[3]                  
+ (113,97)    EFX_LUT4        0.000        1.342     LUT__8721|out                    
+             net (fo=2)      0.061        1.403     n4507                            
+ (113,96)    EFX_LUT4        0.061        1.464     LUT__8722|in[1]                  
+ (113,96)    EFX_LUT4        0.000        1.464     LUT__8722|out                    
+             net (fo=4)      0.532        1.996     n4508                            
+ (115,103)   EFX_LUT4        0.061        2.057     LUT__8731|in[2]                  
+ (115,103)   EFX_LUT4        0.000        2.057     LUT__8731|out                    
+             net (fo=1)      0.235        2.292     n4512                            
+ (113,103)   EFX_LUT4        0.061        2.353     LUT__8732|in[0]                  
+ (113,103)   EFX_LUT4        0.000        2.353     LUT__8732|out                    
+             net (fo=1)      0.292        2.645     arithmetic/rounding/magnitude[24]
+ (128,103)   EFX_ADD         0.052        2.697     arithmetic/rounding/add_10/i6|I0 
+ (128,103)   EFX_ADD         0.000        2.697     arithmetic/rounding/add_10/i6|CO 
+             net (fo=1)      0.000        2.697     arithmetic/rounding/add_10/n12   
+ (128,104)   EFX_ADD         0.097        2.794     arithmetic/rounding/add_10/i7|CI 
+ (128,104)   EFX_ADD         0.000        2.794     arithmetic/rounding/add_10/i7|O  
+             net (fo=2)      0.265        3.059     arithmetic/rounding/rounded[6]   
+ (129,100)   EFX_LUT4        0.063        3.122     LUT__7626|in[0]                  
+ (129,100)   EFX_LUT4        0.000        3.122     LUT__7626|out                    
+             net (fo=2)      0.118        3.240     n4186                            
+ (127,100)   EFX_LUT4        0.061        3.301     LUT__7628|in[2]                  
+ (127,100)   EFX_LUT4        0.000        3.301     LUT__7628|out                    
+             net (fo=4)      0.377        3.678     n4187                            
+ (130,106)   EFX_LUT4        0.061        3.739     LUT__7630|in[0]                  
+ (130,106)   EFX_LUT4        0.000        3.739     LUT__7630|out                    
+             net (fo=1)      0.000        3.739     arithmetic/round_result[9]       
+ (130,106)   EFX_FF          0.000        3.739     arithmetic/rounded_q[9]~FF|D     
+
+Capture Clock Path
+  Location     Delay Type     Incr(ns)     Path(ns)        Netlist Resource(s)
+====================================================================================
+ (0,164)     input              0.000       0.000     clk_25m                       
+ (0,164)     input              0.126       0.126     clk_25m                       
+             net (fo=1721)      1.939       2.065     clk_25m                       
+ (130,106)   EFX_FF             0.000       2.065     arithmetic/rounded_q[9]~FF|CLK
+ (130,106)   EFX_FF (Setup)    -0.003       2.062     arithmetic/rounded_q[9]~FF    
+
+++++ Path 6 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 36.267 ns (required time - arrival time)                       
+Path Start      : arithmetic/projection_sum[8]~FF|CLK                            
+Path End        : arithmetic/rounded_q[7]~FF|D                                   
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 3.604 ns                                                       
+Logic Levels    : 11                                                             
+
+Launch Clock Path Delay        : 2.065
++ Clock To Q + Data Path Delay : 3.604
+--------------------------------------
+End-of-path arrival time       : 5.669
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.003
+---------------------------------------
+End-of-path required time      : 41.936
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)           Netlist Resource(s)
+========================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                            
+  (0,164)    input            0.126        0.126     clk_25m                            
+             net (fo=1721)    1.939        2.065     clk_25m                            
+  (118,86)   EFX_FF           0.000        2.065     arithmetic/projection_sum[8]~FF|CLK
+
+Data Path
+  Location    Delay Type    Incr(ns)     Path(ns)          Netlist Resource(s)
+=====================================================================================
+ (118,86)    EFX_FF (Tco)    0.130        0.130     arithmetic/projection_sum[8]~FF|Q
+             net (fo=1)      0.406        0.536     arithmetic/projection_sum[8]     
+ (113,84)    EFX_LUT4        0.061        0.597     LUT__6897|in[2]                  
+ (113,84)    EFX_LUT4        0.000        0.597     LUT__6897|out                    
+             net (fo=1)      0.191        0.788     n3760                            
+ (113,87)    EFX_LUT4        0.061        0.849     LUT__6898|in[2]                  
+ (113,87)    EFX_LUT4        0.000        0.849     LUT__6898|out                    
+             net (fo=1)      0.061        0.910     n3761                            
+ (113,86)    EFX_LUT4        0.061        0.971     LUT__6900|in[2]                  
+ (113,86)    EFX_LUT4        0.000        0.971     LUT__6900|out                    
+             net (fo=4)      0.310        1.281     n3763                            
+ (113,97)    EFX_LUT4        0.061        1.342     LUT__8721|in[3]                  
+ (113,97)    EFX_LUT4        0.000        1.342     LUT__8721|out                    
+             net (fo=2)      0.061        1.403     n4507                            
+ (113,96)    EFX_LUT4        0.061        1.464     LUT__8722|in[1]                  
+ (113,96)    EFX_LUT4        0.000        1.464     LUT__8722|out                    
+             net (fo=4)      0.532        1.996     n4508                            
+ (115,103)   EFX_LUT4        0.061        2.057     LUT__8731|in[2]                  
+ (115,103)   EFX_LUT4        0.000        2.057     LUT__8731|out                    
+             net (fo=1)      0.235        2.292     n4512                            
+ (113,103)   EFX_LUT4        0.061        2.353     LUT__8732|in[0]                  
+ (113,103)   EFX_LUT4        0.000        2.353     LUT__8732|out                    
+             net (fo=1)      0.292        2.645     arithmetic/rounding/magnitude[24]
+ (128,103)   EFX_ADD         0.052        2.697     arithmetic/rounding/add_10/i6|I0 
+ (128,103)   EFX_ADD         0.000        2.697     arithmetic/rounding/add_10/i6|CO 
+             net (fo=1)      0.000        2.697     arithmetic/rounding/add_10/n12   
+ (128,104)   EFX_ADD         0.097        2.794     arithmetic/rounding/add_10/i7|CI 
+ (128,104)   EFX_ADD         0.000        2.794     arithmetic/rounding/add_10/i7|O  
+             net (fo=2)      0.265        3.059     arithmetic/rounding/rounded[6]   
+ (129,100)   EFX_LUT4        0.063        3.122     LUT__7626|in[0]                  
+ (129,100)   EFX_LUT4        0.000        3.122     LUT__7626|out                    
+             net (fo=2)      0.421        3.543     n4186                            
+ (131,103)   EFX_LUT4        0.061        3.604     LUT__7627|in[0]                  
+ (131,103)   EFX_LUT4        0.000        3.604     LUT__7627|out                    
+             net (fo=1)      0.000        3.604     arithmetic/round_result[7]       
+ (131,103)   EFX_FF          0.000        3.604     arithmetic/rounded_q[7]~FF|D     
+
+Capture Clock Path
+  Location     Delay Type     Incr(ns)     Path(ns)        Netlist Resource(s)
+====================================================================================
+ (0,164)     input              0.000       0.000     clk_25m                       
+ (0,164)     input              0.126       0.126     clk_25m                       
+             net (fo=1721)      1.939       2.065     clk_25m                       
+ (131,103)   EFX_FF             0.000       2.065     arithmetic/rounded_q[7]~FF|CLK
+ (131,103)   EFX_FF (Setup)    -0.003       2.062     arithmetic/rounded_q[7]~FF    
+
+++++ Path 7 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 36.581 ns (required time - arrival time)                       
+Path Start      : arithmetic/projection_sum[8]~FF|CLK                            
+Path End        : arithmetic/rounded_q[6]~FF|D                                   
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 3.290 ns                                                       
+Logic Levels    : 10                                                             
+
+Launch Clock Path Delay        : 2.065
++ Clock To Q + Data Path Delay : 3.290
+--------------------------------------
+End-of-path arrival time       : 5.355
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.003
+---------------------------------------
+End-of-path required time      : 41.936
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)           Netlist Resource(s)
+========================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                            
+  (0,164)    input            0.126        0.126     clk_25m                            
+             net (fo=1721)    1.939        2.065     clk_25m                            
+  (118,86)   EFX_FF           0.000        2.065     arithmetic/projection_sum[8]~FF|CLK
+
+Data Path
+  Location    Delay Type    Incr(ns)     Path(ns)          Netlist Resource(s)
+=====================================================================================
+ (118,86)    EFX_FF (Tco)    0.130        0.130     arithmetic/projection_sum[8]~FF|Q
+             net (fo=1)      0.406        0.536     arithmetic/projection_sum[8]     
+ (113,84)    EFX_LUT4        0.061        0.597     LUT__6897|in[2]                  
+ (113,84)    EFX_LUT4        0.000        0.597     LUT__6897|out                    
+             net (fo=1)      0.191        0.788     n3760                            
+ (113,87)    EFX_LUT4        0.061        0.849     LUT__6898|in[2]                  
+ (113,87)    EFX_LUT4        0.000        0.849     LUT__6898|out                    
+             net (fo=1)      0.061        0.910     n3761                            
+ (113,86)    EFX_LUT4        0.061        0.971     LUT__6900|in[2]                  
+ (113,86)    EFX_LUT4        0.000        0.971     LUT__6900|out                    
+             net (fo=4)      0.310        1.281     n3763                            
+ (113,97)    EFX_LUT4        0.061        1.342     LUT__8721|in[3]                  
+ (113,97)    EFX_LUT4        0.000        1.342     LUT__8721|out                    
+             net (fo=2)      0.061        1.403     n4507                            
+ (113,96)    EFX_LUT4        0.061        1.464     LUT__8722|in[1]                  
+ (113,96)    EFX_LUT4        0.000        1.464     LUT__8722|out                    
+             net (fo=4)      0.532        1.996     n4508                            
+ (115,103)   EFX_LUT4        0.061        2.057     LUT__8731|in[2]                  
+ (115,103)   EFX_LUT4        0.000        2.057     LUT__8731|out                    
+             net (fo=1)      0.235        2.292     n4512                            
+ (113,103)   EFX_LUT4        0.061        2.353     LUT__8732|in[0]                  
+ (113,103)   EFX_LUT4        0.000        2.353     LUT__8732|out                    
+             net (fo=1)      0.292        2.645     arithmetic/rounding/magnitude[24]
+ (128,103)   EFX_ADD         0.052        2.697     arithmetic/rounding/add_10/i6|I0 
+ (128,103)   EFX_ADD         0.000        2.697     arithmetic/rounding/add_10/i6|CO 
+             net (fo=1)      0.000        2.697     arithmetic/rounding/add_10/n12   
+ (128,104)   EFX_ADD         0.097        2.794     arithmetic/rounding/add_10/i7|CI 
+ (128,104)   EFX_ADD         0.000        2.794     arithmetic/rounding/add_10/i7|O  
+             net (fo=2)      0.435        3.229     arithmetic/rounding/rounded[6]   
+ (131,101)   EFX_LUT4        0.061        3.290     LUT__7625|in[3]                  
+ (131,101)   EFX_LUT4        0.000        3.290     LUT__7625|out                    
+             net (fo=1)      0.000        3.290     arithmetic/round_result[6]       
+ (131,101)   EFX_FF          0.000        3.290     arithmetic/rounded_q[6]~FF|D     
+
+Capture Clock Path
+  Location     Delay Type     Incr(ns)     Path(ns)        Netlist Resource(s)
+====================================================================================
+ (0,164)     input              0.000       0.000     clk_25m                       
+ (0,164)     input              0.126       0.126     clk_25m                       
+             net (fo=1721)      1.939       2.065     clk_25m                       
+ (131,101)   EFX_FF             0.000       2.065     arithmetic/rounded_q[6]~FF|CLK
+ (131,101)   EFX_FF (Setup)    -0.003       2.062     arithmetic/rounded_q[6]~FF    
+
+++++ Path 8 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 36.935 ns (required time - arrival time)                       
+Path Start      : arithmetic/projection_sum[8]~FF|CLK                            
+Path End        : arithmetic/rounded_q[5]~FF|D                                   
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 2.936 ns                                                       
+Logic Levels    : 9                                                              
+
+Launch Clock Path Delay        : 2.065
++ Clock To Q + Data Path Delay : 2.936
+--------------------------------------
+End-of-path arrival time       : 5.001
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.003
+---------------------------------------
+End-of-path required time      : 41.936
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)           Netlist Resource(s)
+========================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                            
+  (0,164)    input            0.126        0.126     clk_25m                            
+             net (fo=1721)    1.939        2.065     clk_25m                            
+  (118,86)   EFX_FF           0.000        2.065     arithmetic/projection_sum[8]~FF|CLK
+
+Data Path
+  Location    Delay Type    Incr(ns)     Path(ns)          Netlist Resource(s)
+=====================================================================================
+ (118,86)    EFX_FF (Tco)    0.130        0.130     arithmetic/projection_sum[8]~FF|Q
+             net (fo=1)      0.406        0.536     arithmetic/projection_sum[8]     
+ (113,84)    EFX_LUT4        0.061        0.597     LUT__6897|in[2]                  
+ (113,84)    EFX_LUT4        0.000        0.597     LUT__6897|out                    
+             net (fo=1)      0.191        0.788     n3760                            
+ (113,87)    EFX_LUT4        0.061        0.849     LUT__6898|in[2]                  
+ (113,87)    EFX_LUT4        0.000        0.849     LUT__6898|out                    
+             net (fo=1)      0.061        0.910     n3761                            
+ (113,86)    EFX_LUT4        0.061        0.971     LUT__6900|in[2]                  
+ (113,86)    EFX_LUT4        0.000        0.971     LUT__6900|out                    
+             net (fo=4)      0.507        1.478     n3763                            
+ (112,98)    EFX_LUT4        0.061        1.539     LUT__6901|in[0]                  
+ (112,98)    EFX_LUT4        0.000        1.539     LUT__6901|out                    
+             net (fo=1)      0.381        1.920     arithmetic/rounding/magnitude[19]
+ (128,98)    EFX_ADD         0.052        1.972     arithmetic/rounding/add_10/i1|I0 
+ (128,98)    EFX_ADD         0.000        1.972     arithmetic/rounding/add_10/i1|CO 
+             net (fo=1)      0.000        1.972     arithmetic/rounding/add_10/n2    
+ (128,99)    EFX_ADD         0.097        2.069     arithmetic/rounding/add_10/i2|CI 
+ (128,99)    EFX_ADD         0.000        2.069     arithmetic/rounding/add_10/i2|O  
+             net (fo=3)      0.251        2.320     arithmetic/rounding/rounded[1]   
+ (129,97)    EFX_LUT4        0.063        2.383     LUT__7620|in[0]                  
+ (129,97)    EFX_LUT4        0.000        2.383     LUT__7620|out                    
+             net (fo=3)      0.103        2.486     n4184                            
+ (129,98)    EFX_LUT4        0.063        2.549     LUT__7623|in[0]                  
+ (129,98)    EFX_LUT4        0.000        2.549     LUT__7623|out                    
+             net (fo=3)      0.326        2.875     n4185                            
+ (130,103)   EFX_LUT4        0.061        2.936     LUT__7624|in[0]                  
+ (130,103)   EFX_LUT4        0.000        2.936     LUT__7624|out                    
+             net (fo=1)      0.000        2.936     arithmetic/round_result[5]       
+ (130,103)   EFX_FF          0.000        2.936     arithmetic/rounded_q[5]~FF|D     
+
+Capture Clock Path
+  Location     Delay Type     Incr(ns)     Path(ns)        Netlist Resource(s)
+====================================================================================
+ (0,164)     input              0.000       0.000     clk_25m                       
+ (0,164)     input              0.126       0.126     clk_25m                       
+             net (fo=1721)      1.939       2.065     clk_25m                       
+ (130,103)   EFX_FF             0.000       2.065     arithmetic/rounded_q[5]~FF|CLK
+ (130,103)   EFX_FF (Setup)    -0.003       2.062     arithmetic/rounded_q[5]~FF    
+

@@ -1,0 +1,65 @@
+// 初版几何显示：四组可见强轮廓的包围盒与方向分布。完整复杂识别仍需候选/拟合/核验实现。
+module board_shape_tracker(
+    input wire clk,rst,start,finish,input wire [10:0] threshold,
+    input wire grad_valid,output wire grad_ready,input wire [184:0] grad_payload,
+    output reg [3:0] box_valid,output reg [3:0][10:0] box_x0,box_y0,box_x1,box_y1,
+    output reg [3:0] is_circle
+);
+    reg held,lane;reg [184:0] sample;
+    reg [3:0] used;
+    reg [10:0] xmin[0:3],xmax[0:3],ymin[0:3],ymax[0:3];
+    reg [20:0] count[0:3],hist[0:3][0:3];
+    wire [10:0] px=sample[74:64]+{10'd0,lane},py=sample[85:75];
+    wire signed [10:0] gx=lane?sample[42:32]:sample[10:0];
+    wire signed [10:0] gy=lane?sample[53:43]:sample[21:11];
+    wire [10:0] ax=gx[10]?-gx:gx,ay=gy[10]?-gy:gy;
+    wire [11:0] magnitude={1'b0,ax}+{1'b0,ay};
+    wire [1:0] direction=ax>({1'b0,ay}<<1)?0:ay>({1'b0,ax}<<1)?2:(gx[10]==gy[10]?1:3);
+    integer target,free_slot;
+    always @*begin
+        target=-1;free_slot=-1;
+        for(integer k=0;k<4;k=k+1)begin
+            if(!used[k]&&free_slot<0)free_slot=k;
+            if(used[k]&&target<0&&{1'b0,px}+12'd48>={1'b0,xmin[k]}&&{1'b0,px}<={1'b0,xmax[k]}+12'd48&&
+                {1'b0,py}+12'd48>={1'b0,ymin[k]}&&{1'b0,py}<={1'b0,ymax[k]}+12'd48)target=k;
+        end
+        if(target<0)target=free_slot;
+    end
+    assign grad_ready=!rst&&!held;
+    integer b,d;
+    reg [11:0] bw,bh;reg [20:0] peak;
+    always @(posedge clk)begin
+        if(rst||start)begin
+            held<=0;lane<=0;sample<=0;used<=0;box_valid<=0;is_circle<=0;
+            box_x0<=0;box_y0<=0;box_x1<=0;box_y1<=0;
+            for(b=0;b<4;b=b+1)begin
+                xmin[b]<=0;xmax[b]<=0;ymin[b]<=0;ymax[b]<=0;count[b]<=0;
+                for(d=0;d<4;d=d+1)hist[b][d]<=0;
+            end
+        end else begin
+            if(grad_valid&&grad_ready)begin sample<=grad_payload;held<=1;lane<=0;end
+            if(held)begin
+                if(magnitude>={1'b0,threshold}&&target>=0)begin
+                    if(!used[target])begin
+                        used[target]<=1;xmin[target]<=px;xmax[target]<=px;ymin[target]<=py;ymax[target]<=py;
+                    end else begin
+                        if(px<xmin[target])xmin[target]<=px;if(px>xmax[target])xmax[target]<=px;
+                        if(py<ymin[target])ymin[target]<=py;if(py>ymax[target])ymax[target]<=py;
+                    end
+                    count[target]<=count[target]+21'd1;hist[target][direction]<=hist[target][direction]+21'd1;
+                end
+                if(lane)held<=0;else lane<=1;
+            end
+            if(finish&&!held)begin
+                for(b=0;b<4;b=b+1)begin
+                    bw={1'b0,xmax[b]}-{1'b0,xmin[b]}+12'd1;bh={1'b0,ymax[b]}-{1'b0,ymin[b]}+12'd1;
+                    peak=hist[b][0];for(d=1;d<4;d=d+1)if(hist[b][d]>peak)peak=hist[b][d];
+                    box_valid[b]<=used[b]&&count[b]>=128&&bw>=96&&bh>=96&&bw<=1024&&bh<=1024&&
+                        bw<=bh*3&&bh<=bw*3&&count[b]<((bw+bh)<<4);
+                    is_circle[b]<=bw*4>=bh*3&&bh*4>=bw*3&&({1'b0,peak}<<1)<{1'b0,count[b]};
+                    box_x0[b]<=xmin[b];box_x1[b]<=xmax[b];box_y0[b]<=ymin[b];box_y1[b]<=ymax[b];
+                end
+            end
+        end
+    end
+endmodule

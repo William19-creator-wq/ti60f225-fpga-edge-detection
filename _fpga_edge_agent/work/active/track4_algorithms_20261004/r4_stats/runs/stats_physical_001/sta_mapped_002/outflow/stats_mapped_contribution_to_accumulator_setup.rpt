@@ -1,0 +1,1642 @@
+
+Efinix report_timing Report
+Version: 2026.1.132
+Date: Thu Oct  8 19:23:48 2026
+
+Copyright (C) 2013 - 2026 Efinix, Inc. All rights reserved.
+
+User command: foreach transition $transitions {
+ set name [lindex $transition 0]
+ set starts [endpoint_union [lindex $transition 1]]
+ set ends [endpoint_union [lindex $transition 2]]
+ puts "DATA_${name}_SOURCE_COUNT=[llength $starts]"
+ puts "DATA_${name}_DEST_COUNT=[llength $ends]"
+ if {[llength $starts] == 0 || [llength $ends] == 0} {error "Data endpoint collection empty"}
+ report_timing -setup -from $starts -to $ends -npaths 8 -nworst 1 -file stats_mapped_${name}_setup.rpt
+ report_timing -hold -from $starts -to $ends -npaths 8 -nworst 1 -file stats_mapped_${name}_hold.rpt
+}
+
+Timing Model: I3
+	process : typical
+	temperature : -40C to 100C
+	voltage : 0.95 +/-30mV
+	speedgrade : 3
+	technology : t16ff
+	status : final
+
+Summary:
+
+ Path #  | Slack(ns) |          Start Pin          |              End Pin               |  Launch Clock   |  Capture Clock
+===========================================================================================================================
+ 1       |  36.634   | statistics/n3232_pp_0x0|CLK | statistics/accumulator[3][55]~FF|D | core_25m (RISE) | core_25m (RISE)
+ 2       |  36.658   | statistics/n3232_pp_0x0|CLK | statistics/accumulator[3][54]~FF|D | core_25m (RISE) | core_25m (RISE)
+ 3       |  36.682   | statistics/n3232_pp_0x0|CLK | statistics/accumulator[3][53]~FF|D | core_25m (RISE) | core_25m (RISE)
+ 4       |  36.706   | statistics/n3232_pp_0x0|CLK | statistics/accumulator[3][52]~FF|D | core_25m (RISE) | core_25m (RISE)
+ 5       |  36.730   | statistics/n3232_pp_0x0|CLK | statistics/accumulator[3][51]~FF|D | core_25m (RISE) | core_25m (RISE)
+ 6       |  36.754   | statistics/n3232_pp_0x0|CLK | statistics/accumulator[3][50]~FF|D | core_25m (RISE) | core_25m (RISE)
+ 7       |  36.778   | statistics/n3232_pp_0x0|CLK | statistics/accumulator[3][49]~FF|D | core_25m (RISE) | core_25m (RISE)
+ 8       |  36.791   | statistics/n3270_pp_0x1|CLK | statistics/accumulator[4][55]~FF|D | core_25m (RISE) | core_25m (RISE)
+
+++++ Path 1 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 36.634 ns (required time - arrival time)                       
+Path Start      : statistics/n3232_pp_0x0|CLK                                    
+Path End        : statistics/accumulator[3][55]~FF|D                             
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 3.237 ns                                                       
+Logic Levels    : 56                                                             
+
+Launch Clock Path Delay        : 2.065
++ Clock To Q + Data Path Delay : 3.237
+--------------------------------------
+End-of-path arrival time       : 5.302
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.003
+---------------------------------------
+End-of-path required time      : 41.936
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)       Netlist Resource(s)
+================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                    
+  (0,164)    input            0.126        0.126     clk_25m                    
+             net (fo=9826)    1.939        2.065     clk_25m                    
+  (180,62)   EFX_DSP48        0.000        2.065     statistics/n3232_pp_0x0|CLK
+
+Data Path
+  Location     Delay Type      Incr(ns)     Path(ns)          Netlist Resource(s)
+=========================================================================================
+ (180,62)    EFX_DSP48 (Tco)    0.520        0.520     statistics/n3232_pp_0x0|O[1]      
+             net (fo=1)         0.724        1.244     statistics/s3_ad[1]               
+ (203,61)    EFX_LUT4           0.061        1.305     LUT__86838|in[1]                  
+ (203,61)    EFX_LUT4           0.000        1.305     LUT__86838|out                    
+             net (fo=1)         0.506        1.811     statistics/contribution[3][1]     
+ (215,71)    EFX_ADD            0.057        1.868     statistics/add_100/i2|I1          
+ (215,71)    EFX_ADD            0.000        1.868     statistics/add_100/i2|CO          
+             net (fo=1)         0.000        1.868     statistics/add_100/n4             
+ (215,72)    EFX_ADD            0.024        1.892     statistics/add_100/i3|CI          
+ (215,72)    EFX_ADD            0.000        1.892     statistics/add_100/i3|CO          
+             net (fo=1)         0.000        1.892     statistics/add_100/n6             
+ (215,73)    EFX_ADD            0.024        1.916     statistics/add_100/i4|CI          
+ (215,73)    EFX_ADD            0.000        1.916     statistics/add_100/i4|CO          
+             net (fo=1)         0.000        1.916     statistics/add_100/n8             
+ (215,74)    EFX_ADD            0.024        1.940     statistics/add_100/i5|CI          
+ (215,74)    EFX_ADD            0.000        1.940     statistics/add_100/i5|CO          
+             net (fo=1)         0.000        1.940     statistics/add_100/n10            
+ (215,75)    EFX_ADD            0.024        1.964     statistics/add_100/i6|CI          
+ (215,75)    EFX_ADD            0.000        1.964     statistics/add_100/i6|CO          
+             net (fo=1)         0.000        1.964     statistics/add_100/n12            
+ (215,76)    EFX_ADD            0.024        1.988     statistics/add_100/i7|CI          
+ (215,76)    EFX_ADD            0.000        1.988     statistics/add_100/i7|CO          
+             net (fo=1)         0.000        1.988     statistics/add_100/n14            
+ (215,77)    EFX_ADD            0.024        2.012     statistics/add_100/i8|CI          
+ (215,77)    EFX_ADD            0.000        2.012     statistics/add_100/i8|CO          
+             net (fo=1)         0.000        2.012     statistics/add_100/n16            
+ (215,78)    EFX_ADD            0.024        2.036     statistics/add_100/i9|CI          
+ (215,78)    EFX_ADD            0.000        2.036     statistics/add_100/i9|CO          
+             net (fo=1)         0.000        2.036     statistics/add_100/n18            
+ (215,79)    EFX_ADD            0.024        2.060     statistics/add_100/i10|CI         
+ (215,79)    EFX_ADD            0.000        2.060     statistics/add_100/i10|CO         
+             net (fo=1)         0.000        2.060     statistics/add_100/n20            
+ (215,80)    EFX_ADD            0.024        2.084     statistics/add_100/i11|CI         
+ (215,80)    EFX_ADD            0.000        2.084     statistics/add_100/i11|CO         
+             net (fo=1)         0.000        2.084     statistics/add_100/n22            
+ (215,81)    EFX_ADD            0.024        2.108     statistics/add_100/i12|CI         
+ (215,81)    EFX_ADD            0.000        2.108     statistics/add_100/i12|CO         
+             net (fo=1)         0.000        2.108     statistics/add_100/n24            
+ (215,82)    EFX_ADD            0.024        2.132     statistics/add_100/i13|CI         
+ (215,82)    EFX_ADD            0.000        2.132     statistics/add_100/i13|CO         
+             net (fo=1)         0.000        2.132     statistics/add_100/n26            
+ (215,83)    EFX_ADD            0.024        2.156     statistics/add_100/i14|CI         
+ (215,83)    EFX_ADD            0.000        2.156     statistics/add_100/i14|CO         
+             net (fo=1)         0.000        2.156     statistics/add_100/n28            
+ (215,84)    EFX_ADD            0.024        2.180     statistics/add_100/i15|CI         
+ (215,84)    EFX_ADD            0.000        2.180     statistics/add_100/i15|CO         
+             net (fo=1)         0.000        2.180     statistics/add_100/n30            
+ (215,85)    EFX_ADD            0.024        2.204     statistics/add_100/i16|CI         
+ (215,85)    EFX_ADD            0.000        2.204     statistics/add_100/i16|CO         
+             net (fo=1)         0.000        2.204     statistics/add_100/n32            
+ (215,86)    EFX_ADD            0.024        2.228     statistics/add_100/i17|CI         
+ (215,86)    EFX_ADD            0.000        2.228     statistics/add_100/i17|CO         
+             net (fo=1)         0.000        2.228     statistics/add_100/n34            
+ (215,87)    EFX_ADD            0.024        2.252     statistics/add_100/i18|CI         
+ (215,87)    EFX_ADD            0.000        2.252     statistics/add_100/i18|CO         
+             net (fo=1)         0.000        2.252     statistics/add_100/n36            
+ (215,88)    EFX_ADD            0.024        2.276     statistics/add_100/i19|CI         
+ (215,88)    EFX_ADD            0.000        2.276     statistics/add_100/i19|CO         
+             net (fo=1)         0.000        2.276     statistics/add_100/n38            
+ (215,89)    EFX_ADD            0.024        2.300     statistics/add_100/i20|CI         
+ (215,89)    EFX_ADD            0.000        2.300     statistics/add_100/i20|CO         
+             net (fo=1)         0.000        2.300     statistics/add_100/n40            
+ (215,90)    EFX_ADD            0.024        2.324     statistics/add_100/i21|CI         
+ (215,90)    EFX_ADD            0.000        2.324     statistics/add_100/i21|CO         
+             net (fo=1)         0.000        2.324     statistics/add_100/n42            
+ (215,91)    EFX_ADD            0.024        2.348     statistics/add_100/i22|CI         
+ (215,91)    EFX_ADD            0.000        2.348     statistics/add_100/i22|CO         
+             net (fo=1)         0.000        2.348     statistics/add_100/n44            
+ (215,92)    EFX_ADD            0.024        2.372     statistics/add_100/i23|CI         
+ (215,92)    EFX_ADD            0.000        2.372     statistics/add_100/i23|CO         
+             net (fo=1)         0.000        2.372     statistics/add_100/n46            
+ (215,93)    EFX_ADD            0.024        2.396     statistics/add_100/i24|CI         
+ (215,93)    EFX_ADD            0.000        2.396     statistics/add_100/i24|CO         
+             net (fo=1)         0.000        2.396     statistics/add_100/n48            
+ (215,94)    EFX_ADD            0.024        2.420     statistics/add_100/i25|CI         
+ (215,94)    EFX_ADD            0.000        2.420     statistics/add_100/i25|CO         
+             net (fo=1)         0.000        2.420     statistics/add_100/n50            
+ (215,95)    EFX_ADD            0.024        2.444     statistics/add_100/i26|CI         
+ (215,95)    EFX_ADD            0.000        2.444     statistics/add_100/i26|CO         
+             net (fo=1)         0.000        2.444     statistics/add_100/n52            
+ (215,96)    EFX_ADD            0.024        2.468     statistics/add_100/i27|CI         
+ (215,96)    EFX_ADD            0.000        2.468     statistics/add_100/i27|CO         
+             net (fo=1)         0.000        2.468     statistics/add_100/n54            
+ (215,97)    EFX_ADD            0.024        2.492     statistics/add_100/i28|CI         
+ (215,97)    EFX_ADD            0.000        2.492     statistics/add_100/i28|CO         
+             net (fo=1)         0.000        2.492     statistics/add_100/n56            
+ (215,98)    EFX_ADD            0.024        2.516     statistics/add_100/i29|CI         
+ (215,98)    EFX_ADD            0.000        2.516     statistics/add_100/i29|CO         
+             net (fo=1)         0.000        2.516     statistics/add_100/n58            
+ (215,99)    EFX_ADD            0.024        2.540     statistics/add_100/i30|CI         
+ (215,99)    EFX_ADD            0.000        2.540     statistics/add_100/i30|CO         
+             net (fo=1)         0.000        2.540     statistics/add_100/n60            
+ (215,100)   EFX_ADD            0.024        2.564     statistics/add_100/i31|CI         
+ (215,100)   EFX_ADD            0.000        2.564     statistics/add_100/i31|CO         
+             net (fo=1)         0.000        2.564     statistics/add_100/n62            
+ (215,101)   EFX_ADD            0.024        2.588     statistics/add_100/i32|CI         
+ (215,101)   EFX_ADD            0.000        2.588     statistics/add_100/i32|CO         
+             net (fo=1)         0.000        2.588     statistics/add_100/n64            
+ (215,102)   EFX_ADD            0.024        2.612     statistics/add_100/i33|CI         
+ (215,102)   EFX_ADD            0.000        2.612     statistics/add_100/i33|CO         
+             net (fo=1)         0.000        2.612     statistics/add_100/n66            
+ (215,103)   EFX_ADD            0.024        2.636     statistics/add_100/i34|CI         
+ (215,103)   EFX_ADD            0.000        2.636     statistics/add_100/i34|CO         
+             net (fo=1)         0.000        2.636     statistics/add_100/n68            
+ (215,104)   EFX_ADD            0.024        2.660     statistics/add_100/i35|CI         
+ (215,104)   EFX_ADD            0.000        2.660     statistics/add_100/i35|CO         
+             net (fo=1)         0.000        2.660     statistics/add_100/n70            
+ (215,105)   EFX_ADD            0.024        2.684     statistics/add_100/i36|CI         
+ (215,105)   EFX_ADD            0.000        2.684     statistics/add_100/i36|CO         
+             net (fo=1)         0.000        2.684     statistics/add_100/n72            
+ (215,106)   EFX_ADD            0.024        2.708     statistics/add_100/i37|CI         
+ (215,106)   EFX_ADD            0.000        2.708     statistics/add_100/i37|CO         
+             net (fo=1)         0.000        2.708     statistics/add_100/n74            
+ (215,107)   EFX_ADD            0.024        2.732     statistics/add_100/i38|CI         
+ (215,107)   EFX_ADD            0.000        2.732     statistics/add_100/i38|CO         
+             net (fo=1)         0.000        2.732     statistics/add_100/n76            
+ (215,108)   EFX_ADD            0.024        2.756     statistics/add_100/i39|CI         
+ (215,108)   EFX_ADD            0.000        2.756     statistics/add_100/i39|CO         
+             net (fo=1)         0.000        2.756     statistics/add_100/n78            
+ (215,109)   EFX_ADD            0.024        2.780     statistics/add_100/i40|CI         
+ (215,109)   EFX_ADD            0.000        2.780     statistics/add_100/i40|CO         
+             net (fo=1)         0.000        2.780     statistics/add_100/n80            
+ (215,110)   EFX_ADD            0.024        2.804     statistics/add_100/i41|CI         
+ (215,110)   EFX_ADD            0.000        2.804     statistics/add_100/i41|CO         
+             net (fo=1)         0.000        2.804     statistics/add_100/n82            
+ (215,111)   EFX_ADD            0.024        2.828     statistics/add_100/i42|CI         
+ (215,111)   EFX_ADD            0.000        2.828     statistics/add_100/i42|CO         
+             net (fo=1)         0.000        2.828     statistics/add_100/n84            
+ (215,112)   EFX_ADD            0.024        2.852     statistics/add_100/i43|CI         
+ (215,112)   EFX_ADD            0.000        2.852     statistics/add_100/i43|CO         
+             net (fo=1)         0.000        2.852     statistics/add_100/n86            
+ (215,113)   EFX_ADD            0.024        2.876     statistics/add_100/i44|CI         
+ (215,113)   EFX_ADD            0.000        2.876     statistics/add_100/i44|CO         
+             net (fo=1)         0.000        2.876     statistics/add_100/n88            
+ (215,114)   EFX_ADD            0.024        2.900     statistics/add_100/i45|CI         
+ (215,114)   EFX_ADD            0.000        2.900     statistics/add_100/i45|CO         
+             net (fo=1)         0.000        2.900     statistics/add_100/n90            
+ (215,115)   EFX_ADD            0.024        2.924     statistics/add_100/i46|CI         
+ (215,115)   EFX_ADD            0.000        2.924     statistics/add_100/i46|CO         
+             net (fo=1)         0.000        2.924     statistics/add_100/n92            
+ (215,116)   EFX_ADD            0.024        2.948     statistics/add_100/i47|CI         
+ (215,116)   EFX_ADD            0.000        2.948     statistics/add_100/i47|CO         
+             net (fo=1)         0.000        2.948     statistics/add_100/n94            
+ (215,117)   EFX_ADD            0.024        2.972     statistics/add_100/i48|CI         
+ (215,117)   EFX_ADD            0.000        2.972     statistics/add_100/i48|CO         
+             net (fo=1)         0.000        2.972     statistics/add_100/n96            
+ (215,118)   EFX_ADD            0.024        2.996     statistics/add_100/i49|CI         
+ (215,118)   EFX_ADD            0.000        2.996     statistics/add_100/i49|CO         
+             net (fo=1)         0.000        2.996     statistics/add_100/n98            
+ (215,119)   EFX_ADD            0.024        3.020     statistics/add_100/i50|CI         
+ (215,119)   EFX_ADD            0.000        3.020     statistics/add_100/i50|CO         
+             net (fo=1)         0.000        3.020     statistics/add_100/n100           
+ (215,120)   EFX_ADD            0.024        3.044     statistics/add_100/i51|CI         
+ (215,120)   EFX_ADD            0.000        3.044     statistics/add_100/i51|CO         
+             net (fo=1)         0.000        3.044     statistics/add_100/n102           
+ (215,121)   EFX_ADD            0.024        3.068     statistics/add_100/i52|CI         
+ (215,121)   EFX_ADD            0.000        3.068     statistics/add_100/i52|CO         
+             net (fo=1)         0.000        3.068     statistics/add_100/n104           
+ (215,122)   EFX_ADD            0.024        3.092     statistics/add_100/i53|CI         
+ (215,122)   EFX_ADD            0.000        3.092     statistics/add_100/i53|CO         
+             net (fo=1)         0.000        3.092     statistics/add_100/n106           
+ (215,123)   EFX_ADD            0.024        3.116     statistics/add_100/i54|CI         
+ (215,123)   EFX_ADD            0.000        3.116     statistics/add_100/i54|CO         
+             net (fo=1)         0.000        3.116     statistics/add_100/n108           
+ (215,124)   EFX_ADD            0.024        3.140     statistics/add_100/i55|CI         
+ (215,124)   EFX_ADD            0.000        3.140     statistics/add_100/i55|CO         
+             net (fo=1)         0.000        3.140     statistics/add_100/n110           
+ (215,125)   EFX_ADD            0.097        3.237     statistics/add_100/i56|CI         
+ (215,125)   EFX_ADD            0.000        3.237     statistics/add_100/i56|O          
+             net (fo=2)         0.000        3.237     statistics/sum_candidate[3][55]   
+ (215,125)   EFX_FF             0.000        3.237     statistics/accumulator[3][55]~FF|D
+
+Capture Clock Path
+  Location     Delay Type     Incr(ns)     Path(ns)           Netlist Resource(s)
+==========================================================================================
+ (0,164)     input              0.000       0.000     clk_25m                             
+ (0,164)     input              0.126       0.126     clk_25m                             
+             net (fo=9826)      1.939       2.065     clk_25m                             
+ (215,125)   EFX_FF             0.000       2.065     statistics/accumulator[3][55]~FF|CLK
+ (215,125)   EFX_FF (Setup)    -0.003       2.062     statistics/accumulator[3][55]~FF    
+
+++++ Path 2 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 36.658 ns (required time - arrival time)                       
+Path Start      : statistics/n3232_pp_0x0|CLK                                    
+Path End        : statistics/accumulator[3][54]~FF|D                             
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 3.213 ns                                                       
+Logic Levels    : 55                                                             
+
+Launch Clock Path Delay        : 2.065
++ Clock To Q + Data Path Delay : 3.213
+--------------------------------------
+End-of-path arrival time       : 5.278
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.003
+---------------------------------------
+End-of-path required time      : 41.936
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)       Netlist Resource(s)
+================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                    
+  (0,164)    input            0.126        0.126     clk_25m                    
+             net (fo=9826)    1.939        2.065     clk_25m                    
+  (180,62)   EFX_DSP48        0.000        2.065     statistics/n3232_pp_0x0|CLK
+
+Data Path
+  Location     Delay Type      Incr(ns)     Path(ns)          Netlist Resource(s)
+=========================================================================================
+ (180,62)    EFX_DSP48 (Tco)    0.520        0.520     statistics/n3232_pp_0x0|O[1]      
+             net (fo=1)         0.724        1.244     statistics/s3_ad[1]               
+ (203,61)    EFX_LUT4           0.061        1.305     LUT__86838|in[1]                  
+ (203,61)    EFX_LUT4           0.000        1.305     LUT__86838|out                    
+             net (fo=1)         0.506        1.811     statistics/contribution[3][1]     
+ (215,71)    EFX_ADD            0.057        1.868     statistics/add_100/i2|I1          
+ (215,71)    EFX_ADD            0.000        1.868     statistics/add_100/i2|CO          
+             net (fo=1)         0.000        1.868     statistics/add_100/n4             
+ (215,72)    EFX_ADD            0.024        1.892     statistics/add_100/i3|CI          
+ (215,72)    EFX_ADD            0.000        1.892     statistics/add_100/i3|CO          
+             net (fo=1)         0.000        1.892     statistics/add_100/n6             
+ (215,73)    EFX_ADD            0.024        1.916     statistics/add_100/i4|CI          
+ (215,73)    EFX_ADD            0.000        1.916     statistics/add_100/i4|CO          
+             net (fo=1)         0.000        1.916     statistics/add_100/n8             
+ (215,74)    EFX_ADD            0.024        1.940     statistics/add_100/i5|CI          
+ (215,74)    EFX_ADD            0.000        1.940     statistics/add_100/i5|CO          
+             net (fo=1)         0.000        1.940     statistics/add_100/n10            
+ (215,75)    EFX_ADD            0.024        1.964     statistics/add_100/i6|CI          
+ (215,75)    EFX_ADD            0.000        1.964     statistics/add_100/i6|CO          
+             net (fo=1)         0.000        1.964     statistics/add_100/n12            
+ (215,76)    EFX_ADD            0.024        1.988     statistics/add_100/i7|CI          
+ (215,76)    EFX_ADD            0.000        1.988     statistics/add_100/i7|CO          
+             net (fo=1)         0.000        1.988     statistics/add_100/n14            
+ (215,77)    EFX_ADD            0.024        2.012     statistics/add_100/i8|CI          
+ (215,77)    EFX_ADD            0.000        2.012     statistics/add_100/i8|CO          
+             net (fo=1)         0.000        2.012     statistics/add_100/n16            
+ (215,78)    EFX_ADD            0.024        2.036     statistics/add_100/i9|CI          
+ (215,78)    EFX_ADD            0.000        2.036     statistics/add_100/i9|CO          
+             net (fo=1)         0.000        2.036     statistics/add_100/n18            
+ (215,79)    EFX_ADD            0.024        2.060     statistics/add_100/i10|CI         
+ (215,79)    EFX_ADD            0.000        2.060     statistics/add_100/i10|CO         
+             net (fo=1)         0.000        2.060     statistics/add_100/n20            
+ (215,80)    EFX_ADD            0.024        2.084     statistics/add_100/i11|CI         
+ (215,80)    EFX_ADD            0.000        2.084     statistics/add_100/i11|CO         
+             net (fo=1)         0.000        2.084     statistics/add_100/n22            
+ (215,81)    EFX_ADD            0.024        2.108     statistics/add_100/i12|CI         
+ (215,81)    EFX_ADD            0.000        2.108     statistics/add_100/i12|CO         
+             net (fo=1)         0.000        2.108     statistics/add_100/n24            
+ (215,82)    EFX_ADD            0.024        2.132     statistics/add_100/i13|CI         
+ (215,82)    EFX_ADD            0.000        2.132     statistics/add_100/i13|CO         
+             net (fo=1)         0.000        2.132     statistics/add_100/n26            
+ (215,83)    EFX_ADD            0.024        2.156     statistics/add_100/i14|CI         
+ (215,83)    EFX_ADD            0.000        2.156     statistics/add_100/i14|CO         
+             net (fo=1)         0.000        2.156     statistics/add_100/n28            
+ (215,84)    EFX_ADD            0.024        2.180     statistics/add_100/i15|CI         
+ (215,84)    EFX_ADD            0.000        2.180     statistics/add_100/i15|CO         
+             net (fo=1)         0.000        2.180     statistics/add_100/n30            
+ (215,85)    EFX_ADD            0.024        2.204     statistics/add_100/i16|CI         
+ (215,85)    EFX_ADD            0.000        2.204     statistics/add_100/i16|CO         
+             net (fo=1)         0.000        2.204     statistics/add_100/n32            
+ (215,86)    EFX_ADD            0.024        2.228     statistics/add_100/i17|CI         
+ (215,86)    EFX_ADD            0.000        2.228     statistics/add_100/i17|CO         
+             net (fo=1)         0.000        2.228     statistics/add_100/n34            
+ (215,87)    EFX_ADD            0.024        2.252     statistics/add_100/i18|CI         
+ (215,87)    EFX_ADD            0.000        2.252     statistics/add_100/i18|CO         
+             net (fo=1)         0.000        2.252     statistics/add_100/n36            
+ (215,88)    EFX_ADD            0.024        2.276     statistics/add_100/i19|CI         
+ (215,88)    EFX_ADD            0.000        2.276     statistics/add_100/i19|CO         
+             net (fo=1)         0.000        2.276     statistics/add_100/n38            
+ (215,89)    EFX_ADD            0.024        2.300     statistics/add_100/i20|CI         
+ (215,89)    EFX_ADD            0.000        2.300     statistics/add_100/i20|CO         
+             net (fo=1)         0.000        2.300     statistics/add_100/n40            
+ (215,90)    EFX_ADD            0.024        2.324     statistics/add_100/i21|CI         
+ (215,90)    EFX_ADD            0.000        2.324     statistics/add_100/i21|CO         
+             net (fo=1)         0.000        2.324     statistics/add_100/n42            
+ (215,91)    EFX_ADD            0.024        2.348     statistics/add_100/i22|CI         
+ (215,91)    EFX_ADD            0.000        2.348     statistics/add_100/i22|CO         
+             net (fo=1)         0.000        2.348     statistics/add_100/n44            
+ (215,92)    EFX_ADD            0.024        2.372     statistics/add_100/i23|CI         
+ (215,92)    EFX_ADD            0.000        2.372     statistics/add_100/i23|CO         
+             net (fo=1)         0.000        2.372     statistics/add_100/n46            
+ (215,93)    EFX_ADD            0.024        2.396     statistics/add_100/i24|CI         
+ (215,93)    EFX_ADD            0.000        2.396     statistics/add_100/i24|CO         
+             net (fo=1)         0.000        2.396     statistics/add_100/n48            
+ (215,94)    EFX_ADD            0.024        2.420     statistics/add_100/i25|CI         
+ (215,94)    EFX_ADD            0.000        2.420     statistics/add_100/i25|CO         
+             net (fo=1)         0.000        2.420     statistics/add_100/n50            
+ (215,95)    EFX_ADD            0.024        2.444     statistics/add_100/i26|CI         
+ (215,95)    EFX_ADD            0.000        2.444     statistics/add_100/i26|CO         
+             net (fo=1)         0.000        2.444     statistics/add_100/n52            
+ (215,96)    EFX_ADD            0.024        2.468     statistics/add_100/i27|CI         
+ (215,96)    EFX_ADD            0.000        2.468     statistics/add_100/i27|CO         
+             net (fo=1)         0.000        2.468     statistics/add_100/n54            
+ (215,97)    EFX_ADD            0.024        2.492     statistics/add_100/i28|CI         
+ (215,97)    EFX_ADD            0.000        2.492     statistics/add_100/i28|CO         
+             net (fo=1)         0.000        2.492     statistics/add_100/n56            
+ (215,98)    EFX_ADD            0.024        2.516     statistics/add_100/i29|CI         
+ (215,98)    EFX_ADD            0.000        2.516     statistics/add_100/i29|CO         
+             net (fo=1)         0.000        2.516     statistics/add_100/n58            
+ (215,99)    EFX_ADD            0.024        2.540     statistics/add_100/i30|CI         
+ (215,99)    EFX_ADD            0.000        2.540     statistics/add_100/i30|CO         
+             net (fo=1)         0.000        2.540     statistics/add_100/n60            
+ (215,100)   EFX_ADD            0.024        2.564     statistics/add_100/i31|CI         
+ (215,100)   EFX_ADD            0.000        2.564     statistics/add_100/i31|CO         
+             net (fo=1)         0.000        2.564     statistics/add_100/n62            
+ (215,101)   EFX_ADD            0.024        2.588     statistics/add_100/i32|CI         
+ (215,101)   EFX_ADD            0.000        2.588     statistics/add_100/i32|CO         
+             net (fo=1)         0.000        2.588     statistics/add_100/n64            
+ (215,102)   EFX_ADD            0.024        2.612     statistics/add_100/i33|CI         
+ (215,102)   EFX_ADD            0.000        2.612     statistics/add_100/i33|CO         
+             net (fo=1)         0.000        2.612     statistics/add_100/n66            
+ (215,103)   EFX_ADD            0.024        2.636     statistics/add_100/i34|CI         
+ (215,103)   EFX_ADD            0.000        2.636     statistics/add_100/i34|CO         
+             net (fo=1)         0.000        2.636     statistics/add_100/n68            
+ (215,104)   EFX_ADD            0.024        2.660     statistics/add_100/i35|CI         
+ (215,104)   EFX_ADD            0.000        2.660     statistics/add_100/i35|CO         
+             net (fo=1)         0.000        2.660     statistics/add_100/n70            
+ (215,105)   EFX_ADD            0.024        2.684     statistics/add_100/i36|CI         
+ (215,105)   EFX_ADD            0.000        2.684     statistics/add_100/i36|CO         
+             net (fo=1)         0.000        2.684     statistics/add_100/n72            
+ (215,106)   EFX_ADD            0.024        2.708     statistics/add_100/i37|CI         
+ (215,106)   EFX_ADD            0.000        2.708     statistics/add_100/i37|CO         
+             net (fo=1)         0.000        2.708     statistics/add_100/n74            
+ (215,107)   EFX_ADD            0.024        2.732     statistics/add_100/i38|CI         
+ (215,107)   EFX_ADD            0.000        2.732     statistics/add_100/i38|CO         
+             net (fo=1)         0.000        2.732     statistics/add_100/n76            
+ (215,108)   EFX_ADD            0.024        2.756     statistics/add_100/i39|CI         
+ (215,108)   EFX_ADD            0.000        2.756     statistics/add_100/i39|CO         
+             net (fo=1)         0.000        2.756     statistics/add_100/n78            
+ (215,109)   EFX_ADD            0.024        2.780     statistics/add_100/i40|CI         
+ (215,109)   EFX_ADD            0.000        2.780     statistics/add_100/i40|CO         
+             net (fo=1)         0.000        2.780     statistics/add_100/n80            
+ (215,110)   EFX_ADD            0.024        2.804     statistics/add_100/i41|CI         
+ (215,110)   EFX_ADD            0.000        2.804     statistics/add_100/i41|CO         
+             net (fo=1)         0.000        2.804     statistics/add_100/n82            
+ (215,111)   EFX_ADD            0.024        2.828     statistics/add_100/i42|CI         
+ (215,111)   EFX_ADD            0.000        2.828     statistics/add_100/i42|CO         
+             net (fo=1)         0.000        2.828     statistics/add_100/n84            
+ (215,112)   EFX_ADD            0.024        2.852     statistics/add_100/i43|CI         
+ (215,112)   EFX_ADD            0.000        2.852     statistics/add_100/i43|CO         
+             net (fo=1)         0.000        2.852     statistics/add_100/n86            
+ (215,113)   EFX_ADD            0.024        2.876     statistics/add_100/i44|CI         
+ (215,113)   EFX_ADD            0.000        2.876     statistics/add_100/i44|CO         
+             net (fo=1)         0.000        2.876     statistics/add_100/n88            
+ (215,114)   EFX_ADD            0.024        2.900     statistics/add_100/i45|CI         
+ (215,114)   EFX_ADD            0.000        2.900     statistics/add_100/i45|CO         
+             net (fo=1)         0.000        2.900     statistics/add_100/n90            
+ (215,115)   EFX_ADD            0.024        2.924     statistics/add_100/i46|CI         
+ (215,115)   EFX_ADD            0.000        2.924     statistics/add_100/i46|CO         
+             net (fo=1)         0.000        2.924     statistics/add_100/n92            
+ (215,116)   EFX_ADD            0.024        2.948     statistics/add_100/i47|CI         
+ (215,116)   EFX_ADD            0.000        2.948     statistics/add_100/i47|CO         
+             net (fo=1)         0.000        2.948     statistics/add_100/n94            
+ (215,117)   EFX_ADD            0.024        2.972     statistics/add_100/i48|CI         
+ (215,117)   EFX_ADD            0.000        2.972     statistics/add_100/i48|CO         
+             net (fo=1)         0.000        2.972     statistics/add_100/n96            
+ (215,118)   EFX_ADD            0.024        2.996     statistics/add_100/i49|CI         
+ (215,118)   EFX_ADD            0.000        2.996     statistics/add_100/i49|CO         
+             net (fo=1)         0.000        2.996     statistics/add_100/n98            
+ (215,119)   EFX_ADD            0.024        3.020     statistics/add_100/i50|CI         
+ (215,119)   EFX_ADD            0.000        3.020     statistics/add_100/i50|CO         
+             net (fo=1)         0.000        3.020     statistics/add_100/n100           
+ (215,120)   EFX_ADD            0.024        3.044     statistics/add_100/i51|CI         
+ (215,120)   EFX_ADD            0.000        3.044     statistics/add_100/i51|CO         
+             net (fo=1)         0.000        3.044     statistics/add_100/n102           
+ (215,121)   EFX_ADD            0.024        3.068     statistics/add_100/i52|CI         
+ (215,121)   EFX_ADD            0.000        3.068     statistics/add_100/i52|CO         
+             net (fo=1)         0.000        3.068     statistics/add_100/n104           
+ (215,122)   EFX_ADD            0.024        3.092     statistics/add_100/i53|CI         
+ (215,122)   EFX_ADD            0.000        3.092     statistics/add_100/i53|CO         
+             net (fo=1)         0.000        3.092     statistics/add_100/n106           
+ (215,123)   EFX_ADD            0.024        3.116     statistics/add_100/i54|CI         
+ (215,123)   EFX_ADD            0.000        3.116     statistics/add_100/i54|CO         
+             net (fo=1)         0.000        3.116     statistics/add_100/n108           
+ (215,124)   EFX_ADD            0.097        3.213     statistics/add_100/i55|CI         
+ (215,124)   EFX_ADD            0.000        3.213     statistics/add_100/i55|O          
+             net (fo=2)         0.000        3.213     statistics/sum_candidate[3][54]   
+ (215,124)   EFX_FF             0.000        3.213     statistics/accumulator[3][54]~FF|D
+
+Capture Clock Path
+  Location     Delay Type     Incr(ns)     Path(ns)           Netlist Resource(s)
+==========================================================================================
+ (0,164)     input              0.000       0.000     clk_25m                             
+ (0,164)     input              0.126       0.126     clk_25m                             
+             net (fo=9826)      1.939       2.065     clk_25m                             
+ (215,124)   EFX_FF             0.000       2.065     statistics/accumulator[3][54]~FF|CLK
+ (215,124)   EFX_FF (Setup)    -0.003       2.062     statistics/accumulator[3][54]~FF    
+
+++++ Path 3 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 36.682 ns (required time - arrival time)                       
+Path Start      : statistics/n3232_pp_0x0|CLK                                    
+Path End        : statistics/accumulator[3][53]~FF|D                             
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 3.189 ns                                                       
+Logic Levels    : 54                                                             
+
+Launch Clock Path Delay        : 2.065
++ Clock To Q + Data Path Delay : 3.189
+--------------------------------------
+End-of-path arrival time       : 5.254
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.003
+---------------------------------------
+End-of-path required time      : 41.936
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)       Netlist Resource(s)
+================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                    
+  (0,164)    input            0.126        0.126     clk_25m                    
+             net (fo=9826)    1.939        2.065     clk_25m                    
+  (180,62)   EFX_DSP48        0.000        2.065     statistics/n3232_pp_0x0|CLK
+
+Data Path
+  Location     Delay Type      Incr(ns)     Path(ns)          Netlist Resource(s)
+=========================================================================================
+ (180,62)    EFX_DSP48 (Tco)    0.520        0.520     statistics/n3232_pp_0x0|O[1]      
+             net (fo=1)         0.724        1.244     statistics/s3_ad[1]               
+ (203,61)    EFX_LUT4           0.061        1.305     LUT__86838|in[1]                  
+ (203,61)    EFX_LUT4           0.000        1.305     LUT__86838|out                    
+             net (fo=1)         0.506        1.811     statistics/contribution[3][1]     
+ (215,71)    EFX_ADD            0.057        1.868     statistics/add_100/i2|I1          
+ (215,71)    EFX_ADD            0.000        1.868     statistics/add_100/i2|CO          
+             net (fo=1)         0.000        1.868     statistics/add_100/n4             
+ (215,72)    EFX_ADD            0.024        1.892     statistics/add_100/i3|CI          
+ (215,72)    EFX_ADD            0.000        1.892     statistics/add_100/i3|CO          
+             net (fo=1)         0.000        1.892     statistics/add_100/n6             
+ (215,73)    EFX_ADD            0.024        1.916     statistics/add_100/i4|CI          
+ (215,73)    EFX_ADD            0.000        1.916     statistics/add_100/i4|CO          
+             net (fo=1)         0.000        1.916     statistics/add_100/n8             
+ (215,74)    EFX_ADD            0.024        1.940     statistics/add_100/i5|CI          
+ (215,74)    EFX_ADD            0.000        1.940     statistics/add_100/i5|CO          
+             net (fo=1)         0.000        1.940     statistics/add_100/n10            
+ (215,75)    EFX_ADD            0.024        1.964     statistics/add_100/i6|CI          
+ (215,75)    EFX_ADD            0.000        1.964     statistics/add_100/i6|CO          
+             net (fo=1)         0.000        1.964     statistics/add_100/n12            
+ (215,76)    EFX_ADD            0.024        1.988     statistics/add_100/i7|CI          
+ (215,76)    EFX_ADD            0.000        1.988     statistics/add_100/i7|CO          
+             net (fo=1)         0.000        1.988     statistics/add_100/n14            
+ (215,77)    EFX_ADD            0.024        2.012     statistics/add_100/i8|CI          
+ (215,77)    EFX_ADD            0.000        2.012     statistics/add_100/i8|CO          
+             net (fo=1)         0.000        2.012     statistics/add_100/n16            
+ (215,78)    EFX_ADD            0.024        2.036     statistics/add_100/i9|CI          
+ (215,78)    EFX_ADD            0.000        2.036     statistics/add_100/i9|CO          
+             net (fo=1)         0.000        2.036     statistics/add_100/n18            
+ (215,79)    EFX_ADD            0.024        2.060     statistics/add_100/i10|CI         
+ (215,79)    EFX_ADD            0.000        2.060     statistics/add_100/i10|CO         
+             net (fo=1)         0.000        2.060     statistics/add_100/n20            
+ (215,80)    EFX_ADD            0.024        2.084     statistics/add_100/i11|CI         
+ (215,80)    EFX_ADD            0.000        2.084     statistics/add_100/i11|CO         
+             net (fo=1)         0.000        2.084     statistics/add_100/n22            
+ (215,81)    EFX_ADD            0.024        2.108     statistics/add_100/i12|CI         
+ (215,81)    EFX_ADD            0.000        2.108     statistics/add_100/i12|CO         
+             net (fo=1)         0.000        2.108     statistics/add_100/n24            
+ (215,82)    EFX_ADD            0.024        2.132     statistics/add_100/i13|CI         
+ (215,82)    EFX_ADD            0.000        2.132     statistics/add_100/i13|CO         
+             net (fo=1)         0.000        2.132     statistics/add_100/n26            
+ (215,83)    EFX_ADD            0.024        2.156     statistics/add_100/i14|CI         
+ (215,83)    EFX_ADD            0.000        2.156     statistics/add_100/i14|CO         
+             net (fo=1)         0.000        2.156     statistics/add_100/n28            
+ (215,84)    EFX_ADD            0.024        2.180     statistics/add_100/i15|CI         
+ (215,84)    EFX_ADD            0.000        2.180     statistics/add_100/i15|CO         
+             net (fo=1)         0.000        2.180     statistics/add_100/n30            
+ (215,85)    EFX_ADD            0.024        2.204     statistics/add_100/i16|CI         
+ (215,85)    EFX_ADD            0.000        2.204     statistics/add_100/i16|CO         
+             net (fo=1)         0.000        2.204     statistics/add_100/n32            
+ (215,86)    EFX_ADD            0.024        2.228     statistics/add_100/i17|CI         
+ (215,86)    EFX_ADD            0.000        2.228     statistics/add_100/i17|CO         
+             net (fo=1)         0.000        2.228     statistics/add_100/n34            
+ (215,87)    EFX_ADD            0.024        2.252     statistics/add_100/i18|CI         
+ (215,87)    EFX_ADD            0.000        2.252     statistics/add_100/i18|CO         
+             net (fo=1)         0.000        2.252     statistics/add_100/n36            
+ (215,88)    EFX_ADD            0.024        2.276     statistics/add_100/i19|CI         
+ (215,88)    EFX_ADD            0.000        2.276     statistics/add_100/i19|CO         
+             net (fo=1)         0.000        2.276     statistics/add_100/n38            
+ (215,89)    EFX_ADD            0.024        2.300     statistics/add_100/i20|CI         
+ (215,89)    EFX_ADD            0.000        2.300     statistics/add_100/i20|CO         
+             net (fo=1)         0.000        2.300     statistics/add_100/n40            
+ (215,90)    EFX_ADD            0.024        2.324     statistics/add_100/i21|CI         
+ (215,90)    EFX_ADD            0.000        2.324     statistics/add_100/i21|CO         
+             net (fo=1)         0.000        2.324     statistics/add_100/n42            
+ (215,91)    EFX_ADD            0.024        2.348     statistics/add_100/i22|CI         
+ (215,91)    EFX_ADD            0.000        2.348     statistics/add_100/i22|CO         
+             net (fo=1)         0.000        2.348     statistics/add_100/n44            
+ (215,92)    EFX_ADD            0.024        2.372     statistics/add_100/i23|CI         
+ (215,92)    EFX_ADD            0.000        2.372     statistics/add_100/i23|CO         
+             net (fo=1)         0.000        2.372     statistics/add_100/n46            
+ (215,93)    EFX_ADD            0.024        2.396     statistics/add_100/i24|CI         
+ (215,93)    EFX_ADD            0.000        2.396     statistics/add_100/i24|CO         
+             net (fo=1)         0.000        2.396     statistics/add_100/n48            
+ (215,94)    EFX_ADD            0.024        2.420     statistics/add_100/i25|CI         
+ (215,94)    EFX_ADD            0.000        2.420     statistics/add_100/i25|CO         
+             net (fo=1)         0.000        2.420     statistics/add_100/n50            
+ (215,95)    EFX_ADD            0.024        2.444     statistics/add_100/i26|CI         
+ (215,95)    EFX_ADD            0.000        2.444     statistics/add_100/i26|CO         
+             net (fo=1)         0.000        2.444     statistics/add_100/n52            
+ (215,96)    EFX_ADD            0.024        2.468     statistics/add_100/i27|CI         
+ (215,96)    EFX_ADD            0.000        2.468     statistics/add_100/i27|CO         
+             net (fo=1)         0.000        2.468     statistics/add_100/n54            
+ (215,97)    EFX_ADD            0.024        2.492     statistics/add_100/i28|CI         
+ (215,97)    EFX_ADD            0.000        2.492     statistics/add_100/i28|CO         
+             net (fo=1)         0.000        2.492     statistics/add_100/n56            
+ (215,98)    EFX_ADD            0.024        2.516     statistics/add_100/i29|CI         
+ (215,98)    EFX_ADD            0.000        2.516     statistics/add_100/i29|CO         
+             net (fo=1)         0.000        2.516     statistics/add_100/n58            
+ (215,99)    EFX_ADD            0.024        2.540     statistics/add_100/i30|CI         
+ (215,99)    EFX_ADD            0.000        2.540     statistics/add_100/i30|CO         
+             net (fo=1)         0.000        2.540     statistics/add_100/n60            
+ (215,100)   EFX_ADD            0.024        2.564     statistics/add_100/i31|CI         
+ (215,100)   EFX_ADD            0.000        2.564     statistics/add_100/i31|CO         
+             net (fo=1)         0.000        2.564     statistics/add_100/n62            
+ (215,101)   EFX_ADD            0.024        2.588     statistics/add_100/i32|CI         
+ (215,101)   EFX_ADD            0.000        2.588     statistics/add_100/i32|CO         
+             net (fo=1)         0.000        2.588     statistics/add_100/n64            
+ (215,102)   EFX_ADD            0.024        2.612     statistics/add_100/i33|CI         
+ (215,102)   EFX_ADD            0.000        2.612     statistics/add_100/i33|CO         
+             net (fo=1)         0.000        2.612     statistics/add_100/n66            
+ (215,103)   EFX_ADD            0.024        2.636     statistics/add_100/i34|CI         
+ (215,103)   EFX_ADD            0.000        2.636     statistics/add_100/i34|CO         
+             net (fo=1)         0.000        2.636     statistics/add_100/n68            
+ (215,104)   EFX_ADD            0.024        2.660     statistics/add_100/i35|CI         
+ (215,104)   EFX_ADD            0.000        2.660     statistics/add_100/i35|CO         
+             net (fo=1)         0.000        2.660     statistics/add_100/n70            
+ (215,105)   EFX_ADD            0.024        2.684     statistics/add_100/i36|CI         
+ (215,105)   EFX_ADD            0.000        2.684     statistics/add_100/i36|CO         
+             net (fo=1)         0.000        2.684     statistics/add_100/n72            
+ (215,106)   EFX_ADD            0.024        2.708     statistics/add_100/i37|CI         
+ (215,106)   EFX_ADD            0.000        2.708     statistics/add_100/i37|CO         
+             net (fo=1)         0.000        2.708     statistics/add_100/n74            
+ (215,107)   EFX_ADD            0.024        2.732     statistics/add_100/i38|CI         
+ (215,107)   EFX_ADD            0.000        2.732     statistics/add_100/i38|CO         
+             net (fo=1)         0.000        2.732     statistics/add_100/n76            
+ (215,108)   EFX_ADD            0.024        2.756     statistics/add_100/i39|CI         
+ (215,108)   EFX_ADD            0.000        2.756     statistics/add_100/i39|CO         
+             net (fo=1)         0.000        2.756     statistics/add_100/n78            
+ (215,109)   EFX_ADD            0.024        2.780     statistics/add_100/i40|CI         
+ (215,109)   EFX_ADD            0.000        2.780     statistics/add_100/i40|CO         
+             net (fo=1)         0.000        2.780     statistics/add_100/n80            
+ (215,110)   EFX_ADD            0.024        2.804     statistics/add_100/i41|CI         
+ (215,110)   EFX_ADD            0.000        2.804     statistics/add_100/i41|CO         
+             net (fo=1)         0.000        2.804     statistics/add_100/n82            
+ (215,111)   EFX_ADD            0.024        2.828     statistics/add_100/i42|CI         
+ (215,111)   EFX_ADD            0.000        2.828     statistics/add_100/i42|CO         
+             net (fo=1)         0.000        2.828     statistics/add_100/n84            
+ (215,112)   EFX_ADD            0.024        2.852     statistics/add_100/i43|CI         
+ (215,112)   EFX_ADD            0.000        2.852     statistics/add_100/i43|CO         
+             net (fo=1)         0.000        2.852     statistics/add_100/n86            
+ (215,113)   EFX_ADD            0.024        2.876     statistics/add_100/i44|CI         
+ (215,113)   EFX_ADD            0.000        2.876     statistics/add_100/i44|CO         
+             net (fo=1)         0.000        2.876     statistics/add_100/n88            
+ (215,114)   EFX_ADD            0.024        2.900     statistics/add_100/i45|CI         
+ (215,114)   EFX_ADD            0.000        2.900     statistics/add_100/i45|CO         
+             net (fo=1)         0.000        2.900     statistics/add_100/n90            
+ (215,115)   EFX_ADD            0.024        2.924     statistics/add_100/i46|CI         
+ (215,115)   EFX_ADD            0.000        2.924     statistics/add_100/i46|CO         
+             net (fo=1)         0.000        2.924     statistics/add_100/n92            
+ (215,116)   EFX_ADD            0.024        2.948     statistics/add_100/i47|CI         
+ (215,116)   EFX_ADD            0.000        2.948     statistics/add_100/i47|CO         
+             net (fo=1)         0.000        2.948     statistics/add_100/n94            
+ (215,117)   EFX_ADD            0.024        2.972     statistics/add_100/i48|CI         
+ (215,117)   EFX_ADD            0.000        2.972     statistics/add_100/i48|CO         
+             net (fo=1)         0.000        2.972     statistics/add_100/n96            
+ (215,118)   EFX_ADD            0.024        2.996     statistics/add_100/i49|CI         
+ (215,118)   EFX_ADD            0.000        2.996     statistics/add_100/i49|CO         
+             net (fo=1)         0.000        2.996     statistics/add_100/n98            
+ (215,119)   EFX_ADD            0.024        3.020     statistics/add_100/i50|CI         
+ (215,119)   EFX_ADD            0.000        3.020     statistics/add_100/i50|CO         
+             net (fo=1)         0.000        3.020     statistics/add_100/n100           
+ (215,120)   EFX_ADD            0.024        3.044     statistics/add_100/i51|CI         
+ (215,120)   EFX_ADD            0.000        3.044     statistics/add_100/i51|CO         
+             net (fo=1)         0.000        3.044     statistics/add_100/n102           
+ (215,121)   EFX_ADD            0.024        3.068     statistics/add_100/i52|CI         
+ (215,121)   EFX_ADD            0.000        3.068     statistics/add_100/i52|CO         
+             net (fo=1)         0.000        3.068     statistics/add_100/n104           
+ (215,122)   EFX_ADD            0.024        3.092     statistics/add_100/i53|CI         
+ (215,122)   EFX_ADD            0.000        3.092     statistics/add_100/i53|CO         
+             net (fo=1)         0.000        3.092     statistics/add_100/n106           
+ (215,123)   EFX_ADD            0.097        3.189     statistics/add_100/i54|CI         
+ (215,123)   EFX_ADD            0.000        3.189     statistics/add_100/i54|O          
+             net (fo=2)         0.000        3.189     statistics/sum_candidate[3][53]   
+ (215,123)   EFX_FF             0.000        3.189     statistics/accumulator[3][53]~FF|D
+
+Capture Clock Path
+  Location     Delay Type     Incr(ns)     Path(ns)           Netlist Resource(s)
+==========================================================================================
+ (0,164)     input              0.000       0.000     clk_25m                             
+ (0,164)     input              0.126       0.126     clk_25m                             
+             net (fo=9826)      1.939       2.065     clk_25m                             
+ (215,123)   EFX_FF             0.000       2.065     statistics/accumulator[3][53]~FF|CLK
+ (215,123)   EFX_FF (Setup)    -0.003       2.062     statistics/accumulator[3][53]~FF    
+
+++++ Path 4 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 36.706 ns (required time - arrival time)                       
+Path Start      : statistics/n3232_pp_0x0|CLK                                    
+Path End        : statistics/accumulator[3][52]~FF|D                             
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 3.165 ns                                                       
+Logic Levels    : 53                                                             
+
+Launch Clock Path Delay        : 2.065
++ Clock To Q + Data Path Delay : 3.165
+--------------------------------------
+End-of-path arrival time       : 5.230
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.003
+---------------------------------------
+End-of-path required time      : 41.936
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)       Netlist Resource(s)
+================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                    
+  (0,164)    input            0.126        0.126     clk_25m                    
+             net (fo=9826)    1.939        2.065     clk_25m                    
+  (180,62)   EFX_DSP48        0.000        2.065     statistics/n3232_pp_0x0|CLK
+
+Data Path
+  Location     Delay Type      Incr(ns)     Path(ns)          Netlist Resource(s)
+=========================================================================================
+ (180,62)    EFX_DSP48 (Tco)    0.520        0.520     statistics/n3232_pp_0x0|O[1]      
+             net (fo=1)         0.724        1.244     statistics/s3_ad[1]               
+ (203,61)    EFX_LUT4           0.061        1.305     LUT__86838|in[1]                  
+ (203,61)    EFX_LUT4           0.000        1.305     LUT__86838|out                    
+             net (fo=1)         0.506        1.811     statistics/contribution[3][1]     
+ (215,71)    EFX_ADD            0.057        1.868     statistics/add_100/i2|I1          
+ (215,71)    EFX_ADD            0.000        1.868     statistics/add_100/i2|CO          
+             net (fo=1)         0.000        1.868     statistics/add_100/n4             
+ (215,72)    EFX_ADD            0.024        1.892     statistics/add_100/i3|CI          
+ (215,72)    EFX_ADD            0.000        1.892     statistics/add_100/i3|CO          
+             net (fo=1)         0.000        1.892     statistics/add_100/n6             
+ (215,73)    EFX_ADD            0.024        1.916     statistics/add_100/i4|CI          
+ (215,73)    EFX_ADD            0.000        1.916     statistics/add_100/i4|CO          
+             net (fo=1)         0.000        1.916     statistics/add_100/n8             
+ (215,74)    EFX_ADD            0.024        1.940     statistics/add_100/i5|CI          
+ (215,74)    EFX_ADD            0.000        1.940     statistics/add_100/i5|CO          
+             net (fo=1)         0.000        1.940     statistics/add_100/n10            
+ (215,75)    EFX_ADD            0.024        1.964     statistics/add_100/i6|CI          
+ (215,75)    EFX_ADD            0.000        1.964     statistics/add_100/i6|CO          
+             net (fo=1)         0.000        1.964     statistics/add_100/n12            
+ (215,76)    EFX_ADD            0.024        1.988     statistics/add_100/i7|CI          
+ (215,76)    EFX_ADD            0.000        1.988     statistics/add_100/i7|CO          
+             net (fo=1)         0.000        1.988     statistics/add_100/n14            
+ (215,77)    EFX_ADD            0.024        2.012     statistics/add_100/i8|CI          
+ (215,77)    EFX_ADD            0.000        2.012     statistics/add_100/i8|CO          
+             net (fo=1)         0.000        2.012     statistics/add_100/n16            
+ (215,78)    EFX_ADD            0.024        2.036     statistics/add_100/i9|CI          
+ (215,78)    EFX_ADD            0.000        2.036     statistics/add_100/i9|CO          
+             net (fo=1)         0.000        2.036     statistics/add_100/n18            
+ (215,79)    EFX_ADD            0.024        2.060     statistics/add_100/i10|CI         
+ (215,79)    EFX_ADD            0.000        2.060     statistics/add_100/i10|CO         
+             net (fo=1)         0.000        2.060     statistics/add_100/n20            
+ (215,80)    EFX_ADD            0.024        2.084     statistics/add_100/i11|CI         
+ (215,80)    EFX_ADD            0.000        2.084     statistics/add_100/i11|CO         
+             net (fo=1)         0.000        2.084     statistics/add_100/n22            
+ (215,81)    EFX_ADD            0.024        2.108     statistics/add_100/i12|CI         
+ (215,81)    EFX_ADD            0.000        2.108     statistics/add_100/i12|CO         
+             net (fo=1)         0.000        2.108     statistics/add_100/n24            
+ (215,82)    EFX_ADD            0.024        2.132     statistics/add_100/i13|CI         
+ (215,82)    EFX_ADD            0.000        2.132     statistics/add_100/i13|CO         
+             net (fo=1)         0.000        2.132     statistics/add_100/n26            
+ (215,83)    EFX_ADD            0.024        2.156     statistics/add_100/i14|CI         
+ (215,83)    EFX_ADD            0.000        2.156     statistics/add_100/i14|CO         
+             net (fo=1)         0.000        2.156     statistics/add_100/n28            
+ (215,84)    EFX_ADD            0.024        2.180     statistics/add_100/i15|CI         
+ (215,84)    EFX_ADD            0.000        2.180     statistics/add_100/i15|CO         
+             net (fo=1)         0.000        2.180     statistics/add_100/n30            
+ (215,85)    EFX_ADD            0.024        2.204     statistics/add_100/i16|CI         
+ (215,85)    EFX_ADD            0.000        2.204     statistics/add_100/i16|CO         
+             net (fo=1)         0.000        2.204     statistics/add_100/n32            
+ (215,86)    EFX_ADD            0.024        2.228     statistics/add_100/i17|CI         
+ (215,86)    EFX_ADD            0.000        2.228     statistics/add_100/i17|CO         
+             net (fo=1)         0.000        2.228     statistics/add_100/n34            
+ (215,87)    EFX_ADD            0.024        2.252     statistics/add_100/i18|CI         
+ (215,87)    EFX_ADD            0.000        2.252     statistics/add_100/i18|CO         
+             net (fo=1)         0.000        2.252     statistics/add_100/n36            
+ (215,88)    EFX_ADD            0.024        2.276     statistics/add_100/i19|CI         
+ (215,88)    EFX_ADD            0.000        2.276     statistics/add_100/i19|CO         
+             net (fo=1)         0.000        2.276     statistics/add_100/n38            
+ (215,89)    EFX_ADD            0.024        2.300     statistics/add_100/i20|CI         
+ (215,89)    EFX_ADD            0.000        2.300     statistics/add_100/i20|CO         
+             net (fo=1)         0.000        2.300     statistics/add_100/n40            
+ (215,90)    EFX_ADD            0.024        2.324     statistics/add_100/i21|CI         
+ (215,90)    EFX_ADD            0.000        2.324     statistics/add_100/i21|CO         
+             net (fo=1)         0.000        2.324     statistics/add_100/n42            
+ (215,91)    EFX_ADD            0.024        2.348     statistics/add_100/i22|CI         
+ (215,91)    EFX_ADD            0.000        2.348     statistics/add_100/i22|CO         
+             net (fo=1)         0.000        2.348     statistics/add_100/n44            
+ (215,92)    EFX_ADD            0.024        2.372     statistics/add_100/i23|CI         
+ (215,92)    EFX_ADD            0.000        2.372     statistics/add_100/i23|CO         
+             net (fo=1)         0.000        2.372     statistics/add_100/n46            
+ (215,93)    EFX_ADD            0.024        2.396     statistics/add_100/i24|CI         
+ (215,93)    EFX_ADD            0.000        2.396     statistics/add_100/i24|CO         
+             net (fo=1)         0.000        2.396     statistics/add_100/n48            
+ (215,94)    EFX_ADD            0.024        2.420     statistics/add_100/i25|CI         
+ (215,94)    EFX_ADD            0.000        2.420     statistics/add_100/i25|CO         
+             net (fo=1)         0.000        2.420     statistics/add_100/n50            
+ (215,95)    EFX_ADD            0.024        2.444     statistics/add_100/i26|CI         
+ (215,95)    EFX_ADD            0.000        2.444     statistics/add_100/i26|CO         
+             net (fo=1)         0.000        2.444     statistics/add_100/n52            
+ (215,96)    EFX_ADD            0.024        2.468     statistics/add_100/i27|CI         
+ (215,96)    EFX_ADD            0.000        2.468     statistics/add_100/i27|CO         
+             net (fo=1)         0.000        2.468     statistics/add_100/n54            
+ (215,97)    EFX_ADD            0.024        2.492     statistics/add_100/i28|CI         
+ (215,97)    EFX_ADD            0.000        2.492     statistics/add_100/i28|CO         
+             net (fo=1)         0.000        2.492     statistics/add_100/n56            
+ (215,98)    EFX_ADD            0.024        2.516     statistics/add_100/i29|CI         
+ (215,98)    EFX_ADD            0.000        2.516     statistics/add_100/i29|CO         
+             net (fo=1)         0.000        2.516     statistics/add_100/n58            
+ (215,99)    EFX_ADD            0.024        2.540     statistics/add_100/i30|CI         
+ (215,99)    EFX_ADD            0.000        2.540     statistics/add_100/i30|CO         
+             net (fo=1)         0.000        2.540     statistics/add_100/n60            
+ (215,100)   EFX_ADD            0.024        2.564     statistics/add_100/i31|CI         
+ (215,100)   EFX_ADD            0.000        2.564     statistics/add_100/i31|CO         
+             net (fo=1)         0.000        2.564     statistics/add_100/n62            
+ (215,101)   EFX_ADD            0.024        2.588     statistics/add_100/i32|CI         
+ (215,101)   EFX_ADD            0.000        2.588     statistics/add_100/i32|CO         
+             net (fo=1)         0.000        2.588     statistics/add_100/n64            
+ (215,102)   EFX_ADD            0.024        2.612     statistics/add_100/i33|CI         
+ (215,102)   EFX_ADD            0.000        2.612     statistics/add_100/i33|CO         
+             net (fo=1)         0.000        2.612     statistics/add_100/n66            
+ (215,103)   EFX_ADD            0.024        2.636     statistics/add_100/i34|CI         
+ (215,103)   EFX_ADD            0.000        2.636     statistics/add_100/i34|CO         
+             net (fo=1)         0.000        2.636     statistics/add_100/n68            
+ (215,104)   EFX_ADD            0.024        2.660     statistics/add_100/i35|CI         
+ (215,104)   EFX_ADD            0.000        2.660     statistics/add_100/i35|CO         
+             net (fo=1)         0.000        2.660     statistics/add_100/n70            
+ (215,105)   EFX_ADD            0.024        2.684     statistics/add_100/i36|CI         
+ (215,105)   EFX_ADD            0.000        2.684     statistics/add_100/i36|CO         
+             net (fo=1)         0.000        2.684     statistics/add_100/n72            
+ (215,106)   EFX_ADD            0.024        2.708     statistics/add_100/i37|CI         
+ (215,106)   EFX_ADD            0.000        2.708     statistics/add_100/i37|CO         
+             net (fo=1)         0.000        2.708     statistics/add_100/n74            
+ (215,107)   EFX_ADD            0.024        2.732     statistics/add_100/i38|CI         
+ (215,107)   EFX_ADD            0.000        2.732     statistics/add_100/i38|CO         
+             net (fo=1)         0.000        2.732     statistics/add_100/n76            
+ (215,108)   EFX_ADD            0.024        2.756     statistics/add_100/i39|CI         
+ (215,108)   EFX_ADD            0.000        2.756     statistics/add_100/i39|CO         
+             net (fo=1)         0.000        2.756     statistics/add_100/n78            
+ (215,109)   EFX_ADD            0.024        2.780     statistics/add_100/i40|CI         
+ (215,109)   EFX_ADD            0.000        2.780     statistics/add_100/i40|CO         
+             net (fo=1)         0.000        2.780     statistics/add_100/n80            
+ (215,110)   EFX_ADD            0.024        2.804     statistics/add_100/i41|CI         
+ (215,110)   EFX_ADD            0.000        2.804     statistics/add_100/i41|CO         
+             net (fo=1)         0.000        2.804     statistics/add_100/n82            
+ (215,111)   EFX_ADD            0.024        2.828     statistics/add_100/i42|CI         
+ (215,111)   EFX_ADD            0.000        2.828     statistics/add_100/i42|CO         
+             net (fo=1)         0.000        2.828     statistics/add_100/n84            
+ (215,112)   EFX_ADD            0.024        2.852     statistics/add_100/i43|CI         
+ (215,112)   EFX_ADD            0.000        2.852     statistics/add_100/i43|CO         
+             net (fo=1)         0.000        2.852     statistics/add_100/n86            
+ (215,113)   EFX_ADD            0.024        2.876     statistics/add_100/i44|CI         
+ (215,113)   EFX_ADD            0.000        2.876     statistics/add_100/i44|CO         
+             net (fo=1)         0.000        2.876     statistics/add_100/n88            
+ (215,114)   EFX_ADD            0.024        2.900     statistics/add_100/i45|CI         
+ (215,114)   EFX_ADD            0.000        2.900     statistics/add_100/i45|CO         
+             net (fo=1)         0.000        2.900     statistics/add_100/n90            
+ (215,115)   EFX_ADD            0.024        2.924     statistics/add_100/i46|CI         
+ (215,115)   EFX_ADD            0.000        2.924     statistics/add_100/i46|CO         
+             net (fo=1)         0.000        2.924     statistics/add_100/n92            
+ (215,116)   EFX_ADD            0.024        2.948     statistics/add_100/i47|CI         
+ (215,116)   EFX_ADD            0.000        2.948     statistics/add_100/i47|CO         
+             net (fo=1)         0.000        2.948     statistics/add_100/n94            
+ (215,117)   EFX_ADD            0.024        2.972     statistics/add_100/i48|CI         
+ (215,117)   EFX_ADD            0.000        2.972     statistics/add_100/i48|CO         
+             net (fo=1)         0.000        2.972     statistics/add_100/n96            
+ (215,118)   EFX_ADD            0.024        2.996     statistics/add_100/i49|CI         
+ (215,118)   EFX_ADD            0.000        2.996     statistics/add_100/i49|CO         
+             net (fo=1)         0.000        2.996     statistics/add_100/n98            
+ (215,119)   EFX_ADD            0.024        3.020     statistics/add_100/i50|CI         
+ (215,119)   EFX_ADD            0.000        3.020     statistics/add_100/i50|CO         
+             net (fo=1)         0.000        3.020     statistics/add_100/n100           
+ (215,120)   EFX_ADD            0.024        3.044     statistics/add_100/i51|CI         
+ (215,120)   EFX_ADD            0.000        3.044     statistics/add_100/i51|CO         
+             net (fo=1)         0.000        3.044     statistics/add_100/n102           
+ (215,121)   EFX_ADD            0.024        3.068     statistics/add_100/i52|CI         
+ (215,121)   EFX_ADD            0.000        3.068     statistics/add_100/i52|CO         
+             net (fo=1)         0.000        3.068     statistics/add_100/n104           
+ (215,122)   EFX_ADD            0.097        3.165     statistics/add_100/i53|CI         
+ (215,122)   EFX_ADD            0.000        3.165     statistics/add_100/i53|O          
+             net (fo=2)         0.000        3.165     statistics/sum_candidate[3][52]   
+ (215,122)   EFX_FF             0.000        3.165     statistics/accumulator[3][52]~FF|D
+
+Capture Clock Path
+  Location     Delay Type     Incr(ns)     Path(ns)           Netlist Resource(s)
+==========================================================================================
+ (0,164)     input              0.000       0.000     clk_25m                             
+ (0,164)     input              0.126       0.126     clk_25m                             
+             net (fo=9826)      1.939       2.065     clk_25m                             
+ (215,122)   EFX_FF             0.000       2.065     statistics/accumulator[3][52]~FF|CLK
+ (215,122)   EFX_FF (Setup)    -0.003       2.062     statistics/accumulator[3][52]~FF    
+
+++++ Path 5 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 36.730 ns (required time - arrival time)                       
+Path Start      : statistics/n3232_pp_0x0|CLK                                    
+Path End        : statistics/accumulator[3][51]~FF|D                             
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 3.141 ns                                                       
+Logic Levels    : 52                                                             
+
+Launch Clock Path Delay        : 2.065
++ Clock To Q + Data Path Delay : 3.141
+--------------------------------------
+End-of-path arrival time       : 5.206
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.003
+---------------------------------------
+End-of-path required time      : 41.936
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)       Netlist Resource(s)
+================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                    
+  (0,164)    input            0.126        0.126     clk_25m                    
+             net (fo=9826)    1.939        2.065     clk_25m                    
+  (180,62)   EFX_DSP48        0.000        2.065     statistics/n3232_pp_0x0|CLK
+
+Data Path
+  Location     Delay Type      Incr(ns)     Path(ns)          Netlist Resource(s)
+=========================================================================================
+ (180,62)    EFX_DSP48 (Tco)    0.520        0.520     statistics/n3232_pp_0x0|O[1]      
+             net (fo=1)         0.724        1.244     statistics/s3_ad[1]               
+ (203,61)    EFX_LUT4           0.061        1.305     LUT__86838|in[1]                  
+ (203,61)    EFX_LUT4           0.000        1.305     LUT__86838|out                    
+             net (fo=1)         0.506        1.811     statistics/contribution[3][1]     
+ (215,71)    EFX_ADD            0.057        1.868     statistics/add_100/i2|I1          
+ (215,71)    EFX_ADD            0.000        1.868     statistics/add_100/i2|CO          
+             net (fo=1)         0.000        1.868     statistics/add_100/n4             
+ (215,72)    EFX_ADD            0.024        1.892     statistics/add_100/i3|CI          
+ (215,72)    EFX_ADD            0.000        1.892     statistics/add_100/i3|CO          
+             net (fo=1)         0.000        1.892     statistics/add_100/n6             
+ (215,73)    EFX_ADD            0.024        1.916     statistics/add_100/i4|CI          
+ (215,73)    EFX_ADD            0.000        1.916     statistics/add_100/i4|CO          
+             net (fo=1)         0.000        1.916     statistics/add_100/n8             
+ (215,74)    EFX_ADD            0.024        1.940     statistics/add_100/i5|CI          
+ (215,74)    EFX_ADD            0.000        1.940     statistics/add_100/i5|CO          
+             net (fo=1)         0.000        1.940     statistics/add_100/n10            
+ (215,75)    EFX_ADD            0.024        1.964     statistics/add_100/i6|CI          
+ (215,75)    EFX_ADD            0.000        1.964     statistics/add_100/i6|CO          
+             net (fo=1)         0.000        1.964     statistics/add_100/n12            
+ (215,76)    EFX_ADD            0.024        1.988     statistics/add_100/i7|CI          
+ (215,76)    EFX_ADD            0.000        1.988     statistics/add_100/i7|CO          
+             net (fo=1)         0.000        1.988     statistics/add_100/n14            
+ (215,77)    EFX_ADD            0.024        2.012     statistics/add_100/i8|CI          
+ (215,77)    EFX_ADD            0.000        2.012     statistics/add_100/i8|CO          
+             net (fo=1)         0.000        2.012     statistics/add_100/n16            
+ (215,78)    EFX_ADD            0.024        2.036     statistics/add_100/i9|CI          
+ (215,78)    EFX_ADD            0.000        2.036     statistics/add_100/i9|CO          
+             net (fo=1)         0.000        2.036     statistics/add_100/n18            
+ (215,79)    EFX_ADD            0.024        2.060     statistics/add_100/i10|CI         
+ (215,79)    EFX_ADD            0.000        2.060     statistics/add_100/i10|CO         
+             net (fo=1)         0.000        2.060     statistics/add_100/n20            
+ (215,80)    EFX_ADD            0.024        2.084     statistics/add_100/i11|CI         
+ (215,80)    EFX_ADD            0.000        2.084     statistics/add_100/i11|CO         
+             net (fo=1)         0.000        2.084     statistics/add_100/n22            
+ (215,81)    EFX_ADD            0.024        2.108     statistics/add_100/i12|CI         
+ (215,81)    EFX_ADD            0.000        2.108     statistics/add_100/i12|CO         
+             net (fo=1)         0.000        2.108     statistics/add_100/n24            
+ (215,82)    EFX_ADD            0.024        2.132     statistics/add_100/i13|CI         
+ (215,82)    EFX_ADD            0.000        2.132     statistics/add_100/i13|CO         
+             net (fo=1)         0.000        2.132     statistics/add_100/n26            
+ (215,83)    EFX_ADD            0.024        2.156     statistics/add_100/i14|CI         
+ (215,83)    EFX_ADD            0.000        2.156     statistics/add_100/i14|CO         
+             net (fo=1)         0.000        2.156     statistics/add_100/n28            
+ (215,84)    EFX_ADD            0.024        2.180     statistics/add_100/i15|CI         
+ (215,84)    EFX_ADD            0.000        2.180     statistics/add_100/i15|CO         
+             net (fo=1)         0.000        2.180     statistics/add_100/n30            
+ (215,85)    EFX_ADD            0.024        2.204     statistics/add_100/i16|CI         
+ (215,85)    EFX_ADD            0.000        2.204     statistics/add_100/i16|CO         
+             net (fo=1)         0.000        2.204     statistics/add_100/n32            
+ (215,86)    EFX_ADD            0.024        2.228     statistics/add_100/i17|CI         
+ (215,86)    EFX_ADD            0.000        2.228     statistics/add_100/i17|CO         
+             net (fo=1)         0.000        2.228     statistics/add_100/n34            
+ (215,87)    EFX_ADD            0.024        2.252     statistics/add_100/i18|CI         
+ (215,87)    EFX_ADD            0.000        2.252     statistics/add_100/i18|CO         
+             net (fo=1)         0.000        2.252     statistics/add_100/n36            
+ (215,88)    EFX_ADD            0.024        2.276     statistics/add_100/i19|CI         
+ (215,88)    EFX_ADD            0.000        2.276     statistics/add_100/i19|CO         
+             net (fo=1)         0.000        2.276     statistics/add_100/n38            
+ (215,89)    EFX_ADD            0.024        2.300     statistics/add_100/i20|CI         
+ (215,89)    EFX_ADD            0.000        2.300     statistics/add_100/i20|CO         
+             net (fo=1)         0.000        2.300     statistics/add_100/n40            
+ (215,90)    EFX_ADD            0.024        2.324     statistics/add_100/i21|CI         
+ (215,90)    EFX_ADD            0.000        2.324     statistics/add_100/i21|CO         
+             net (fo=1)         0.000        2.324     statistics/add_100/n42            
+ (215,91)    EFX_ADD            0.024        2.348     statistics/add_100/i22|CI         
+ (215,91)    EFX_ADD            0.000        2.348     statistics/add_100/i22|CO         
+             net (fo=1)         0.000        2.348     statistics/add_100/n44            
+ (215,92)    EFX_ADD            0.024        2.372     statistics/add_100/i23|CI         
+ (215,92)    EFX_ADD            0.000        2.372     statistics/add_100/i23|CO         
+             net (fo=1)         0.000        2.372     statistics/add_100/n46            
+ (215,93)    EFX_ADD            0.024        2.396     statistics/add_100/i24|CI         
+ (215,93)    EFX_ADD            0.000        2.396     statistics/add_100/i24|CO         
+             net (fo=1)         0.000        2.396     statistics/add_100/n48            
+ (215,94)    EFX_ADD            0.024        2.420     statistics/add_100/i25|CI         
+ (215,94)    EFX_ADD            0.000        2.420     statistics/add_100/i25|CO         
+             net (fo=1)         0.000        2.420     statistics/add_100/n50            
+ (215,95)    EFX_ADD            0.024        2.444     statistics/add_100/i26|CI         
+ (215,95)    EFX_ADD            0.000        2.444     statistics/add_100/i26|CO         
+             net (fo=1)         0.000        2.444     statistics/add_100/n52            
+ (215,96)    EFX_ADD            0.024        2.468     statistics/add_100/i27|CI         
+ (215,96)    EFX_ADD            0.000        2.468     statistics/add_100/i27|CO         
+             net (fo=1)         0.000        2.468     statistics/add_100/n54            
+ (215,97)    EFX_ADD            0.024        2.492     statistics/add_100/i28|CI         
+ (215,97)    EFX_ADD            0.000        2.492     statistics/add_100/i28|CO         
+             net (fo=1)         0.000        2.492     statistics/add_100/n56            
+ (215,98)    EFX_ADD            0.024        2.516     statistics/add_100/i29|CI         
+ (215,98)    EFX_ADD            0.000        2.516     statistics/add_100/i29|CO         
+             net (fo=1)         0.000        2.516     statistics/add_100/n58            
+ (215,99)    EFX_ADD            0.024        2.540     statistics/add_100/i30|CI         
+ (215,99)    EFX_ADD            0.000        2.540     statistics/add_100/i30|CO         
+             net (fo=1)         0.000        2.540     statistics/add_100/n60            
+ (215,100)   EFX_ADD            0.024        2.564     statistics/add_100/i31|CI         
+ (215,100)   EFX_ADD            0.000        2.564     statistics/add_100/i31|CO         
+             net (fo=1)         0.000        2.564     statistics/add_100/n62            
+ (215,101)   EFX_ADD            0.024        2.588     statistics/add_100/i32|CI         
+ (215,101)   EFX_ADD            0.000        2.588     statistics/add_100/i32|CO         
+             net (fo=1)         0.000        2.588     statistics/add_100/n64            
+ (215,102)   EFX_ADD            0.024        2.612     statistics/add_100/i33|CI         
+ (215,102)   EFX_ADD            0.000        2.612     statistics/add_100/i33|CO         
+             net (fo=1)         0.000        2.612     statistics/add_100/n66            
+ (215,103)   EFX_ADD            0.024        2.636     statistics/add_100/i34|CI         
+ (215,103)   EFX_ADD            0.000        2.636     statistics/add_100/i34|CO         
+             net (fo=1)         0.000        2.636     statistics/add_100/n68            
+ (215,104)   EFX_ADD            0.024        2.660     statistics/add_100/i35|CI         
+ (215,104)   EFX_ADD            0.000        2.660     statistics/add_100/i35|CO         
+             net (fo=1)         0.000        2.660     statistics/add_100/n70            
+ (215,105)   EFX_ADD            0.024        2.684     statistics/add_100/i36|CI         
+ (215,105)   EFX_ADD            0.000        2.684     statistics/add_100/i36|CO         
+             net (fo=1)         0.000        2.684     statistics/add_100/n72            
+ (215,106)   EFX_ADD            0.024        2.708     statistics/add_100/i37|CI         
+ (215,106)   EFX_ADD            0.000        2.708     statistics/add_100/i37|CO         
+             net (fo=1)         0.000        2.708     statistics/add_100/n74            
+ (215,107)   EFX_ADD            0.024        2.732     statistics/add_100/i38|CI         
+ (215,107)   EFX_ADD            0.000        2.732     statistics/add_100/i38|CO         
+             net (fo=1)         0.000        2.732     statistics/add_100/n76            
+ (215,108)   EFX_ADD            0.024        2.756     statistics/add_100/i39|CI         
+ (215,108)   EFX_ADD            0.000        2.756     statistics/add_100/i39|CO         
+             net (fo=1)         0.000        2.756     statistics/add_100/n78            
+ (215,109)   EFX_ADD            0.024        2.780     statistics/add_100/i40|CI         
+ (215,109)   EFX_ADD            0.000        2.780     statistics/add_100/i40|CO         
+             net (fo=1)         0.000        2.780     statistics/add_100/n80            
+ (215,110)   EFX_ADD            0.024        2.804     statistics/add_100/i41|CI         
+ (215,110)   EFX_ADD            0.000        2.804     statistics/add_100/i41|CO         
+             net (fo=1)         0.000        2.804     statistics/add_100/n82            
+ (215,111)   EFX_ADD            0.024        2.828     statistics/add_100/i42|CI         
+ (215,111)   EFX_ADD            0.000        2.828     statistics/add_100/i42|CO         
+             net (fo=1)         0.000        2.828     statistics/add_100/n84            
+ (215,112)   EFX_ADD            0.024        2.852     statistics/add_100/i43|CI         
+ (215,112)   EFX_ADD            0.000        2.852     statistics/add_100/i43|CO         
+             net (fo=1)         0.000        2.852     statistics/add_100/n86            
+ (215,113)   EFX_ADD            0.024        2.876     statistics/add_100/i44|CI         
+ (215,113)   EFX_ADD            0.000        2.876     statistics/add_100/i44|CO         
+             net (fo=1)         0.000        2.876     statistics/add_100/n88            
+ (215,114)   EFX_ADD            0.024        2.900     statistics/add_100/i45|CI         
+ (215,114)   EFX_ADD            0.000        2.900     statistics/add_100/i45|CO         
+             net (fo=1)         0.000        2.900     statistics/add_100/n90            
+ (215,115)   EFX_ADD            0.024        2.924     statistics/add_100/i46|CI         
+ (215,115)   EFX_ADD            0.000        2.924     statistics/add_100/i46|CO         
+             net (fo=1)         0.000        2.924     statistics/add_100/n92            
+ (215,116)   EFX_ADD            0.024        2.948     statistics/add_100/i47|CI         
+ (215,116)   EFX_ADD            0.000        2.948     statistics/add_100/i47|CO         
+             net (fo=1)         0.000        2.948     statistics/add_100/n94            
+ (215,117)   EFX_ADD            0.024        2.972     statistics/add_100/i48|CI         
+ (215,117)   EFX_ADD            0.000        2.972     statistics/add_100/i48|CO         
+             net (fo=1)         0.000        2.972     statistics/add_100/n96            
+ (215,118)   EFX_ADD            0.024        2.996     statistics/add_100/i49|CI         
+ (215,118)   EFX_ADD            0.000        2.996     statistics/add_100/i49|CO         
+             net (fo=1)         0.000        2.996     statistics/add_100/n98            
+ (215,119)   EFX_ADD            0.024        3.020     statistics/add_100/i50|CI         
+ (215,119)   EFX_ADD            0.000        3.020     statistics/add_100/i50|CO         
+             net (fo=1)         0.000        3.020     statistics/add_100/n100           
+ (215,120)   EFX_ADD            0.024        3.044     statistics/add_100/i51|CI         
+ (215,120)   EFX_ADD            0.000        3.044     statistics/add_100/i51|CO         
+             net (fo=1)         0.000        3.044     statistics/add_100/n102           
+ (215,121)   EFX_ADD            0.097        3.141     statistics/add_100/i52|CI         
+ (215,121)   EFX_ADD            0.000        3.141     statistics/add_100/i52|O          
+             net (fo=2)         0.000        3.141     statistics/sum_candidate[3][51]   
+ (215,121)   EFX_FF             0.000        3.141     statistics/accumulator[3][51]~FF|D
+
+Capture Clock Path
+  Location     Delay Type     Incr(ns)     Path(ns)           Netlist Resource(s)
+==========================================================================================
+ (0,164)     input              0.000       0.000     clk_25m                             
+ (0,164)     input              0.126       0.126     clk_25m                             
+             net (fo=9826)      1.939       2.065     clk_25m                             
+ (215,121)   EFX_FF             0.000       2.065     statistics/accumulator[3][51]~FF|CLK
+ (215,121)   EFX_FF (Setup)    -0.003       2.062     statistics/accumulator[3][51]~FF    
+
+++++ Path 6 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 36.754 ns (required time - arrival time)                       
+Path Start      : statistics/n3232_pp_0x0|CLK                                    
+Path End        : statistics/accumulator[3][50]~FF|D                             
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 3.117 ns                                                       
+Logic Levels    : 51                                                             
+
+Launch Clock Path Delay        : 2.065
++ Clock To Q + Data Path Delay : 3.117
+--------------------------------------
+End-of-path arrival time       : 5.182
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.003
+---------------------------------------
+End-of-path required time      : 41.936
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)       Netlist Resource(s)
+================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                    
+  (0,164)    input            0.126        0.126     clk_25m                    
+             net (fo=9826)    1.939        2.065     clk_25m                    
+  (180,62)   EFX_DSP48        0.000        2.065     statistics/n3232_pp_0x0|CLK
+
+Data Path
+  Location     Delay Type      Incr(ns)     Path(ns)          Netlist Resource(s)
+=========================================================================================
+ (180,62)    EFX_DSP48 (Tco)    0.520        0.520     statistics/n3232_pp_0x0|O[1]      
+             net (fo=1)         0.724        1.244     statistics/s3_ad[1]               
+ (203,61)    EFX_LUT4           0.061        1.305     LUT__86838|in[1]                  
+ (203,61)    EFX_LUT4           0.000        1.305     LUT__86838|out                    
+             net (fo=1)         0.506        1.811     statistics/contribution[3][1]     
+ (215,71)    EFX_ADD            0.057        1.868     statistics/add_100/i2|I1          
+ (215,71)    EFX_ADD            0.000        1.868     statistics/add_100/i2|CO          
+             net (fo=1)         0.000        1.868     statistics/add_100/n4             
+ (215,72)    EFX_ADD            0.024        1.892     statistics/add_100/i3|CI          
+ (215,72)    EFX_ADD            0.000        1.892     statistics/add_100/i3|CO          
+             net (fo=1)         0.000        1.892     statistics/add_100/n6             
+ (215,73)    EFX_ADD            0.024        1.916     statistics/add_100/i4|CI          
+ (215,73)    EFX_ADD            0.000        1.916     statistics/add_100/i4|CO          
+             net (fo=1)         0.000        1.916     statistics/add_100/n8             
+ (215,74)    EFX_ADD            0.024        1.940     statistics/add_100/i5|CI          
+ (215,74)    EFX_ADD            0.000        1.940     statistics/add_100/i5|CO          
+             net (fo=1)         0.000        1.940     statistics/add_100/n10            
+ (215,75)    EFX_ADD            0.024        1.964     statistics/add_100/i6|CI          
+ (215,75)    EFX_ADD            0.000        1.964     statistics/add_100/i6|CO          
+             net (fo=1)         0.000        1.964     statistics/add_100/n12            
+ (215,76)    EFX_ADD            0.024        1.988     statistics/add_100/i7|CI          
+ (215,76)    EFX_ADD            0.000        1.988     statistics/add_100/i7|CO          
+             net (fo=1)         0.000        1.988     statistics/add_100/n14            
+ (215,77)    EFX_ADD            0.024        2.012     statistics/add_100/i8|CI          
+ (215,77)    EFX_ADD            0.000        2.012     statistics/add_100/i8|CO          
+             net (fo=1)         0.000        2.012     statistics/add_100/n16            
+ (215,78)    EFX_ADD            0.024        2.036     statistics/add_100/i9|CI          
+ (215,78)    EFX_ADD            0.000        2.036     statistics/add_100/i9|CO          
+             net (fo=1)         0.000        2.036     statistics/add_100/n18            
+ (215,79)    EFX_ADD            0.024        2.060     statistics/add_100/i10|CI         
+ (215,79)    EFX_ADD            0.000        2.060     statistics/add_100/i10|CO         
+             net (fo=1)         0.000        2.060     statistics/add_100/n20            
+ (215,80)    EFX_ADD            0.024        2.084     statistics/add_100/i11|CI         
+ (215,80)    EFX_ADD            0.000        2.084     statistics/add_100/i11|CO         
+             net (fo=1)         0.000        2.084     statistics/add_100/n22            
+ (215,81)    EFX_ADD            0.024        2.108     statistics/add_100/i12|CI         
+ (215,81)    EFX_ADD            0.000        2.108     statistics/add_100/i12|CO         
+             net (fo=1)         0.000        2.108     statistics/add_100/n24            
+ (215,82)    EFX_ADD            0.024        2.132     statistics/add_100/i13|CI         
+ (215,82)    EFX_ADD            0.000        2.132     statistics/add_100/i13|CO         
+             net (fo=1)         0.000        2.132     statistics/add_100/n26            
+ (215,83)    EFX_ADD            0.024        2.156     statistics/add_100/i14|CI         
+ (215,83)    EFX_ADD            0.000        2.156     statistics/add_100/i14|CO         
+             net (fo=1)         0.000        2.156     statistics/add_100/n28            
+ (215,84)    EFX_ADD            0.024        2.180     statistics/add_100/i15|CI         
+ (215,84)    EFX_ADD            0.000        2.180     statistics/add_100/i15|CO         
+             net (fo=1)         0.000        2.180     statistics/add_100/n30            
+ (215,85)    EFX_ADD            0.024        2.204     statistics/add_100/i16|CI         
+ (215,85)    EFX_ADD            0.000        2.204     statistics/add_100/i16|CO         
+             net (fo=1)         0.000        2.204     statistics/add_100/n32            
+ (215,86)    EFX_ADD            0.024        2.228     statistics/add_100/i17|CI         
+ (215,86)    EFX_ADD            0.000        2.228     statistics/add_100/i17|CO         
+             net (fo=1)         0.000        2.228     statistics/add_100/n34            
+ (215,87)    EFX_ADD            0.024        2.252     statistics/add_100/i18|CI         
+ (215,87)    EFX_ADD            0.000        2.252     statistics/add_100/i18|CO         
+             net (fo=1)         0.000        2.252     statistics/add_100/n36            
+ (215,88)    EFX_ADD            0.024        2.276     statistics/add_100/i19|CI         
+ (215,88)    EFX_ADD            0.000        2.276     statistics/add_100/i19|CO         
+             net (fo=1)         0.000        2.276     statistics/add_100/n38            
+ (215,89)    EFX_ADD            0.024        2.300     statistics/add_100/i20|CI         
+ (215,89)    EFX_ADD            0.000        2.300     statistics/add_100/i20|CO         
+             net (fo=1)         0.000        2.300     statistics/add_100/n40            
+ (215,90)    EFX_ADD            0.024        2.324     statistics/add_100/i21|CI         
+ (215,90)    EFX_ADD            0.000        2.324     statistics/add_100/i21|CO         
+             net (fo=1)         0.000        2.324     statistics/add_100/n42            
+ (215,91)    EFX_ADD            0.024        2.348     statistics/add_100/i22|CI         
+ (215,91)    EFX_ADD            0.000        2.348     statistics/add_100/i22|CO         
+             net (fo=1)         0.000        2.348     statistics/add_100/n44            
+ (215,92)    EFX_ADD            0.024        2.372     statistics/add_100/i23|CI         
+ (215,92)    EFX_ADD            0.000        2.372     statistics/add_100/i23|CO         
+             net (fo=1)         0.000        2.372     statistics/add_100/n46            
+ (215,93)    EFX_ADD            0.024        2.396     statistics/add_100/i24|CI         
+ (215,93)    EFX_ADD            0.000        2.396     statistics/add_100/i24|CO         
+             net (fo=1)         0.000        2.396     statistics/add_100/n48            
+ (215,94)    EFX_ADD            0.024        2.420     statistics/add_100/i25|CI         
+ (215,94)    EFX_ADD            0.000        2.420     statistics/add_100/i25|CO         
+             net (fo=1)         0.000        2.420     statistics/add_100/n50            
+ (215,95)    EFX_ADD            0.024        2.444     statistics/add_100/i26|CI         
+ (215,95)    EFX_ADD            0.000        2.444     statistics/add_100/i26|CO         
+             net (fo=1)         0.000        2.444     statistics/add_100/n52            
+ (215,96)    EFX_ADD            0.024        2.468     statistics/add_100/i27|CI         
+ (215,96)    EFX_ADD            0.000        2.468     statistics/add_100/i27|CO         
+             net (fo=1)         0.000        2.468     statistics/add_100/n54            
+ (215,97)    EFX_ADD            0.024        2.492     statistics/add_100/i28|CI         
+ (215,97)    EFX_ADD            0.000        2.492     statistics/add_100/i28|CO         
+             net (fo=1)         0.000        2.492     statistics/add_100/n56            
+ (215,98)    EFX_ADD            0.024        2.516     statistics/add_100/i29|CI         
+ (215,98)    EFX_ADD            0.000        2.516     statistics/add_100/i29|CO         
+             net (fo=1)         0.000        2.516     statistics/add_100/n58            
+ (215,99)    EFX_ADD            0.024        2.540     statistics/add_100/i30|CI         
+ (215,99)    EFX_ADD            0.000        2.540     statistics/add_100/i30|CO         
+             net (fo=1)         0.000        2.540     statistics/add_100/n60            
+ (215,100)   EFX_ADD            0.024        2.564     statistics/add_100/i31|CI         
+ (215,100)   EFX_ADD            0.000        2.564     statistics/add_100/i31|CO         
+             net (fo=1)         0.000        2.564     statistics/add_100/n62            
+ (215,101)   EFX_ADD            0.024        2.588     statistics/add_100/i32|CI         
+ (215,101)   EFX_ADD            0.000        2.588     statistics/add_100/i32|CO         
+             net (fo=1)         0.000        2.588     statistics/add_100/n64            
+ (215,102)   EFX_ADD            0.024        2.612     statistics/add_100/i33|CI         
+ (215,102)   EFX_ADD            0.000        2.612     statistics/add_100/i33|CO         
+             net (fo=1)         0.000        2.612     statistics/add_100/n66            
+ (215,103)   EFX_ADD            0.024        2.636     statistics/add_100/i34|CI         
+ (215,103)   EFX_ADD            0.000        2.636     statistics/add_100/i34|CO         
+             net (fo=1)         0.000        2.636     statistics/add_100/n68            
+ (215,104)   EFX_ADD            0.024        2.660     statistics/add_100/i35|CI         
+ (215,104)   EFX_ADD            0.000        2.660     statistics/add_100/i35|CO         
+             net (fo=1)         0.000        2.660     statistics/add_100/n70            
+ (215,105)   EFX_ADD            0.024        2.684     statistics/add_100/i36|CI         
+ (215,105)   EFX_ADD            0.000        2.684     statistics/add_100/i36|CO         
+             net (fo=1)         0.000        2.684     statistics/add_100/n72            
+ (215,106)   EFX_ADD            0.024        2.708     statistics/add_100/i37|CI         
+ (215,106)   EFX_ADD            0.000        2.708     statistics/add_100/i37|CO         
+             net (fo=1)         0.000        2.708     statistics/add_100/n74            
+ (215,107)   EFX_ADD            0.024        2.732     statistics/add_100/i38|CI         
+ (215,107)   EFX_ADD            0.000        2.732     statistics/add_100/i38|CO         
+             net (fo=1)         0.000        2.732     statistics/add_100/n76            
+ (215,108)   EFX_ADD            0.024        2.756     statistics/add_100/i39|CI         
+ (215,108)   EFX_ADD            0.000        2.756     statistics/add_100/i39|CO         
+             net (fo=1)         0.000        2.756     statistics/add_100/n78            
+ (215,109)   EFX_ADD            0.024        2.780     statistics/add_100/i40|CI         
+ (215,109)   EFX_ADD            0.000        2.780     statistics/add_100/i40|CO         
+             net (fo=1)         0.000        2.780     statistics/add_100/n80            
+ (215,110)   EFX_ADD            0.024        2.804     statistics/add_100/i41|CI         
+ (215,110)   EFX_ADD            0.000        2.804     statistics/add_100/i41|CO         
+             net (fo=1)         0.000        2.804     statistics/add_100/n82            
+ (215,111)   EFX_ADD            0.024        2.828     statistics/add_100/i42|CI         
+ (215,111)   EFX_ADD            0.000        2.828     statistics/add_100/i42|CO         
+             net (fo=1)         0.000        2.828     statistics/add_100/n84            
+ (215,112)   EFX_ADD            0.024        2.852     statistics/add_100/i43|CI         
+ (215,112)   EFX_ADD            0.000        2.852     statistics/add_100/i43|CO         
+             net (fo=1)         0.000        2.852     statistics/add_100/n86            
+ (215,113)   EFX_ADD            0.024        2.876     statistics/add_100/i44|CI         
+ (215,113)   EFX_ADD            0.000        2.876     statistics/add_100/i44|CO         
+             net (fo=1)         0.000        2.876     statistics/add_100/n88            
+ (215,114)   EFX_ADD            0.024        2.900     statistics/add_100/i45|CI         
+ (215,114)   EFX_ADD            0.000        2.900     statistics/add_100/i45|CO         
+             net (fo=1)         0.000        2.900     statistics/add_100/n90            
+ (215,115)   EFX_ADD            0.024        2.924     statistics/add_100/i46|CI         
+ (215,115)   EFX_ADD            0.000        2.924     statistics/add_100/i46|CO         
+             net (fo=1)         0.000        2.924     statistics/add_100/n92            
+ (215,116)   EFX_ADD            0.024        2.948     statistics/add_100/i47|CI         
+ (215,116)   EFX_ADD            0.000        2.948     statistics/add_100/i47|CO         
+             net (fo=1)         0.000        2.948     statistics/add_100/n94            
+ (215,117)   EFX_ADD            0.024        2.972     statistics/add_100/i48|CI         
+ (215,117)   EFX_ADD            0.000        2.972     statistics/add_100/i48|CO         
+             net (fo=1)         0.000        2.972     statistics/add_100/n96            
+ (215,118)   EFX_ADD            0.024        2.996     statistics/add_100/i49|CI         
+ (215,118)   EFX_ADD            0.000        2.996     statistics/add_100/i49|CO         
+             net (fo=1)         0.000        2.996     statistics/add_100/n98            
+ (215,119)   EFX_ADD            0.024        3.020     statistics/add_100/i50|CI         
+ (215,119)   EFX_ADD            0.000        3.020     statistics/add_100/i50|CO         
+             net (fo=1)         0.000        3.020     statistics/add_100/n100           
+ (215,120)   EFX_ADD            0.097        3.117     statistics/add_100/i51|CI         
+ (215,120)   EFX_ADD            0.000        3.117     statistics/add_100/i51|O          
+             net (fo=2)         0.000        3.117     statistics/sum_candidate[3][50]   
+ (215,120)   EFX_FF             0.000        3.117     statistics/accumulator[3][50]~FF|D
+
+Capture Clock Path
+  Location     Delay Type     Incr(ns)     Path(ns)           Netlist Resource(s)
+==========================================================================================
+ (0,164)     input              0.000       0.000     clk_25m                             
+ (0,164)     input              0.126       0.126     clk_25m                             
+             net (fo=9826)      1.939       2.065     clk_25m                             
+ (215,120)   EFX_FF             0.000       2.065     statistics/accumulator[3][50]~FF|CLK
+ (215,120)   EFX_FF (Setup)    -0.003       2.062     statistics/accumulator[3][50]~FF    
+
+++++ Path 7 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 36.778 ns (required time - arrival time)                       
+Path Start      : statistics/n3232_pp_0x0|CLK                                    
+Path End        : statistics/accumulator[3][49]~FF|D                             
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 3.093 ns                                                       
+Logic Levels    : 50                                                             
+
+Launch Clock Path Delay        : 2.065
++ Clock To Q + Data Path Delay : 3.093
+--------------------------------------
+End-of-path arrival time       : 5.158
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.003
+---------------------------------------
+End-of-path required time      : 41.936
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)       Netlist Resource(s)
+================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                    
+  (0,164)    input            0.126        0.126     clk_25m                    
+             net (fo=9826)    1.939        2.065     clk_25m                    
+  (180,62)   EFX_DSP48        0.000        2.065     statistics/n3232_pp_0x0|CLK
+
+Data Path
+  Location     Delay Type      Incr(ns)     Path(ns)          Netlist Resource(s)
+=========================================================================================
+ (180,62)    EFX_DSP48 (Tco)    0.520        0.520     statistics/n3232_pp_0x0|O[1]      
+             net (fo=1)         0.724        1.244     statistics/s3_ad[1]               
+ (203,61)    EFX_LUT4           0.061        1.305     LUT__86838|in[1]                  
+ (203,61)    EFX_LUT4           0.000        1.305     LUT__86838|out                    
+             net (fo=1)         0.506        1.811     statistics/contribution[3][1]     
+ (215,71)    EFX_ADD            0.057        1.868     statistics/add_100/i2|I1          
+ (215,71)    EFX_ADD            0.000        1.868     statistics/add_100/i2|CO          
+             net (fo=1)         0.000        1.868     statistics/add_100/n4             
+ (215,72)    EFX_ADD            0.024        1.892     statistics/add_100/i3|CI          
+ (215,72)    EFX_ADD            0.000        1.892     statistics/add_100/i3|CO          
+             net (fo=1)         0.000        1.892     statistics/add_100/n6             
+ (215,73)    EFX_ADD            0.024        1.916     statistics/add_100/i4|CI          
+ (215,73)    EFX_ADD            0.000        1.916     statistics/add_100/i4|CO          
+             net (fo=1)         0.000        1.916     statistics/add_100/n8             
+ (215,74)    EFX_ADD            0.024        1.940     statistics/add_100/i5|CI          
+ (215,74)    EFX_ADD            0.000        1.940     statistics/add_100/i5|CO          
+             net (fo=1)         0.000        1.940     statistics/add_100/n10            
+ (215,75)    EFX_ADD            0.024        1.964     statistics/add_100/i6|CI          
+ (215,75)    EFX_ADD            0.000        1.964     statistics/add_100/i6|CO          
+             net (fo=1)         0.000        1.964     statistics/add_100/n12            
+ (215,76)    EFX_ADD            0.024        1.988     statistics/add_100/i7|CI          
+ (215,76)    EFX_ADD            0.000        1.988     statistics/add_100/i7|CO          
+             net (fo=1)         0.000        1.988     statistics/add_100/n14            
+ (215,77)    EFX_ADD            0.024        2.012     statistics/add_100/i8|CI          
+ (215,77)    EFX_ADD            0.000        2.012     statistics/add_100/i8|CO          
+             net (fo=1)         0.000        2.012     statistics/add_100/n16            
+ (215,78)    EFX_ADD            0.024        2.036     statistics/add_100/i9|CI          
+ (215,78)    EFX_ADD            0.000        2.036     statistics/add_100/i9|CO          
+             net (fo=1)         0.000        2.036     statistics/add_100/n18            
+ (215,79)    EFX_ADD            0.024        2.060     statistics/add_100/i10|CI         
+ (215,79)    EFX_ADD            0.000        2.060     statistics/add_100/i10|CO         
+             net (fo=1)         0.000        2.060     statistics/add_100/n20            
+ (215,80)    EFX_ADD            0.024        2.084     statistics/add_100/i11|CI         
+ (215,80)    EFX_ADD            0.000        2.084     statistics/add_100/i11|CO         
+             net (fo=1)         0.000        2.084     statistics/add_100/n22            
+ (215,81)    EFX_ADD            0.024        2.108     statistics/add_100/i12|CI         
+ (215,81)    EFX_ADD            0.000        2.108     statistics/add_100/i12|CO         
+             net (fo=1)         0.000        2.108     statistics/add_100/n24            
+ (215,82)    EFX_ADD            0.024        2.132     statistics/add_100/i13|CI         
+ (215,82)    EFX_ADD            0.000        2.132     statistics/add_100/i13|CO         
+             net (fo=1)         0.000        2.132     statistics/add_100/n26            
+ (215,83)    EFX_ADD            0.024        2.156     statistics/add_100/i14|CI         
+ (215,83)    EFX_ADD            0.000        2.156     statistics/add_100/i14|CO         
+             net (fo=1)         0.000        2.156     statistics/add_100/n28            
+ (215,84)    EFX_ADD            0.024        2.180     statistics/add_100/i15|CI         
+ (215,84)    EFX_ADD            0.000        2.180     statistics/add_100/i15|CO         
+             net (fo=1)         0.000        2.180     statistics/add_100/n30            
+ (215,85)    EFX_ADD            0.024        2.204     statistics/add_100/i16|CI         
+ (215,85)    EFX_ADD            0.000        2.204     statistics/add_100/i16|CO         
+             net (fo=1)         0.000        2.204     statistics/add_100/n32            
+ (215,86)    EFX_ADD            0.024        2.228     statistics/add_100/i17|CI         
+ (215,86)    EFX_ADD            0.000        2.228     statistics/add_100/i17|CO         
+             net (fo=1)         0.000        2.228     statistics/add_100/n34            
+ (215,87)    EFX_ADD            0.024        2.252     statistics/add_100/i18|CI         
+ (215,87)    EFX_ADD            0.000        2.252     statistics/add_100/i18|CO         
+             net (fo=1)         0.000        2.252     statistics/add_100/n36            
+ (215,88)    EFX_ADD            0.024        2.276     statistics/add_100/i19|CI         
+ (215,88)    EFX_ADD            0.000        2.276     statistics/add_100/i19|CO         
+             net (fo=1)         0.000        2.276     statistics/add_100/n38            
+ (215,89)    EFX_ADD            0.024        2.300     statistics/add_100/i20|CI         
+ (215,89)    EFX_ADD            0.000        2.300     statistics/add_100/i20|CO         
+             net (fo=1)         0.000        2.300     statistics/add_100/n40            
+ (215,90)    EFX_ADD            0.024        2.324     statistics/add_100/i21|CI         
+ (215,90)    EFX_ADD            0.000        2.324     statistics/add_100/i21|CO         
+             net (fo=1)         0.000        2.324     statistics/add_100/n42            
+ (215,91)    EFX_ADD            0.024        2.348     statistics/add_100/i22|CI         
+ (215,91)    EFX_ADD            0.000        2.348     statistics/add_100/i22|CO         
+             net (fo=1)         0.000        2.348     statistics/add_100/n44            
+ (215,92)    EFX_ADD            0.024        2.372     statistics/add_100/i23|CI         
+ (215,92)    EFX_ADD            0.000        2.372     statistics/add_100/i23|CO         
+             net (fo=1)         0.000        2.372     statistics/add_100/n46            
+ (215,93)    EFX_ADD            0.024        2.396     statistics/add_100/i24|CI         
+ (215,93)    EFX_ADD            0.000        2.396     statistics/add_100/i24|CO         
+             net (fo=1)         0.000        2.396     statistics/add_100/n48            
+ (215,94)    EFX_ADD            0.024        2.420     statistics/add_100/i25|CI         
+ (215,94)    EFX_ADD            0.000        2.420     statistics/add_100/i25|CO         
+             net (fo=1)         0.000        2.420     statistics/add_100/n50            
+ (215,95)    EFX_ADD            0.024        2.444     statistics/add_100/i26|CI         
+ (215,95)    EFX_ADD            0.000        2.444     statistics/add_100/i26|CO         
+             net (fo=1)         0.000        2.444     statistics/add_100/n52            
+ (215,96)    EFX_ADD            0.024        2.468     statistics/add_100/i27|CI         
+ (215,96)    EFX_ADD            0.000        2.468     statistics/add_100/i27|CO         
+             net (fo=1)         0.000        2.468     statistics/add_100/n54            
+ (215,97)    EFX_ADD            0.024        2.492     statistics/add_100/i28|CI         
+ (215,97)    EFX_ADD            0.000        2.492     statistics/add_100/i28|CO         
+             net (fo=1)         0.000        2.492     statistics/add_100/n56            
+ (215,98)    EFX_ADD            0.024        2.516     statistics/add_100/i29|CI         
+ (215,98)    EFX_ADD            0.000        2.516     statistics/add_100/i29|CO         
+             net (fo=1)         0.000        2.516     statistics/add_100/n58            
+ (215,99)    EFX_ADD            0.024        2.540     statistics/add_100/i30|CI         
+ (215,99)    EFX_ADD            0.000        2.540     statistics/add_100/i30|CO         
+             net (fo=1)         0.000        2.540     statistics/add_100/n60            
+ (215,100)   EFX_ADD            0.024        2.564     statistics/add_100/i31|CI         
+ (215,100)   EFX_ADD            0.000        2.564     statistics/add_100/i31|CO         
+             net (fo=1)         0.000        2.564     statistics/add_100/n62            
+ (215,101)   EFX_ADD            0.024        2.588     statistics/add_100/i32|CI         
+ (215,101)   EFX_ADD            0.000        2.588     statistics/add_100/i32|CO         
+             net (fo=1)         0.000        2.588     statistics/add_100/n64            
+ (215,102)   EFX_ADD            0.024        2.612     statistics/add_100/i33|CI         
+ (215,102)   EFX_ADD            0.000        2.612     statistics/add_100/i33|CO         
+             net (fo=1)         0.000        2.612     statistics/add_100/n66            
+ (215,103)   EFX_ADD            0.024        2.636     statistics/add_100/i34|CI         
+ (215,103)   EFX_ADD            0.000        2.636     statistics/add_100/i34|CO         
+             net (fo=1)         0.000        2.636     statistics/add_100/n68            
+ (215,104)   EFX_ADD            0.024        2.660     statistics/add_100/i35|CI         
+ (215,104)   EFX_ADD            0.000        2.660     statistics/add_100/i35|CO         
+             net (fo=1)         0.000        2.660     statistics/add_100/n70            
+ (215,105)   EFX_ADD            0.024        2.684     statistics/add_100/i36|CI         
+ (215,105)   EFX_ADD            0.000        2.684     statistics/add_100/i36|CO         
+             net (fo=1)         0.000        2.684     statistics/add_100/n72            
+ (215,106)   EFX_ADD            0.024        2.708     statistics/add_100/i37|CI         
+ (215,106)   EFX_ADD            0.000        2.708     statistics/add_100/i37|CO         
+             net (fo=1)         0.000        2.708     statistics/add_100/n74            
+ (215,107)   EFX_ADD            0.024        2.732     statistics/add_100/i38|CI         
+ (215,107)   EFX_ADD            0.000        2.732     statistics/add_100/i38|CO         
+             net (fo=1)         0.000        2.732     statistics/add_100/n76            
+ (215,108)   EFX_ADD            0.024        2.756     statistics/add_100/i39|CI         
+ (215,108)   EFX_ADD            0.000        2.756     statistics/add_100/i39|CO         
+             net (fo=1)         0.000        2.756     statistics/add_100/n78            
+ (215,109)   EFX_ADD            0.024        2.780     statistics/add_100/i40|CI         
+ (215,109)   EFX_ADD            0.000        2.780     statistics/add_100/i40|CO         
+             net (fo=1)         0.000        2.780     statistics/add_100/n80            
+ (215,110)   EFX_ADD            0.024        2.804     statistics/add_100/i41|CI         
+ (215,110)   EFX_ADD            0.000        2.804     statistics/add_100/i41|CO         
+             net (fo=1)         0.000        2.804     statistics/add_100/n82            
+ (215,111)   EFX_ADD            0.024        2.828     statistics/add_100/i42|CI         
+ (215,111)   EFX_ADD            0.000        2.828     statistics/add_100/i42|CO         
+             net (fo=1)         0.000        2.828     statistics/add_100/n84            
+ (215,112)   EFX_ADD            0.024        2.852     statistics/add_100/i43|CI         
+ (215,112)   EFX_ADD            0.000        2.852     statistics/add_100/i43|CO         
+             net (fo=1)         0.000        2.852     statistics/add_100/n86            
+ (215,113)   EFX_ADD            0.024        2.876     statistics/add_100/i44|CI         
+ (215,113)   EFX_ADD            0.000        2.876     statistics/add_100/i44|CO         
+             net (fo=1)         0.000        2.876     statistics/add_100/n88            
+ (215,114)   EFX_ADD            0.024        2.900     statistics/add_100/i45|CI         
+ (215,114)   EFX_ADD            0.000        2.900     statistics/add_100/i45|CO         
+             net (fo=1)         0.000        2.900     statistics/add_100/n90            
+ (215,115)   EFX_ADD            0.024        2.924     statistics/add_100/i46|CI         
+ (215,115)   EFX_ADD            0.000        2.924     statistics/add_100/i46|CO         
+             net (fo=1)         0.000        2.924     statistics/add_100/n92            
+ (215,116)   EFX_ADD            0.024        2.948     statistics/add_100/i47|CI         
+ (215,116)   EFX_ADD            0.000        2.948     statistics/add_100/i47|CO         
+             net (fo=1)         0.000        2.948     statistics/add_100/n94            
+ (215,117)   EFX_ADD            0.024        2.972     statistics/add_100/i48|CI         
+ (215,117)   EFX_ADD            0.000        2.972     statistics/add_100/i48|CO         
+             net (fo=1)         0.000        2.972     statistics/add_100/n96            
+ (215,118)   EFX_ADD            0.024        2.996     statistics/add_100/i49|CI         
+ (215,118)   EFX_ADD            0.000        2.996     statistics/add_100/i49|CO         
+             net (fo=1)         0.000        2.996     statistics/add_100/n98            
+ (215,119)   EFX_ADD            0.097        3.093     statistics/add_100/i50|CI         
+ (215,119)   EFX_ADD            0.000        3.093     statistics/add_100/i50|O          
+             net (fo=2)         0.000        3.093     statistics/sum_candidate[3][49]   
+ (215,119)   EFX_FF             0.000        3.093     statistics/accumulator[3][49]~FF|D
+
+Capture Clock Path
+  Location     Delay Type     Incr(ns)     Path(ns)           Netlist Resource(s)
+==========================================================================================
+ (0,164)     input              0.000       0.000     clk_25m                             
+ (0,164)     input              0.126       0.126     clk_25m                             
+             net (fo=9826)      1.939       2.065     clk_25m                             
+ (215,119)   EFX_FF             0.000       2.065     statistics/accumulator[3][49]~FF|CLK
+ (215,119)   EFX_FF (Setup)    -0.003       2.062     statistics/accumulator[3][49]~FF    
+
+++++ Path 8 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 36.791 ns (required time - arrival time)                       
+Path Start      : statistics/n3270_pp_0x1|CLK                                    
+Path End        : statistics/accumulator[4][55]~FF|D                             
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 3.080 ns                                                       
+Logic Levels    : 38                                                             
+
+Launch Clock Path Delay        : 2.065
++ Clock To Q + Data Path Delay : 3.080
+--------------------------------------
+End-of-path arrival time       : 5.145
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.003
+---------------------------------------
+End-of-path required time      : 41.936
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)       Netlist Resource(s)
+================================================================================
+ (0,164)     input            0.000        0.000     clk_25m                    
+ (0,164)     input            0.126        0.126     clk_25m                    
+             net (fo=9826)    1.939        2.065     clk_25m                    
+ (195,102)   EFX_DSP48        0.000        2.065     statistics/n3270_pp_0x1|CLK
+
+Data Path
+  Location     Delay Type      Incr(ns)     Path(ns)          Netlist Resource(s)
+=========================================================================================
+ (195,102)   EFX_DSP48 (Tco)    0.835        0.835     statistics/n3270_pp_0x1|O[1]      
+             net (fo=1)         0.787        1.622     statistics/s3_bd[19]              
+ (204,91)    EFX_LUT4           0.063        1.685     LUT__86784|in[1]                  
+ (204,91)    EFX_LUT4           0.000        1.685     LUT__86784|out                    
+             net (fo=1)         0.401        2.086     statistics/contribution[4][19]    
+ (214,103)   EFX_ADD            0.057        2.143     statistics/add_101/i20|I1         
+ (214,103)   EFX_ADD            0.000        2.143     statistics/add_101/i20|CO         
+             net (fo=1)         0.000        2.143     statistics/add_101/n40            
+ (214,104)   EFX_ADD            0.024        2.167     statistics/add_101/i21|CI         
+ (214,104)   EFX_ADD            0.000        2.167     statistics/add_101/i21|CO         
+             net (fo=1)         0.000        2.167     statistics/add_101/n42            
+ (214,105)   EFX_ADD            0.024        2.191     statistics/add_101/i22|CI         
+ (214,105)   EFX_ADD            0.000        2.191     statistics/add_101/i22|CO         
+             net (fo=1)         0.000        2.191     statistics/add_101/n44            
+ (214,106)   EFX_ADD            0.024        2.215     statistics/add_101/i23|CI         
+ (214,106)   EFX_ADD            0.000        2.215     statistics/add_101/i23|CO         
+             net (fo=1)         0.000        2.215     statistics/add_101/n46            
+ (214,107)   EFX_ADD            0.024        2.239     statistics/add_101/i24|CI         
+ (214,107)   EFX_ADD            0.000        2.239     statistics/add_101/i24|CO         
+             net (fo=1)         0.000        2.239     statistics/add_101/n48            
+ (214,108)   EFX_ADD            0.024        2.263     statistics/add_101/i25|CI         
+ (214,108)   EFX_ADD            0.000        2.263     statistics/add_101/i25|CO         
+             net (fo=1)         0.000        2.263     statistics/add_101/n50            
+ (214,109)   EFX_ADD            0.024        2.287     statistics/add_101/i26|CI         
+ (214,109)   EFX_ADD            0.000        2.287     statistics/add_101/i26|CO         
+             net (fo=1)         0.000        2.287     statistics/add_101/n52            
+ (214,110)   EFX_ADD            0.024        2.311     statistics/add_101/i27|CI         
+ (214,110)   EFX_ADD            0.000        2.311     statistics/add_101/i27|CO         
+             net (fo=1)         0.000        2.311     statistics/add_101/n54            
+ (214,111)   EFX_ADD            0.024        2.335     statistics/add_101/i28|CI         
+ (214,111)   EFX_ADD            0.000        2.335     statistics/add_101/i28|CO         
+             net (fo=1)         0.000        2.335     statistics/add_101/n56            
+ (214,112)   EFX_ADD            0.024        2.359     statistics/add_101/i29|CI         
+ (214,112)   EFX_ADD            0.000        2.359     statistics/add_101/i29|CO         
+             net (fo=1)         0.000        2.359     statistics/add_101/n58            
+ (214,113)   EFX_ADD            0.024        2.383     statistics/add_101/i30|CI         
+ (214,113)   EFX_ADD            0.000        2.383     statistics/add_101/i30|CO         
+             net (fo=1)         0.000        2.383     statistics/add_101/n60            
+ (214,114)   EFX_ADD            0.024        2.407     statistics/add_101/i31|CI         
+ (214,114)   EFX_ADD            0.000        2.407     statistics/add_101/i31|CO         
+             net (fo=1)         0.000        2.407     statistics/add_101/n62            
+ (214,115)   EFX_ADD            0.024        2.431     statistics/add_101/i32|CI         
+ (214,115)   EFX_ADD            0.000        2.431     statistics/add_101/i32|CO         
+             net (fo=1)         0.000        2.431     statistics/add_101/n64            
+ (214,116)   EFX_ADD            0.024        2.455     statistics/add_101/i33|CI         
+ (214,116)   EFX_ADD            0.000        2.455     statistics/add_101/i33|CO         
+             net (fo=1)         0.000        2.455     statistics/add_101/n66            
+ (214,117)   EFX_ADD            0.024        2.479     statistics/add_101/i34|CI         
+ (214,117)   EFX_ADD            0.000        2.479     statistics/add_101/i34|CO         
+             net (fo=1)         0.000        2.479     statistics/add_101/n68            
+ (214,118)   EFX_ADD            0.024        2.503     statistics/add_101/i35|CI         
+ (214,118)   EFX_ADD            0.000        2.503     statistics/add_101/i35|CO         
+             net (fo=1)         0.000        2.503     statistics/add_101/n70            
+ (214,119)   EFX_ADD            0.024        2.527     statistics/add_101/i36|CI         
+ (214,119)   EFX_ADD            0.000        2.527     statistics/add_101/i36|CO         
+             net (fo=1)         0.000        2.527     statistics/add_101/n72            
+ (214,120)   EFX_ADD            0.024        2.551     statistics/add_101/i37|CI         
+ (214,120)   EFX_ADD            0.000        2.551     statistics/add_101/i37|CO         
+             net (fo=1)         0.000        2.551     statistics/add_101/n74            
+ (214,121)   EFX_ADD            0.024        2.575     statistics/add_101/i38|CI         
+ (214,121)   EFX_ADD            0.000        2.575     statistics/add_101/i38|CO         
+             net (fo=1)         0.000        2.575     statistics/add_101/n76            
+ (214,122)   EFX_ADD            0.024        2.599     statistics/add_101/i39|CI         
+ (214,122)   EFX_ADD            0.000        2.599     statistics/add_101/i39|CO         
+             net (fo=1)         0.000        2.599     statistics/add_101/n78            
+ (214,123)   EFX_ADD            0.024        2.623     statistics/add_101/i40|CI         
+ (214,123)   EFX_ADD            0.000        2.623     statistics/add_101/i40|CO         
+             net (fo=1)         0.000        2.623     statistics/add_101/n80            
+ (214,124)   EFX_ADD            0.024        2.647     statistics/add_101/i41|CI         
+ (214,124)   EFX_ADD            0.000        2.647     statistics/add_101/i41|CO         
+             net (fo=1)         0.000        2.647     statistics/add_101/n82            
+ (214,125)   EFX_ADD            0.024        2.671     statistics/add_101/i42|CI         
+ (214,125)   EFX_ADD            0.000        2.671     statistics/add_101/i42|CO         
+             net (fo=1)         0.000        2.671     statistics/add_101/n84            
+ (214,126)   EFX_ADD            0.024        2.695     statistics/add_101/i43|CI         
+ (214,126)   EFX_ADD            0.000        2.695     statistics/add_101/i43|CO         
+             net (fo=1)         0.000        2.695     statistics/add_101/n86            
+ (214,127)   EFX_ADD            0.024        2.719     statistics/add_101/i44|CI         
+ (214,127)   EFX_ADD            0.000        2.719     statistics/add_101/i44|CO         
+             net (fo=1)         0.000        2.719     statistics/add_101/n88            
+ (214,128)   EFX_ADD            0.024        2.743     statistics/add_101/i45|CI         
+ (214,128)   EFX_ADD            0.000        2.743     statistics/add_101/i45|CO         
+             net (fo=1)         0.000        2.743     statistics/add_101/n90            
+ (214,129)   EFX_ADD            0.024        2.767     statistics/add_101/i46|CI         
+ (214,129)   EFX_ADD            0.000        2.767     statistics/add_101/i46|CO         
+             net (fo=1)         0.000        2.767     statistics/add_101/n92            
+ (214,130)   EFX_ADD            0.024        2.791     statistics/add_101/i47|CI         
+ (214,130)   EFX_ADD            0.000        2.791     statistics/add_101/i47|CO         
+             net (fo=1)         0.000        2.791     statistics/add_101/n94            
+ (214,131)   EFX_ADD            0.024        2.815     statistics/add_101/i48|CI         
+ (214,131)   EFX_ADD            0.000        2.815     statistics/add_101/i48|CO         
+             net (fo=1)         0.000        2.815     statistics/add_101/n96            
+ (214,132)   EFX_ADD            0.024        2.839     statistics/add_101/i49|CI         
+ (214,132)   EFX_ADD            0.000        2.839     statistics/add_101/i49|CO         
+             net (fo=1)         0.000        2.839     statistics/add_101/n98            
+ (214,133)   EFX_ADD            0.024        2.863     statistics/add_101/i50|CI         
+ (214,133)   EFX_ADD            0.000        2.863     statistics/add_101/i50|CO         
+             net (fo=1)         0.000        2.863     statistics/add_101/n100           
+ (214,134)   EFX_ADD            0.024        2.887     statistics/add_101/i51|CI         
+ (214,134)   EFX_ADD            0.000        2.887     statistics/add_101/i51|CO         
+             net (fo=1)         0.000        2.887     statistics/add_101/n102           
+ (214,135)   EFX_ADD            0.024        2.911     statistics/add_101/i52|CI         
+ (214,135)   EFX_ADD            0.000        2.911     statistics/add_101/i52|CO         
+             net (fo=1)         0.000        2.911     statistics/add_101/n104           
+ (214,136)   EFX_ADD            0.024        2.935     statistics/add_101/i53|CI         
+ (214,136)   EFX_ADD            0.000        2.935     statistics/add_101/i53|CO         
+             net (fo=1)         0.000        2.935     statistics/add_101/n106           
+ (214,137)   EFX_ADD            0.024        2.959     statistics/add_101/i54|CI         
+ (214,137)   EFX_ADD            0.000        2.959     statistics/add_101/i54|CO         
+             net (fo=1)         0.000        2.959     statistics/add_101/n108           
+ (214,138)   EFX_ADD            0.024        2.983     statistics/add_101/i55|CI         
+ (214,138)   EFX_ADD            0.000        2.983     statistics/add_101/i55|CO         
+             net (fo=1)         0.000        2.983     statistics/add_101/n110           
+ (214,139)   EFX_ADD            0.097        3.080     statistics/add_101/i56|CI         
+ (214,139)   EFX_ADD            0.000        3.080     statistics/add_101/i56|O          
+             net (fo=2)         0.000        3.080     statistics/sum_candidate[4][55]   
+ (214,139)   EFX_FF             0.000        3.080     statistics/accumulator[4][55]~FF|D
+
+Capture Clock Path
+  Location     Delay Type     Incr(ns)     Path(ns)           Netlist Resource(s)
+==========================================================================================
+ (0,164)     input              0.000       0.000     clk_25m                             
+ (0,164)     input              0.126       0.126     clk_25m                             
+             net (fo=9826)      1.939       2.065     clk_25m                             
+ (214,139)   EFX_FF             0.000       2.065     statistics/accumulator[4][55]~FF|CLK
+ (214,139)   EFX_FF (Setup)    -0.003       2.062     statistics/accumulator[4][55]~FF    
+

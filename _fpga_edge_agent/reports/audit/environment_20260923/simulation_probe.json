@@ -1,0 +1,45 @@
+{
+  "at": "2026-09-23T08:22:20.718032+00:00",
+  "kind": "local_simulation_smoke",
+  "hardware_programmed": false,
+  "scope": "VF LED top reset + initial output; not full divider period or Efinity primitive/IP validation",
+  "commands": [
+    {
+      "name": "vlib",
+      "args": [
+        "D:\\modelism_\\modelsim\\Modelsim 10.1c\\Modelsim 10.1c\\win64\\vlib.exe",
+        "work"
+      ],
+      "returncode": 0,
+      "output": ""
+    },
+    {
+      "name": "vlog",
+      "args": [
+        "D:\\modelism_\\modelsim\\Modelsim 10.1c\\Modelsim 10.1c\\win64\\vlog.exe",
+        "-work",
+        "work",
+        "LED_8bit_Test.v",
+        "led_water_display.v",
+        "tb_env.v"
+      ],
+      "returncode": 0,
+      "output": "Model Technology ModelSim SE-64 vlog 10.1c Compiler 2012.07 Jul 27 2012\r\n-- Compiling module LED_8bit_Test\r\n-- Compiling module led_water_display\r\n-- Compiling module tb_env\r\n\r\nTop level modules:\r\n\ttb_env\r\n"
+    },
+    {
+      "name": "vsim",
+      "args": [
+        "D:\\modelism_\\modelsim\\Modelsim 10.1c\\Modelsim 10.1c\\win64\\vsim.exe",
+        "-c",
+        "-l",
+        "vsim.log",
+        "work.tb_env",
+        "-do",
+        "onerror {quit -code 2}; run -all; quit -code 0"
+      ],
+      "returncode": 4,
+      "output": "Unable to checkout a license.  Vsim is closing.\r\n** Fatal: Invalid license environment. Application closing.\r\nUnable to checkout a license. Make sure your license file environment variable (e.g., LM_LICENSE_FILE)\r\nis set correctly and then run 'lmutil lmdiag' to diagnose the problem.\r\n"
+    }
+  ],
+  "passed": false
+}

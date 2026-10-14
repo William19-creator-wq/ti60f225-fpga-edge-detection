@@ -1,0 +1,23 @@
+{
+  "timestamp": "2026-10-13T17:03:39.9294421+08:00",
+  "task": "TRACK4-CAM-DIAG-001",
+  "working_directory": "C:/Users/34528/FPGAEdgeLinks/Work/active/track4_camera_diag_001_20261013",
+  "tool_root": "C:/Users/34528/FPGAEdgeLinks/Efinity2026_1",
+  "python": "python311/bin/python.exe",
+  "environment": "Equivalent to bin/setup.bat, EFINITY_USER_DIR_INI=Work/active/gui_led/user_dir.ini, process-only",
+  "steps": [
+    "efx_run.py ti60f225_oob.xml --flow interface --prj: PASS",
+    "efx_run.py ti60f225_oob.xml --flow map --prj: PASS",
+    "efx_run.py ti60f225_oob.xml --flow pnr --prj: FAIL before placement, automatic debugger database missing",
+    "Direct rtl_gen attempt: FAIL synthesis due unsanitized hierarchy probe names; generated files only",
+    "DbgWizard.py --family Titanium --device Ti60F225 --in_profile_name debug_profile.wizard.json --out_dir work_dbg --out_dbg_vdb debug_top.post.vdb --out_profile_name work_dbg/debug_profile.generated.json: PASS",
+    "efx_run_dbg.py ti60f225_oob --family Titanium --device Ti60F225 --debug_profile work_dbg/debug_profile.generated.json --top_module ti60f225_oob_top --output_dir outflow --work_dir work_dbg --map_opts veri_options=verilog_mode=sv_09,vhdl_mode=vhdl_2008: PASS",
+    "efx_run_pt_unified.py ti60f225_oob.dbg Titanium Ti60F225 --output_dir outflow --timing_model I3 --project_xml ti60f225_oob.xml: PASS",
+    "efx_run.py ti60f225_oob.xml --flow pnr --prj: RUNNING"
+  ],
+  "generated_debug_review": "Only la0 UUID regenerated; 27 probes/152 bits, clock, depth2048, input_pipeline1 and USER2 unchanged",
+  "jtag": "Official ftdi_program.py --list_usb reported sole device 0403:6011 and interface1 URL ftdi://0x0403:0x6011:0:ff/1",
+  "hardware_programming": "NOT_YET_PERFORMED",
+  "download_transport": "Existing official Efinity CLI; GUI window absent and direct launch did not expose a window",
+  "formal_state_changed": false
+}

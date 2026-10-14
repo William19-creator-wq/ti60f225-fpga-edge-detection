@@ -1,0 +1,77 @@
+{
+  "snapshot_at_utc": "2026-10-11T15:05:38.999673Z",
+  "original_scope": "five basic requirements and six advanced challenges",
+  "full_goal_complete": false,
+  "download_ready_run": "board_compile_031",
+  "hardware_feedback": "User confirmed V4 + SC431HAI, but has not programmed 031",
+  "hardware_effects_verified": false,
+  "current_work": "Integrate existing modules, full-board synthesis/PNR/STA/bit; no new standalone tests or Chinese design sketches",
+  "active_builds": [
+    "board_compile_062"
+  ],
+  "software_build_031": {
+    "synthesis": true,
+    "final_hold_ns": 0.029,
+    "place_route": true,
+    "final_setup_ns": 0.381
+  },
+  "uncompleted_requirements": [
+    {
+      "requirement": "T4-A3 / UC-05 frozen-source reprocessing",
+      "current_behavior": "Frozen-source reprocessing implemented; latest integrated061 synthesis passed but physical capacity failed, no newer bit",
+      "missing": "Actual synthesis/place-route/final timing/bit and hardware verification of implemented053 behavior",
+      "evidence": [
+        "board/rtl/board_frame_system.sv",
+        "candidates/frozen_reprocess_v1/change-record.json",
+        "runs/board_compile_053/inputs.json"
+      ],
+      "classified_reason": "Resource/PNR closure and hardware observations; not DDR dynamic model absence"
+    },
+    {
+      "requirement": "T4-A6 full complex recognition",
+      "current_behavior": "031 uses strong-contour box/direction heuristics; expanded build adds POINT/STATS/seeds/full-theta Hough/NMS",
+      "missing": [
+        "Circle CF/CR/HIST/PM integrated in actual061; synthesis passed, physical packing exceeds capacity, no finalSTA/bit or display annotation connection",
+        "Line segmentation, TLS refinement and arbitrary rotated rectangle assembly",
+        "Missing-side/occlusion handling and original-resolution geometry verification",
+        "Final object deduplication, records and matching annotations",
+        "Recognition precision/recall targets and actual processing rate"
+      ],
+      "evidence": [
+        "board/rtl/board_algorithm_rpc.sv:247",
+        "board/rtl/board_recognition_stats.sv:30",
+        "board/rtl/board_shape_tracker.sv:138-142",
+        "board/rtl/board_frame_display.sv:78-89"
+      ],
+      "classified_reason": "Final algorithms and integration absent; not missing DDR3 simulation files"
+    },
+    {
+      "requirement": "T4-B1/B4/B5 real-board acceptance and demo",
+      "missing": [
+        "Camera acquisition stability and frame/line alignment",
+        "Actual DDR calibration and sustained transaction correctness",
+        "Actual HDMI appearance, display stability and algorithm effect",
+        "Actual performance and demo video"
+      ],
+      "classified_reason": "Human board programming/observation not performed; dynamic model evidence not independently run in current reduced scope"
+    }
+  ],
+  "constraints": {
+    "new_hardware_modules_not_added": true,
+    "formal_database_or_hardware_state_changed": false,
+    "original_HDK_read_only": true,
+    "existing_board_DDR3_allowed": true,
+    "standalone_tests_waived_for_current_batch": true,
+    "hardware_programming_human_only": true
+  },
+  "full_circle_source_candidate": {
+    "compiled": true,
+    "status": "WHOLEBOARD_SYNTHESIS_PASS_PHYSICAL_CAPACITY_FAIL",
+    "actual_board_verified": false,
+    "integrated": true,
+    "performance_closed": false
+  },
+  "latest_failed_run": "board_compile_061",
+  "latest_failure_reason": "PHYSICAL_CAPACITY_FAIL_72282_OVER_60800",
+  "updated_at_utc": "2026-10-12T06:05:32.4037268Z"
+}

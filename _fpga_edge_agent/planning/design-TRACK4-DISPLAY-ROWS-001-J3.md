@@ -1,0 +1,7 @@
+# DISPLAY-ROWS v1 J3：补齐未满行及停钟安全复位场景
+
+当前四个leaf回归（small003、HD001、min001、max001）与MAP已通过。生产HD完整1080行所有54bit逐位核对；三bank MAP确实18RAM。本卡不改业务RTL/接口，补齐T1部分行不能publish和T3 video停钟仍保留借用/共同safe reset隔离旧资格的动态证据，然后再做T4真实handoff组合。
+
+操作草图：正常三bank行循环后再填一个完整行并交付视频、无RE/pending/holding→在video负沿停钟→core继续40周期，检查busy保持/不开放write或fill/不出现return→TB实际确认所有输入DMA/WE/RE静止，assert共同safe reset并清旧驱动，恢复clock→检查旧owned/valid不出现。这个借用通过明确安全reset作废，单独计为safe_reset_aborted_rows，不叫CONSUMED或正常归还。参考按RESET事实作废已停访问；新代资格只从复位后fill生成。
+
+随后非法fill场景及部分FILL一条记录：io/producer已闭合仍提publish，缺记录时ready必须0；撤publish并把io闭合设0，abort必须等实际io资格与fire；之后错代写Q。所有原错误/握手标准保留。新参数计算统计区分完整行、reset作废和错误读，不拿作废行补完1080p读数量。原RunId保持；J3保存读回后按自主授权重跑当前源。

@@ -1,0 +1,28 @@
+2026-10-12，064 整机编译及新增矩形偏移投票模块
+
+本轮已完成
+1. 共用GRAD/POINT/SEED/LINE/CIRC打包缓存改为八块RAM16，按AXI当前128位写拍读出；六份接口/参数修改已接入主包。原26块打包RAM降为8块，整机RAM由230降到212。帧地址、八字字节顺序、AW/W/B接受及真实响应关闭条件保留。
+2. 新增board_line_offset_peaks.sv独立候选：完整49个偏移投票、radius1 NMS、同票较小偏移优先、零目标正常结束、全部峰握手输出。源码142行、声明寄存器196bit、预算1 RAM/0 DSP。已完整静态读回，尚未编译或接入整机。
+3. 运行064完整Efinity流程，131份设计源码、209份冻结输入。综合和接口生成通过；布局前容量检查失败。实际资源56916 LUT4、21853 FF、212 RAM10、155 DSP48、70748/60800逻辑单元，超出9948。比063仅减少79个逻辑单元，不能把18块RAM的减少当作逻辑容量问题解决。
+4. 064失败日志和输入保持不变。之后静态读回补齐新source5窄拍路径在仿真X/Z拍号下的零输出译码；物理2bit拍号全部合法，正常字节/AXI事件不改变。这一处修正已在主包，尚未重新编译；主包与064冻结源码因此有一份差异。
+
+当前可以下载的版本
+仅track4_board_debug_031_20261011/track4_board.xml及同目录outflow/track4_board.bit。该版本已综合、布线和最终时序通过，支持现有摄像/DDR/HDMI和基础边缘处理调试。031的形状标签仍是初版轮廓近似，冻结帧参数重处理等后续修正不在031比特流中。
+人工反馈：Ti60F225 V4 + SC431HAI，031尚未下载。没有实际开机、相机、DDR、显示、按键或识别效果的验证结果。本轮没有操作JTAG、下载FPGA或烧写Flash。
+
+尚未完成
+1. 整机逻辑容量仍超出9948，且完整矩形模块还需要空间。需进一步合并识别阶段控制/操作数数据通路；小的选择树优化不能独自关闭这个缺口。
+2. 已有RP点数学、RW CELL/EXT缓存、LR区段归并、49偏移投票四份矩形候选；完整coarse父、严格六遍TLS细化、PAIR、旋转矩形/缺边组装与最终几何核验尚未接入。
+3. 最终圆/矩形记录去重和真实识别结果的显示标注，以及实际识别速度/效果仍未闭合。
+4. 新版仍未通过容量、布局布线、最终STA，也没有新比特流。031的人工下载/观察独立等待。
+
+代码阅读入口（本文件同级）
+整机：track4_board.xml → board/rtl/board_frame_system.sv → algorithm/rtl/frame_actors_axi.sv
+算法：board/rtl/board_algorithm_rpc.sv
+本轮窄拍缓存：board/rtl/board_gradient_store.sv
+本轮写服务：algorithm/services/axi_write_pair_service.sv
+本轮矩形候选：candidates/line_offset_peaks_v1/board/rtl/board_line_offset_peaks.sv
+真实编译报告：runs/board_compile_064/compile.result.json、flow/outflow/track4_board.res.csv、track4_board.place.out
+差异与哈希：adoption_064.json、candidates/gradient_narrow_beats_v1/actual-final.diff、post064-beat-code-correction.json、candidates/line_offset_peaks_v1/change-record.json
+
+本轮未新增TB、仿真、独立测试、网络、安装或硬件操作；正式数据库和硬件节点状态不改。当前失败由实际物理逻辑容量引起，不能归因于DDR3动态模型缺口。完整五基础/六高阶及实物效果尚未全部完成。

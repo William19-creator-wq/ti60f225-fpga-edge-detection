@@ -1,0 +1,432 @@
+{
+    "info": {
+        "title": "DDR3 内存控制器",
+        "logo": "",
+        "ipname": "DDR3",
+        "output": "output",
+        "config": "ddr3_parameter.vh",
+        "package": "ip/ip.zip"
+    },
+    "groups": [
+        {
+            "name": "Generic",
+            "children": {
+                "CKE_WIDTH": {
+                    "name": "CK_WIDTH",
+                    "desc": "# of CK/CK# outputs to memory",
+                    "val": 1,
+                    "type": "n",
+                    "min": 0,
+                    "max": 10,
+                    "edit": false
+                },
+                "CS_WIDTH": {
+                    "desc": "# of cke outputs",
+                    "val": 1,
+                    "type": "n",
+                    "min": 0,
+                    "max": 10,
+                    "edit": false
+                },
+                "RANK_WIDTH": {
+                    "desc": "# of rank bit",
+                    "val": 1,
+                    "type": "n",
+                    "min": 1,
+                    "max": 32,
+                    "edit": false
+                },
+                "BANK_WIDTH": {
+                    "desc": "# of bank bit",
+                    "val": 3,
+                    "type": "n",
+                    "min": 1,
+                    "max": 32,
+                    "edit": false
+                },
+                "ROW_WIDTH": {
+                    "desc": "DRAM Address Width",
+                    "val": 14,
+                    "type": "n",
+                    "min": 1,
+                    "max": 16,
+                    "edit": true
+                },
+                "COL_WIDTH": {
+                    "desc": "Column Address Width",
+                    "val": 10,
+                    "type": "n",
+                    "min": 1,
+                    "max": 16,
+                    "edit": true
+                },
+                "DM_WIDTH": {
+                    "desc": "# of DM(Data Mask)",
+                    "val": "${DQ_WIDTH}/8",
+                    "type": "ref",
+                    "edit": false
+                },
+                "DQS_WIDTH": {
+                    "desc": "# of DQS(Strob)",
+                    "val": "${DQ_WIDTH}/8",
+                    "type": "ref",
+                    "edit": false
+                },
+                "DQ_WIDTH": {
+                    "desc": "# of DQ(data) Width",
+                    "val": 2,
+                    "ctype": "n",
+                    "type": "combo",
+                    "list": [
+                        8,
+                        16,
+                        32,
+                        64
+                    ],
+                    "edit": true
+                },
+                "ODT_WIDTH": {
+                    "val": 1,
+                    "type": "n",
+                    "min": 1,
+                    "max": 32,
+                    "edit": false
+                },
+                "DQ_CNT_WIDTH": {
+                    "val": "ceil(log2(${DQ_WIDTH}))",
+                    "type": "ref",
+                    "edit": false
+                },
+                "DQS_CNT_WIDTH": {
+                    "val": "ceil(log2(${DQS_WIDTH}))",
+                    "type": "ref",
+                    "edit": false
+                },
+                "DRAM_WIDTH": {
+                    "desc": "# of DQ per DQS",
+                    "val": 1,
+                    "ctype": "n",
+                    "type": "combo",
+                    "list": [
+                        4,
+                        8,
+                        16
+                    ],
+                    "edit": true
+                },
+                "CK_WIDTH": {
+                    "desc": "# of CK/CK# outputs to memory",
+                    "val": 1,
+                    "min": 1,
+                    "max": 8,
+                    "type": "n",
+                    "edit": false
+                },                
+                "RANKS": {
+                    "desc": "# of Ranks",
+                    "val": 1,
+                    "min": 1,
+                    "max": 8,
+                    "type": "n",
+                    "edit": false
+                }
+            }
+        },
+        {
+            "name": "AXI",
+            "children": {
+                "DATA_WIDTH": {
+                    "val": "${DQ_WIDTH}",
+                    "type": "ref",
+                    "edit": false
+                },
+                "ADDR_WIDTH": {
+                    "val": "${RANK_WIDTH}+${BANK_WIDTH}+${ROW_WIDTH}+${COL_WIDTH}",
+                    "type": "ref",
+                    "edit": false
+                },
+                "AXI_ID_WIDTH": {
+                    "desc": "AXI id width(1-8 bits)",
+                    "val": 4,
+                    "type": "n",
+                    "min": 1,
+                    "max": 8,
+                    "edit": true
+                },
+                "AXI_ADDR_WIDTH": {
+                    "desc": "Width of S_AXI_AWADDR, S_AXI_ARADDR, M_AXI_AWADDR and M_AXI_ARADDR for all SI/MI slots. # = 32",
+                    "val": 0,
+                    "ctype": "n",
+                    "type": "combo",
+                    "list": [
+                        32
+                    ],
+                    "edit": false
+                },
+		"AXI_DATA_WIDTH": {
+		    "desc": "Width of WDATA and RDATA on SI slot, Must be <= APP_DATA_WIDTH. # = 32, 64, 128, 256.",
+                    "val": "2*${CK_RATIO}*${DQ_WIDTH}",
+                    "type": "ref",
+		    "visible": true,
+                    "edit": false
+                }
+            }
+        },
+        {
+            "name": "Timing",
+            "children": {
+                "tCKE": {
+                    "desc": "memory tCKE paramter in pS",
+                    "val": 7500,
+                    "type": "n",
+                    "min": 0,
+                    "max": 9999,
+                    "edit": true
+                },
+                "tFAW": {
+                    "desc": "memory tFAW paramter in pS",
+                    "val": 50000,
+                    "type": "n",
+                    "min": 1,
+                    "max": 99999,
+                    "edit": true
+                },
+                "tPRDI": {
+                    "desc": "memory tPRDI paramter in pS",
+                    "val": 1000000,
+                    "type": "n",
+                    "min": 1,
+                    "max": 9999999,
+                    "edit": true
+                },
+                "tRAS": {
+                    "desc": "memory tRAS paramter in pS",
+                    "val": 34000,
+                    "type": "n",
+                    "min": 1,
+                    "max": 99999,
+                    "edit": true
+                },
+                "tRCD": {
+                    "desc": "memory tRCD paramter in pS",
+                    "val": 13910,
+                    "type": "n",
+                    "min": 1,
+                    "max": 99999,
+                    "edit": true
+                },
+                "tREFI": {
+                    "desc": "memory tREFI paramter in pS",
+                    "val": 7800000,
+                    "type": "n",
+                    "min": 1,
+                    "max": 9999999,
+                    "edit": true
+                },
+                "tRFC": {
+                    "desc": "memory tRFC paramter in pS",
+                    "val": 160000,
+                    "type": "n",
+                    "min": 0,
+                    "max": 999999,
+                    "edit": true
+                },
+                "tRP": {
+                    "desc": "memory tRP paramter in pS",
+                    "val": 13910,
+                    "type": "n",
+                    "min": 1,
+                    "max": 99999,
+                    "edit": true
+                },
+                "tRRD": {
+                    "desc": "memory tRRD paramter in pS",
+                    "val": 10000,
+                    "type": "n",
+                    "min": 1,
+                    "max": 40000,
+                    "edit": true
+                },
+                "tRTP": {
+                    "desc": "memory tRTP paramter in pS",
+                    "val": 7500,
+                    "type": "n",
+                    "min": 1,
+                    "max": 99999,
+                    "edit": true
+                },
+                "tWTR": {
+                    "desc": "memory tWTR paramter in pS",
+                    "val": 7500,
+                    "type": "n",
+                    "min": 1,
+                    "max": 99999,
+                    "edit": true
+                },
+                "tZQI": {
+                    "desc": "memory tZQI paramter in pS",
+                    "val": 128000000,
+                    "type": "n",
+                    "min": 1,
+                    "max": 256000000,
+                    "edit": true
+                },
+                "tZQCS": {
+                    "desc": "memory tZQI paramter in pS",
+                    "val": 64,
+                    "type": "n",
+                    "min": 1,
+                    "max": 256,
+                    "edit": true
+                },
+                "tCK": {
+                    "desc": "pS Ck",
+                    "val": 0,
+                    "ctype": "n",
+                    "type": "combo",
+                    "list": [
+                        2500,
+                        1875,
+                        1500,
+                        1200
+                    ],
+                    "edit": true
+                },
+                "CWL": {
+                    "desc": "Write CAS latency (in clk cyc)",
+                    "val": 0,
+                    "ctype": "n",
+                    "type": "combo",
+                    "list": [
+                        5,
+                        6,
+                        7,
+                        8,
+                        9,
+                        10
+                    ],
+                    "edit": true
+                },
+                "CL": {
+                    "desc": "Read CAS latency (in clk cyc)",
+                    "val": 0,
+                    "ctype": "n",
+                    "type": "combo",
+                    "list": [
+                        5,
+                        6,
+                        7,
+                        8,
+                        9,
+                        10,
+                        11,
+                        12,
+                        13,
+                        14
+                    ],
+                    "edit": true
+                },
+                "nAL": {
+                    "desc": "Additive latency (in clk cyc",
+                    "val": 0,
+                    "ctype": "n",
+                    "type": "combo",
+                    "list": [
+                        0,
+                        1,
+                        2
+                    ],
+                    "edit": true
+                }
+            }
+        },
+        {
+            "name": "Options",
+            "children": {
+                "RTT_NOM": {
+                    "desc": "Nominal ODT termination value",
+                    "val": 0,
+                    "ctype": "s",
+                    "type": "combo",
+                    "list": [
+                        20,
+                        30,
+                        40,
+                        60,
+                        120
+                    ],
+                    "edit": true
+                },
+                "RTT_WR": {
+                    "desc": "Write ODT terminal value",
+                    "val": 0,
+                    "ctype": "s",
+                    "type": "combo",
+                    "list": [
+                        60,
+                        120
+                    ],
+                    "edit": true
+                },
+                "BURST_MODE": {
+                    "desc": "Burst length",
+                    "val": 0,
+                    "ctype": "s",
+                    "type": "combo",
+                    "list": [
+                        8,
+                        4
+                    ],
+                    "edit": true
+                },
+                "MEM_ADDR_ORDER": {
+                    "desc": "Address mapping",
+                    "val": 0,
+                    "ctype": "s",
+                    "type": "combo",
+                    "list": [
+                        "BANK_ROW_COLUMN",
+                        "ROW_BANK_COLUMN"
+                    ],
+                    "edit": true
+                },
+                "RX_CLK_SEL": {
+                    "desc": "rx_cal_clk  PLL out sel",
+                    "val": 2,
+                    "type": "n",
+                    "min": 0,
+                    "max": 4,
+                    "edit": true
+                },
+                "TX_CLK_SEL": {
+                    "desc": "tx_cal_clk  PLL out sel",
+                    "val": 3,
+                    "type": "n",
+                    "min": 0,
+                    "max": 4,
+                    "edit": true
+                },
+                "TX_CLK_90EDGE_SEL": {
+                    "desc": "tx_cal_clk_90edge  PLL out sel",
+                    "val": 0,
+                    "type": "n",
+                    "min": 0,
+                    "max": 4,
+                    "edit": true
+                },
+                "CK_RATIO": {
+                    "desc": "of memory CKs per fabric CLK",
+                    "val": 2,
+                    "ctype": "n",
+                    "type": "combo",
+                    "list": [
+                        1,
+                        2,
+                        4
+                    ],
+                    "edit": true
+                }
+            }
+        }
+    ]
+}

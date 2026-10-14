@@ -1,0 +1,19 @@
+# TRACK4-CIRCLE-FAST-INTEGRATION-001 v1：现有圆形候选合入整机
+
+2026-10-11，按 PLAN_TEMPLATE 小变更卡。当前只保存整合边界；ROOT实际读回后，在用户持续自主完成、免新增长草图/独立测试及本地审计授权下实施，不冒称用户另按本版号批准。
+
+- Goal / Current / Gap：主work为059的127源，正在真实EDA；圆父九RTL/131源XML及FAST两源已生成并静态读回，尚未合入完整工程。本次将已生成模块合到现有相机—DDR—Canny整机，获得真实综合/容量/布线证据；不把源码组合称为完整A6或实物通过。
+- Target / Scope：采用 `circle_parent_integration_059_merge_v1` 九RTL及XML，保持059的ROOT_NARROW和DISPLAY_FIXED_APPEND；其中PM/CF换成冻结FAST候选，并仅在RPC唯一CF实例显式选择FAST_POINT_MATH=1。其余算法、IP、引脚、时钟、SDC、帧控制、表容量及精度保持既有版本。首矩形RP仍独立候选，本次不加XML；RECT、FINAL/ANN及新CIRC到HDMI消费仍欠。
+- Baseline / Dependencies：圆父卡E6B359013F827A2273EE2426E4427AB54607F3F44020B1C924D956EA4524B863；FAST卡1BF82C0A467FA098CFCB62E1DEABD16226D432BA690957CD6C850DEB5D8E9664；ROOT_NARROW卡DA649F2052AC8FBEC46812ADD4AB2945239227C6A16FCED35611F8BF8B52D08F；DISPLAY卡F45FCD49AAD85B7D9124D8F52602DB4845E40B5190AF279327399A0037F2C907。基线RPC BE9B714C4E65F56F2E3C416331A3A91916DBF077D84841F4585441B637F2C723、system 2E8E6E5F6F2A1A717D5919C94A041594EAEB667D20076664452580065AD38094、XML2AFD2A4D4BA89FE253D3773AF48E30A760BF3AF40F8B87394AD3C0DB9F5C528B。FAST PM B9645F07703687773EA694362F26EB9ED6CADE92420CAAD68241AEB671AE9FA6、CF F4DFA1899D15A061C5E1437C27C58609F112FCC2136661DBDEFDFE4A31ADD3E7；其余源由该候选input-map逐项冻结。
+
+REQ-CFI01为已生成圆后端的实际整合；REQ-CFI02为FAST仍受原所有权约束；REQ-CFI03为不覆盖059优化、旧run或031交付物。IF01：RPC真实NUM_PM owner授予CF角色1后才允许EVAL，即使FAST不发NUM请求；CF PM_WAIT消费真实回复，PM_CLOSE必须等待pm_quiet与num_quiet后才能更换点、中心或角色。因此不能因共享NUM一直quiet而释放正在本地计算的PM。IF02：FAST保持原EVAL借用身份、半径18、exact normal、error/drained/valid/quiet；正文保持到消费与PM真实quiet，未发布异常为UNKNOWN，已发布晚异常保held字段、consume后隔离。IF03：圆父原NUM/FIT/ANGLE/DDR关闭、CIRC/META写回及UNKNOWN提交阻挡全部保持，不加入第二scalar；CF/PM默认参数仍0，仅本整机选择1。
+
+RTL数值/内存/时序、局部状态及操作次序沿上述两份已经实际读回的卡和源码，本次没有新运算式、FSM、CDC或C++映射，遵从用户不新增中文草图要求。新增的唯一局部行为选择是静态参数1；FAST一个DSP/一个RAM和941/317执行沿仅为结构/静态计数，真实资源与运行时间未知。058为154DSP/225RAM，不能据名义余量保证完整131源装下。相机、HDMI、DDR原输入不变，无软件安装、网络或硬件操作。
+
+Validation / Trace：CFI01→九源/XML及完整build_board输入冻结→实际Efinity analysis/map/interface/pnr/finalSTA；CFI02→RPC CF实例及CF PM_REQUEST/PM_CLOSE→ROOT和独立实际源码读回；CFI03→同059 core/display hash及实际差异→采纳记录。正常接线、radius-only、非零full PM、反压、MAX、UNKNOWN/晚异常的静态合同沿原卡，未运行动态测试，不声称行为质量通过。用户免额外TB，本次仍执行交付所需综合、布局布线、时序；只有全部通过才生成登记bit并进入WAITING_HUMAN_PROGRAM。
+
+Milestones / Failure / Rollback：先实际读回本卡及最终冻结hash，确认独立静态检查无当前缺陷，再保存before/实际三源差异与采纳映射，合到完整主work；059冻结输入不动，之后用新RunId冻结全部实际输入。parse/容量/布线/STA失败保留原始日志和准确失败，不登记成功bit；FAST可静态关闭恢复已冻结CC4/0AC路径，圆父可恢复059冻结源，历史run和031保持。资源及最终性能是待测实施结果，当前没有源码交接阻塞；任何静态发现先暂停受影响采纳。
+
+Review gate：①外部范围②职责与真实复用③IF01–03相容④局部沿既有冻结卡/源码⑤RTL契约⑥正常/失败走查⑦验证/追踪⑧无当前接线缺口⑨ROOT保存后实际读回并呈现⑩九源/XML与三源增量基线明确，最后两项须实际完成。设计阶段READY_FOR_REVIEW；授权引用用户“当你统计完后自行进行，无需我的批准”“主要任务是把所有模块整合起来”及已批准本地审计例外，正式数据库/Manifest和硬件状态不改。获准整合也不等于硬件下载或观察通过。
+
+Completion / Delivery：本卡完成是131源整机采用该候选并得到准确EDA结果；完整原任务继续欠RECT、最终验证去重/ANN/records、显示新识别及性能/实物观察。不把CIRC源生成或失败编译称全部完成；用户理解验收待实际反馈。

@@ -1,0 +1,98 @@
+version: "1.1"
+project:
+  id: FPGA_EDGE_TI60
+  name: Track 4 FPGA Real-time Edge Detection Project
+  competition_track: 4
+  scope: basic_plus_six_advanced_challenges
+  environment_reference_board: VF-Ti60F225
+  physical_board_confirmed: false
+  root: "D:\\大三\\FPGA_verilog"
+  control_plane_root: "D:\\大三\\FPGA_verilog\\_fpga_edge_agent"
+  source_baseline_policy: read_only
+  work_root: "D:\\大三\\FPGA_verilog\\_fpga_edge_agent\\work"
+  learning_scope: excluded
+host:
+  platform: Codex
+  os: Windows
+  shell: PowerShell
+  execution_mode: interactive
+  persistent_agent_installation: false
+database:
+  backend: postgresql
+  connection_env: FPGA_AGENT_DATABASE_URL
+  fallback_backend: forbidden
+  auto_provision: false
+  auto_migrate: false
+  migration_approval_required: true
+  credential_storage: environment_only
+observability:
+  database_source: postgresql
+  local_event_archive: runtime/events
+  reports_root: reports
+  retention: full_local
+  external_telemetry: disabled
+  dashboards: static_reports_only
+permissions:
+  writable_paths:
+    - _fpga_edge_agent
+    - _fpga_edge_agent/work
+  read_only_paths:
+    - project_root_reference_materials
+  forbidden_actions:
+    - fpga_programming
+    - flash_programming
+    - debugger_control
+    - unapproved_download
+    - unapproved_install
+    - driver_write
+    - external_publish
+hardware_gate:
+  agent_may_build: true
+  agent_may_program_hardware: false
+  human_program_required: true
+  human_observation_required: true
+  chat_feedback_to_structured_record: true
+nodes:
+  - H0_BASELINE
+  - H1_DISPLAY_BASELINE
+  - H2_CAMERA_STREAM
+  - H3_GRAYSCALE
+  - H4_WINDOW_AND_SOBEL
+  - H5_THRESHOLD_DISPLAY
+  - A1_MEDIAN_FILTER
+  - A2_LIVE_THRESHOLD
+  - A3_DDR_FRAMEBUFFER
+  - A4_CANNY
+  - A5_COLOR_OVERLAY
+  - A6_SHAPE_RECOGNITION
+  - R0_RELEASE
+requirements:
+  matrix: docs/requirements/TRACK4_REQUIREMENTS.csv
+  evidence: docs/requirements/HARDWARE_AND_TOOLCHAIN_EVIDENCE.md
+  workflow: docs/workflows/TRACK4_WORKFLOW.md
+  advanced_status: planned_not_implemented
+  tinyml: optional_technical_route
+  minimum_hdmi_mode: 640x480_at_60Hz
+  camera_fps: mode_dependent_measure_separately
+artifacts:
+  efinity_output_is_preserved: true
+  registered_copy_root: artifacts
+  hash_algorithm: SHA256
+tools:
+  extra_tools_default: deny
+  request_template: docs/TOOL_REQUEST_TEMPLATE.md
+  approval_manifest: config/APPROVAL_MANIFEST.yaml
+control_plane_modules:
+  planning: planning
+  skills: skills
+  tools_mcp_plugins: tools
+  agents_orchestration: agents
+  validation_guardrails_hooks: validation
+  observability_eval: observability
+  security: security
+  operations: operations
+  context_memory: context
+  events_async: events
+  side_effects: side_effects
+  deployment: deployment
+  runtime: runtime

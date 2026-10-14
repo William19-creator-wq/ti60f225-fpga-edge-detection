@@ -1,0 +1,43 @@
+{
+  "task_id": "TRACK4-FIT-DSP-DIRECT-001",
+  "design_version": "v1",
+  "design_path": "planning/design-TRACK4-FIT-DSP-DIRECT-001.md",
+  "design_sha256": "6A6DFB56A8EE0363AE98FEB8B5D1641D7B45D54FEB3A250CCE673EA7B6A43865",
+  "date": "2026-10-12",
+  "authority": "Existing user autonomous continuation, waived long sketches/TB and local audit; ROOT read back v1 and authorized only this independent two-source candidate. No claim of new version-specific user approval.",
+  "candidate_path": "D:\\大三\\FPGA_verilog\\_fpga_edge_agent\\work\\active\\track4_board_first_20261011\\candidates\\fit_dsp_direct_v1",
+  "before_sha256": {
+    "board/recognition_numeric/fit_core.sv": "875083D9835283FCABA45372A08BE2CF2B8056AA99F310F24DA15135565242F6",
+    "board/rtl/board_recognition_stats.sv": "14228BE6277F5CDC5989D1D002D62C4590514E941BDEF5D55530D76527835A22"
+  },
+  "candidate_sha256": {
+    "board/recognition_numeric/fit_core.sv": "CEC02BC67268C12822D6E64C362B623D9037D87387476DAA2B413B860E2062E8",
+    "board/rtl/board_recognition_stats.sv": "D42E96F8DD6695E40B7CD36320236DA2C690DDD09C2B57BC352B804C801420E3"
+  },
+  "status": "DIRECTED_STATIC_PASS_PENDING_ROOT_REVIEW_AND_TOOL_MEASUREMENT",
+  "scope": "Default0 DIRECT_DSP_INPUT, effective only inside DSP_OPERAND_RESULT; stripe-local DI only. Unique STATS fitting flag1.",
+  "preserved": "Original scalar_value_next/scalar_value_write block, all word_write, FF branch, DSP primitive parameters/ports, output mapping, FSM, requests/responses, cancel/drain/HELD, geometry lease, LS_TLS_ONLY and shared return words unchanged.",
+  "tests": "No TB, EDA, hardware operation or new functional script. Static source checks only.",
+  "resource_result": "Not measured. No extra bank/reg/DSP/RAM/cycle; expected DI LUT saving remains unverified.",
+  "directed_static_checks": {
+    "original_next_and_ce_block_identical": true,
+    "original_word_write_and_primitive_and_ff_identical": true,
+    "all_after_dsp_bank_identical": true,
+    "all_before_data_bank_identical_except_param": true,
+    "stats_only_unique_fitting_parameter": true,
+    "main_unchanged": true,
+    "no_new_procedural_storage": true,
+    "numeric_literal_ternary_spacing": true
+  },
+  "actual_diff_sha256": "E5C9C850620175E16ECF40545232A77247F322805BB53FA4FC2BDBD49A2779AE",
+  "readback_notes": [
+    "DIRECT_DSP_INPUT default0 and nested inside original DSP_OPERAND_RESULT branch; default and FF use original padded_value and original CE.",
+    "Stripes0..4 sample A only in LOAD_A; PREPARE final F and DRAIN zero override; LOAD_B CE0.",
+    "Stripe5 LOAD_A old H[215:192] + A[191:180]; LOAD_B B[23:0] + old H[191:180].",
+    "Stripes6..9 LOAD_B pieces B[59:24],B[95:60],B[131:96],B[167:132]; LOAD_A CE0.",
+    "Stripe10 LOAD_B {11zero,old H[384],B[191:168]}; PREPARE {11zero,F[384:360]}; DRAIN zero; LOAD_A CE0.",
+    "Every true CE samples original bit values; invalid DI may differ only while CE0. No FSM, cycle, primitive configuration, cancellation/drain/HELD or external protocol change.",
+    "Candidate stats preserves geometry lease, GEOMETRY_FULL_FIT/LS_TLS_ONLY and existing shared NUM word ports; only actual fitting flag1 added.",
+    "Static source/diff review only; no HDL syntax compile, simulation, synthesis/PNR/STA, hardware use, or measured resource benefit."
+  ]
+}

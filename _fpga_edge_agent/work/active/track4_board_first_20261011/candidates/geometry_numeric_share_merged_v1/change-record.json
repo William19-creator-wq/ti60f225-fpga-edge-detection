@@ -1,0 +1,55 @@
+{
+  "task_id": "TRACK4-GEOMETRY-NUMERIC-SHARE-MERGE-001",
+  "created_at_utc": "2026-10-11T14:19:36.5290511Z",
+  "status": "IMPLEMENTED_CANDIDATE_ONLY_NOT_COMPILED",
+  "design_versions": [
+    "TRACK4-GEOMETRY-NUMERIC-SHARE-001 v1.1",
+    "TRACK4-NUM-RETURN-WORD-001 v1.1"
+  ],
+  "authority": "ROOT relays user autonomous continuation, local audit exception and waiver of independent TB; exact merge only, no new specified-version approval asserted",
+  "source_baseline_sha256": "35B4AB6B70A270FACE0423F433B159FFEADEAFC143AD33B683A67B122FE3808F",
+  "source_before_path": "before/board/rtl/board_recognition_stats.sv",
+  "common_before_sha256": "F82C3E93CB3F191E91980EE70BDF8D28784F39E85DD9380FE9E8FC2620166128",
+  "geometry_source_path": "candidates/geometry_numeric_share_v1/board/rtl/board_recognition_stats.sv",
+  "geometry_source_sha256": "B6B8CF63BB3215E707395C5394A4C2ADE8D9E6783C45342BED20D3A0587700C2",
+  "candidate_path": "board/rtl/board_recognition_stats.sv",
+  "candidate_sha256": "6A5585168E50DE5D3B607BC917400A7683FEB2E6096D8C517CFDC39577E8A157",
+  "main_changed": false,
+  "original_candidate_changed": false,
+  "default_profile": "ENABLE_GEOMETRY=0 and SHARED_RETURN_WORDS=0 retain original two-pass pipeline; ENABLE_GEOMETRY=0 and SHARED_RETURN_WORDS=1 retain current main sideband profile",
+  "enabled_profile": "ENABLE_GEOMETRY=1 enables original seven FIT kinds 11/12/13/14/15/17/18 exactly as geometry v1.1; no new full-FIT restriction parameter implemented",
+  "changes_from_original_geometry": [
+    "Append SHARED_RETURN_WORDS default0 beside BORROW_SCOPE",
+    "Append current shared_rsp_word_index5/shared_rsp_word16 ports before geometry ports",
+    "Pass SHARED_RETURN_WORDS to the same existing fit_core",
+    "Connect existing fit_core shared_rsp_word_index/shared_rsp_word16 directly"
+  ],
+  "static_review": [
+    "Contracts explicitly permit later combination; NUM sideband adds no handshake, state or ownership event",
+    "One stats_core and one fit_core retained; geometry owner, bind/release checks and all original geometry v1.1 gates unchanged",
+    "Old start dominates bind; owner freezes original FSM and original DDR/pack/anchor handshake activity",
+    "Release requires STATS/FIT/shared scalar real quiet and no new TOKEN/FIT/cancel; no forced owner clear on fault/UNKNOWN",
+    "STAT valid is not withdrawn under FIT backpressure; STAT consumption remains conditioned on fit quiet and no new FIT request",
+    "Caller must keep TOKEN low176 through actual STAT consume plus STATS quiet and full FIT request622 through reply consume plus FIT quiet",
+    "Sideband index always comes from the same existing FIT, for either lease owner; raw word16 routes to that FIT without valid/quiet gating",
+    "Full STAT632/REQ622/RSP585/ID176 and existing FIT full385 qualification, 25-word scan and 12-word save are untouched",
+    "Bridge actual VALUE metadata still controls word16; index24 sign extension remains in the existing FIT",
+    "Baseline and original geometry SHA retained after merge; before copy byte-identical to current main"
+  ],
+  "dependency_hashes": {
+    "board/recognition_numeric/fit_core.sv": "875083D9835283FCABA45372A08BE2CF2B8056AA99F310F24DA15135565242F6",
+    "board/recognition_numeric/scalar_bridge.sv": "81BD861C64746F89AEF48AC45EB1E8CD4CAAB948A7676FF364790F67DBACC22F",
+    "board/rtl/board_algorithm_rpc.sv": "14E8BAC5A362AE37D6091516569AAFB841AE5B1613C46340D0EBD6D6CDAE2E88"
+  },
+  "remaining": [
+    "Parent RPC scalar/index owner currently still seed_started-based; future geometry owner scheduling and real close integration are not implemented here",
+    "Geometry caller must enforce mandatory STAT-ready and borrow lifetime contracts",
+    "Actual area, timing, synthesis and simulation have not been measured for this merged candidate"
+  ],
+  "not_run": [
+    "EDA",
+    "Simulation",
+    "Testbench",
+    "Hardware operation"
+  ]
+}

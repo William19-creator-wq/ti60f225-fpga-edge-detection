@@ -1,0 +1,7 @@
+# DISPLAY-ROWS v1 J2：错误脉冲与同沿新事件的参考观察
+
+rows_small_002的原生RAM仿真通过，242写接纳、243读交付、24行、25归还；独立参考拒绝。原因是video上一周期的错误release脉冲可在下一周期合法release接纳同沿被观察，日志先记录新RELEASE，再记录旧RELEASE_ERROR，参考先推进为returned却误要求仍owned。脉冲合同原v1已规定本域下一周期可观察，并不禁止下一合法操作。
+
+修正参考：RELEASE_ERROR必须消费一个真实先前错误RELEASE所建立的待报错误凭证，不强加与同沿合法事件矛盾的当前state。身份、无在途及完整数量规则均继续严格检查，不改变任何RTL。TB在最终错代写隔离之后再观察两core沿，使next-cycle write_error进入日志再结束；仍检查不归还/不开放新写。原失败run保留，新RunId重跑。
+
+DR06→release/read/return独立事件与错误凭证→reference audit及TB观察→T3。依自主软件授权，短卡保存读回后实施；不冒充业务修复或放宽闭合要求。

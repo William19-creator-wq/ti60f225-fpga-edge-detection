@@ -1,0 +1,26 @@
+[
+  {
+    "Step": "create_library",
+    "ExitCode": 0,
+    "Output": ""
+  },
+  {
+    "Step": "expected_syntax_error",
+    "ExitCode": 2,
+    "ExpectedFailureObserved": true,
+    "Output": "QuestaSim-64 vlog 2024.1 Compiler 2024.02 Feb  1 2024\r\nStart time: 22:23:18 on Oct 03,2026\r\nvlog -work work R:/environment_acceptance/20260923T090001Z_fifo_compile/intentional_syntax_error.v \r\n-- Compiling module intentional_syntax_error\r\n** Error: (vlog-13069) R:/environment_acceptance/20260923T090001Z_fifo_compile/intentional_syntax_error.v(1): near \";\": syntax error, unexpected ';', expecting ')'.\r\nEnd time: 22:23:18 on Oct 03,2026, Elapsed time: 0:00:00\r\nErrors: 1, Warnings: 0"
+  },
+  {
+    "Step": "compile_protected_fifo",
+    "ExitCode": 0,
+    "Output": "QuestaSim-64 vlog 2024.1 Compiler 2024.02 Feb  1 2024\r\nStart time: 22:23:18 on Oct 03,2026\r\nvlog -sv -work work \"+incdir+R:/environment_acceptance/20260923T090001Z_fifo_compile\" R:/environment_acceptance/20260923T090001Z_fifo_compile/fifo_tb.sv R:/environment_acceptance/20260923T090001Z_fifo_compile/smoke_fifo.sv \r\n-- Compiling package fifo_tb_sv_unit\r\n-- Compiling module fifo_tb\r\n-- Compiling module smoke_fifo\r\n-- Compiling module efx_fifo_gray2bin_ff2243dff7ea4e838267735be7b7c5ee\r\n-- Compiling module efx_fifo_bin2gray_ff2243dff7ea4e838267735be7b7c5ee\r\n-- Compiling module efx_fifo_top_ff2243dff7ea4e838267735be7b7c5ee\r\n-- Compiling module efx_fifo_ram_ff2243dff7ea4e838267735be7b7c5ee\r\n-- Compiling module efx_fifo_ctl_ff2243dff7ea4e838267735be7b7c5ee\r\n-- Compiling module efx_resetsync_ff2243dff7ea4e838267735be7b7c5ee\r\n-- Compiling module efx_asyncreg_ff2243dff7ea4e838267735be7b7c5ee\r\n\r\nTop level modules:\r\n\tfifo_tb\r\nEnd time: 22:23:18 on Oct 03,2026, Elapsed time: 0:00:00\r\nErrors: 0, Warnings: 0"
+  },
+  {
+    "Step": "simulate_protected_fifo",
+    "ExitCode": 12,
+    "PassComparisons": 0,
+    "FailureMarker": true,
+    "Finished": false,
+    "OutputTail": "\n# 2024.1\n\n# vsim -c -l NUL -onfinish exit -t ps \"+notimingchecks\" -voptargs=\"+acc\" -wlf fifo_tb.wlf work.fifo_tb -do \"log -r /*; run -all; quit -f\" \n# Start time: 22:23:21 on Oct 03,2026\n# ** Note: (vsim-3812) Design is being optimized...\n# ** Warning: (vopt-10587) Some optimizations are turned off because the +acc switch is in effect. This will cause your simulation to run slowly. Please use -access/-debug to maintain needed visibility.\n# Support of the MGLS_LICENSE_FILE and LM_LICENSE_FILE licensing environment variables will be discontinued starting with the 2025.1 release. Please update to using the SALT_LICENSE_SERVER variable.\n# Please contact Siemens EDA Customer Support (https://support.sw.siemens.com/) for assistance.\n# ** Error (suppressible): R:/environment_acceptance/20260923T090001Z_fifo_compile/fifo_tb.sv(444): (vopt-2912) Port 'rd_valid_o' not found in module 'smoke_fifo' (9th connection).\n# ** Error (suppressible): R:/environment_acceptance/20260923T090001Z_fifo_compile/fifo_tb.sv(444): (vopt-2912) Port 'almost_empty_o' not found in module 'smoke_fifo' (11th connection).\n# Optimization failed\n# ** Note: (vsim-12126) Error and warning message counts have been restored: Errors=2, Warnings=1.\n# Error loading design\nError loading design\n# End time: 22:23:23 on Oct 03,2026, Elapsed time: 0:00:02\n# Errors: 2, Warnings: 1\n"
+  }
+]

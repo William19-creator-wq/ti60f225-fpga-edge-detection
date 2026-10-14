@@ -1,0 +1,92 @@
+{
+  "task_id": "TRACK4-GEOMETRY-FAST-PM-001",
+  "design_revision": "v1",
+  "status": "COMPLETED_DIRECTED_ACTUAL_SOURCE_AND_INTEGER_INVARIANT_REVIEW_NOT_EDA",
+  "created_at_utc": "2026-10-11T15:43:36.294364+00:00",
+  "authority": "ROOT fully read back and presented exact design hash1BF82, independently checked bounds, and authorized isolated two-file implementation under continuing user autonomous/local-audit scope; no new user specified-version approval asserted",
+  "design_path": "planning/design-TRACK4-GEOMETRY-FAST-PM-001.md",
+  "design_sha256": "1BF82C0A467FA098CFCB62E1DEABD16226D432BA690957CD6C850DEB5D8E9664",
+  "held_detail_authority": "ROOT separately confirmed already-published EVAL fields must not change under late foreign NUM activity: add one pending-isolation bit, retain held fields, fault only, enter ISOLATED after actual consume, do not publish a second response; original design hash is preserved",
+  "files": [
+    {
+      "path": "board/rtl/board_geometry_point_math.sv",
+      "baseline_source_path": "candidates/geometry_radius_only_v1/board/rtl/board_geometry_point_math.sv",
+      "baseline_sha256": "CC4BF36A1E51325948F12640379346865C48EC5F8778D3C4AAD7209504E64C05",
+      "before_sha256": "CC4BF36A1E51325948F12640379346865C48EC5F8778D3C4AAD7209504E64C05",
+      "candidate_sha256": "B9645F07703687773EA694362F26EB9ED6CADE92420CAAD68241AEB671AE9FA6"
+    },
+    {
+      "path": "board/rtl/board_circle_refine.sv",
+      "baseline_source_path": "candidates/circle_refine_radius_only_v1/board/rtl/board_circle_refine.sv",
+      "baseline_sha256": "0AC562695ECA432200EC74825D71C093F0D4753AA43A7ACFFFF765D8EFEF7EA4",
+      "before_sha256": "0AC562695ECA432200EC74825D71C093F0D4753AA43A7ACFFFF765D8EFEF7EA4",
+      "candidate_sha256": "F4DFA1899D15A061C5E1437C27C58609F112FCC2136661DBDEFDFE4A31ADD3E7"
+    }
+  ],
+  "actual_rtl_diff": [
+    "PM default0 FAST_POINT_MATH parameter and outer conditionalgenerate",
+    "Legacy control/data body preserved exactly after only mechanical removal of inner explicit generate/endgenerate delimiters to avoid illegal nested regions; header comment corrected for both paths",
+    "FAST1: one unsigned combinational EFX_DSP48 NORMAL16x16 with clock/CE/reset/shift all0; one EFX_RAM10 512x20/simple1read1write with16data4zero padding, no replicated memories",
+    "Local exact18-step integer math, all128-bit results fully written as8words and completely domain-qualified before valid; ROOT20pairs/39bitD2 and RNE, full18 radius qualification, exact94bit left<=right",
+    "No NUM request/consume/body/index inFAST1, preserved original EVAL identity/body borrow through consume andPM quiet and matching parentowner1lease",
+    "One pending-isolation FF preserves all held EVAL fields during late NUM violation, records fault and isolates after true consume",
+    "CF only default0 parameter addition and pass-through to existing singlePM, no board/main enable"
+  ],
+  "static_review_completed": [
+    "Actual full FAST source and CF two-hunk diff read back",
+    "Legacy body text comparison restored only two generation delimiters equals exact CC4B baseline; no legacy numerical/FSM/handshake/qualification changes",
+    "Exact same pc0..17 source/destination/signed/stored_bits as legacy, including slot15 55bit then94bit and comparison slot6 reuse",
+    "Synchronized singleRAM read edge then capture; constants carry exact signed extension; no meaningful read/write collision response required",
+    "All MUL working8words cleared per instruction; full8word COMMIT qualifiers both zero and one extension masks, negative-zero source flags and actual final sign, valid only atlastword",
+    "Signed source sign is prefetched from highest complete qualified operand word; A magnitude carry advances lowtohigh once and B carry resets everyrow; fullm+n product and rowcarry stored, SUM33 overflow guarded",
+    "ADD/SUB operates all8 full128 words with full sign extension and final signed/unsigned domain masks; mathematical39/30bit bounds prove higher385 extension",
+    "ROOT20pairs reads all39 meaningfulD2 bits with bit39padding0; shifted remainder24 checks high2 before narrowing22; trial22/appended21/rounded21 guarded, root18 qualifier before eight-word commit",
+    "Six-word comparison includes high94bit domain, equality accepted; comparison3 is a known error; output slot gets full8words",
+    "Foreign NUM active/late response disables RAMRE/WE and returns UNKNOWN/drained0 before publication, never consumes foreign NUM; after publication onlyfault/pendingflag may change until realconsume thenquiet0 isolation",
+    "closed_sequence advances once per closed successful/knownfailed local arithmetic step; CHECK/PLAN local failure not advance; MAX sets fault/exhausted and permits last already-completed EVAL but blocksnextaccept; no perEVAL reset",
+    "No new based literal adjacent to a question mark; full default/request schema remains622/585/192/385"
+  ],
+  "nominal_structural_budget": {
+    "hard_DSP_instances_FAST1": 1,
+    "hard_RAM_instances_FAST1": 1,
+    "RAM_result_slots_words16bit": 128,
+    "RAM_work_words16bit": 8,
+    "source_FF_bits_manual_count_FAST1": 293,
+    "actual_synthesis_resources": "not measured",
+    "board_additional_macro_budget_if_only_thisPM_added": "058 base154DSP/225RAM plusPM1DSP/1RAM gives155DSP/226RAM nominal; other geometry modules remain unbudgeted"
+  },
+  "directed_cycle_count": {
+    "convention": "Execution-state edges including EVALaccept edge and finalclose edge; firstvalid edge intervals are one less; no simulation/time measurement",
+    "full_nonzero_radius_execution_edges": 941,
+    "radius_only_or_zero_radius_execution_edges": 317,
+    "full_accept_to_firstvalid_intervals": 940,
+    "radius_accept_to_firstvalid_intervals": 316,
+    "minimum_full_initiation_interval_with_immediateconsume": 942,
+    "minimum_radius_initiation_interval_with_immediateconsume": 318,
+    "MUL_total_includingPLAN_PREP_sign_clear_rows_commit_CLOSE": 611,
+    "ADD_SUB_5times_full8words": 215,
+    "ROOT_including20pair_read_capture_step_and8writes": 72,
+    "COMPARE_sixword_and8writes": 41,
+    "EVAL_accept_andCHECK": 2,
+    "radius_estimate_deviation": "Initial card design budget250-300 was low; actual staticFSM317 reflects all5-cycle eight-word ADD/SUB and extra PLAN/PREP/sign guards; full941 fits800-1000 budget",
+    "per_E_2073600_at_11ns_pure_PM_upper_execution_seconds": {
+      "full": 21.463833599999997,
+      "radius": 7.230643199999999,
+      "HIST_plus_one_peak_max6full4radius": 157.7055744
+    },
+    "remaining": "CF/DDR/lease/STATS/FIT/CR/ANGLE delays, response backpressure, totalmulti-seed/multi-peak performance, physicalrouting/STA and hardware are not measured; denseonepeak stillminutes andmulti-peaks mayhours"
+  },
+  "main_changed": false,
+  "runs_or_original_inputs_changed": false,
+  "old_candidates_changed": false,
+  "not_run": [
+    "EDA",
+    "Simulation",
+    "New testbench",
+    "Hardware"
+  ],
+  "remaining": [
+    "ROOT independent source review",
+    "Actual board integration and resource/route/STA/runtime evidence before any delivery claim"
+  ]
+}

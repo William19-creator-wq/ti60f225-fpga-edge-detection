@@ -1,0 +1,44 @@
+{
+  "observation_id": "OBS-H1-20261013-154958",
+  "project_id": "FPGA_EDGE_TI60",
+  "node_id": "H1_DISPLAY_BASELINE",
+  "recorded_at": "2026-10-13T15:49:58+08:00",
+  "raw_record": "observations/incoming/H1_DISPLAY_BASELINE-20261013-154958.txt",
+  "scope": "Local diagnostic observation; no formal database or project state transition",
+  "board_user_confirmed": "Ti60F225 V4 + SC431HAI",
+  "diagnostic_artifact": {
+    "file": "work/active/hdmi_official_diag_20261013/hdmi_tx_demo_v3/outflow/hdmi_tx.bit",
+    "source": "Supplied V4 reference pack, 03_hdmi_tx_demo/hdmi_tx_demo_v3.rar",
+    "sha256": "5AEEFE2442CAE007061440158298C14041BEB5CA0AEF8424DAC69183F2576D6D",
+    "programmer_checksum": "D835B21C",
+    "programming_mode": "JTAG",
+    "clock_mhz": 6,
+    "authorization": "reports/audit/usb_programmer_20261013/hdmi_diag_download_authorization_1545.json",
+    "agent_clicked_program": true,
+    "final_programmer_log_captured": false,
+    "log_capture_limitation": "The user stopped Computer Use with physical Escape after the download action. Subsequent user photo demonstrates diagnostic color-bar output."
+  },
+  "observed_result": {
+    "color_bars_visible_in_user_photo": true,
+    "resolution_recognition_reported_by_user": true,
+    "measured_resolution": null,
+    "measured_refresh_hz": null,
+    "continuous_observation_duration_seconds": null,
+    "camera_image_tested": false,
+    "ddr_function_tested_by_this_diagnostic": false
+  },
+  "prior_031_result": {
+    "sha256": "77216940A9D01733EF93154C2C0A665F8C3FA0A9E4DE94C5D1FCB6F08FCB9951",
+    "gui_programming_completed_at": "2026-10-13T15:32:30+08:00",
+    "user_report": "Initially recognizes resolution, then no signal/standby; no picture throughout; no power cycle after programming",
+    "display_acceptance": "NOT_PASSED"
+  },
+  "interpretation": "The board, connected HDMI output, cable and monitor can display the supplied independent diagnostic pattern in this setup. Investigate the 031 design and its configuration next. A single photo does not establish long-term signal integrity or camera/DDR correctness.",
+  "known_031_review_findings": [
+    "P13/N13 are used by 031 as reset/key inputs but described by the V4 manual as LED0/LED1; N14/P14 are used as LED outputs but described as KEY2/KEY1. Exact physical circuit consistency must be resolved before applying the existing button instructions.",
+    "031 display scanning and encoder reset depend on a combined four-PLL lock condition. Missing video frames alone should select black pixels without stopping scanning."
+  ],
+  "root_cause_confirmed": false,
+  "formal_database_updated": false,
+  "formal_project_state_updated": false
+}

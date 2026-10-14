@@ -1,0 +1,535 @@
+
+Efinix report_timing Report
+Version: 2026.1.132
+Date: Thu Oct  8 20:12:15 2026
+
+Copyright (C) 2013 - 2026 Efinix, Inc. All rights reserved.
+
+User command: foreach transition $transitions {
+ set name [lindex $transition 0]
+ set starts [endpoint_union [lindex $transition 1]]
+ set ends [endpoint_union [lindex $transition 2]]
+ puts "DATA_${name}_SOURCE_COUNT=[llength $starts]"
+ puts "DATA_${name}_DEST_COUNT=[llength $ends]"
+ if {[llength $starts] == 0 || [llength $ends] == 0} {error "Data endpoint collection empty"}
+ report_timing -setup -from $starts -to $ends -npaths 8 -nworst 1 -file stats_${name}_setup.rpt
+ report_timing -hold -from $starts -to $ends -npaths 8 -nworst 1 -file stats_${name}_hold.rpt
+}
+
+Timing Model: I3
+	process : typical
+	temperature : -40C to 100C
+	voltage : 0.95 +/-30mV
+	speedgrade : 3
+	technology : t16ff
+	status : final
+
+Summary:
+
+ Path #  | Slack(ns) |                   Start Pin                   |                    End Pin                     |  Launch Clock   |  Capture Clock
+=========================================================================================================================================================
+ 1       |  1.514    | fitting/private_arithmetic/work_a[118]~FF|CLK | fitting/private_arithmetic/column_sum[25]~FF|D | core_25m (RISE) | core_25m (RISE)
+ 2       |  1.518    | fitting/private_arithmetic/work_a[118]~FF|CLK | fitting/private_arithmetic/column_sum[22]~FF|D | core_25m (RISE) | core_25m (RISE)
+ 3       |  1.523    | fitting/private_arithmetic/work_a[118]~FF|CLK | fitting/private_arithmetic/column_sum[23]~FF|D | core_25m (RISE) | core_25m (RISE)
+ 4       |  1.530    | fitting/private_arithmetic/work_a[118]~FF|CLK | fitting/private_arithmetic/column_sum[16]~FF|D | core_25m (RISE) | core_25m (RISE)
+ 5       |  1.530    | fitting/private_arithmetic/work_a[118]~FF|CLK | fitting/private_arithmetic/column_sum[19]~FF|D | core_25m (RISE) | core_25m (RISE)
+ 6       |  1.532    | fitting/private_arithmetic/work_a[118]~FF|CLK | fitting/private_arithmetic/column_sum[18]~FF|D | core_25m (RISE) | core_25m (RISE)
+ 7       |  1.533    | fitting/private_arithmetic/work_a[118]~FF|CLK | fitting/private_arithmetic/column_sum[28]~FF|D | core_25m (RISE) | core_25m (RISE)
+ 8       |  1.537    | fitting/private_arithmetic/work_a[118]~FF|CLK | fitting/private_arithmetic/column_sum[24]~FF|D | core_25m (RISE) | core_25m (RISE)
+
+++++ Path 1 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 1.514 ns (arrival time - required time)                        
+Path Start      : fitting/private_arithmetic/work_a[118]~FF|CLK                  
+Path End        : fitting/private_arithmetic/column_sum[25]~FF|D                 
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Min at Fast Process Corner                                     
+Data Path Delay : 1.584 ns                                                       
+Logic Levels    : 5                                                              
+
+Launch Clock Path Delay        : 1.167
++ Clock To Q + Data Path Delay : 1.584
+--------------------------------------
+End-of-path arrival time       : 2.751
+
+Constraint                     : 0.000
++ Capture Clock Path Delay     : 1.167
++ Clock Uncertainty            : 0.070
++ Hold                         : 0.000
+--------------------------------------
+End-of-path required time      : 1.237
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)                Netlist Resource(s)
+==================================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                                      
+  (0,164)    input            0.070        0.070     clk_25m                                      
+             net (fo=9826)    1.097        1.167     clk_25m                                      
+  (50,124)   EFX_FF           0.000        1.167     fitting/private_arithmetic/work_a[118]~FF|CLK
+
+Data Path
+  Location    Delay Type    Incr(ns)     Path(ns)                Netlist Resource(s)
+==================================================================================================
+  (50,124)   EFX_FF (Tco)    0.072        0.072     fitting/private_arithmetic/work_a[118]~FF|Q   
+             net (fo=2)      0.117        0.189     fitting/private_arithmetic/work_a[118]        
+  (44,124)   EFX_LUT4        0.034        0.223     LUT__60679|in[0]                              
+  (44,124)   EFX_LUT4        0.000        0.223     LUT__60679|out                                
+             net (fo=1)      0.034        0.257     n33982                                        
+  (44,123)   EFX_LUT4        0.034        0.291     LUT__60681|in[2]                              
+  (44,123)   EFX_LUT4        0.000        0.291     LUT__60681|out                                
+             net (fo=1)      0.377        0.668     fitting/private_arithmetic/n1154              
+  (24,202)   EFX_DSP48       0.395        1.063     fitting/private_arithmetic/mult_96|A[6]       
+  (24,202)   EFX_DSP48       0.000        1.063     fitting/private_arithmetic/mult_96|O[25]      
+             net (fo=1)      0.385        1.448     fitting/private_arithmetic/partial_product[25]
+  (6,240)    EFX_ADD         0.035        1.483     fitting/private_arithmetic/add_97/i26|I1      
+  (6,240)    EFX_ADD         0.000        1.483     fitting/private_arithmetic/add_97/i26|O       
+             net (fo=1)      0.067        1.550     fitting/private_arithmetic/next_column_sum[25]
+  (4,240)    EFX_LUT4        0.034        1.584     LUT__73254|in[1]                              
+  (4,240)    EFX_LUT4        0.000        1.584     LUT__73254|out                                
+             net (fo=1)      0.000        1.584     fitting/private_arithmetic/n83660             
+  (4,240)    EFX_FF          0.000        1.584     fitting/private_arithmetic/column_sum[25]~FF|D
+
+Capture Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)                 Netlist Resource(s)
+=====================================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                                         
+  (0,164)    input            0.070        0.070     clk_25m                                         
+             net (fo=9826)    1.097        1.167     clk_25m                                         
+  (4,240)    EFX_FF           0.000        1.167     fitting/private_arithmetic/column_sum[25]~FF|CLK
+  (4,240)    EFX_FF (Hold)    0.000        1.167     fitting/private_arithmetic/column_sum[25]~FF    
+
+++++ Path 2 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 1.518 ns (arrival time - required time)                        
+Path Start      : fitting/private_arithmetic/work_a[118]~FF|CLK                  
+Path End        : fitting/private_arithmetic/column_sum[22]~FF|D                 
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Min at Fast Process Corner                                     
+Data Path Delay : 1.588 ns                                                       
+Logic Levels    : 5                                                              
+
+Launch Clock Path Delay        : 1.167
++ Clock To Q + Data Path Delay : 1.588
+--------------------------------------
+End-of-path arrival time       : 2.755
+
+Constraint                     : 0.000
++ Capture Clock Path Delay     : 1.167
++ Clock Uncertainty            : 0.070
++ Hold                         : 0.000
+--------------------------------------
+End-of-path required time      : 1.237
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)                Netlist Resource(s)
+==================================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                                      
+  (0,164)    input            0.070        0.070     clk_25m                                      
+             net (fo=9826)    1.097        1.167     clk_25m                                      
+  (50,124)   EFX_FF           0.000        1.167     fitting/private_arithmetic/work_a[118]~FF|CLK
+
+Data Path
+  Location    Delay Type    Incr(ns)     Path(ns)                Netlist Resource(s)
+==================================================================================================
+  (50,124)   EFX_FF (Tco)    0.072        0.072     fitting/private_arithmetic/work_a[118]~FF|Q   
+             net (fo=2)      0.117        0.189     fitting/private_arithmetic/work_a[118]        
+  (44,124)   EFX_LUT4        0.034        0.223     LUT__60679|in[0]                              
+  (44,124)   EFX_LUT4        0.000        0.223     LUT__60679|out                                
+             net (fo=1)      0.034        0.257     n33982                                        
+  (44,123)   EFX_LUT4        0.034        0.291     LUT__60681|in[2]                              
+  (44,123)   EFX_LUT4        0.000        0.291     LUT__60681|out                                
+             net (fo=1)      0.377        0.668     fitting/private_arithmetic/n1154              
+  (24,202)   EFX_DSP48       0.395        1.063     fitting/private_arithmetic/mult_96|A[6]       
+  (24,202)   EFX_DSP48       0.000        1.063     fitting/private_arithmetic/mult_96|O[22]      
+             net (fo=1)      0.395        1.458     fitting/private_arithmetic/partial_product[22]
+  (6,237)    EFX_ADD         0.035        1.493     fitting/private_arithmetic/add_97/i23|I1      
+  (6,237)    EFX_ADD         0.000        1.493     fitting/private_arithmetic/add_97/i23|O       
+             net (fo=1)      0.061        1.554     fitting/private_arithmetic/next_column_sum[22]
+  (5,237)    EFX_LUT4        0.034        1.588     LUT__73251|in[1]                              
+  (5,237)    EFX_LUT4        0.000        1.588     LUT__73251|out                                
+             net (fo=1)      0.000        1.588     fitting/private_arithmetic/n83639             
+  (5,237)    EFX_FF          0.000        1.588     fitting/private_arithmetic/column_sum[22]~FF|D
+
+Capture Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)                 Netlist Resource(s)
+=====================================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                                         
+  (0,164)    input            0.070        0.070     clk_25m                                         
+             net (fo=9826)    1.097        1.167     clk_25m                                         
+  (5,237)    EFX_FF           0.000        1.167     fitting/private_arithmetic/column_sum[22]~FF|CLK
+  (5,237)    EFX_FF (Hold)    0.000        1.167     fitting/private_arithmetic/column_sum[22]~FF    
+
+++++ Path 3 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 1.523 ns (arrival time - required time)                        
+Path Start      : fitting/private_arithmetic/work_a[118]~FF|CLK                  
+Path End        : fitting/private_arithmetic/column_sum[23]~FF|D                 
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Min at Fast Process Corner                                     
+Data Path Delay : 1.593 ns                                                       
+Logic Levels    : 5                                                              
+
+Launch Clock Path Delay        : 1.167
++ Clock To Q + Data Path Delay : 1.593
+--------------------------------------
+End-of-path arrival time       : 2.760
+
+Constraint                     : 0.000
++ Capture Clock Path Delay     : 1.167
++ Clock Uncertainty            : 0.070
++ Hold                         : 0.000
+--------------------------------------
+End-of-path required time      : 1.237
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)                Netlist Resource(s)
+==================================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                                      
+  (0,164)    input            0.070        0.070     clk_25m                                      
+             net (fo=9826)    1.097        1.167     clk_25m                                      
+  (50,124)   EFX_FF           0.000        1.167     fitting/private_arithmetic/work_a[118]~FF|CLK
+
+Data Path
+  Location    Delay Type    Incr(ns)     Path(ns)                Netlist Resource(s)
+==================================================================================================
+  (50,124)   EFX_FF (Tco)    0.072        0.072     fitting/private_arithmetic/work_a[118]~FF|Q   
+             net (fo=2)      0.117        0.189     fitting/private_arithmetic/work_a[118]        
+  (44,124)   EFX_LUT4        0.034        0.223     LUT__60679|in[0]                              
+  (44,124)   EFX_LUT4        0.000        0.223     LUT__60679|out                                
+             net (fo=1)      0.034        0.257     n33982                                        
+  (44,123)   EFX_LUT4        0.034        0.291     LUT__60681|in[2]                              
+  (44,123)   EFX_LUT4        0.000        0.291     LUT__60681|out                                
+             net (fo=1)      0.377        0.668     fitting/private_arithmetic/n1154              
+  (24,202)   EFX_DSP48       0.395        1.063     fitting/private_arithmetic/mult_96|A[6]       
+  (24,202)   EFX_DSP48       0.000        1.063     fitting/private_arithmetic/mult_96|O[23]      
+             net (fo=1)      0.385        1.448     fitting/private_arithmetic/partial_product[23]
+  (6,238)    EFX_ADD         0.035        1.483     fitting/private_arithmetic/add_97/i24|I1      
+  (6,238)    EFX_ADD         0.000        1.483     fitting/private_arithmetic/add_97/i24|O       
+             net (fo=1)      0.076        1.559     fitting/private_arithmetic/next_column_sum[23]
+  (2,238)    EFX_LUT4        0.034        1.593     LUT__73252|in[1]                              
+  (2,238)    EFX_LUT4        0.000        1.593     LUT__73252|out                                
+             net (fo=1)      0.000        1.593     fitting/private_arithmetic/n83646             
+  (2,238)    EFX_FF          0.000        1.593     fitting/private_arithmetic/column_sum[23]~FF|D
+
+Capture Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)                 Netlist Resource(s)
+=====================================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                                         
+  (0,164)    input            0.070        0.070     clk_25m                                         
+             net (fo=9826)    1.097        1.167     clk_25m                                         
+  (2,238)    EFX_FF           0.000        1.167     fitting/private_arithmetic/column_sum[23]~FF|CLK
+  (2,238)    EFX_FF (Hold)    0.000        1.167     fitting/private_arithmetic/column_sum[23]~FF    
+
+++++ Path 4 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 1.530 ns (arrival time - required time)                        
+Path Start      : fitting/private_arithmetic/work_a[118]~FF|CLK                  
+Path End        : fitting/private_arithmetic/column_sum[16]~FF|D                 
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Min at Fast Process Corner                                     
+Data Path Delay : 1.600 ns                                                       
+Logic Levels    : 5                                                              
+
+Launch Clock Path Delay        : 1.167
++ Clock To Q + Data Path Delay : 1.600
+--------------------------------------
+End-of-path arrival time       : 2.767
+
+Constraint                     : 0.000
++ Capture Clock Path Delay     : 1.167
++ Clock Uncertainty            : 0.070
++ Hold                         : 0.000
+--------------------------------------
+End-of-path required time      : 1.237
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)                Netlist Resource(s)
+==================================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                                      
+  (0,164)    input            0.070        0.070     clk_25m                                      
+             net (fo=9826)    1.097        1.167     clk_25m                                      
+  (50,124)   EFX_FF           0.000        1.167     fitting/private_arithmetic/work_a[118]~FF|CLK
+
+Data Path
+  Location    Delay Type    Incr(ns)     Path(ns)                Netlist Resource(s)
+==================================================================================================
+  (50,124)   EFX_FF (Tco)    0.072        0.072     fitting/private_arithmetic/work_a[118]~FF|Q   
+             net (fo=2)      0.117        0.189     fitting/private_arithmetic/work_a[118]        
+  (44,124)   EFX_LUT4        0.034        0.223     LUT__60679|in[0]                              
+  (44,124)   EFX_LUT4        0.000        0.223     LUT__60679|out                                
+             net (fo=1)      0.034        0.257     n33982                                        
+  (44,123)   EFX_LUT4        0.034        0.291     LUT__60681|in[2]                              
+  (44,123)   EFX_LUT4        0.000        0.291     LUT__60681|out                                
+             net (fo=1)      0.377        0.668     fitting/private_arithmetic/n1154              
+  (24,202)   EFX_DSP48       0.395        1.063     fitting/private_arithmetic/mult_96|A[6]       
+  (24,202)   EFX_DSP48       0.000        1.063     fitting/private_arithmetic/mult_96|O[16]      
+             net (fo=1)      0.392        1.455     fitting/private_arithmetic/partial_product[16]
+  (6,231)    EFX_ADD         0.035        1.490     fitting/private_arithmetic/add_97/i17|I1      
+  (6,231)    EFX_ADD         0.000        1.490     fitting/private_arithmetic/add_97/i17|O       
+             net (fo=1)      0.076        1.566     fitting/private_arithmetic/next_column_sum[16]
+  (2,231)    EFX_LUT4        0.034        1.600     LUT__73245|in[0]                              
+  (2,231)    EFX_LUT4        0.000        1.600     LUT__73245|out                                
+             net (fo=1)      0.000        1.600     fitting/private_arithmetic/n83597             
+  (2,231)    EFX_FF          0.000        1.600     fitting/private_arithmetic/column_sum[16]~FF|D
+
+Capture Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)                 Netlist Resource(s)
+=====================================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                                         
+  (0,164)    input            0.070        0.070     clk_25m                                         
+             net (fo=9826)    1.097        1.167     clk_25m                                         
+  (2,231)    EFX_FF           0.000        1.167     fitting/private_arithmetic/column_sum[16]~FF|CLK
+  (2,231)    EFX_FF (Hold)    0.000        1.167     fitting/private_arithmetic/column_sum[16]~FF    
+
+++++ Path 5 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 1.530 ns (arrival time - required time)                        
+Path Start      : fitting/private_arithmetic/work_a[118]~FF|CLK                  
+Path End        : fitting/private_arithmetic/column_sum[19]~FF|D                 
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Min at Fast Process Corner                                     
+Data Path Delay : 1.600 ns                                                       
+Logic Levels    : 5                                                              
+
+Launch Clock Path Delay        : 1.167
++ Clock To Q + Data Path Delay : 1.600
+--------------------------------------
+End-of-path arrival time       : 2.767
+
+Constraint                     : 0.000
++ Capture Clock Path Delay     : 1.167
++ Clock Uncertainty            : 0.070
++ Hold                         : 0.000
+--------------------------------------
+End-of-path required time      : 1.237
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)                Netlist Resource(s)
+==================================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                                      
+  (0,164)    input            0.070        0.070     clk_25m                                      
+             net (fo=9826)    1.097        1.167     clk_25m                                      
+  (50,124)   EFX_FF           0.000        1.167     fitting/private_arithmetic/work_a[118]~FF|CLK
+
+Data Path
+  Location    Delay Type    Incr(ns)     Path(ns)                Netlist Resource(s)
+==================================================================================================
+  (50,124)   EFX_FF (Tco)    0.072        0.072     fitting/private_arithmetic/work_a[118]~FF|Q   
+             net (fo=2)      0.117        0.189     fitting/private_arithmetic/work_a[118]        
+  (44,124)   EFX_LUT4        0.034        0.223     LUT__60679|in[0]                              
+  (44,124)   EFX_LUT4        0.000        0.223     LUT__60679|out                                
+             net (fo=1)      0.034        0.257     n33982                                        
+  (44,123)   EFX_LUT4        0.034        0.291     LUT__60681|in[2]                              
+  (44,123)   EFX_LUT4        0.000        0.291     LUT__60681|out                                
+             net (fo=1)      0.377        0.668     fitting/private_arithmetic/n1154              
+  (24,202)   EFX_DSP48       0.395        1.063     fitting/private_arithmetic/mult_96|A[6]       
+  (24,202)   EFX_DSP48       0.000        1.063     fitting/private_arithmetic/mult_96|O[19]      
+             net (fo=1)      0.407        1.470     fitting/private_arithmetic/partial_product[19]
+  (6,234)    EFX_ADD         0.035        1.505     fitting/private_arithmetic/add_97/i20|I1      
+  (6,234)    EFX_ADD         0.000        1.505     fitting/private_arithmetic/add_97/i20|O       
+             net (fo=1)      0.061        1.566     fitting/private_arithmetic/next_column_sum[19]
+  (5,234)    EFX_LUT4        0.034        1.600     LUT__73248|in[0]                              
+  (5,234)    EFX_LUT4        0.000        1.600     LUT__73248|out                                
+             net (fo=1)      0.000        1.600     fitting/private_arithmetic/n83618             
+  (5,234)    EFX_FF          0.000        1.600     fitting/private_arithmetic/column_sum[19]~FF|D
+
+Capture Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)                 Netlist Resource(s)
+=====================================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                                         
+  (0,164)    input            0.070        0.070     clk_25m                                         
+             net (fo=9826)    1.097        1.167     clk_25m                                         
+  (5,234)    EFX_FF           0.000        1.167     fitting/private_arithmetic/column_sum[19]~FF|CLK
+  (5,234)    EFX_FF (Hold)    0.000        1.167     fitting/private_arithmetic/column_sum[19]~FF    
+
+++++ Path 6 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 1.532 ns (arrival time - required time)                        
+Path Start      : fitting/private_arithmetic/work_a[118]~FF|CLK                  
+Path End        : fitting/private_arithmetic/column_sum[18]~FF|D                 
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Min at Fast Process Corner                                     
+Data Path Delay : 1.602 ns                                                       
+Logic Levels    : 5                                                              
+
+Launch Clock Path Delay        : 1.167
++ Clock To Q + Data Path Delay : 1.602
+--------------------------------------
+End-of-path arrival time       : 2.769
+
+Constraint                     : 0.000
++ Capture Clock Path Delay     : 1.167
++ Clock Uncertainty            : 0.070
++ Hold                         : 0.000
+--------------------------------------
+End-of-path required time      : 1.237
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)                Netlist Resource(s)
+==================================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                                      
+  (0,164)    input            0.070        0.070     clk_25m                                      
+             net (fo=9826)    1.097        1.167     clk_25m                                      
+  (50,124)   EFX_FF           0.000        1.167     fitting/private_arithmetic/work_a[118]~FF|CLK
+
+Data Path
+  Location    Delay Type    Incr(ns)     Path(ns)                Netlist Resource(s)
+==================================================================================================
+  (50,124)   EFX_FF (Tco)    0.072        0.072     fitting/private_arithmetic/work_a[118]~FF|Q   
+             net (fo=2)      0.117        0.189     fitting/private_arithmetic/work_a[118]        
+  (44,124)   EFX_LUT4        0.034        0.223     LUT__60679|in[0]                              
+  (44,124)   EFX_LUT4        0.000        0.223     LUT__60679|out                                
+             net (fo=1)      0.034        0.257     n33982                                        
+  (44,123)   EFX_LUT4        0.034        0.291     LUT__60681|in[2]                              
+  (44,123)   EFX_LUT4        0.000        0.291     LUT__60681|out                                
+             net (fo=1)      0.377        0.668     fitting/private_arithmetic/n1154              
+  (24,202)   EFX_DSP48       0.395        1.063     fitting/private_arithmetic/mult_96|A[6]       
+  (24,202)   EFX_DSP48       0.000        1.063     fitting/private_arithmetic/mult_96|O[18]      
+             net (fo=1)      0.409        1.472     fitting/private_arithmetic/partial_product[18]
+  (6,233)    EFX_ADD         0.035        1.507     fitting/private_arithmetic/add_97/i19|I1      
+  (6,233)    EFX_ADD         0.000        1.507     fitting/private_arithmetic/add_97/i19|O       
+             net (fo=1)      0.061        1.568     fitting/private_arithmetic/next_column_sum[18]
+  (5,233)    EFX_LUT4        0.034        1.602     LUT__73247|in[0]                              
+  (5,233)    EFX_LUT4        0.000        1.602     LUT__73247|out                                
+             net (fo=1)      0.000        1.602     fitting/private_arithmetic/n83611             
+  (5,233)    EFX_FF          0.000        1.602     fitting/private_arithmetic/column_sum[18]~FF|D
+
+Capture Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)                 Netlist Resource(s)
+=====================================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                                         
+  (0,164)    input            0.070        0.070     clk_25m                                         
+             net (fo=9826)    1.097        1.167     clk_25m                                         
+  (5,233)    EFX_FF           0.000        1.167     fitting/private_arithmetic/column_sum[18]~FF|CLK
+  (5,233)    EFX_FF (Hold)    0.000        1.167     fitting/private_arithmetic/column_sum[18]~FF    
+
+++++ Path 7 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 1.533 ns (arrival time - required time)                        
+Path Start      : fitting/private_arithmetic/work_a[118]~FF|CLK                  
+Path End        : fitting/private_arithmetic/column_sum[28]~FF|D                 
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Min at Fast Process Corner                                     
+Data Path Delay : 1.603 ns                                                       
+Logic Levels    : 5                                                              
+
+Launch Clock Path Delay        : 1.167
++ Clock To Q + Data Path Delay : 1.603
+--------------------------------------
+End-of-path arrival time       : 2.770
+
+Constraint                     : 0.000
++ Capture Clock Path Delay     : 1.167
++ Clock Uncertainty            : 0.070
++ Hold                         : 0.000
+--------------------------------------
+End-of-path required time      : 1.237
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)                Netlist Resource(s)
+==================================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                                      
+  (0,164)    input            0.070        0.070     clk_25m                                      
+             net (fo=9826)    1.097        1.167     clk_25m                                      
+  (50,124)   EFX_FF           0.000        1.167     fitting/private_arithmetic/work_a[118]~FF|CLK
+
+Data Path
+  Location    Delay Type    Incr(ns)     Path(ns)                Netlist Resource(s)
+==================================================================================================
+  (50,124)   EFX_FF (Tco)    0.072        0.072     fitting/private_arithmetic/work_a[118]~FF|Q   
+             net (fo=2)      0.117        0.189     fitting/private_arithmetic/work_a[118]        
+  (44,124)   EFX_LUT4        0.034        0.223     LUT__60679|in[0]                              
+  (44,124)   EFX_LUT4        0.000        0.223     LUT__60679|out                                
+             net (fo=1)      0.034        0.257     n33982                                        
+  (44,123)   EFX_LUT4        0.034        0.291     LUT__60681|in[2]                              
+  (44,123)   EFX_LUT4        0.000        0.291     LUT__60681|out                                
+             net (fo=1)      0.377        0.668     fitting/private_arithmetic/n1154              
+  (24,202)   EFX_DSP48       0.395        1.063     fitting/private_arithmetic/mult_96|A[6]       
+  (24,202)   EFX_DSP48       0.000        1.063     fitting/private_arithmetic/mult_96|O[28]      
+             net (fo=1)      0.409        1.472     fitting/private_arithmetic/partial_product[28]
+  (6,243)    EFX_ADD         0.035        1.507     fitting/private_arithmetic/add_97/i29|I1      
+  (6,243)    EFX_ADD         0.000        1.507     fitting/private_arithmetic/add_97/i29|O       
+             net (fo=1)      0.062        1.569     fitting/private_arithmetic/next_column_sum[28]
+  (7,243)    EFX_LUT4        0.034        1.603     LUT__73257|in[1]                              
+  (7,243)    EFX_LUT4        0.000        1.603     LUT__73257|out                                
+             net (fo=1)      0.000        1.603     fitting/private_arithmetic/n83681             
+  (7,243)    EFX_FF          0.000        1.603     fitting/private_arithmetic/column_sum[28]~FF|D
+
+Capture Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)                 Netlist Resource(s)
+=====================================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                                         
+  (0,164)    input            0.070        0.070     clk_25m                                         
+             net (fo=9826)    1.097        1.167     clk_25m                                         
+  (7,243)    EFX_FF           0.000        1.167     fitting/private_arithmetic/column_sum[28]~FF|CLK
+  (7,243)    EFX_FF (Hold)    0.000        1.167     fitting/private_arithmetic/column_sum[28]~FF    
+
+++++ Path 8 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 1.537 ns (arrival time - required time)                        
+Path Start      : fitting/private_arithmetic/work_a[118]~FF|CLK                  
+Path End        : fitting/private_arithmetic/column_sum[24]~FF|D                 
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Min at Fast Process Corner                                     
+Data Path Delay : 1.607 ns                                                       
+Logic Levels    : 5                                                              
+
+Launch Clock Path Delay        : 1.167
++ Clock To Q + Data Path Delay : 1.607
+--------------------------------------
+End-of-path arrival time       : 2.774
+
+Constraint                     : 0.000
++ Capture Clock Path Delay     : 1.167
++ Clock Uncertainty            : 0.070
++ Hold                         : 0.000
+--------------------------------------
+End-of-path required time      : 1.237
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)                Netlist Resource(s)
+==================================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                                      
+  (0,164)    input            0.070        0.070     clk_25m                                      
+             net (fo=9826)    1.097        1.167     clk_25m                                      
+  (50,124)   EFX_FF           0.000        1.167     fitting/private_arithmetic/work_a[118]~FF|CLK
+
+Data Path
+  Location    Delay Type    Incr(ns)     Path(ns)                Netlist Resource(s)
+==================================================================================================
+  (50,124)   EFX_FF (Tco)    0.072        0.072     fitting/private_arithmetic/work_a[118]~FF|Q   
+             net (fo=2)      0.117        0.189     fitting/private_arithmetic/work_a[118]        
+  (44,124)   EFX_LUT4        0.034        0.223     LUT__60679|in[0]                              
+  (44,124)   EFX_LUT4        0.000        0.223     LUT__60679|out                                
+             net (fo=1)      0.034        0.257     n33982                                        
+  (44,123)   EFX_LUT4        0.034        0.291     LUT__60681|in[2]                              
+  (44,123)   EFX_LUT4        0.000        0.291     LUT__60681|out                                
+             net (fo=1)      0.377        0.668     fitting/private_arithmetic/n1154              
+  (24,202)   EFX_DSP48       0.395        1.063     fitting/private_arithmetic/mult_96|A[6]       
+  (24,202)   EFX_DSP48       0.000        1.063     fitting/private_arithmetic/mult_96|O[24]      
+             net (fo=1)      0.414        1.477     fitting/private_arithmetic/partial_product[24]
+  (6,239)    EFX_ADD         0.035        1.512     fitting/private_arithmetic/add_97/i25|I1      
+  (6,239)    EFX_ADD         0.000        1.512     fitting/private_arithmetic/add_97/i25|O       
+             net (fo=1)      0.061        1.573     fitting/private_arithmetic/next_column_sum[24]
+  (5,239)    EFX_LUT4        0.034        1.607     LUT__73253|in[1]                              
+  (5,239)    EFX_LUT4        0.000        1.607     LUT__73253|out                                
+             net (fo=1)      0.000        1.607     fitting/private_arithmetic/n83653             
+  (5,239)    EFX_FF          0.000        1.607     fitting/private_arithmetic/column_sum[24]~FF|D
+
+Capture Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)                 Netlist Resource(s)
+=====================================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                                         
+  (0,164)    input            0.070        0.070     clk_25m                                         
+             net (fo=9826)    1.097        1.167     clk_25m                                         
+  (5,239)    EFX_FF           0.000        1.167     fitting/private_arithmetic/column_sum[24]~FF|CLK
+  (5,239)    EFX_FF (Hold)    0.000        1.167     fitting/private_arithmetic/column_sum[24]~FF    
+

@@ -1,0 +1,472 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta charset="UTF-8"><meta name="generator" content="DITA-OT"><meta name="description" content=""><meta name="prodname" content="Efinity"><meta name="version" content="UG-CORE-BRAM-WRAPPER-v1.9"><meta name="rights" content="© 2026 Efinix, Inc."><title>Customizing the BRAM Wrapper</title>
+	
+	<script src="../../../../../../doc/js/jquery-3.4.1.min.js"></script>
+	
+	<!-- Bootstrap 5 -->
+	<link href="../../../../../../doc/css/bootstrap5.css" rel="stylesheet">
+	<script src="../../../../../../doc/js/bootstrap.bundle.min.js"></script>
+	
+	<!-- special styles for doc output -->
+	<link href="../../../../../../doc/css/efx-styles.css" rel="stylesheet">
+	<link href="../../../../../../doc/css/glyphicons.css" rel="stylesheet" type="text/css">	
+	
+</head><body id="bram-wrapper-core-params"><header role="banner"><div>
+  <script>
+    function store_nav_state(clicked_id) {
+    var id = $(clicked_id).attr("id");
+    var div_id = id.replace(/^btn-/, 'drop-');
+    // alert(id);
+    
+    //		if ( $('#'+div_id).hasClass( "show" ) ) {	
+    if ( $('#'+id).hasClass( "collapsed" ) ) {		
+    // trigger is opposite of what you would think
+    // alert("hide");
+    localStorage.removeItem(div_id);
+    $('#'+id).children('span').addClass("glyphicon-plus-sign");
+    $('#'+id).children('span').removeClass("glyphicon-minus-sign");
+    
+    $('#'+id).children('span').addClass("black");
+    $('#'+id).children('span').removeClass("blue");
+    }
+    else {
+    // alert("show");
+    localStorage.setItem(div_id, "in");
+    $('#'+id).children('span').addClass("glyphicon-minus-sign");
+    $('#'+id).children('span').removeClass("glyphicon-plus-sign");
+    
+    $('#'+id).children('span').addClass("blue");
+    $('#'+id).children('span').removeClass("black");
+    }
+    }
+    
+    $(function(){
+    $( "div[id^=drop-]" ).each(function( index ) {
+    var drop_id = $(this).attr("id");	
+    var btn_id = drop_id.replace(/^drop-/, 'btn-');
+    // console.log( index + ": " + drop_id);	
+    
+    var nav_stored = localStorage.getItem(drop_id);
+    if (nav_stored == "in") {
+    // console.log( index + ": " + drop_id);
+    // $( '#'+drop_id ).last().addClass( "collapse" );
+    $( '#'+drop_id ).collapse("show");
+    // alert(nav_stored);
+    // $( '#'+btn_id ).toggle();
+    
+    $('#'+btn_id).children('span').addClass("glyphicon-minus-sign");
+    $('#'+btn_id).children('span').removeClass("glyphicon-plus-sign");
+    
+    $('#'+btn_id).children('span').addClass("blue");
+    }
+    });
+    });
+    
+    // row hack
+    $(function(){
+    $( "tr[class=row]" ).each(function( index ) {
+    $('tr[class=row]').removeClass("row");
+    });
+    }); 
+  </script>
+  
+  
+  
+  <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-blue">
+    <div class="container-fluid"> 
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#defaultNavbar1" aria-controls="main-nav-items" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button> 
+        <a class="navbar-brand" href="../../../../../../doc/topics/efnug-intro.html"><img src="../../../../../../doc/logo/efinity-help.png" alt="Efinix, Inc."></a>
+      </div>
+      
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="defaultNavbar1">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="/#" id="help" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Efinity Help<span class="caret"></span></a>
+            
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/efnug-intro.html">Overview</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/efnug-new.html">New in This Release</a></li> 
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/efn-quickstart.html">Quick Start</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/efn-hwsw-req.html">Hardware and Software Requirements</a></li>
+              
+              <li><hr class="dropdown-divider"></li>
+              
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/efn-proj-prefs.html">Projects and Preferences</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/efn-running-tool-flow.html">Running the Flow</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/ip-packager-intro.html">IP Packager</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/ipmgr.html">IP Manager</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/syn-intro.html">Synthesis</a></li>
+              <li><a class="dropdown-item" href="../../../../../../pt/doc/topics/hlp-id-intro.html">Interface Designer</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/tim-intro.html">Timing</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/efn-simulating.html">Simulation</a></li>
+              <li><a class="dropdown-item" href="../../../../../../pgm/doc/topics/hlp-pg-intro.html">Programmer</a></li>
+              <li><a class="dropdown-item" href="../../../../../../debugger/doc/topics/hlp-dbg-intro.html">Debugger</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/efinity-files.html">Efinity Project Files</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/efn-messages.html">Efinity Messages</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/cli-intro.html">Command-Line Interface</a></li>
+            </ul>
+          </li>
+          
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="/#" id="tut" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Tutorials<span class="caret"></span></a>
+            
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/efn-tut-intro.html">Efinity Tutorial</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/efn-unified-intro.html">Unified Design Tutorial</a></li>
+              <li><a class="dropdown-item" href="../../../../../../debugger/doc/topics/tut-debug-intro.html">Debugger Tutorial</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/efinity-trans-debug-intro.html">Transceiver Debugger Tutorial</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/efx-bram-tutorial.html">BRAM Initial Content Editor Tutorial</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/internal-reconfig-tutorial.html">Internal Reconfiguration Tutorial</a></li>
+            </ul>
+          </li>
+          
+          <li class="nav-item">
+            <a class="nav-link" href="../../../../../../doc/topics/ipmgr-supported-ip-byfamily.html">IP Help</a>
+          </li> 
+          
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="/#" id="pdf" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              PDFs<span class="caret"></span></a>
+            
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="../../../../../../doc/pdf/efinity-ug.pdf" target="_blank">Efinity Software User Guide</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/pdf/efinity-installation.pdf" target="_blank">Efinity Installation User Guide</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/pdf/efinity-quantum-ti-primitives-ug.pdf" target="_blank">Quantum Titanium Primitives User Guide</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/pdf/efinity-quantum-tz-primitives-ug.pdf" target="_blank">Quantum Topaz Primitives User Guide</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/pdf/efinity-quantum-primitives-ug.pdf" target="_blank">Quantum Trion Primitives User Guide</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/pdf/efinity-synthesis.pdf" target="_blank">Efinity Synthesis User Guide</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/pdf/efinity-timing-closure.pdf" target="_blank">Efinity Timing Closure User Guide</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/pdf/efinity-python-api.pdf" target="_blank">Efinity Python API</a></li>
+            </ul>
+          </li>
+          
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="/#" id="support" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Support<span class="caret"></span></a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="https://www.efinixinc.com/support/index.php">Support Center</a></li>
+              <li><a class="dropdown-item" href="https://www.efinixinc.com/products-efinity-training.html">Training Videos</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <!-- /.navbar-collapse --> 
+    </div>
+  </nav>  
+  
+	
+</div></header><div class="efx-nav col-xs-12 col-md-4 col-xl-3"><nav class="toc" role="navigation"><ul id="toc"><li class="nav-item"><a href="../topics/hlp-bram-wrapper.html">BRAM Wrapper Core User Guide</a><button class="btn btn-light btn-sm btn-leftnav" data-bs-toggle="collapse" aria-expanded="false" onClick="store_nav_state(this)" data-bs-target="#drop-bram" id="btn-bram"><span class="glyphicon glyphicon-plus-sign"></span></button><div class="collapse" id="drop-bram"><ul><li class="nav-item"><a href="../topics/bram-wrapper-core-features.html">Features</a></li><li class="nav-item"><a href="../topics/bram-wrapper-core-fd.html">Functional Description</a></li><li class="nav-item"><a href="../topics/ipm-main.html">IP Manager</a></li><li class="active"><a href="../topics/bram-wrapper-core-params.html">Customizing the BRAM Wrapper</a></li></ul></div></li></ul></nav></div><div class="efx-block col-xs-12 col-md-8 col-xl-9"><main role="main"><article role="article" aria-labelledby="ariaid-title1">
+    <h1 class="title topictitle1" id="ariaid-title1">Customizing the <span class="keyword">BRAM Wrapper</span></h1>
+    
+    <div class="body conbody"><p class="shortdesc"></p>
+        <section class="section" id="bram-wrapper-core-params__section_rzx_zmj_tnb">
+            
+            <p class="p" id="bram-wrapper-core-params__customizing-help">The core has parameters so you can customize its function. You
+                set the parameters in the <span class="ph uicontrol">General</span> tab of the core's IP
+                Configuration window. </p>
+        </section>
+        <section class="section" id="bram-wrapper-core-params__section_k4r_ckr_qxb">
+            <table class="table frame-all" id="bram-wrapper-core-params__table_l4r_ckr_qxb"><caption><span class="table--title-label">Table 1. </span><span class="title"><span class="keyword">BRAM Wrapper</span> Core Master Parameters</span></caption><colgroup><col style="width:15.555555555555555%"><col style="width:22.22222222222222%"><col style="width:22.22222222222222%"><col style="width:40%"></colgroup><thead class="thead">
+                        <tr class="row">
+                            <th class="entry colsep-1 rowsep-1" id="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__1">Parameter</th>
+                            <th class="entry align-center colsep-1 rowsep-1" id="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__2">Options</th>
+                            <th class="entry align-center colsep-1 rowsep-1" id="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__3">Memory Type</th>
+                            <th class="entry colsep-1 rowsep-1" id="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__4">Description</th>
+                        </tr>
+                    </thead><tbody class="tbody">
+                        <tr class="row">
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__1">Memory Type</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__2"><span class="ph">Single-port RAM,</span>
+                                <span class="ph">Simple Dual-port RAM,</span>
+                                <span class="ph">True Dual-port RAM,</span>
+                                <span class="ph">Single-port ROM,</span>
+                                <span class="ph">Dual-port ROM</span></td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__3">All</td>
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__4">Select the target memory type.<div class="div">Default: Simple Dual-port
+                                    RAM</div></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__1">Memory Mode</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__2">Speed, Area</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__3">All</td>
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__4">Select to optimize speed or area.<div class="div">Default:
+                                Speed</div></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__1">Write Mode</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__2">READ_FIRST, WRITE_FIRST, READ_UKNOWN,</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__3"><span class="ph">Single-port RAM,</span>
+                                <span class="ph">Simple Dual-port RAM</span></td>
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__4">Define memory configuration:<div class="div">READ_FIRST: Old memory content
+                                    is read.</div><div class="div">WRITE_FIRST: Write data is passed to the read
+                                    port. <div class="note note note_note" id="bram-wrapper-core-params__note_dyt_qnt_cfc"><span class="note__title">Note:</span> Write First is not supported
+                                        on SDP RAM.</div></div><div class="div">READ_UNKNOWN: Read and write
+                                    are unsynchronized, therefore the results of the address can
+                                    conflict.</div><div class="div">Default: READ_FIRST</div></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__1">Write Mode A</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__2">READ_FIRST, WRITE_FIRST, NO_CHANGE</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__3"><span class="ph">True Dual-port RAM</span></td>
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__4">Define memory behaviour:<div class="div">READ_FIRST: Old memory content is
+                                    read.</div><div class="div">WRITE_FIRST: Write data is passed to the read
+                                    port.</div><div class="div">NO_CHANGE: The output keeps the memory content
+                                    of last read address if the write operation is
+                                    applied.</div><div class="div">Default: READ_FIRST</div></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__1">Write Mode B</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__2">READ_FIRST, WRITE_FIRST, NO_CHANGE</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__3"><span class="ph">True Dual-port RAM</span></td>
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__4">Define memory behaviour:<div class="div">READ_FIRST: Old memory content is
+                                    read.</div><div class="div">WRITE_FIRST: Write data is passed to the read
+                                    port.</div><div class="div">NO_CHANGE: The output keeps the memory content
+                                    of last read address if the write operation is
+                                    applied.</div><div class="div">Default: READ_FIRST</div></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__1">Width Ratio</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__2">16:1, 8:1, 4:1, 2:1, 1:1, 1:2, 1:4, 1:8, 1:16</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__3"><span class="ph">Simple Dual-port RAM,</span>
+                                <span class="ph">True Dual-port RAM,</span>
+                                <span class="ph">Dual-port ROM</span></td>
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__4">Select symmetrical or asymmetrical width ratios.<div class="div">Default:
+                                    1:1</div></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__1">Port A: Data Bus Width</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__2">1-1024</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__3">All</td>
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__4">Define BRAM write data bus width. The width is multiple of 2 from
+                                    2<sup class="ph sup">0</sup> - 2<sup class="ph sup">10</sup>.<div class="div">Default: 16</div></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__1">Port B: Data Bus Width</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__2">-</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__3"><span class="ph">Single-port RAM,</span>
+                                <span class="ph">Simple Dual-port RAM,</span>
+                                <span class="ph">True Dual-port RAM,</span>
+                                <span class="ph">Dual-port ROM</span></td>
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__4">Define BRAM read data bus width. The width is auto calculated by
+                                the choice of width ratio. <div class="div">Default: 16</div></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__1">Port A: BRAM Depth</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__2">1-16384</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__3">All</td>
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__4">Define the BRAM depth. The depth is multiples of 2 from
+                                    2<sup class="ph sup">1</sup> - 2<sup class="ph sup">13</sup>.<div class="div">Default: 8</div></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__1">Port B: BRAM Depth</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__2">-</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__3"><span class="ph">Single-port RAM,</span>
+                                <span class="ph">Simple Dual-port RAM,</span>
+                                <span class="ph">True Dual-port RAM,</span>
+                                <span class="ph">Dual-port ROM</span></td>
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__4">Define the BRAM depth. The depth is auto calculated via Width
+                                Ratio selections.<div class="div">Default: 8</div></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__1">Byte Enable</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__2">Enable, Disable</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__3"><span class="ph">Single-port RAM,</span>
+                                <span class="ph">Simple Dual-port RAM,</span>
+                                <span class="ph">True Dual-port RAM</span></td>
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__4">Define a group of data to be masked.<div class="div">Default:
+                                Disable</div></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__1">Group Data Width</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__2">-</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__3"><span class="ph">Single-port RAM,</span>
+                                <span class="ph">Simple Dual-port RAM,</span>
+                                <span class="ph">True Dual-port RAM</span></td>
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__4">Support 8 bit data per group only.</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__1">Byte Enable Width</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__2">-</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__3"><span class="ph">Single-port RAM,</span>
+                                <span class="ph">Simple Dual-port RAM,</span>
+                                <span class="ph">True Dual-port RAM</span></td>
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__4">Define number of groups. Auto calculated.</td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__1">Write Enable</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__2">Enable, Disable</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__3"><span class="ph">Single-port RAM,</span>
+                                <span class="ph">Simple Dual-port RAM</span></td>
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__4">Define Enable Write operations.<div class="div">Default: Enable</div></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__1">Port A: Write Enable</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__2">Enable, Disable</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__3"><span class="ph">True Dual-port RAM</span></td>
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__4">Define Enable Write operations via Port A.<div class="div">Default:
+                                    Enable</div></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__1">Port B: Write Enable</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__2">Enable, Disable</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__3"><span class="ph">True Dual-port RAM</span></td>
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__4">Define Enable Write operations via Port B.<div class="div">Default:
+                                    Enable</div></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__1">Read Enable</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__2">Enable, Disable</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__3"><span class="ph">Single-port RAM,</span>
+                                <span class="ph">Simple Dual-port RAM,</span>
+                                <span class="ph">Single-port ROM</span></td>
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__4">Define Enable read operations.<div class="div">Default: Enable</div></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__1">Write Address Enable</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__2">Enable, Disable</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__3"><span class="ph">Single-port RAM,</span>
+                                <span class="ph">Simple Dual-port RAM</span></td>
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__4">Define address stall during write operations.<div class="div">Default:
+                                    Enable</div></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__1">Read Address Enable</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__2">Enable, Disable</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__3"><span class="ph">Single-port RAM,</span>
+                                <span class="ph">Simple Dual-port RAM</span></td>
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__4">Define address stall during read operation.<div class="div">Default:
+                                    Enable</div></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__1">Port A: Address Enable</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__2">Enable, Disable</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__3"><span class="ph">True Dual-port RAM</span></td>
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__4">Define address stall during write/read operation via Port
+                                    A.<div class="div">Default: Enable</div></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__1">Port B: Address Enable</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__2">Enable, Disable</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__3"><span class="ph">True Dual-port RAM</span></td>
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__4">Define address stall during write/read operation via Port
+                                    B.<div class="div">Default: Enable</div></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__1">Clock Enable</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__2">Enable, Disable</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__3"><span class="ph">True Dual-port RAM</span>, <span class="ph">Dual-port RAM</span></td>
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__4">Clock gate for write/read operation in single clock
+                                    mode.<div class="div">Default: Enable</div></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__1">Port A: Clock Enable</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__2">Enable, Disable</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__3"><span class="ph">True Dual-port RAM</span>, <span class="ph">Dual-port RAM</span></td>
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__4">Clock gate for write/read operation in dual clock
+                                    mode.<div class="div">Default: Enable</div></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__1">Port B: Clock Enable</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__2">Enable, Disable</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__3"><span class="ph">True Dual-port RAM</span>, <span class="ph">Dual-port RAM</span></td>
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__4">Clock gate for write/read operation in dual clock
+                                    mode.<div class="div">Default: Enable</div></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__1">Reset Enable</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__2">Enable, Disable</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__3"><span class="ph">Single-port RAM,</span>
+                                <span class="ph">Simple Dual-port RAM,</span>
+                                <span class="ph">Single-port ROM</span></td>
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__4">Define BRAM reset pin.<div class="div">Default: Enable</div></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__1">Port A: Reset </td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__2">Enable, Disable</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__3"><span class="ph">True Dual-port RAM,</span>
+                                <span class="ph">Dual-port ROM</span></td>
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__4">Define BRAM reset via Port A.<div class="div">Default: Enable</div></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__1">Port B: Reset </td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__2">Enable, Disable</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__3"><span class="ph">True Dual-port RAM,</span>
+                                <span class="ph">Dual-port ROM</span></td>
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__4">Define BRAM reset via Port B.<div class="div">Default: Enable</div></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__1">Write Clock Enable</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__2">Enable, Disable</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__3"><span class="ph">Single-port RAM,</span>
+                                <span class="ph">Simple Dual-port RAM</span></td>
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__4">Define clock gate for write operation.<div class="div">Default:
+                                Enable</div></td>
+                        </tr>
+                        
+                        <tr class="row">
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__1">Output Register Pipeline</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__2">Enable, Disable</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__3"><span class="ph">Single-port RAM,</span>
+                                <div class="div"><span class="ph">Simple Dual-port RAM,</span></div><div class="div"><span class="ph">Single-port
+                                        ROM</span></div></td>
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__4">Define additional 1 cycle register on read data output (to enable
+                                better timing closure). <div class="div">Default: Disable</div></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__1">Port A: Output Register Pipeline</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__2">Enable, Disable</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__3"><span class="ph">True Dual-port RAM,</span>
+                                <span class="ph">Dual-port ROM,</span></td>
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__4">Define additional 1 cycle register on read data output (to enable
+                                better timing closure) via Port A. <div class="div">Default:
+                                Disable</div></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__1">Port B: Output Register Pipeline</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__2">Enable, Disable</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__3"><span class="ph">True Dual-port RAM,</span>
+                                <span class="ph">Dual-port ROM</span></td>
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__4">Define additional 1 cycle register on read data output (to enable
+                                better timing closure) via Port B. <div class="div">Default:
+                                Disable</div></td>
+                        </tr>
+                        
+                        <tr class="row">
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__1">Clock Mode</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__2">Single Clock, Dual Clock</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__3"><span class="ph">Simple Dual-port RAM,</span>
+                                <span class="ph">True Dual-port RAM,</span>
+                                <span class="ph">Dual-port ROM</span></td>
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__4">Define BRAM clock dependency for read and write
+                                    operations.<div class="div">Default: Single Clock</div></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__1">Initialize BRAM Memory File</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__2">Enable, Disable</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__3">All</td>
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__4">Define user input BRAM Memory file. See <a class="xref" href="bram-wrapper-core-mem-init-file.html#bram-wrapper-core-mem-init-file">Memory Initialization Files</a>.<div class="div">Default: Disable</div></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__1">Memory File (.mem)</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__2">-</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__3">All</td>
+                            <td class="entry colsep-1 rowsep-1" headers="bram-wrapper-core-params__table_l4r_ckr_qxb__entry__4">Enter the path to your target user application. The file must be
+                                in <span class="ph filepath">.mem</span> format.</td>
+                        </tr>
+                    </tbody></table>
+        </section>
+        
+    </div>
+<nav role="navigation" class="related-links"><div class="familylinks"><div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="../topics/hlp-bram-wrapper.html">BRAM Wrapper Core User Guide</a></div></div></nav></article></main></div><footer role="contentinfo"><div class="navbar fixed-bottom" id="help-botbar">
+    <p id="copyright">Copyright (c) 2026 | All Rights Reserved</p>
+</div></footer></body></html>

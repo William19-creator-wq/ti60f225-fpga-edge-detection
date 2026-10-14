@@ -1,0 +1,106 @@
+version: "1.0"
+deny_by_default: true
+project_id: FPGA_EDGE_TI60
+approved_now:
+  - inspect_workspace
+  - write_control_plane_inside_agent_directory
+  - append_local_runtime_events
+  - generate_local_reports
+requires_human_approval:
+  - create_or_modify_work_copy_rtl
+  - modify_constraints
+  - modify_efinity_project
+  - run_efinity_build
+  - copy_artifact_from_efinity_output
+  - database_schema_migration
+  - database_write
+  - install_or_upgrade_software
+  - download_external_tool
+  - enable_plugin_or_mcp
+  - install_driver
+  - program_fpga
+  - program_flash
+  - debugger_control
+  - network_access
+  - external_publish
+scoped_approvals:
+  - approval_id: AP-IP-PRECHECK-20261004-v1
+    status: APPROVED
+    source: human_chat_reply
+    source_question_item: '["request_user_input_async","call_eXAjIDeGVGsU5JzcUYCiREoQ",0]'
+    reply_exact: "批准上述预检和本地审计例外"
+    task_id: TRACK4-IP-PRECHECK-001
+    design_version: v1
+    approved_design_sha256: 130481D499D68F4F2F43C6C6731D0E088E4333D4B701C22E1E37C2CCD65BD2E8
+    baseline: IP-PRECHECK-BL-v1
+    baseline_manifest_sha256: 1B336732334C4453FEA720351FF45910B0D9367B1089C4A89713815CCE790DC3
+    scope: "C0–C3，按已批准设计的依赖及停止条件执行有限RTL/时钟/约束调整、编译/展开、接口生成、综合、布局布线、时序检查"
+    work_root: "_fpga_edge_agent/work/active/track4_ip_precheck_20261004"
+    report_root: "_fpga_edge_agent/experiments/track4_full_sw_20261004/05_reviews/ip-precheck"
+    audit_exception: "仅本次软件预检允许控制面本地追加审计；PostgreSQL未配置，不修改正式数据库、PROJECT_STATE或硬件状态"
+    excluded: "算法实现、功能脚本/测试/TB、保护IP重生成/升级、模型修改、bit/hex生成、下载/安装/联网、硬件编程/观察代签"
+    evidence: "experiments/track4_full_sw_20261004/05_reviews/ip-precheck/approval-v1.md"
+  - approval_id: AP-IP-PRECHECK-20261004-v1.1
+    status: APPROVED
+    source: human_chat_reply
+    source_question_item: '["request_user_input_async","call_r8fX5uF2Wli9TZ6JTHrHTMFe",0]'
+    reply_exact: "批准这项输入修订并继续"
+    task_id: TRACK4-IP-PRECHECK-001
+    design_version: v1.1
+    approved_design_sha256: 07EA95A4E266DF270835827800546C5B71FF305D9EA0CF3953881A59807790CC
+    baseline: IP-PRECHECK-BL-v1.1
+    baseline_manifest_sha256: 2333F4B42836EDC58B7F8083D0044542BFF8D2C9D375698F9A609C0C1A144AEC
+    scope: "原C0–C3矩阵保持；C0/C1在原89输入之外仅补入原timescale.v与i2c_master_defines.v，共91份；保留首次失败"
+    work_root: "_fpga_edge_agent/work/active/track4_ip_precheck_20261004"
+    report_root: "_fpga_edge_agent/experiments/track4_full_sw_20261004/05_reviews/ip-precheck"
+    audit_exception: "保留已批准本次软件预检的本地审计例外，正式数据库及硬件状态不改"
+    excluded: "算法实现、功能脚本/测试/TB、保护IP重生成/升级、模型修改、bit/hex、下载/安装/联网、硬件操作"
+    evidence: "experiments/track4_full_sw_20261004/05_reviews/ip-precheck/approval-v1.1.md"
+  - approval_id: AP-IP-PRECHECK-20261004-v1.2
+    status: APPROVED
+    source: human_chat_reply
+    source_question_item: '["request_user_input_async","call_h2m5tW1dSgINa137YCPecEr7",0]'
+    reply_exact: "批准 v1.2 并继续"
+    task_id: TRACK4-IP-PRECHECK-001
+    design_version: v1.2
+    approved_design_sha256: 2A0AA04F72BAC738A70B5BA5A3DAE503C1F393478939587A7AAFCEE9F1A95E34
+    baseline: IP-PRECHECK-BL-v1.2
+    baseline_manifest_sha256: B0710CECE3681230CE042F9D1B74933ABE1B103011258415FD67D28D9E13F391
+    scope: "原C0–C3矩阵保持；原91项之外只补原Panel_1080p_reg.mem，共92份；旧两次失败保留"
+    work_root: "_fpga_edge_agent/work/active/track4_ip_precheck_20261004"
+    report_root: "_fpga_edge_agent/experiments/track4_full_sw_20261004/05_reviews/ip-precheck"
+    audit_exception: "保留已批准本次软件预检的本地审计例外，正式数据库及硬件状态不改"
+    excluded: "算法实现、功能脚本/测试/TB、保护IP重生成/升级、模型修改、bit/hex、下载/安装/联网、硬件操作"
+    evidence: "experiments/track4_full_sw_20261004/05_reviews/ip-precheck/approval-v1.2.md"
+  - approval_id: AP-ALGORITHM-R1-20261004-v1.1
+    status: APPROVED
+    source: human_chat_reply
+    source_question_item: '["request_user_input_async","call_Dgewe1KRP9bFqqLEfr1ELWQF",0]'
+    reply_exact: "批准 R1 v1.1 及本次本地审计例外"
+    task_id: TRACK4-ALGORITHM-R1-001
+    design_version: v1.1
+    approved_design_sha256: DD2CCF11D0FEEE7CCFE8A3A679B004B5CD33998A2D7B3B2F79306911793B21E0
+    inherited_design_sha256: F33A700DE0B76A8415E220204C9DB4E5C013878D2249A20CAEDDF62B3096BC00
+    baseline: ALGO-BL-20261004-v1.1
+    baseline_manifest_sha256: DA97EA25F9DD8193913967965A2E0874CAD1E7A307F11337272BF910AA1D3DE4
+    scope: "继承完整R1 v1 A/H：灰度/中值/Sobel、独立参考/TB/脚本、图样/CRC/监督/复位/LED顶层和Ti60F225/I3四pin25MHz工程；1080p仿真、综合/PT/布局布线/STA，必要检查成功后bit/hex及staging登记"
+    work_root: "_fpga_edge_agent/work/active/track4_algorithms_20261004/r1"
+    report_root: "_fpga_edge_agent/experiments/track4_algorithms_20261004"
+    audit_exception: "仅本次独立R1软件实验采用本地JSONL/报告/Side-effect ledger；PostgreSQL未配置，正式DB、PROJECT_STATE、TASK_LEDGER和hardware_nodes不改"
+    excluded: "后续Canny/识别/生产摄像/HDMI/DDR实现、保护IP重生成/升级、原模型修改、下载/安装/网络、数据库操作、硬件编程/观察"
+    evidence: "experiments/track4_algorithms_20261004/03_review/approval-r1-v1.1.md"
+hardware_nodes:
+  # Hardware node gates remain unchanged by the scoped software approvals above.
+  H0_BASELINE: human_confirmation_required
+  H1_DISPLAY_BASELINE: human_program_and_observation_required
+  H2_CAMERA_STREAM: human_program_and_observation_required
+  H3_GRAYSCALE: human_program_and_observation_required
+  H4_WINDOW_AND_SOBEL: human_program_and_observation_required
+  H5_THRESHOLD_DISPLAY: human_program_and_observation_required
+  A1_MEDIAN_FILTER: human_program_and_observation_required
+  A2_LIVE_THRESHOLD: human_program_and_observation_required
+  A3_DDR_FRAMEBUFFER: human_program_and_observation_required
+  A4_CANNY: human_program_and_observation_required
+  A5_COLOR_OVERLAY: human_program_and_observation_required
+  A6_SHAPE_RECOGNITION: human_program_and_observation_required
+  R0_RELEASE: human_program_and_observation_required

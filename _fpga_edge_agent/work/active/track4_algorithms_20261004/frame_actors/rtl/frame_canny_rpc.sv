@@ -1,0 +1,223 @@
+// FA03/04/06：只处理已有、不可变的 RGB Source；采集和 RX close 由上层独立闭合。
+module frame_canny_rpc #(
+    parameter integer WIDTH = 1920, HEIGHT = 1080, RESULT_ITEM_BITS = 1,
+    parameter logic [32:0] ADDRESS_BYTES = 33'h10000000
+)(
+    input logic clk, rst, axi_enable,
+    input logic job_valid, output wire job_ready,
+    input logic [141:0] job_cj,
+    input logic [194:0] job_origin,
+    input logic [63:0] job_handle,
+    input logic [31:0] source_base, class_base, queue_base, result_base,
+    input logic cancel_valid, input logic [95:0] cancel_scope,
+    output wire grad_valid, input logic grad_ready, output wire [184:0] grad_payload,
+    output wire done_valid, input logic done_ready,
+    output wire [95:0] done_scope, output wire [194:0] done_origin,
+    output logic [1:0] outcome, output logic [31:0] reason,
+    output logic [20:0] reader_pairs, canny_input, canny_class,
+    output logic [21:0] output_pixels, edge_pixels, discarded_fp,
+    output wire [591:0] r2_status_snapshot,
+    output wire [3:0] phase, output wire quarantined, producer_local_quarantined,
+    output wire algorithm_req_valid, input logic algorithm_req_ready,
+    output wire algorithm_write, output wire [31:0] algorithm_addr,
+    output wire [511:0] algorithm_wdata,
+    input logic algorithm_rsp_valid, output wire algorithm_rsp_ready,
+    input logic [511:0] algorithm_rdata,
+    input logic algorithm_error, algorithm_drained, memory_quarantined
+);
+    localparam integer PIXELS = WIDTH * HEIGHT, PAIRS = PIXELS / 2;
+    localparam logic [32:0] SOURCE_BYTES = 33'(((3*PIXELS+63)/64)*64);
+    localparam logic [32:0] CLASS_BYTES = 33'(((PIXELS+255)/256)*64);
+    localparam logic [32:0] QUEUE_BYTES = 33'(((PIXELS+15)/16)*64);
+    localparam logic [32:0] RESULT_BYTES = 33'(((PIXELS*RESULT_ITEM_BITS+511)/512)*64);
+    typedef enum logic [3:0] {
+        IDLE, START_CANNY, START_READER, WAIT_READER_CFG, PROCESS, DRAIN, DONE, QUARANTINE
+    } state_t;
+    state_t state;
+    logic [141:0] cj;
+    logic [194:0] origin;
+    logic [63:0] handle;
+    logic [31:0] locked_source, locked_class, locked_queue, locked_result;
+    logic reader_started, reader_closed, canny_started, canny_closed, stopping;
+
+    // 输入检查用当前 job；执行、取消和回执一律使用接受沿锁定的上下文。
+    wire [32:0] source_end = {1'b0,source_base} + SOURCE_BYTES;
+    wire [32:0] class_end = {1'b0,class_base} + CLASS_BYTES;
+    wire [32:0] queue_end = {1'b0,queue_base} + QUEUE_BYTES;
+    wire [32:0] result_end = {1'b0,result_base} + RESULT_BYTES;
+    wire legal = job_cj[106:96] == 11'(WIDTH) && job_cj[117:107] == 11'(HEIGHT) &&
+        job_cj[128:118] <= job_cj[139:129] && job_origin[2:0] < 6 &&
+        job_cj[31:0] == job_origin[98:67] && job_cj[63:32] == job_origin[130:99] &&
+        (source_base[5:0] | class_base[5:0] | queue_base[5:0] | result_base[5:0]) == 0 &&
+        source_end <= ADDRESS_BYTES && class_end <= ADDRESS_BYTES &&
+        queue_end <= ADDRESS_BYTES && result_end <= ADDRESS_BYTES &&
+        (source_end <= {1'b0,class_base} || class_end <= {1'b0,source_base}) &&
+        (source_end <= {1'b0,queue_base} || queue_end <= {1'b0,source_base}) &&
+        (source_end <= {1'b0,result_base} || result_end <= {1'b0,source_base}) &&
+        (class_end <= {1'b0,queue_base} || queue_end <= {1'b0,class_base}) &&
+        (class_end <= {1'b0,result_base} || result_end <= {1'b0,class_base}) &&
+        (queue_end <= {1'b0,result_base} || result_end <= {1'b0,queue_base});
+    wire matching_cancel = cancel_valid && cancel_scope == cj[95:0] && !stopping &&
+        state != IDLE && state != DONE && state != QUARANTINE;
+    wire child_cancel = stopping || matching_cancel;
+
+    wire r_job_ready, r_cfg_valid, r_cfg_error, r_done_valid, r_done_ready, r_stop, r_q;
+    wire r_out_valid, r_out_ready;
+    wire [73:0] r_fp;
+    wire [63:0] r_id, r_done_id;
+    wire [1:0] r_outcome;
+    wire [7:0] r_reason;
+    wire [20:0] r_prepared, r_output;
+    wire [21:0] r_lines, r_discard;
+    wire c_job_ready, c_input_ready, c_done_valid, c_done_ready, c_stop, c_q;
+    wire [95:0] c_done_scope;
+    wire [1:0] c_outcome;
+    wire [31:0] c_reason;
+    wire [20:0] c_input, c_classes;
+    wire [21:0] c_output, c_edges, c_discard;
+    wire [591:0] c_status_snapshot;
+    wire [1:0] client_valid, client_ready, client_write, client_rsp_valid, client_rsp_ready;
+    wire [31:0] client_addr [0:1];
+    wire [511:0] client_data [0:1];
+    wire [511:0] client_rdata;
+    wire client_error, client_drained, algorithm_group_q;
+    wire reader_fire = r_done_valid && r_done_ready;
+    wire canny_fire = c_done_valid && c_done_ready;
+    wire cfg_fire = state == WAIT_READER_CFG && r_cfg_valid;
+    wire all_closed = reader_closed && canny_closed;
+    wire discard_enabled = canny_closed && child_cancel && reader_started &&
+        !reader_closed && state != QUARANTINE;
+    wire counts_bad = reader_pairs != 21'(PAIRS) || canny_input != 21'(PAIRS) ||
+        canny_class != 21'(PAIRS) || output_pixels != 22'(PIXELS) || discarded_fp != 0;
+    logic [31:0] error_events;
+    always_comb begin
+        error_events = 0;
+        if (state == IDLE && job_valid && job_ready && !legal) error_events[0] = 1;
+        if ((reader_fire && r_outcome == 1) || (cfg_fire && r_cfg_error)) error_events[3] = 1;
+        if (canny_fire && c_outcome == 1) error_events[4] = 1;
+        if (state == DRAIN && all_closed && outcome == 0 && !child_cancel && counts_bad)
+            error_events[5] = 1;
+    end
+    assign job_ready = !rst && state == IDLE && axi_enable && !quarantined &&
+        r_job_ready && c_job_ready;
+    assign done_valid = !rst && state == DONE;
+    assign done_scope = cj[95:0];
+    assign done_origin = origin;
+    assign phase = state;
+    assign r2_status_snapshot = canny_started ? c_status_snapshot : 592'd0;
+    assign producer_local_quarantined = r_q || c_q || algorithm_group_q || state == QUARANTINE;
+    assign quarantined = producer_local_quarantined || memory_quarantined;
+    assign r_done_ready = !rst && reader_started && !reader_closed && state != QUARANTINE;
+    assign c_done_ready = !rst && canny_started && !canny_closed && state != QUARANTINE;
+    assign r_out_ready = discard_enabled || (canny_started && !canny_closed && c_input_ready);
+
+    rgb_frame_reader #(.WIDTH(WIDTH), .HEIGHT(HEIGHT)) reader (
+        .clk, .rst, .job_valid(state == START_READER), .job_ready(r_job_ready),
+        .job_base(locked_source), .job_handle(handle), .job_rsp_valid(r_cfg_valid),
+        .job_rsp_ready(state == WAIT_READER_CFG), .job_rsp_error(r_cfg_error),
+        .out_valid(r_out_valid), .out_ready(r_out_ready), .out_fp(r_fp), .out_id(r_id),
+        .cancel_valid(child_cancel), .cancel_id(handle), .done_valid(r_done_valid),
+        .done_ready(r_done_ready), .done_id(r_done_id), .outcome(r_outcome), .reason(r_reason),
+        .prepared_pairs(r_prepared), .output_pairs(r_output), .read_lines(r_lines),
+        .discarded_lines(r_discard), .source_stop(r_stop), .quarantined(r_q),
+        .line_req_valid(client_valid[0]), .line_req_ready(client_ready[0]),
+        .line_write(client_write[0]), .line_addr(client_addr[0]), .line_wdata(client_data[0]),
+        .line_rsp_valid(client_rsp_valid[0]), .line_rsp_ready(client_rsp_ready[0]),
+        .line_rdata(client_rdata), .line_error(client_error), .line_drained(client_drained)
+    );
+    canny_full_top #(.WIDTH(WIDTH), .HEIGHT(HEIGHT), .RESULT_ITEM_BITS(RESULT_ITEM_BITS)) canny (
+        .clk, .rst, .cj_valid(state == START_CANNY), .cj_ready(c_job_ready), .cj,
+        .class_base(locked_class), .queue_base(locked_queue), .result_base(locked_result),
+        .in_valid(r_out_valid && canny_started && !canny_closed), .in_ready(c_input_ready), .in_fp(r_fp),
+        .grad_valid, .grad_ready, .grad_payload, .cancel_valid(child_cancel), .cancel_scope(cj[95:0]),
+        .source_stop(c_stop), .done_valid(c_done_valid), .done_ready(c_done_ready),
+        .done_scope(c_done_scope), .outcome(c_outcome), .reason(c_reason),
+        .input_pairs(c_input), .class_pairs(c_classes), .output_pixels(c_output), .edge_pixels(c_edges),
+        .r2_status_snapshot(c_status_snapshot), .discarded_pixels(c_discard),
+        .line_req_valid(client_valid[1]), .line_req_ready(client_ready[1]),
+        .line_write(client_write[1]), .line_addr(client_addr[1]), .line_wdata(client_data[1]),
+        .line_rsp_valid(client_rsp_valid[1]), .line_rsp_ready(client_rsp_ready[1]),
+        .line_rdata(client_rdata), .line_error(client_error), .line_drained(client_drained), .quarantined(c_q)
+    );
+    line_rpc_arbiter2 algorithm_group (
+        .clk, .rst, .req_valid(client_valid), .req_ready(client_ready), .req_write(client_write),
+        .req_addr(client_addr), .req_data(client_data), .rsp_valid(client_rsp_valid),
+        .rsp_ready(client_rsp_ready), .rsp_data(client_rdata), .rsp_error(client_error), .rsp_drained(client_drained),
+        .line_req_valid(algorithm_req_valid), .line_req_ready(algorithm_req_ready), .line_write(algorithm_write),
+        .line_addr(algorithm_addr), .line_wdata(algorithm_wdata), .line_rsp_valid(algorithm_rsp_valid),
+        .line_rsp_ready(algorithm_rsp_ready), .line_rdata(algorithm_rdata),
+        .line_error(algorithm_error), .line_drained(algorithm_drained), .quarantined(algorithm_group_q)
+    );
+
+    always_ff @(posedge clk) begin
+        if (rst) begin
+            state <= IDLE; cj <= 0; origin <= 0; handle <= 0;
+            locked_source <= 0; locked_class <= 0; locked_queue <= 0; locked_result <= 0;
+            reader_started <= 0; canny_started <= 0; reader_closed <= 1; canny_closed <= 1; stopping <= 0;
+            outcome <= 0; reason <= 0; reader_pairs <= 0; canny_input <= 0; canny_class <= 0;
+            output_pixels <= 0; edge_pixels <= 0; discarded_fp <= 0;
+        end else begin
+            if (r_out_valid && r_out_ready && discard_enabled) discarded_fp <= discarded_fp + 22'd1;
+            case (state)
+                IDLE: if (job_valid && job_ready) begin
+                    cj <= job_cj; origin <= job_origin; handle <= job_handle;
+                    locked_source <= source_base; locked_class <= class_base;
+                    locked_queue <= queue_base; locked_result <= result_base;
+                    reader_started <= 0; canny_started <= 0; reader_closed <= 1; canny_closed <= 1; stopping <= 0;
+                    outcome <= 0; reason <= 0; reader_pairs <= 0; canny_input <= 0; canny_class <= 0;
+                    output_pixels <= 0; edge_pixels <= 0; discarded_fp <= 0;
+                    if (!legal) begin state <= DRAIN; stopping <= 1; outcome <= 1; reason <= 1; end
+                    else if (cancel_valid && cancel_scope == job_cj[95:0]) begin
+                        state <= DRAIN; stopping <= 1; outcome <= 2;
+                    end else state <= START_CANNY;
+                end
+                START_CANNY: if (c_job_ready) begin
+                    canny_started <= 1; canny_closed <= 0;
+                    state <= child_cancel ? DRAIN : START_READER;
+                end
+                START_READER: if (r_job_ready) begin
+                    reader_started <= 1; reader_closed <= 0; state <= WAIT_READER_CFG;
+                end
+                WAIT_READER_CFG: if (r_cfg_valid) begin
+                    if (r_cfg_error) begin reader_closed <= 1; stopping <= 1; state <= DRAIN; end
+                    else state <= child_cancel ? DRAIN : PROCESS;
+                end
+                DRAIN: if (all_closed && !quarantined) state <= DONE;
+                DONE: if (done_ready) state <= IDLE;
+                default: begin end
+            endcase
+            if (matching_cancel) begin
+                stopping <= 1;
+                if (outcome == 0) outcome <= 2;
+                // 保留已公开 child job/cfg 的接受义务，不能靠取消从启动状态跳走。
+                if (state != START_CANNY && state != START_READER && state != WAIT_READER_CFG) state <= DRAIN;
+            end
+            if (reader_fire) begin
+                reader_closed <= 1; reader_pairs <= r_output; state <= DRAIN;
+                if (r_outcome != 0) begin stopping <= 1; if (outcome == 0 && r_outcome == 2) outcome <= 2; end
+            end
+            if (canny_fire) begin
+                canny_closed <= 1; canny_input <= c_input; canny_class <= c_classes;
+                output_pixels <= c_output; edge_pixels <= c_edges; state <= DRAIN;
+                if (c_outcome != 0) begin stopping <= 1; if (outcome == 0 && c_outcome == 2) outcome <= 2; end
+            end
+            if (|error_events) begin reason <= ((state == IDLE) ? 32'd0 : reason) | error_events; outcome <= 1; stopping <= 1; end
+            // 安全 DONE 已公开之后，无关 memory Q 只禁止复用，不改变原回执。
+            if (quarantined && state != DONE) begin state <= QUARANTINE; stopping <= 1; outcome <= 1; end
+        end
+    end
+    // synthesis translate_off
+    initial begin
+        if (WIDTH < 6 || WIDTH > 1920 || WIDTH % 2 || HEIGHT < 5 || HEIGHT > 1080)
+            $fatal(1, "Frame algorithm geometry");
+        if (RESULT_ITEM_BITS != 1 && RESULT_ITEM_BITS != 8) $fatal(1, "Frame algorithm result format");
+    end
+    always @(posedge clk) if (!rst) begin
+        if ((|client_rsp_valid) && $isunknown({client_rdata,client_error,client_drained})) $fatal(1, "Effective algorithm reply contains X/Z");
+        if (done_valid && !all_closed) $fatal(1, "Frame algorithm DONE before true child closure");
+        if (reader_fire && r_done_id != handle) $fatal(1, "Frame reader identity changed");
+        if (canny_fire && c_done_scope != cj[95:0]) $fatal(1, "Frame Canny identity changed");
+        if (r_out_valid && r_out_ready && r_id != handle) $fatal(1, "Frame reader FP identity changed");
+    end
+    // synthesis translate_on
+endmodule

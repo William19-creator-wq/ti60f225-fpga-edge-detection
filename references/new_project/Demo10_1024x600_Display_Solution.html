@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="author" content="LeoXuanyi">
+  <meta name="description" content="Ti60F225 Demo10 在 1024x600 HDMI 屏幕上无显示的诊断与解决方案">
+  <title>Demo10 适配 1024×600 HDMI 显示屏解决方案</title>
+  <style>
+    :root {
+      --ink: #172033;
+      --muted: #5c677d;
+      --line: #d9e0eb;
+      --blue: #2457d6;
+      --blue-soft: #edf3ff;
+      --green: #087f5b;
+      --green-soft: #eaf8f3;
+      --amber: #9a5b00;
+      --amber-soft: #fff6df;
+      --red: #b42318;
+      --red-soft: #fff0ee;
+      --paper: #ffffff;
+      --bg: #f3f6fb;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--bg);
+      font: 16px/1.7 "Microsoft YaHei", "Noto Sans SC", system-ui, sans-serif;
+    }
+    main {
+      width: min(1100px, calc(100% - 32px));
+      margin: 28px auto;
+      padding: 44px 54px 60px;
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      box-shadow: 0 12px 34px rgba(29, 50, 90, .08);
+    }
+    h1, h2, h3 { line-height: 1.3; }
+    h1 { margin: 0 0 12px; font-size: 2rem; }
+    h2 { margin-top: 38px; padding-bottom: 8px; border-bottom: 2px solid var(--line); }
+    h3 { margin-top: 26px; }
+    p { margin: 10px 0; }
+    a { color: var(--blue); }
+    .meta { color: var(--muted); margin-bottom: 28px; }
+    .summary {
+      padding: 18px 22px;
+      background: var(--blue-soft);
+      border-left: 5px solid var(--blue);
+      border-radius: 8px;
+    }
+    .note, .warning, .success, .danger {
+      margin: 18px 0;
+      padding: 14px 18px;
+      border-radius: 8px;
+      border: 1px solid;
+    }
+    .note { background: var(--blue-soft); border-color: #bdd0ff; }
+    .warning { background: var(--amber-soft); border-color: #f0cf83; }
+    .success { background: var(--green-soft); border-color: #9edcc8; }
+    .danger { background: var(--red-soft); border-color: #efb2aa; }
+    table { width: 100%; border-collapse: collapse; margin: 16px 0 24px; }
+    th, td { padding: 11px 13px; border: 1px solid var(--line); text-align: left; vertical-align: top; }
+    th { background: #f1f4f9; }
+    code { font-family: Consolas, "Cascadia Mono", monospace; }
+    :not(pre) > code { padding: 2px 6px; color: #193d8f; background: #eef3ff; border-radius: 4px; }
+    pre {
+      overflow-x: auto;
+      padding: 16px 18px;
+      color: #e8eefc;
+      background: #142033;
+      border-radius: 8px;
+      line-height: 1.55;
+    }
+    ol li, ul li { margin: 5px 0; }
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(120px, 1fr));
+      gap: 10px;
+      margin: 18px 0;
+    }
+    .flow div {
+      padding: 13px 10px;
+      text-align: center;
+      background: #f6f8fc;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+    }
+    .checklist li { padding-left: 3px; }
+    footer { margin-top: 46px; padding-top: 18px; border-top: 1px solid var(--line); color: var(--muted); }
+    @media (max-width: 760px) {
+      main { width: 100%; margin: 0; padding: 28px 20px 44px; border: 0; border-radius: 0; }
+      .flow { grid-template-columns: 1fr; }
+    }
+    @media print {
+      body { background: white; }
+      main { width: 100%; margin: 0; padding: 0; border: 0; box-shadow: none; }
+      a { color: inherit; text-decoration: none; }
+      pre { white-space: pre-wrap; }
+    }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Demo10 适配 1024×600 HDMI 显示屏解决方案</h1>
+  <div class="meta">作者：LeoXuanyi　|　适用工程：Ti60F225 Demo10（SC431HAI → MIPI CSI → DDR3 → HDMI）　|　日期：2026-10-03</div>
+
+  <div class="summary">
+    <strong>结论：</strong>屏幕的物理分辨率是 1024×600，但不能据此直接把 Demo10 的宽高改为 1024×600。应先确认屏幕 HDMI 控制板能够接收的标准模式，然后用 FPGA 内部色条单独验证 HDMI。推荐优先测试标准 1280×720@60Hz；色条正常后，再恢复摄像头、MIPI 和 DDR 链路。
+  </div>
+
+  <h2>1. 问题本质</h2>
+  <p>Demo10 默认目标是摄像头到 HDMI 的完整视频通路，而不是单纯的 HDMI 测试工程：</p>
+  <div class="flow">
+    <div>SC431HAI<br>摄像头</div>
+    <div>I²C 配置<br>MIPI CSI 接收</div>
+    <div>像素整理</div>
+    <div>DDR3<br>帧缓存</div>
+    <div>DVI/HDMI<br>显示输出</div>
+  </div>
+  <p>其中任意一级没有启动，都可能造成黑屏或“无信号”。小尺寸 HDMI 屏通常由 1024×600 液晶面板加 HDMI 缩放控制板组成。面板分辨率不等于 HDMI 输入分辨率；控制板可能接受 720P、1080P 后缩放，也可能只支持少数模式。</p>
+
+  <div class="warning">
+    <strong>当前工程还有一个明显风险：</strong>顶层采用 1920×1080，但同步和消隐参数不是标准 1080P60。普通显示器可能容忍，小型 HDMI 控制板更可能直接拒绝该时序。
+  </div>
+
+  <h2>2. 第一步：确认屏幕支持的 HDMI 输入模式</h2>
+  <ol>
+    <li>给屏幕单独稳定供电，不要只依赖电脑或开发板 USB 口供电。</li>
+    <li>使用同一根 HDMI 线连接 Windows 电脑和屏幕。</li>
+    <li>依次测试 <code>1920×1080 @ 60Hz</code>、<code>1280×720 @ 60Hz</code>。</li>
+    <li>打开 Windows“设置 → 系统 → 显示 → 高级显示”，记录“桌面模式”和“活动信号模式”。</li>
+    <li>如果能够读取 EDID，保存首选时序、像素时钟、前肩、同步宽度、后肩和同步极性。</li>
+  </ol>
+
+  <table>
+    <thead><tr><th>电脑测试结果</th><th>FPGA侧处理</th></tr></thead>
+    <tbody>
+      <tr><td>1080P60 正常</td><td>可继续使用 1080P，但必须换成标准 1080P 时序并检查 148.5 MHz 像素时钟。</td></tr>
+      <tr><td>仅 720P60 正常</td><td>优先输出标准 720P；摄像头也应配置为 1280×720，或增加裁剪/缩放模块。</td></tr>
+      <tr><td>仅 1024×600 正常</td><td>必须依据 EDID 或厂家时序表配置，不能猜像素时钟与消隐参数。</td></tr>
+      <tr><td>电脑也无显示</td><td>先排查显示屏供电、HDMI线和屏幕控制板，不要修改 FPGA。</td></tr>
+    </tbody>
+  </table>
+
+  <h2>3. 推荐方案：先制作标准 720P 色条诊断位流</h2>
+  <p>这一步绕开摄像头、I²C、MIPI 和 DDR，只验证 FPGA 到 HDMI 显示屏的通路。涉及文件：</p>
+  <ul>
+    <li><code>rtl/color_bar.v</code></li>
+    <li><code>rtl/ti60f225_oob_top.v</code></li>
+    <li><code>ti60f225_oob.peri.xml</code> 对应的 Efinity Interface Designer PLL 配置</li>
+  </ul>
+
+  <h3>3.1 切换色条分辨率</h3>
+  <p>打开 <code>rtl/color_bar.v</code>，把当前定义：</p>
+  <pre><code>`define VIDEO_1920_1080</code></pre>
+  <p>修改为：</p>
+  <pre><code>// `define VIDEO_1920_1080
+`define VIDEO_1280_720</code></pre>
+  <p>该文件已经包含标准 720P60 参数：</p>
+  <pre><code>H_ACTIVE = 1280;
+H_FP     = 110;
+H_SYNC   = 40;
+H_BP     = 220;
+
+V_ACTIVE = 720;
+V_FP     = 5;
+V_SYNC   = 5;
+V_BP     = 20;</code></pre>
+
+  <h3>3.2 解除 HDMI 对 DSI 初始化的依赖</h3>
+  <p>打开 <code>rtl/ti60f225_oob_top.v</code>，找到：</p>
+  <pre><code>assign vid_rst_n = dly_cnt[26];</code></pre>
+  <p>诊断阶段暂时改成：</p>
+  <pre><code>// HDMI-only diagnostic: release video reset after all PLLs lock
+assign vid_rst_n = w_arstn;</code></pre>
+  <p>原因是原逻辑只有在 <code>w_confdone</code> 有效后才释放 HDMI，而 <code>w_confdone</code> 来自工程中残留的 MIPI DSI 面板初始化链。它不应该成为 HDMI 色条测试的必要条件。</p>
+
+  <h3>3.3 启用色条模块</h3>
+  <p>在顶层约 942 行附近取消 <code>color_bar</code> 实例的注释：</p>
+  <pre><code>color_bar color_bar_m0 (
+    .clk   (hdmi_tx_slow_clk),
+    .rst   (~vid_rst_n),
+    .hs    (video_hs),
+    .vs    (video_vs),
+    .de    (video_de),
+    .rgb_r (video_r),
+    .rgb_g (video_g),
+    .rgb_b (video_b)
+);</code></pre>
+
+  <h3>3.4 将 DVI 编码器切换到色条输入</h3>
+  <p>在 <code>dvi_encoder</code> 实例中临时使用以下连接：</p>
+  <pre><code>.i_bdata (video_b),
+.i_gdata (video_g),
+.i_rdata (video_r),
+.i_hs    (video_hs),
+.i_vs    (video_vs),
+.i_de    (video_de),</code></pre>
+  <p>不要继续沿用原代码里 R/B 和 HS/VS 互换的连接进行第一次标准色条验证。</p>
+
+  <h3>3.5 重新配置 USER_PLL</h3>
+  <p>仅修改分辨率宏不够。原 1080P 时钟会使 720P 色条以错误刷新率输出。打开 Efinity Interface Designer 中的 <code>USER_PLL</code>，根据 25 MHz 板载输入时钟重新计算并生成：</p>
+  <table>
+    <thead><tr><th>时钟</th><th>720P60目标值</th><th>用途</th></tr></thead>
+    <tbody>
+      <tr><td><code>hdmi_tx_slow_clk</code></td><td>74.25 MHz</td><td>HDMI像素时钟、DVI编码器</td></tr>
+      <tr><td><code>hdmi_tx_fast_clk</code></td><td>371.25 MHz</td><td>TMDS 5倍高速时钟</td></tr>
+      <tr><td><code>vid_clk_dvi2</code></td><td>37.125 MHz</td><td>双像素帧缓存时钟；纯色条阶段可暂不参与数据路径</td></tr>
+    </tbody>
+  </table>
+  <p>保持高速/低速时钟比为 5:1。应通过 Efinity PLL 配置界面生成参数，不要手工猜测 PLL 分频值。</p>
+
+  <h3>3.6 编译与烧录</h3>
+  <ol>
+    <li>运行 Synthesis、Place、Route、Generate Bitstream。</li>
+    <li>确认没有未约束 HDMI 时钟、PLL 未锁定或 TMDS 引脚错误。</li>
+    <li>在 Programmer 中使用 JTAG 烧录新生成的 <code>outflow/ti60f225_oob.bit</code>。</li>
+    <li>观察显示器是否识别到 1280×720@60Hz，并显示八色条。</li>
+  </ol>
+
+  <h2>4. 色条测试结果如何处理</h2>
+  <table>
+    <thead><tr><th>现象</th><th>结论</th><th>下一步</th></tr></thead>
+    <tbody>
+      <tr><td>720P 色条正常</td><td>屏幕、HDMI线、TMDS引脚和HDMI时钟基本正常。</td><td>恢复帧缓存，再逐级恢复DDR、MIPI和摄像头。</td></tr>
+      <tr><td>显示器仍提示“无信号”</td><td>问题在摄像头之前，优先检查 PLL、复位、TMDS引脚、同步极性和位流是否来自当前工程。</td><td>使用示波器检查 HDMI 时钟差分输出，并核对引脚约束。</td></tr>
+      <tr><td>显示器识别720P但黑屏</td><td>时钟与同步可能存在，色条数据或DVI编码输入连接有误。</td><td>检查 <code>video_de</code>、RGB及DVI编码器连接。</td></tr>
+      <tr><td>画面滚动、错位或闪烁</td><td>像素时钟、总行场周期或同步极性不正确。</td><td>复核 1650×750 总时序及74.25 MHz像素时钟。</td></tr>
+    </tbody>
+  </table>
+
+  <h2>5. 色条正常后恢复摄像头链路</h2>
+  <h3>5.1 先恢复 DDR 帧缓存</h3>
+  <p>建议临时把 LED 改为可观察的状态：</p>
+  <pre><code>// 删除原来的 assign led[0] 后再加入
+assign led[0] = cal_done;       // DDR校准完成
+assign led[1] = w_arstn;        // 全部PLL锁定
+assign led[2] = w_confdone;     // 原DSI初始化完成，仅用于观察
+assign led[3] = w_mipi_rx_de;   // MIPI像素数据活动</code></pre>
+  <p>D0、D1 由高电平点亮。当前原始工程只有 <code>led[0]</code> 被驱动，<code>led[1..3]</code> 未驱动，因此原始 D1 常亮没有诊断意义。</p>
+
+  <h3>5.2 恢复缺失的摄像头 I²C 源文件</h3>
+  <p>项目 XML 列出了以下模块，但当前 <code>rtl/cam_i2c_ctrl</code> 目录内只有文档，缺少对应 Verilog：</p>
+  <pre><code>rtl/cam_i2c_ctrl/i2c_master/i2c_master_byte_ctrl.v
+rtl/cam_i2c_ctrl/i2c_master/i2c_master_top.v
+rtl/cam_i2c_ctrl/i2c_master/i2c_master_bit_ctrl.v
+rtl/cam_i2c_ctrl/i2c_master/oc_i2c_master.v
+rtl/cam_i2c_ctrl/i2c/i2c_16addr_8data.v
+rtl/cam_i2c_ctrl/i2c/i2c_master_reg_rom.v
+rtl/cam_i2c_ctrl/i2c/i2c_master_reg_set.v
+rtl/cam_i2c_ctrl/i2c/i2c_master_ctrl_top.v</code></pre>
+  <p>必须从厂家完整 Demo10 包或同版本官方参考工程恢复这些文件，并确认寄存器表确实适用于 SC431HAI。不能用 IMX219/IMX185 的寄存器表直接替换。</p>
+
+  <h3>5.3 让输入分辨率与输出分辨率一致</h3>
+  <p>如果最终使用 720P HDMI，推荐让摄像头直接输出 1280×720。仅把 HDMI 改为 720P，而摄像头仍输出 1920×1080，当前工程没有明确的视频缩放器，帧缓存尺寸和读写节奏会不一致。</p>
+  <p>可选路线：</p>
+  <ul>
+    <li><strong>路线A（推荐）：</strong>使用厂家提供的 SC431HAI 1280×720@60 初始化寄存器，并把帧缓存参数统一为 1280×720。</li>
+    <li><strong>路线B：</strong>屏幕确认支持标准1080P后，摄像头和帧缓存继续使用1920×1080，只修正标准1080P时序与复位。</li>
+    <li><strong>路线C：</strong>加入1920×1080到1024×600或1280×720的视频缩放模块，资源和带宽开销最大。</li>
+  </ul>
+
+  <h2>6. 如果必须输出原生 1024×600</h2>
+  <div class="danger">
+    不能只把 <code>MAX_HRES</code> 和 <code>MAX_VRES</code> 改成 1024、600。1024×600 没有唯一通用的 HDMI 时序，必须取得屏幕控制板 EDID 或厂家时序表。
+  </div>
+  <p>至少需要以下数据：</p>
+  <ul class="checklist">
+    <li>像素时钟频率；</li>
+    <li>水平有效像素、前肩、同步宽度、后肩；</li>
+    <li>垂直有效行数、前肩、同步宽度、后肩；</li>
+    <li>HSYNC/VSYNC 极性；</li>
+    <li>刷新率；</li>
+    <li>HDMI控制板是否接受DVI模式以及是否需要音频/InfoFrame。</li>
+  </ul>
+  <p>得到参数后，需要同步修改：</p>
+  <ol>
+    <li><code>rtl/color_bar.v</code>：新增 1024×600 时序宏；</li>
+    <li><code>rtl/ti60f225_oob_top.v</code>：分辨率和帧缓存时序；</li>
+    <li><code>USER_PLL</code>：像素时钟、5倍TMDS时钟和双像素时钟；</li>
+    <li>摄像头输出配置或图像缩放模块；</li>
+    <li>DDR帧地址跨度、每行字节数和帧尺寸参数。</li>
+  </ol>
+
+  <h2>7. 最终推荐实施顺序</h2>
+  <ol>
+    <li>用电脑确认屏幕支持 720P60 或 1080P60。</li>
+    <li>保存当前 Git 状态，建立单独修改提交。</li>
+    <li>生成标准720P色条位流，绕开摄像头和DDR。</li>
+    <li>确认 HDMI 色条稳定显示。</li>
+    <li>恢复 DDR 并确认 <code>cal_done</code>。</li>
+    <li>恢复完整、型号匹配的 SC431HAI I²C 初始化文件。</li>
+    <li>确认 MIPI 时钟、lane 和 <code>w_mipi_rx_de</code>。</li>
+    <li>把摄像头、帧缓存和HDMI输出统一为同一分辨率。</li>
+    <li>最后再恢复音频、DSI残留逻辑或其他附加功能。</li>
+  </ol>
+
+  <div class="success">
+    <strong>最短可行路径：</strong>先用标准 720P 色条证明 HDMI 能显示；如果成功，再让 SC431HAI 输出 1280×720 并恢复 DDR 帧缓存。这比直接猜测 1024×600 时序成功率高，也最容易定位故障。
+  </div>
+
+  <footer>
+    本文档基于当前工作区 Demo10 源码分析生成。修改前后均应使用 Git 记录差异，不采用复制整个工程目录的方式备份。
+  </footer>
+</main>
+</body>
+</html>

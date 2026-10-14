@@ -1,0 +1,412 @@
+
+Efinix report_timing Report
+Version: 2026.1.132
+Date: Thu Oct  8 20:01:07 2026
+
+Copyright (C) 2013 - 2026 Efinix, Inc. All rights reserved.
+
+User command: foreach transition $transitions {
+ set name [lindex $transition 0];set starts [endpoint_union [lindex $transition 1]];set ends [endpoint_union [lindex $transition 2]]
+ puts "DATA_${name}_SOURCE_COUNT=[llength $starts]";puts "DATA_${name}_DEST_COUNT=[llength $ends]"
+ if {[llength $starts] == 0 || [llength $ends] == 0} {error "Data endpoint collection empty"}
+ report_timing -setup -from $starts -to $ends -npaths 8 -nworst 1 -file angle_${name}_setup.rpt
+ report_timing -hold -from $starts -to $ends -npaths 8 -nworst 1 -file angle_${name}_hold.rpt
+}
+
+Timing Model: I3
+	process : typical
+	temperature : -40C to 100C
+	voltage : 0.95 +/-30mV
+	speedgrade : 3
+	technology : t16ff
+	status : final
+
+Summary:
+
+ Path #  | Slack(ns) |             Start Pin             |              End Pin               |  Launch Clock   |  Capture Clock
+=================================================================================================================================
+ 1       |  0.475    | arithmetic/multiply/n5_pp_0x0|CLK | arithmetic/second_product[2]~FF|D  | core_25m (RISE) | core_25m (RISE)
+ 2       |  0.476    | arithmetic/multiply/n5_pp_0x0|CLK | arithmetic/first_product[10]~FF|D  | core_25m (RISE) | core_25m (RISE)
+ 3       |  0.476    | arithmetic/multiply/n5_pp_0x0|CLK | arithmetic/second_product[10]~FF|D | core_25m (RISE) | core_25m (RISE)
+ 4       |  0.476    | arithmetic/multiply/n5_pp_0x0|CLK | arithmetic/first_product[5]~FF|D   | core_25m (RISE) | core_25m (RISE)
+ 5       |  0.476    | arithmetic/multiply/n5_pp_0x0|CLK | arithmetic/second_product[5]~FF|D  | core_25m (RISE) | core_25m (RISE)
+ 6       |  0.488    | arithmetic/multiply/n5_pp_0x1|CLK | arithmetic/second_product[47]~FF|D | core_25m (RISE) | core_25m (RISE)
+ 7       |  0.491    | arithmetic/multiply/n5_pp_0x1|CLK | arithmetic/second_product[26]~FF|D | core_25m (RISE) | core_25m (RISE)
+ 8       |  0.493    | arithmetic/multiply/n5_pp_0x1|CLK | arithmetic/first_product[20]~FF|D  | core_25m (RISE) | core_25m (RISE)
+
+++++ Path 1 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 0.475 ns (arrival time - required time)                        
+Path Start      : arithmetic/multiply/n5_pp_0x0|CLK                              
+Path End        : arithmetic/second_product[2]~FF|D                              
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Min at Fast Process Corner                                     
+Data Path Delay : 0.545 ns                                                       
+Logic Levels    : 0                                                              
+
+Launch Clock Path Delay        : 1.167
++ Clock To Q + Data Path Delay : 0.545
+--------------------------------------
+End-of-path arrival time       : 1.712
+
+Constraint                     : 0.000
++ Capture Clock Path Delay     : 1.167
++ Clock Uncertainty            : 0.070
++ Hold                         : 0.000
+--------------------------------------
+End-of-path required time      : 1.237
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)          Netlist Resource(s)
+======================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                          
+  (0,164)    input            0.070        0.070     clk_25m                          
+             net (fo=1721)    1.097        1.167     clk_25m                          
+  (165,62)   EFX_DSP48        0.000        1.167     arithmetic/multiply/n5_pp_0x0|CLK
+
+Data Path
+  Location     Delay Type      Incr(ns)     Path(ns)          Netlist Resource(s)
+=========================================================================================
+  (165,62)   EFX_DSP48 (Tco)    0.197        0.197     arithmetic/multiply/n5_pp_0x0|O[2]
+             net (fo=2)         0.348        0.545     arithmetic/product_data[2]        
+  (130,84)   EFX_FF             0.000        0.545     arithmetic/second_product[2]~FF|D 
+
+Capture Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)           Netlist Resource(s)
+========================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                            
+  (0,164)    input            0.070        0.070     clk_25m                            
+             net (fo=1721)    1.097        1.167     clk_25m                            
+  (130,84)   EFX_FF           0.000        1.167     arithmetic/second_product[2]~FF|CLK
+  (130,84)   EFX_FF (Hold)    0.000        1.167     arithmetic/second_product[2]~FF    
+
+++++ Path 2 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 0.476 ns (arrival time - required time)                        
+Path Start      : arithmetic/multiply/n5_pp_0x0|CLK                              
+Path End        : arithmetic/first_product[10]~FF|D                              
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Min at Fast Process Corner                                     
+Data Path Delay : 0.546 ns                                                       
+Logic Levels    : 0                                                              
+
+Launch Clock Path Delay        : 1.167
++ Clock To Q + Data Path Delay : 0.546
+--------------------------------------
+End-of-path arrival time       : 1.713
+
+Constraint                     : 0.000
++ Capture Clock Path Delay     : 1.167
++ Clock Uncertainty            : 0.070
++ Hold                         : 0.000
+--------------------------------------
+End-of-path required time      : 1.237
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)          Netlist Resource(s)
+======================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                          
+  (0,164)    input            0.070        0.070     clk_25m                          
+             net (fo=1721)    1.097        1.167     clk_25m                          
+  (165,62)   EFX_DSP48        0.000        1.167     arithmetic/multiply/n5_pp_0x0|CLK
+
+Data Path
+  Location     Delay Type      Incr(ns)     Path(ns)           Netlist Resource(s)
+==========================================================================================
+  (165,62)   EFX_DSP48 (Tco)    0.197        0.197     arithmetic/multiply/n5_pp_0x0|O[10]
+             net (fo=2)         0.349        0.546     arithmetic/product_data[10]        
+  (119,91)   EFX_FF             0.000        0.546     arithmetic/first_product[10]~FF|D  
+
+Capture Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)           Netlist Resource(s)
+========================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                            
+  (0,164)    input            0.070        0.070     clk_25m                            
+             net (fo=1721)    1.097        1.167     clk_25m                            
+  (119,91)   EFX_FF           0.000        1.167     arithmetic/first_product[10]~FF|CLK
+  (119,91)   EFX_FF (Hold)    0.000        1.167     arithmetic/first_product[10]~FF    
+
+++++ Path 3 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 0.476 ns (arrival time - required time)                        
+Path Start      : arithmetic/multiply/n5_pp_0x0|CLK                              
+Path End        : arithmetic/second_product[10]~FF|D                             
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Min at Fast Process Corner                                     
+Data Path Delay : 0.546 ns                                                       
+Logic Levels    : 0                                                              
+
+Launch Clock Path Delay        : 1.167
++ Clock To Q + Data Path Delay : 0.546
+--------------------------------------
+End-of-path arrival time       : 1.713
+
+Constraint                     : 0.000
++ Capture Clock Path Delay     : 1.167
++ Clock Uncertainty            : 0.070
++ Hold                         : 0.000
+--------------------------------------
+End-of-path required time      : 1.237
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)          Netlist Resource(s)
+======================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                          
+  (0,164)    input            0.070        0.070     clk_25m                          
+             net (fo=1721)    1.097        1.167     clk_25m                          
+  (165,62)   EFX_DSP48        0.000        1.167     arithmetic/multiply/n5_pp_0x0|CLK
+
+Data Path
+  Location     Delay Type      Incr(ns)     Path(ns)           Netlist Resource(s)
+==========================================================================================
+  (165,62)   EFX_DSP48 (Tco)    0.197        0.197     arithmetic/multiply/n5_pp_0x0|O[10]
+             net (fo=2)         0.349        0.546     arithmetic/product_data[10]        
+  (120,91)   EFX_FF             0.000        0.546     arithmetic/second_product[10]~FF|D 
+
+Capture Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)           Netlist Resource(s)
+=========================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                             
+  (0,164)    input            0.070        0.070     clk_25m                             
+             net (fo=1721)    1.097        1.167     clk_25m                             
+  (120,91)   EFX_FF           0.000        1.167     arithmetic/second_product[10]~FF|CLK
+  (120,91)   EFX_FF (Hold)    0.000        1.167     arithmetic/second_product[10]~FF    
+
+++++ Path 4 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 0.476 ns (arrival time - required time)                        
+Path Start      : arithmetic/multiply/n5_pp_0x0|CLK                              
+Path End        : arithmetic/first_product[5]~FF|D                               
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Min at Fast Process Corner                                     
+Data Path Delay : 0.546 ns                                                       
+Logic Levels    : 0                                                              
+
+Launch Clock Path Delay        : 1.167
++ Clock To Q + Data Path Delay : 0.546
+--------------------------------------
+End-of-path arrival time       : 1.713
+
+Constraint                     : 0.000
++ Capture Clock Path Delay     : 1.167
++ Clock Uncertainty            : 0.070
++ Hold                         : 0.000
+--------------------------------------
+End-of-path required time      : 1.237
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)          Netlist Resource(s)
+======================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                          
+  (0,164)    input            0.070        0.070     clk_25m                          
+             net (fo=1721)    1.097        1.167     clk_25m                          
+  (165,62)   EFX_DSP48        0.000        1.167     arithmetic/multiply/n5_pp_0x0|CLK
+
+Data Path
+  Location     Delay Type      Incr(ns)     Path(ns)          Netlist Resource(s)
+=========================================================================================
+  (165,62)   EFX_DSP48 (Tco)    0.197        0.197     arithmetic/multiply/n5_pp_0x0|O[5]
+             net (fo=2)         0.349        0.546     arithmetic/product_data[5]        
+  (119,86)   EFX_FF             0.000        0.546     arithmetic/first_product[5]~FF|D  
+
+Capture Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)          Netlist Resource(s)
+=======================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                           
+  (0,164)    input            0.070        0.070     clk_25m                           
+             net (fo=1721)    1.097        1.167     clk_25m                           
+  (119,86)   EFX_FF           0.000        1.167     arithmetic/first_product[5]~FF|CLK
+  (119,86)   EFX_FF (Hold)    0.000        1.167     arithmetic/first_product[5]~FF    
+
+++++ Path 5 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 0.476 ns (arrival time - required time)                        
+Path Start      : arithmetic/multiply/n5_pp_0x0|CLK                              
+Path End        : arithmetic/second_product[5]~FF|D                              
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Min at Fast Process Corner                                     
+Data Path Delay : 0.546 ns                                                       
+Logic Levels    : 0                                                              
+
+Launch Clock Path Delay        : 1.167
++ Clock To Q + Data Path Delay : 0.546
+--------------------------------------
+End-of-path arrival time       : 1.713
+
+Constraint                     : 0.000
++ Capture Clock Path Delay     : 1.167
++ Clock Uncertainty            : 0.070
++ Hold                         : 0.000
+--------------------------------------
+End-of-path required time      : 1.237
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)          Netlist Resource(s)
+======================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                          
+  (0,164)    input            0.070        0.070     clk_25m                          
+             net (fo=1721)    1.097        1.167     clk_25m                          
+  (165,62)   EFX_DSP48        0.000        1.167     arithmetic/multiply/n5_pp_0x0|CLK
+
+Data Path
+  Location     Delay Type      Incr(ns)     Path(ns)          Netlist Resource(s)
+=========================================================================================
+  (165,62)   EFX_DSP48 (Tco)    0.197        0.197     arithmetic/multiply/n5_pp_0x0|O[5]
+             net (fo=2)         0.349        0.546     arithmetic/product_data[5]        
+  (120,86)   EFX_FF             0.000        0.546     arithmetic/second_product[5]~FF|D 
+
+Capture Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)           Netlist Resource(s)
+========================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                            
+  (0,164)    input            0.070        0.070     clk_25m                            
+             net (fo=1721)    1.097        1.167     clk_25m                            
+  (120,86)   EFX_FF           0.000        1.167     arithmetic/second_product[5]~FF|CLK
+  (120,86)   EFX_FF (Hold)    0.000        1.167     arithmetic/second_product[5]~FF    
+
+++++ Path 6 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 0.488 ns (arrival time - required time)                        
+Path Start      : arithmetic/multiply/n5_pp_0x1|CLK                              
+Path End        : arithmetic/second_product[47]~FF|D                             
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Min at Fast Process Corner                                     
+Data Path Delay : 0.558 ns                                                       
+Logic Levels    : 0                                                              
+
+Launch Clock Path Delay        : 1.167
++ Clock To Q + Data Path Delay : 0.558
+--------------------------------------
+End-of-path arrival time       : 1.725
+
+Constraint                     : 0.000
++ Capture Clock Path Delay     : 1.167
++ Clock Uncertainty            : 0.070
++ Hold                         : 0.000
+--------------------------------------
+End-of-path required time      : 1.237
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)          Netlist Resource(s)
+======================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                          
+  (0,164)    input            0.070        0.070     clk_25m                          
+             net (fo=1721)    1.097        1.167     clk_25m                          
+  (165,82)   EFX_DSP48        0.000        1.167     arithmetic/multiply/n5_pp_0x1|CLK
+
+Data Path
+  Location     Delay Type      Incr(ns)     Path(ns)           Netlist Resource(s)
+==========================================================================================
+ (165,82)    EFX_DSP48 (Tco)    0.197        0.197     arithmetic/multiply/n5_pp_0x1|O[29]
+             net (fo=2)         0.361        0.558     arithmetic/product_data[47]        
+ (130,116)   EFX_FF             0.000        0.558     arithmetic/second_product[47]~FF|D 
+
+Capture Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)           Netlist Resource(s)
+=========================================================================================
+ (0,164)     input            0.000        0.000     clk_25m                             
+ (0,164)     input            0.070        0.070     clk_25m                             
+             net (fo=1721)    1.097        1.167     clk_25m                             
+ (130,116)   EFX_FF           0.000        1.167     arithmetic/second_product[47]~FF|CLK
+ (130,116)   EFX_FF (Hold)    0.000        1.167     arithmetic/second_product[47]~FF    
+
+++++ Path 7 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 0.491 ns (arrival time - required time)                        
+Path Start      : arithmetic/multiply/n5_pp_0x1|CLK                              
+Path End        : arithmetic/second_product[26]~FF|D                             
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Min at Fast Process Corner                                     
+Data Path Delay : 0.561 ns                                                       
+Logic Levels    : 0                                                              
+
+Launch Clock Path Delay        : 1.167
++ Clock To Q + Data Path Delay : 0.561
+--------------------------------------
+End-of-path arrival time       : 1.728
+
+Constraint                     : 0.000
++ Capture Clock Path Delay     : 1.167
++ Clock Uncertainty            : 0.070
++ Hold                         : 0.000
+--------------------------------------
+End-of-path required time      : 1.237
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)          Netlist Resource(s)
+======================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                          
+  (0,164)    input            0.070        0.070     clk_25m                          
+             net (fo=1721)    1.097        1.167     clk_25m                          
+  (165,82)   EFX_DSP48        0.000        1.167     arithmetic/multiply/n5_pp_0x1|CLK
+
+Data Path
+  Location     Delay Type      Incr(ns)     Path(ns)          Netlist Resource(s)
+=========================================================================================
+ (165,82)    EFX_DSP48 (Tco)    0.197        0.197     arithmetic/multiply/n5_pp_0x1|O[8]
+             net (fo=2)         0.364        0.561     arithmetic/product_data[26]       
+ (120,110)   EFX_FF             0.000        0.561     arithmetic/second_product[26]~FF|D
+
+Capture Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)           Netlist Resource(s)
+=========================================================================================
+ (0,164)     input            0.000        0.000     clk_25m                             
+ (0,164)     input            0.070        0.070     clk_25m                             
+             net (fo=1721)    1.097        1.167     clk_25m                             
+ (120,110)   EFX_FF           0.000        1.167     arithmetic/second_product[26]~FF|CLK
+ (120,110)   EFX_FF (Hold)    0.000        1.167     arithmetic/second_product[26]~FF    
+
+++++ Path 8 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 0.493 ns (arrival time - required time)                        
+Path Start      : arithmetic/multiply/n5_pp_0x1|CLK                              
+Path End        : arithmetic/first_product[20]~FF|D                              
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Min at Fast Process Corner                                     
+Data Path Delay : 0.563 ns                                                       
+Logic Levels    : 0                                                              
+
+Launch Clock Path Delay        : 1.167
++ Clock To Q + Data Path Delay : 0.563
+--------------------------------------
+End-of-path arrival time       : 1.730
+
+Constraint                     : 0.000
++ Capture Clock Path Delay     : 1.167
++ Clock Uncertainty            : 0.070
++ Hold                         : 0.000
+--------------------------------------
+End-of-path required time      : 1.237
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)          Netlist Resource(s)
+======================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                          
+  (0,164)    input            0.070        0.070     clk_25m                          
+             net (fo=1721)    1.097        1.167     clk_25m                          
+  (165,82)   EFX_DSP48        0.000        1.167     arithmetic/multiply/n5_pp_0x1|CLK
+
+Data Path
+  Location     Delay Type      Incr(ns)     Path(ns)          Netlist Resource(s)
+=========================================================================================
+ (165,82)    EFX_DSP48 (Tco)    0.197        0.197     arithmetic/multiply/n5_pp_0x1|O[2]
+             net (fo=2)         0.366        0.563     arithmetic/product_data[20]       
+ (120,104)   EFX_FF             0.000        0.563     arithmetic/first_product[20]~FF|D 
+
+Capture Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)           Netlist Resource(s)
+========================================================================================
+ (0,164)     input            0.000        0.000     clk_25m                            
+ (0,164)     input            0.070        0.070     clk_25m                            
+             net (fo=1721)    1.097        1.167     clk_25m                            
+ (120,104)   EFX_FF           0.000        1.167     arithmetic/first_product[20]~FF|CLK
+ (120,104)   EFX_FF (Hold)    0.000        1.167     arithmetic/first_product[20]~FF    
+

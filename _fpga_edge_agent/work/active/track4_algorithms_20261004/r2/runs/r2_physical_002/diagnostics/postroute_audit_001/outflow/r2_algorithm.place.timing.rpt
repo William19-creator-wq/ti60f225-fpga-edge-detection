@@ -1,0 +1,363 @@
+
+Efinix Static Timing Analysis Report (Preliminary)
+Version: 2026.1.132
+Date: Tue Oct  6 03:33:16 2026
+
+Copyright (C) 2013 - 2026 Efinix, Inc. All rights reserved.
+
+Top-level Entity Name: r2_algorithm
+
+SDC Filename: r2_algorithm.sdc
+
+Timing Model: I3
+	process : typical
+	temperature : -40C to 100C
+	voltage : 0.95 +/-30mV
+	speedgrade : 3
+	technology : t16ff
+	status : final
+
+---------- Table of Contents (begin) ----------
+   1. Clock Frequency Summary
+   2. Clock Relationship Summary
+   3. Path Details for Max Critical Paths
+   4. Path Details for Min Critical Paths
+---------- Table of Contents (end) ------------
+
+---------- 1. Clock Frequency Summary (begin) ----------
+
+User target constrained clocks
+ Clock Name  Period (ns)  Frequency (MHz)    Waveform      Targets
+  core_25m      40.000        25.000      {0.000 20.000}  {clk_25m}
+
+Maximum possible analyzed clocks frequency
+ Clock Name  Period (ns)  Frequency (MHz)     Edge
+  core_25m      11.027        90.686         (R-R)
+
+Geomean max period: 11.027
+
+---------- Clock Frequency Summary (end) ---------------
+
+---------- 2. Clock Relationship Summary (begin) ----------
+
+Setup (Max) Clock Relationship
+  Launch Clock    Capture Clock   Constraint (ns)     Slack (ns)          Edge
+    core_25m         core_25m          40.000           28.973           (R-R)
+
+Hold (Min) Clock Relationship
+  Launch Clock    Capture Clock   Constraint (ns)     Slack (ns)          Edge
+    core_25m         core_25m          0.000            0.098            (R-R)
+
+NOTE: Values are in nanoseconds.
+
+---------- Clock Relationship Summary (end) ---------------
+
+---------- 3. Path Details for Max Critical Paths (begin) ----------
+
+################################################################################
+Path Detail Report (core_25m vs core_25m)
+################################################################################
+
+
+++++ Path 1 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Path Begin    : reset_adapter/reset_release_stage2~FF|CLK
+Path End      : status_payload[423]~FF|CE                
+Launch Clock  : core_25m (RISE)                          
+Capture Clock : core_25m (RISE)                          
+Slack         : 28.973 (required time - arrival time)    
+Delay         : 10.667                                   
+
+Logic Level             : 37
+Non-global nets on path : 38
+Global nets on path     :  0
+
+Launch Clock Path Delay        :  2.416
++ Clock To Q + Data Path Delay : 10.901
+---------------------------------------
+End-of-path arrival time       : 13.317
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.416
+- Clock Uncertainty            :  0.126
+---------------------------------------
+End-of-path required time      : 42.290
+
+Launch Clock Path
+                  name                     model name   delay (ns)  cumulative delay (ns) pins on net    location
+===================================================================================================================
+clk_25m                                      input        0.000             0.000                0      (0,164)  
+clk_25m                                      input        0.126             0.126             5957      (0,164)  
+clk_25m                                      net          2.290             2.416             5957      (0,164)  
+   Routing elements:
+      Manhattan distance of X:154, Y:53
+reset_adapter/reset_release_stage2~FF|CLK    EFX_FF       0.000             2.416             5957      (154,111)
+
+Data Path
+                   name                     model name   delay (ns)  cumulative delay (ns) pins on net    location
+====================================================================================================================
+reset_adapter/reset_release_stage2~FF|Q      EFX_FF        0.130             0.130             1336      (154,111)
+reset_adapter/reset_release_stage2           net           0.642             0.772             1336      (154,111)
+   Routing elements:
+      Manhattan distance of X:35, Y:2
+LUT__25662|in[3]                             EFX_LUT4      0.061             0.833             1336      (119,113)
+LUT__25662|out                               EFX_LUT4      0.000             0.833                4      (119,113)
+n11550                                       net           0.682             1.515                4      (119,113)
+   Routing elements:
+      Manhattan distance of X:0, Y:1
+LUT__25665|in[1]                             EFX_LUT4      0.061             1.576                4      (119,112)
+LUT__25665|out                               EFX_LUT4      0.000             1.576               46      (119,112)
+stream/controller/n35400                     net           0.737             2.313               46      (119,112)
+   Routing elements:
+      Manhattan distance of X:1, Y:55
+LUT__25667|in[0]                             EFX_LUT4      0.063             2.376               46      (120,167)
+LUT__25667|out                               EFX_LUT4      0.000             2.376              980      (120,167)
+stream/n4222                                 net           0.150             2.526              980      (120,167)
+   Routing elements:
+      Manhattan distance of X:0, Y:1
+LUT__25670|in[0]                             EFX_LUT4      0.063             2.589              980      (120,166)
+LUT__25670|out                               EFX_LUT4      0.000             2.589                3      (120,166)
+n11553                                       net           0.191             2.780                3      (120,166)
+   Routing elements:
+      Manhattan distance of X:0, Y:3
+LUT__25677|in[3]                             EFX_LUT4      0.063             2.843                3      (120,163)
+LUT__25677|out                               EFX_LUT4      0.000             2.843                8      (120,163)
+n11555                                       net           0.583             3.426                8      (120,163)
+   Routing elements:
+      Manhattan distance of X:44, Y:45
+LUT__25694|in[0]                             EFX_LUT4      0.061             3.487                8      (76,118) 
+LUT__25694|out                               EFX_LUT4      0.000             3.487              131      (76,118) 
+stream/gaussian/advance                      net           0.698             4.185              131      (76,118) 
+   Routing elements:
+      Manhattan distance of X:0, Y:1
+LUT__25696|in[0]                             EFX_LUT4      0.061             4.246              131      (76,117) 
+LUT__25696|out                               EFX_LUT4      0.000             4.246               69      (76,117) 
+stream/frontend/output_fire                  net           0.793             5.039               69      (76,117) 
+   Routing elements:
+      Manhattan distance of X:30, Y:26
+LUT__25698|in[0]                             EFX_LUT4      0.061             5.100               69      (106,91) 
+LUT__25698|out                               EFX_LUT4      0.000             5.100               24      (106,91) 
+stream/controller/n19762                     net           0.175             5.275               24      (106,91) 
+   Routing elements:
+      Manhattan distance of X:5, Y:0
+stream/controller/add_64/i1|I1               EFX_ADD       0.055             5.330               24      (111,91) 
+stream/controller/add_64/i1|CO               EFX_ADD       0.000             5.330                2      (111,91) 
+stream/controller/add_64/n2                  net           0.000             5.330                2      (111,91) 
+   Routing elements:
+      Manhattan distance of X:0, Y:1
+stream/controller/add_64/i2|CI               EFX_ADD       0.025             5.355                2      (111,92) 
+stream/controller/add_64/i2|CO               EFX_ADD       0.000             5.355                2      (111,92) 
+stream/controller/add_64/n4                  net           0.000             5.355                2      (111,92) 
+   Routing elements:
+      Manhattan distance of X:0, Y:1
+stream/controller/add_64/i3|CI               EFX_ADD       0.025             5.380                2      (111,93) 
+stream/controller/add_64/i3|CO               EFX_ADD       0.000             5.380                2      (111,93) 
+stream/controller/add_64/n6                  net           0.000             5.380                2      (111,93) 
+   Routing elements:
+      Manhattan distance of X:0, Y:1
+stream/controller/add_64/i4|CI               EFX_ADD       0.025             5.405                2      (111,94) 
+stream/controller/add_64/i4|CO               EFX_ADD       0.000             5.405                2      (111,94) 
+stream/controller/add_64/n8                  net           0.000             5.405                2      (111,94) 
+   Routing elements:
+      Manhattan distance of X:0, Y:1
+stream/controller/add_64/i5|CI               EFX_ADD       0.025             5.430                2      (111,95) 
+stream/controller/add_64/i5|CO               EFX_ADD       0.000             5.430                2      (111,95) 
+stream/controller/add_64/n10                 net           0.000             5.430                2      (111,95) 
+   Routing elements:
+      Manhattan distance of X:0, Y:1
+stream/controller/add_64/i6|CI               EFX_ADD       0.025             5.455                2      (111,96) 
+stream/controller/add_64/i6|CO               EFX_ADD       0.000             5.455                2      (111,96) 
+stream/controller/add_64/n12                 net           0.000             5.455                2      (111,96) 
+   Routing elements:
+      Manhattan distance of X:0, Y:1
+stream/controller/add_64/i7|CI               EFX_ADD       0.025             5.480                2      (111,97) 
+stream/controller/add_64/i7|CO               EFX_ADD       0.000             5.480                2      (111,97) 
+stream/controller/add_64/n14                 net           0.000             5.480                2      (111,97) 
+   Routing elements:
+      Manhattan distance of X:0, Y:1
+stream/controller/add_64/i8|CI               EFX_ADD       0.025             5.505                2      (111,98) 
+stream/controller/add_64/i8|CO               EFX_ADD       0.000             5.505                2      (111,98) 
+stream/controller/add_64/n16                 net           0.000             5.505                2      (111,98) 
+   Routing elements:
+      Manhattan distance of X:0, Y:1
+stream/controller/add_64/i9|CI               EFX_ADD       0.025             5.530                2      (111,99) 
+stream/controller/add_64/i9|CO               EFX_ADD       0.000             5.530                2      (111,99) 
+stream/controller/add_64/n18                 net           0.000             5.530                2      (111,99) 
+   Routing elements:
+      Manhattan distance of X:0, Y:1
+stream/controller/add_64/i10|CI              EFX_ADD       0.025             5.555                2      (111,100)
+stream/controller/add_64/i10|CO              EFX_ADD       0.000             5.555                2      (111,100)
+stream/controller/add_64/n20                 net           0.000             5.555                2      (111,100)
+   Routing elements:
+      Manhattan distance of X:0, Y:1
+stream/controller/add_64/i11|CI              EFX_ADD       0.025             5.580                2      (111,101)
+stream/controller/add_64/i11|CO              EFX_ADD       0.000             5.580                2      (111,101)
+stream/controller/add_64/n22                 net           0.000             5.580                2      (111,101)
+   Routing elements:
+      Manhattan distance of X:0, Y:1
+stream/controller/add_64/i12|CI              EFX_ADD       0.025             5.605                2      (111,102)
+stream/controller/add_64/i12|CO              EFX_ADD       0.000             5.605                2      (111,102)
+stream/controller/add_64/n24                 net           0.000             5.605                2      (111,102)
+   Routing elements:
+      Manhattan distance of X:0, Y:1
+stream/controller/add_64/i13|CI              EFX_ADD       0.025             5.630                2      (111,103)
+stream/controller/add_64/i13|CO              EFX_ADD       0.000             5.630                2      (111,103)
+stream/controller/add_64/n26                 net           0.000             5.630                2      (111,103)
+   Routing elements:
+      Manhattan distance of X:0, Y:1
+stream/controller/add_64/i14|CI              EFX_ADD       0.025             5.655                2      (111,104)
+stream/controller/add_64/i14|CO              EFX_ADD       0.000             5.655                2      (111,104)
+stream/controller/add_64/n28                 net           0.000             5.655                2      (111,104)
+   Routing elements:
+      Manhattan distance of X:0, Y:1
+stream/controller/add_64/i15|CI              EFX_ADD       0.025             5.680                2      (111,105)
+stream/controller/add_64/i15|CO              EFX_ADD       0.000             5.680                2      (111,105)
+stream/controller/add_64/n30                 net           0.000             5.680                2      (111,105)
+   Routing elements:
+      Manhattan distance of X:0, Y:1
+stream/controller/add_64/i16|CI              EFX_ADD       0.025             5.705                2      (111,106)
+stream/controller/add_64/i16|CO              EFX_ADD       0.000             5.705                2      (111,106)
+stream/controller/add_64/n32                 net           0.000             5.705                2      (111,106)
+   Routing elements:
+      Manhattan distance of X:0, Y:1
+stream/controller/add_64/i17|CI              EFX_ADD       0.025             5.730                2      (111,107)
+stream/controller/add_64/i17|CO              EFX_ADD       0.000             5.730                2      (111,107)
+stream/controller/add_64/n34                 net           0.000             5.730                2      (111,107)
+   Routing elements:
+      Manhattan distance of X:0, Y:1
+stream/controller/add_64/i18|CI              EFX_ADD       0.097             5.827                2      (111,108)
+stream/controller/add_64/i18|O               EFX_ADD       0.000             5.827                4      (111,108)
+stream/controller/counts_after_fire[1][17]   net           0.258             6.085                4      (111,108)
+   Routing elements:
+      Manhattan distance of X:1, Y:0
+LUT__25926|in[2]                             EFX_LUT4      0.061             6.146                4      (112,108)
+LUT__25926|out                               EFX_LUT4      0.000             6.146                2      (112,108)
+n11783                                       net           0.061             6.207                2      (112,108)
+   Routing elements:
+      Manhattan distance of X:0, Y:1
+LUT__25927|in[0]                             EFX_LUT4      0.061             6.268                2      (112,107)
+LUT__25927|out                               EFX_LUT4      0.000             6.268                2      (112,107)
+n11784                                       net           0.448             6.716                2      (112,107)
+   Routing elements:
+      Manhattan distance of X:27, Y:0
+LUT__25929|in[1]                             EFX_LUT4      0.061             6.777                2      (85,107) 
+LUT__25929|out                               EFX_LUT4      0.000             6.777                4      (85,107) 
+n11786                                       net           0.270             7.047                4      (85,107) 
+   Routing elements:
+      Manhattan distance of X:0, Y:1
+LUT__25939|in[2]                             EFX_LUT4      0.061             7.108                4      (85,106) 
+LUT__25939|out                               EFX_LUT4      0.000             7.108                2      (85,106) 
+n11796                                       net           0.243             7.351                2      (85,106) 
+   Routing elements:
+      Manhattan distance of X:0, Y:1
+LUT__25941|in[2]                             EFX_LUT4      0.061             7.412                2      (85,105) 
+LUT__25941|out                               EFX_LUT4      0.000             7.412                5      (85,105) 
+n11798                                       net           0.208             7.620                5      (85,105) 
+   Routing elements:
+      Manhattan distance of X:0, Y:1
+LUT__25960|in[2]                             EFX_LUT4      0.061             7.681                5      (85,104) 
+LUT__25960|out                               EFX_LUT4      0.000             7.681                4      (85,104) 
+n11817                                       net           0.367             8.048                4      (85,104) 
+   Routing elements:
+      Manhattan distance of X:5, Y:5
+LUT__25985|in[1]                             EFX_LUT4      0.063             8.111                4      (90,109) 
+LUT__25985|out                               EFX_LUT4      0.000             8.111                4      (90,109) 
+n11842                                       net           0.302             8.413                4      (90,109) 
+   Routing elements:
+      Manhattan distance of X:0, Y:2
+LUT__26323|in[0]                             EFX_LUT4      0.063             8.476                4      (90,111) 
+LUT__26323|out                               EFX_LUT4      0.000             8.476               15      (90,111) 
+n12177                                       net           0.212             8.688               15      (90,111) 
+   Routing elements:
+      Manhattan distance of X:0, Y:1
+LUT__26324|in[2]                             EFX_LUT4      0.063             8.751               15      (90,110) 
+LUT__26324|out                               EFX_LUT4      0.000             8.751               36      (90,110) 
+stream/controller/chosen_reason[4]           net           0.220             8.971               36      (90,110) 
+   Routing elements:
+      Manhattan distance of X:3, Y:0
+LUT__26325|in[3]                             EFX_LUT4      0.063             9.034               36      (93,110) 
+LUT__26325|out                               EFX_LUT4      0.000             9.034                7      (93,110) 
+n12178                                       net           0.466             9.500                7      (93,110) 
+   Routing elements:
+      Manhattan distance of X:0, Y:1
+LUT__26326|in[2]                             EFX_LUT4      0.063             9.563                7      (93,109) 
+LUT__26326|out                               EFX_LUT4      0.000             9.563              409      (93,109) 
+stream/controller/n35791                     net           1.234            10.797              409      (93,109) 
+   Routing elements:
+      Manhattan distance of X:75, Y:24
+status_payload[423]~FF|CE                    EFX_FF        0.104            10.901              409      (168,133)
+
+Capture Clock Path
+           name             model name   delay (ns)  cumulative delay (ns) pins on net    location
+====================================================================================================
+clk_25m                       input        0.000             0.000                0      (0,164)  
+clk_25m                       input        0.126             0.126             5957      (0,164)  
+clk_25m                       net          2.290             2.416             5957      (0,164)  
+   Routing elements:
+      Manhattan distance of X:168, Y:31
+status_payload[423]~FF|CLK    EFX_FF       0.000             2.416             5957      (168,133)
+
+---------- Path Details for Max Critical Paths (end) ---------------
+
+---------- 4. Path Details for Min Critical Paths (begin) ----------
+
+################################################################################
+Path Detail Report (core_25m vs core_25m)
+################################################################################
+
+
+++++ Path 1 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Path Begin    : stream/direction/dff_252/i38_2|CLK  
+Path End      : grad_payload[36]~FF|D               
+Launch Clock  : core_25m (RISE)                     
+Capture Clock : core_25m (RISE)                     
+Slack         : 0.098 (arrival time - required time)
+Delay         : 0.096                               
+
+Logic Level             : 0
+Non-global nets on path : 1
+Global nets on path     : 0
+
+Launch Clock Path Delay        : 2.360
++ Clock To Q + Data Path Delay : 0.168
+--------------------------------------
+End-of-path arrival time       : 2.528
+
+Constraint                     : 0.000
++ Capture Clock Path Delay     : 2.360
++ Clock Uncertainty            : 0.070
+--------------------------------------
+End-of-path required time      : 2.430
+
+Launch Clock Path
+               name                 model name   delay (ns)  cumulative delay (ns) pins on net    location
+============================================================================================================
+clk_25m                              input         0.000             0.000                0      (0,164)  
+clk_25m                              input         0.070             0.070             5957      (0,164)  
+clk_25m                              net           2.290             2.360             5957      (0,164)  
+   Routing elements:
+      Manhattan distance of X:159, Y:9
+stream/direction/dff_252/i38_2|CLK   EFX_SRL8      0.000             2.360             5957      (159,173)
+
+Data Path
+              name                model name   delay (ns)  cumulative delay (ns) pins on net    location
+==========================================================================================================
+stream/direction/dff_252/i38_2|Q   EFX_SRL8      0.072             0.072              2        (159,173)
+stream/direction/dff_252/i38_pre   net           0.096             0.168              2        (159,173)
+   Routing elements:
+      Manhattan distance of X:0, Y:4
+grad_payload[36]~FF|D              EFX_FF        0.000             0.168              2        (159,169)
+
+Capture Clock Path
+         name            model name   delay (ns)  cumulative delay (ns) pins on net    location
+=================================================================================================
+clk_25m                    input        0.000             0.000                0      (0,164)  
+clk_25m                    input        0.070             0.070             5957      (0,164)  
+clk_25m                    net          2.290             2.360             5957      (0,164)  
+   Routing elements:
+      Manhattan distance of X:159, Y:5
+grad_payload[36]~FF|CLK    EFX_FF       0.000             2.360             5957      (159,169)
+
+---------- Path Details for Min Critical Paths (end) ---------------
+

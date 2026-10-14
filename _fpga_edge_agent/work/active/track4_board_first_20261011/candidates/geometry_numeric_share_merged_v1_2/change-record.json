@@ -1,0 +1,53 @@
+{
+  "task_id": "TRACK4-GEOMETRY-NUMERIC-SHARE-001",
+  "contract_revision": "v1.2 GEOMETRY_FULL_FIT independent candidate",
+  "created_at_utc": "2026-10-11T14:24:46.8959416Z",
+  "status": "IMPLEMENTED_STATIC_REVIEW_PASS_NOT_INTEGRATED",
+  "authority": "ROOT read back and presented v1.2 short card, then authorized exact independent candidate under user continuing autonomous scope and local audit exception; no new specified-version user approval asserted",
+  "design_hashes": {
+    "planning/design-TRACK4-GEOMETRY-NUMERIC-SHARE-001.md v1.1": "4477A6F22BB0FED8DB032A18C052495FF2A140F8B140F3CFD9E37F2B8ADB5445",
+    "planning/design-TRACK4-GEOMETRY-NUMERIC-SHARE-001-v1.2.md": "DBB1BA41F4BFF0AF1BC1F82D42AB517CA8FE66CD81D480754729EF88258E79E3",
+    "planning/design-TRACK4-NUM-RETURN-WORD-001.md v1.1": "E8A2F8CB4AEFD10F166EFAAA5D0E9A2DE1A3D06DEEA6F24904AC22ED91BD7031"
+  },
+  "source_baseline_path": "candidates/geometry_numeric_share_merged_v1/board/rtl/board_recognition_stats.sv",
+  "source_baseline_sha256": "6A5585168E50DE5D3B607BC917400A7683FEB2E6096D8C517CFDC39577E8A157",
+  "source_before_path": "before/board/rtl/board_recognition_stats.sv",
+  "source_before_sha256": "6A5585168E50DE5D3B607BC917400A7683FEB2E6096D8C517CFDC39577E8A157",
+  "parent_merge_record_sha256": "615C4545B6368A64369639E7FFB59B33212DC748DCCED5178D8750C3F6CC0746",
+  "main_sha256_unchanged": "35B4AB6B70A270FACE0423F433B159FFEADEAFC143AD33B683A67B122FE3808F",
+  "candidate_path": "board/rtl/board_recognition_stats.sv",
+  "candidate_sha256": "14228BE6277F5CDC5989D1D002D62C4590514E941BDEF5D55530D76527835A22",
+  "main_changed": false,
+  "earlier_candidates_changed": false,
+  "running_057_changed": false,
+  "actual_rtl_diff": [
+    "Line8: parameter bit ENABLE_GEOMETRY=1'b0 -> parameter bit ENABLE_GEOMETRY=1'b0,GEOMETRY_FULL_FIT=1'b1",
+    "Line161: .LS_TLS_ONLY(!ENABLE_GEOMETRY) -> .LS_TLS_ONLY(!(ENABLE_GEOMETRY&&GEOMETRY_FULL_FIT))"
+  ],
+  "four_combinations": [
+    "ENABLE_GEOMETRY=0,GEOMETRY_FULL_FIT=0: LS_TLS_ONLY=1; geometry owner is constant0; original two-pass 11/12 behavior",
+    "ENABLE_GEOMETRY=0,GEOMETRY_FULL_FIT=1 (default): LS_TLS_ONLY=1; original default and current NUM-return-word compatibility",
+    "ENABLE_GEOMETRY=1,GEOMETRY_FULL_FIT=0: LS_TLS_ONLY=1; lease works, FIT supports11/12 only; other FIT kinds retain original UNSUPPORTED/FRAME_FAIL validation",
+    "ENABLE_GEOMETRY=1,GEOMETRY_FULL_FIT=1: LS_TLS_ONLY=0; original v1.1 seven FIT kinds11/12/13/14/15/17/18 retained"
+  ],
+  "static_review": [
+    "Read-back no-index diff shows exactly the two intended RTL lines; all other text retained",
+    "SHARED_RETURN_WORDS default0, parameter propagation and shared_rsp_word_index5/shared_rsp_word16 child connections unchanged",
+    "One original stats_core and one original fit_core, lease ownership and all bind/release/cancel/quiet/UNKNOWN conditions unchanged",
+    "Full STAT632/REQ622/RSP585/ID176 and the current full385 qualification/25-word scan/12-word save are untouched",
+    "STATS is not restricted by GEOMETRY_FULL_FIT; STATS kind17 is allowed while caller must not submit FIT17 in narrow profile",
+    "Baseline before is byte-identical to merged v1; main and both earlier geometry candidates remain unchanged"
+  ],
+  "remaining": [
+    "Parent planned circle profile must explicitly set GEOMETRY_FULL_FIT=0 and use only actual FIT11/12",
+    "Parent geometry scalar/index owner and borrowed result lifetime still require integration",
+    "No area/timing/simulation evidence for this candidate; not full circle/A6 completion"
+  ],
+  "not_run": [
+    "EDA",
+    "Simulation",
+    "New independent TB",
+    "Hardware"
+  ],
+  "root_static_review": "PASS: actual merged four NUM-word connections and subsequent two-line GEOMETRY_FULL_FIT diff read back;four combinations/default/full precision/lease/FIT-close preserved"
+}

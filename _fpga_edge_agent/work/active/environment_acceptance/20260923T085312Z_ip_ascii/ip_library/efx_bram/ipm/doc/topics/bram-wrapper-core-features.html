@@ -1,0 +1,198 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta charset="UTF-8"><meta name="generator" content="DITA-OT"><meta name="description" content=""><meta name="prodname" content="Efinity"><meta name="version" content="UG-CORE-BRAM-WRAPPER-v1.9"><meta name="rights" content="© 2026 Efinix, Inc."><title>Features</title>
+	
+	<script src="../../../../../../doc/js/jquery-3.4.1.min.js"></script>
+	
+	<!-- Bootstrap 5 -->
+	<link href="../../../../../../doc/css/bootstrap5.css" rel="stylesheet">
+	<script src="../../../../../../doc/js/bootstrap.bundle.min.js"></script>
+	
+	<!-- special styles for doc output -->
+	<link href="../../../../../../doc/css/efx-styles.css" rel="stylesheet">
+	<link href="../../../../../../doc/css/glyphicons.css" rel="stylesheet" type="text/css">	
+	
+</head><body id="bram-wrapper-core-features"><header role="banner"><div>
+  <script>
+    function store_nav_state(clicked_id) {
+    var id = $(clicked_id).attr("id");
+    var div_id = id.replace(/^btn-/, 'drop-');
+    // alert(id);
+    
+    //		if ( $('#'+div_id).hasClass( "show" ) ) {	
+    if ( $('#'+id).hasClass( "collapsed" ) ) {		
+    // trigger is opposite of what you would think
+    // alert("hide");
+    localStorage.removeItem(div_id);
+    $('#'+id).children('span').addClass("glyphicon-plus-sign");
+    $('#'+id).children('span').removeClass("glyphicon-minus-sign");
+    
+    $('#'+id).children('span').addClass("black");
+    $('#'+id).children('span').removeClass("blue");
+    }
+    else {
+    // alert("show");
+    localStorage.setItem(div_id, "in");
+    $('#'+id).children('span').addClass("glyphicon-minus-sign");
+    $('#'+id).children('span').removeClass("glyphicon-plus-sign");
+    
+    $('#'+id).children('span').addClass("blue");
+    $('#'+id).children('span').removeClass("black");
+    }
+    }
+    
+    $(function(){
+    $( "div[id^=drop-]" ).each(function( index ) {
+    var drop_id = $(this).attr("id");	
+    var btn_id = drop_id.replace(/^drop-/, 'btn-');
+    // console.log( index + ": " + drop_id);	
+    
+    var nav_stored = localStorage.getItem(drop_id);
+    if (nav_stored == "in") {
+    // console.log( index + ": " + drop_id);
+    // $( '#'+drop_id ).last().addClass( "collapse" );
+    $( '#'+drop_id ).collapse("show");
+    // alert(nav_stored);
+    // $( '#'+btn_id ).toggle();
+    
+    $('#'+btn_id).children('span').addClass("glyphicon-minus-sign");
+    $('#'+btn_id).children('span').removeClass("glyphicon-plus-sign");
+    
+    $('#'+btn_id).children('span').addClass("blue");
+    }
+    });
+    });
+    
+    // row hack
+    $(function(){
+    $( "tr[class=row]" ).each(function( index ) {
+    $('tr[class=row]').removeClass("row");
+    });
+    }); 
+  </script>
+  
+  
+  
+  <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-blue">
+    <div class="container-fluid"> 
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#defaultNavbar1" aria-controls="main-nav-items" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button> 
+        <a class="navbar-brand" href="../../../../../../doc/topics/efnug-intro.html"><img src="../../../../../../doc/logo/efinity-help.png" alt="Efinix, Inc."></a>
+      </div>
+      
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="defaultNavbar1">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="/#" id="help" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Efinity Help<span class="caret"></span></a>
+            
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/efnug-intro.html">Overview</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/efnug-new.html">New in This Release</a></li> 
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/efn-quickstart.html">Quick Start</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/efn-hwsw-req.html">Hardware and Software Requirements</a></li>
+              
+              <li><hr class="dropdown-divider"></li>
+              
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/efn-proj-prefs.html">Projects and Preferences</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/efn-running-tool-flow.html">Running the Flow</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/ip-packager-intro.html">IP Packager</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/ipmgr.html">IP Manager</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/syn-intro.html">Synthesis</a></li>
+              <li><a class="dropdown-item" href="../../../../../../pt/doc/topics/hlp-id-intro.html">Interface Designer</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/tim-intro.html">Timing</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/efn-simulating.html">Simulation</a></li>
+              <li><a class="dropdown-item" href="../../../../../../pgm/doc/topics/hlp-pg-intro.html">Programmer</a></li>
+              <li><a class="dropdown-item" href="../../../../../../debugger/doc/topics/hlp-dbg-intro.html">Debugger</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/efinity-files.html">Efinity Project Files</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/efn-messages.html">Efinity Messages</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/cli-intro.html">Command-Line Interface</a></li>
+            </ul>
+          </li>
+          
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="/#" id="tut" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Tutorials<span class="caret"></span></a>
+            
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/efn-tut-intro.html">Efinity Tutorial</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/efn-unified-intro.html">Unified Design Tutorial</a></li>
+              <li><a class="dropdown-item" href="../../../../../../debugger/doc/topics/tut-debug-intro.html">Debugger Tutorial</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/efinity-trans-debug-intro.html">Transceiver Debugger Tutorial</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/efx-bram-tutorial.html">BRAM Initial Content Editor Tutorial</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/internal-reconfig-tutorial.html">Internal Reconfiguration Tutorial</a></li>
+            </ul>
+          </li>
+          
+          <li class="nav-item">
+            <a class="nav-link" href="../../../../../../doc/topics/ipmgr-supported-ip-byfamily.html">IP Help</a>
+          </li> 
+          
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="/#" id="pdf" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              PDFs<span class="caret"></span></a>
+            
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="../../../../../../doc/pdf/efinity-ug.pdf" target="_blank">Efinity Software User Guide</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/pdf/efinity-installation.pdf" target="_blank">Efinity Installation User Guide</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/pdf/efinity-quantum-ti-primitives-ug.pdf" target="_blank">Quantum Titanium Primitives User Guide</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/pdf/efinity-quantum-tz-primitives-ug.pdf" target="_blank">Quantum Topaz Primitives User Guide</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/pdf/efinity-quantum-primitives-ug.pdf" target="_blank">Quantum Trion Primitives User Guide</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/pdf/efinity-synthesis.pdf" target="_blank">Efinity Synthesis User Guide</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/pdf/efinity-timing-closure.pdf" target="_blank">Efinity Timing Closure User Guide</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/pdf/efinity-python-api.pdf" target="_blank">Efinity Python API</a></li>
+            </ul>
+          </li>
+          
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="/#" id="support" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Support<span class="caret"></span></a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="https://www.efinixinc.com/support/index.php">Support Center</a></li>
+              <li><a class="dropdown-item" href="https://www.efinixinc.com/products-efinity-training.html">Training Videos</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <!-- /.navbar-collapse --> 
+    </div>
+  </nav>  
+  
+	
+</div></header><div class="efx-nav col-xs-12 col-md-4 col-xl-3"><nav class="toc" role="navigation"><ul id="toc"><li class="nav-item"><a href="../topics/hlp-bram-wrapper.html">BRAM Wrapper Core User Guide</a><button class="btn btn-light btn-sm btn-leftnav" data-bs-toggle="collapse" aria-expanded="false" onClick="store_nav_state(this)" data-bs-target="#drop-bram" id="btn-bram"><span class="glyphicon glyphicon-plus-sign"></span></button><div class="collapse" id="drop-bram"><ul><li class="active"><a href="../topics/bram-wrapper-core-features.html">Features</a></li><li class="nav-item"><a href="../topics/bram-wrapper-core-fd.html">Functional Description</a></li><li class="nav-item"><a href="../topics/ipm-main.html">IP Manager</a></li><li class="nav-item"><a href="../topics/bram-wrapper-core-params.html">Customizing the BRAM Wrapper</a></li></ul></div></li></ul></nav></div><div class="efx-block col-xs-12 col-md-8 col-xl-9"><main role="main"><article role="article" aria-labelledby="ariaid-title1">
+    <h1 class="title topictitle1" id="ariaid-title1">Features</h1>
+    
+    <div class="body conbody"><p class="shortdesc"></p>
+        <div class="p" id="bram-wrapper-core-features__web-features">
+            <ul class="ul" id="bram-wrapper-core-features__ul_dzf_cxc_flb">
+                <li class="li">Supports: <ul class="ul" id="bram-wrapper-core-features__ul_og3_rtq_xxb">
+                        <li class="li">Single-port RAM (SP RAM)</li>
+                        <li class="li">Simple Dual-port RAM (SDP RAM)</li>
+                        <li class="li">True Dual-port RAM (TDP RAM)</li>
+                        <li class="li">Single-port ROM (SP ROM)</li>
+                        <li class="li">Dual-port ROM (DP ROM)</li>
+                    </ul></li>
+                <li class="li">Supports a wide range of memory addresses and data width (limited only by the
+                    FPGA's block RAM)</li>
+                <li class="li">Supports:<ul class="ul" id="bram-wrapper-core-features__ul_ifd_4hz_xxb">
+                        <li class="li">Symmetric port ratio for all RAM and ROM</li>
+                        <li class="li">Asymmetric aspect ratio for dual-port configuration (write-to-read port
+                            ratios ranging from 1:16 to 16:1).</li>
+                    </ul></li>
+                <li class="li">Selectable RAM Mode: WRITE_FIRST, READ_FIRST and READ_UNKNOWN or NO_CHANGE</li>
+                <li class="li">Configurable memory initialization</li>
+                <li class="li">Single clock and dual clock mode</li>
+                <li class="li">Includes example design targeting <span class="keyword">Titanium</span> Ti60F225 and <span class="keyword">Trion</span> T120BGA576 Development Boards</li>
+                <li class="li">Testbench demonstrating memory operation simulation</li>
+            </ul>
+        </div>
+    </div>
+<nav role="navigation" class="related-links"><div class="familylinks"><div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="../topics/hlp-bram-wrapper.html">BRAM Wrapper Core User Guide</a></div></div></nav></article></main></div><footer role="contentinfo"><div class="navbar fixed-bottom" id="help-botbar">
+    <p id="copyright">Copyright (c) 2026 | All Rights Reserved</p>
+</div></footer></body></html>

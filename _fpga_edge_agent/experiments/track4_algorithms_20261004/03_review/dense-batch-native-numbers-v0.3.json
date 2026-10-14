@@ -1,0 +1,419 @@
+{
+  "schema_version": "1.0",
+  "design_id": "TRACK4-ALGORITHM-DENSE-BATCH-NATIVE-001",
+  "version": "v0.3",
+  "status": "NOT_READY_NOT_APPROVED_NOT_IMPLEMENTED_NOT_RUN",
+  "kind": "FINITE_MANAGEMENT_SOURCE_REUSE_DATA_CONTROL_ORDER_AND_DOCUMENT_ARITHMETIC_ONLY",
+  "assumptions": {
+    "N": 2073600,
+    "E": "0..N interface envelope only",
+    "theta": 512,
+    "batches": 32,
+    "lanes": 16,
+    "bins": 277,
+    "count_bits": 21,
+    "native_low_bits": 20,
+    "one_point_one_vote_per_theta_required": true,
+    "arbitrary_dense_write_forbidden": true,
+    "DDR_first_INIT_preserved": true,
+    "DDR_clear_32_preserved_in_main_candidate": true,
+    "full_scope_quality_preserved": true
+  },
+  "storage": {
+    "native_banks": 16,
+    "native_words_per_bank": 512,
+    "word_bits": 20,
+    "valid_low_bits": 88640,
+    "addressable_low_bits": 163840,
+    "marker_bits": 160,
+    "packed_bits": 93072,
+    "logical_bytes": 11634,
+    "rounded_bytes": 11648,
+    "padding_bytes": 14,
+    "selected_working_fields": {
+      "authoritative_markers": 160,
+      "shared_local_read_or_postimage": 320,
+      "candidate_markers": 160,
+      "packed_bit_reservoir": 148,
+      "reservoir_occupancy": 8,
+      "record_index": 13,
+      "chunk_index": 10,
+      "visible_chunk_prefix": 10,
+      "committed_group_prefix": 21,
+      "local_state_candidate": 5,
+      "read_pending": 1,
+      "post_valid": 1,
+      "failure_reason": 6,
+      "snapshot_generation_allocator": 64
+    },
+    "selected_working_bits": 927,
+    "context_is_not_final_interface_width": true,
+    "partial_RAM_branches_before": [
+      170,
+      178
+    ],
+    "partial_RAM_branches_after": [
+      186,
+      194
+    ],
+    "full_fit_proven": false,
+    "full_FF_total_proven": false,
+    "historical_minimal_context_fields_bits": 570,
+    "context_fields_bits": 986
+  },
+  "line_comparison": {
+    "old": {
+      "entries": "512E",
+      "journal_native": "30208E",
+      "JL_single_direction_fires": "62592E",
+      "data_bytes": "16384E..32768E"
+    },
+    "main16B": {
+      "entries_per_batch": 728,
+      "journal_native_per_batch": 42952,
+      "JL_fires_per_batch": 91728,
+      "entries_all_batches": 23296,
+      "journal_native_all_batches": 1374464,
+      "JL_fires_all_batches": 2935296,
+      "data_bytes_all_batches": 372736,
+      "local_bank_issues_all_batches": "1024E+283648",
+      "local_vote_minimum_intervals_if_all_assumptions_hold": "256E",
+      "native_read_contract_pending": true,
+      "new_internal_source_contract_pending": true
+    },
+    "comparison64B_only": {
+      "adopted": false,
+      "entries_all_batches": 5824,
+      "journal_native_all_batches": 343616,
+      "JL_fires_all_batches": 733824,
+      "data_bytes_all_batches": 372736,
+      "physical_16B_fragments_all_batches": 23296
+    }
+  },
+  "selected_phase_subtotals": {
+    "old_journal_native": "30267E+1915376",
+    "main_journal_native": "59E+3289840",
+    "main_journal_plus_local_bank_issues": "1083E+3573488",
+    "old_JL_fires": "62718E+4090464",
+    "main_JL_fires": "126E+7025760",
+    "conditional_data_before_preserved_DDR_clear": "32N+544E+899328",
+    "preserved_DDR_clear_bytes": 372736,
+    "excludes": [
+      "FIRST INIT",
+      "NMS/snapshot journal",
+      "NUM",
+      "other phases",
+      "new adapter/owner control",
+      "provider permit/visibility/no-future/END service",
+      "actual stalls and arbitration"
+    ],
+    "not_a_wall_clock_bound": true
+  },
+  "samples": [
+    {
+      "E": 0,
+      "oldLineJournalNative": 0,
+      "newLineFlushJournalNative": 1374464,
+      "localVoteBankIssues": 0,
+      "localClearAndExportBankIssues": 283648,
+      "localVoteIdealIntervals": 0,
+      "oldCombinedJournal": 1915376,
+      "newCombinedJournal": 3289840,
+      "newAllSelectedBankIssues": 3573488,
+      "newControlFires": 7025760,
+      "conditionalBytes": 67254528
+    },
+    {
+      "E": 1000,
+      "oldLineJournalNative": 30208000,
+      "newLineFlushJournalNative": 1374464,
+      "localVoteBankIssues": 1024000,
+      "localClearAndExportBankIssues": 283648,
+      "localVoteIdealIntervals": 256000,
+      "oldCombinedJournal": 32182376,
+      "newCombinedJournal": 3348840,
+      "newAllSelectedBankIssues": 4656488,
+      "newControlFires": 7151760,
+      "conditionalBytes": 67798528
+    },
+    {
+      "E": 10000,
+      "oldLineJournalNative": 302080000,
+      "newLineFlushJournalNative": 1374464,
+      "localVoteBankIssues": 10240000,
+      "localClearAndExportBankIssues": 283648,
+      "localVoteIdealIntervals": 2560000,
+      "oldCombinedJournal": 304585376,
+      "newCombinedJournal": 3879840,
+      "newAllSelectedBankIssues": 14403488,
+      "newControlFires": 8285760,
+      "conditionalBytes": 72694528
+    },
+    {
+      "E": 100000,
+      "oldLineJournalNative": 3020800000,
+      "newLineFlushJournalNative": 1374464,
+      "localVoteBankIssues": 102400000,
+      "localClearAndExportBankIssues": 283648,
+      "localVoteIdealIntervals": 25600000,
+      "oldCombinedJournal": 3028615376,
+      "newCombinedJournal": 9189840,
+      "newAllSelectedBankIssues": 111873488,
+      "newControlFires": 19625760,
+      "conditionalBytes": 121654528
+    },
+    {
+      "E": 2073600,
+      "oldLineJournalNative": 62639308800,
+      "newLineFlushJournalNative": 1374464,
+      "localVoteBankIssues": 2123366400,
+      "localClearAndExportBankIssues": 283648,
+      "localVoteIdealIntervals": 530841600,
+      "oldCombinedJournal": 62763566576,
+      "newCombinedJournal": 125632240,
+      "newAllSelectedBankIssues": 2249282288,
+      "newControlFires": 268299360,
+      "conditionalBytes": 1195292928
+    }
+  ],
+  "validation": {
+    "math_review": "Finite actual-source and lifecycle design review; final current identity/scope recorded separately",
+    "simulation": "NOT_RUN",
+    "synthesis": "NOT_RUN",
+    "pnr_sta": "NOT_RUN",
+    "bit": "NOT_RUN",
+    "business_source_generated": false,
+    "executable_reference_test_TB_generated": false,
+    "new_test_scenarios": [
+      "DN-T13 two-half write1023_to1024",
+      "DN-T14 admin ACK/validated-ready/retire metadata",
+      "DN-T15 next-batch mathematical-boundary wait cycle",
+      "DN-T16 export three-edge and source view",
+      "DN-T17 immutable CMD/correct fullACK/binding/partial-BEGIN durable keys/seq0/MAX/warm",
+      "DN-T18 DATA gate quiet before END while CONTROL reference survives to group metadata"
+    ]
+  },
+  "sources": [
+    {
+      "path": "planning/design-TRACK4-ALGORITHM-PERFORMANCE-001.md",
+      "sha256": "A6CF179175A06195391C484745C3BC0E880A50303F5D8838C09BE843E9B87469"
+    },
+    {
+      "path": "experiments/track4_algorithms_20261004/03_review/production-instance-budget-review-v0.1.md",
+      "sha256": "3F4860F3BB9698D32D17E22A125F8B29B3F89EFAB56984BED7D65E3A8B9389C5"
+    },
+    {
+      "path": "planning/design-TRACK4-ALGORITHM-DENSE-BATCH-NATIVE-001-v0.1.md",
+      "sha256": "A2184F1CFACC9DC46939A1BD9AC82188758C55FD0C4620FDE7A2BAD5CE21043B"
+    },
+    {
+      "path": "C:\\Users\\34528\\FPGAEdgeLinks\\Efinity2026_1\\sim_models\\verilog\\efx_ram10.v",
+      "sha256": "DD8DB45116A67B9754920856DC380EB2DC73CA51E0A6A62CC74CDA01C0E31A33"
+    },
+    {
+      "path": "planning/design-TRACK4-ALGORITHM-DENSE-BATCH-NATIVE-001-v0.2.md",
+      "sha256": "CCD1849F6DE1B375693664757CD60C661401F436D52C1EFDF8A03EEFF241E2E2"
+    },
+    {
+      "path": "planning/design-TRACK4-ALGORITHM-STAGE-CACHE-RAM-001.md",
+      "sha256": "487576F7A4DE4B0C3CBAB21ADDF09271ABD1C1E6E1BE6C9DD2BC5146697277E2"
+    },
+    {
+      "path": "planning/design-TRACK4-ALGORITHM-CLOSURE-BACKEND-001.md",
+      "sha256": "2055E6E89AEC07BD1CD8D0048F1961232650D0E7043E1689CF12C7C6D692F060"
+    },
+    {
+      "path": "planning/design-TRACK4-ALGORITHM-DDR-QUALIFICATION-001.md",
+      "sha256": "2C6B710213B6894C05B3F6922CCB1A6AF23BAF5B98B90DE65473FE7A27EB6559"
+    }
+  ],
+  "native_wrapper": {
+    "primitive": "EFX_RAM10",
+    "read_width": 20,
+    "write_width": 20,
+    "address_bits": 9,
+    "words": 512,
+    "OUTPUT_REG": 0,
+    "both_write_enable_halves_required": true,
+    "extra_external_output_register": false,
+    "primitive_RST_fixed_zero": true,
+    "local_reset_gates_RE_WE_not_memory_clear": true,
+    "no_same_address_read_write": true,
+    "vote_read_issue": "e1",
+    "vote_capture": "e2",
+    "actual_native_write_linearization": "e4",
+    "export": "f0 RE / f1 existing scratch capture / f2 check+append+cursor advance",
+    "export_min_intervals_all_batches": 425472,
+    "clear_min_address_intervals_all_batches": 8864,
+    "actual_20bit_16bank_simulation_or_STA_run": false
+  },
+  "joint_interfaces": {
+    "field_order": "high_to_low; embedded original KEY layout retained",
+    "admin_request": 550,
+    "admin_reply": 658,
+    "context": 986,
+    "DNKEY": 298,
+    "DN_WQ": 426,
+    "DN_DATA_RSP": 307,
+    "permit_request": 811,
+    "permit_reply": 922,
+    "JL_BEGIN_DN": 932,
+    "JL_source_kind_bits": 1,
+    "JL_maximum": {
+      "BEGIN": 1184,
+      "GRANT": 1257,
+      "GENV": 1248,
+      "FINISH": 1263,
+      "FACK": 1272,
+      "LREQ": 791,
+      "LGRANT": 868,
+      "ENV": 859,
+      "WORD_RQ": 949,
+      "WORD_RSP": 977,
+      "RETIRE": 869,
+      "ACK": 878
+    },
+    "trusted_context_view_required": true,
+    "without_trusted_view_fallback": {
+      "BEGIN_DN": 1188,
+      "joint_max_BEGIN": 1189,
+      "JL_selected_holding_bits": 13187,
+      "adopted": false
+    }
+  },
+  "selected_holding_subsets": {
+    "native_working_fields": 927,
+    "admin_source_and_two_dynamic_tails": 766,
+    "admin_source_liveness_flags": 7,
+    "RC_admin_lifecycle": 3,
+    "STORE_batch_owner_state": 4,
+    "admin_independent_binding": 64,
+    "management_selected_fields": 844,
+    "durable_admin_fields": {
+      "RC_current_clear_key": 287,
+      "RC_current_batchlease": 64,
+      "RC_batch_live": 1,
+      "STORE_batch_clear_key": 287,
+      "total": 639,
+      "does_not_cover_complete_partial_expected_or_receipt_source": true
+    },
+    "STORE_context": 986,
+    "DN_data_two_end_bodies": 1466,
+    "permit_two_end_bodies": 3466,
+    "extra_three_allocator_fields": 192,
+    "sum_new_selected_fields": 8520,
+    "JL_existing_partial_holding": 13079,
+    "JL_entry_six_slots_delta": 72,
+    "JL_group_six_slots_delta": 6,
+    "JL_delta": 78,
+    "JL_new_partial_holding": 13157,
+    "selected_new_fields_plus_JL_delta": 8598,
+    "historical_v02_admin_body": 2416,
+    "historical_v02_selected_new_fields_plus_JL_delta": 9531,
+    "management_alias_gain_before_new_durable_fields": 1572,
+    "new_explicit_durable_fields_not_in_old_subset": 639,
+    "numerical_difference_selected_subset": 933,
+    "is_complete_FF_total": false,
+    "not_added_directly_to_58028_production_set": true,
+    "omitted_fields_are_OPEN_not_zero": [
+      "other valid/expected/pending and all allocator exhausted flags",
+      "partial query expected/identity and actual responsibility migration",
+      "BEGIN receipt belongs-to-current-new-instance evidence",
+      "source view/borrow/revoke/callback and actual quiet",
+      "cancel/dirty/close/history/provider effects",
+      "O/BK actual shared window/assembly, complete CDC, service and STA"
+    ]
+  },
+  "new_interface_normal_fires": {
+    "admin_transactions": 96,
+    "admin_fires": 192,
+    "DN_data_transactions": 23296,
+    "DN_data_fires": 46592,
+    "permit_transactions": 23296,
+    "permit_fires": 46592,
+    "total": 93376,
+    "not_in_old_JL_or_OBJ_counts": true,
+    "not_clock_cycles": true
+  },
+  "retirement_rule": {
+    "batch0": "Finish centers1..14 and actual snapshots0/1/14/15, then data-quiet RETIRE; theta15 mathematical obligation stays in NMS",
+    "batch1_to30": "Finish previous last/new first/internal centers and copy current last two rows; RETIRE data only, do not wait next batch",
+    "batch31": "Conservatively finish theta511/0 and actual LINE end before RETIRE",
+    "no_cross_batch_wait_cycle": true,
+    "actual_verification_run": false
+  },
+  "management_source_reuse": {
+    "adopted_as_unapproved_design_choice": true,
+    "public_CMD_bits": 550,
+    "public_ACK_bits": 658,
+    "unique_immutable_CMD_owner": "RC",
+    "STORE_ACK_dynamic_bits": 108,
+    "RC_private_dynamic_bits": 108,
+    "body_fields_bits": 766,
+    "other_source_aliases_adopted": false,
+    "RC_flags": [
+      "req_publish_valid",
+      "req_live",
+      "private_live",
+      "private_processed"
+    ],
+    "STORE_flags": [
+      "cmd_borrow_live",
+      "ack_publish_valid",
+      "ack_metadata_live"
+    ],
+    "RC_lifecycle_bits": 3,
+    "STORE_owner_bits": 4,
+    "selected_flags_and_state_bits": 14,
+    "STORE_binding_adminseq_bits": 64,
+    "binding_not_alias_batchpubseq": true,
+    "adminseq_zero_legal": true,
+    "adminseq_first": 0,
+    "adminseq_MAX_once_then_exhaust": true,
+    "warm_not_reuse": true,
+    "forming_ACK_requires_independent_binding_and_same_actual_callback": true,
+    "RC_validates_actual_all658_before_capture108": true,
+    "private_echo_is_only_already_validated_immutable_CMD_borrow": true,
+    "release_order": [
+      "RC closes private processing but keeps CMD live",
+      "STORE sees real ACK fire and closes this CMD actual users/ACK callbacks without waiting req_live0",
+      "RC sees old source/transport quiet then later GAP releases CMD"
+    ],
+    "partial_guard_not_waited_if_actually_migrated_to_independent_record": true,
+    "clear_KEY_and_lease_have_new_explicit_persistent_fields": true,
+    "receipt_owned1_not_authorization_or_instance_membership": true,
+    "cancel_or_warm_reset_preserves_live_body_bindings": true,
+    "UNKNOWN_retains_Q_until_true_close": true,
+    "actual_message_callback_provider_and_complete_partial_ledger_frozen": false,
+    "actual_simulation_or_STA_run": false
+  },
+  "source_retirement_order": {
+    "DATA_borrow_must_close_before": [
+      "span_END",
+      "DN_DATA_RSP307",
+      "entry_RETIRE",
+      "group_FINISH"
+    ],
+    "CONTROL_source_preserved_until": "matching entry/group returned metadata and old transport GAP",
+    "CONTROL_retention_does_not_authorize_new_prepare_or_physical_access": true,
+    "order": "prepared/state effects -> seal DATA/read references -> independent history/visible/no-future/END ->307correct consumption->entry ACK/GAP->group FACK/GAP->CONTROL release/prefix",
+    "unknown_raw_semantic_response_not_effect_close": true,
+    "FAILED_CLOSED_requires_new_true_close_evidence": true,
+    "actual_gate_provider_frozen": false
+  },
+  "provider_findings": {
+    "batch_install_CTX_view_revoke_actual_interfaces_frozen": false,
+    "CR_ADMIN_body_and_completion_storage_frozen": false,
+    "DIR_algorithm_holder_and_true_physical_settled_provider_frozen": false,
+    "matched_C2_Elitestek_v11_B_visibility_no_future_contract_found": false,
+    "Q0_even_if_pass_does_not_prove_physical_contract": true,
+    "generic_message_RAM_adopted": false,
+    "RAM_capacity_only_comparison": {
+      "old_DENSE_four_body_logical_bits": 8334,
+      "per_record_padding_words20": 424,
+      "padded_bits": 8480,
+      "sufficient_geometry_only": true,
+      "ports_assembly_validated_ready_lifetime_proven": false
+    }
+  }
+}

@@ -1,0 +1,44 @@
+{
+  "task_id": "TRACK4-CIRCLE-HISTOGRAM-001",
+  "design_version": "v1.1",
+  "date": "2026-10-11",
+  "authorization": "Parent explicitly authorized independent candidate implementation under the user's existing autonomous continuation and local audit exception.",
+  "design_path": "_fpga_edge_agent/planning/design-TRACK4-CIRCLE-HISTOGRAM-001.md",
+  "design_sha256": "DC6C5FCDB12E8F84541A79F0230C52E440FF19EF846B858B873F584DF660041D",
+  "source_path": "board/rtl/board_circle_histogram.sv",
+  "source_sha256": "3A8F9A320E3D6E8B1C7D8455BF24FD2B5B63E9B060C682262F664BD39CE59A50",
+  "status": "CANDIDATE_IMPLEMENTED_STATIC_REVIEW_ONLY",
+  "scope": "One seed, all POINT records, full 131072-bin DDR histogram, raw and +/-8 smooth canonical plateau peaks, at most 512 per route, complete metadata after real replies close.",
+  "modified_existing_files": [],
+  "reference_dependency": "algorithm/deps/work_queue/rtl/queue_ram16_1r1w.sv; read only; three instances with synchronous read and a separate capture state",
+  "static_review": [
+    "CACHE_COPY word31 writes before subsequent read states; reply is consumed on the same final copy edge.",
+    "POINT and HIST scan blocks use the same one-RAM cache; all copy replies close before histogram or peak writes.",
+    "Histogram RMW validates 16 counters, preserves non-target counters, packs exactly eight ascending words, consumes the read reply on last PACK, and offers WRITE only in the next state.",
+    "The next point follows successful drained histogram WRITE response; consecutive votes to the same bin see the previous real update.",
+    "Four ring offsets are read/captured before the one write; feed and smooth history advance only after both pending peak writes close.",
+    "Valid peak domain is 1..131071; out-of-domain neighbors are masked, nine padding feeds close the last peak, and both counts use canonical plateau start.",
+    "RAW and SMOOTH have separate pending records; a 513th peak fails without publishing completion.",
+    "Unknown drain and unexpected replies enter sticky quarantine; failed or quarantined modules cannot accept another seed before common cold reset."
+  ],
+  "not_run": [
+    "simulation",
+    "testbench",
+    "EDA",
+    "synthesis",
+    "place_and_route",
+    "hardware"
+  ],
+  "not_connected": [
+    "The parent's real fixed-point radius and normal-gate evaluator for the held seed.",
+    "The parent's exclusive native DDR and ordered shared PACK owner mux; the gradient store must remain COMPLETE while this module packs.",
+    "Candidate source inclusion in a future whole-system build and propagation of done/fault/quarantine.",
+    "Five-pass circle fitting, frozen circle verification, final selection and annotation."
+  ],
+  "limits": "Three additional RAM instances are a structural estimate, not a mapper or capacity result. No recognition quality or throughput result is claimed. Main sources, frozen flows, original HDK, 031 delivery, formal database and hardware state were not modified by this candidate change.",
+  "v1_source_sha256": "AF69E5E895D112F2487E86D60726BE2C624A2C3DD76FAAEC28731806B93B518D",
+  "lexical_backup": "before-lexical-v1/board/rtl/board_circle_histogram.sv",
+  "lexical_repair": "Whitespace around two 17h1ffff ternary comparisons; no data/control behavior change; original source preserved",
+  "root_static_review": "PASS: entire source read back, cache/ring/reply/peak/sum/metadata widths and terminal ownership reviewed",
+  "independent_static_review": "PASS: actual revised SHA matched, two lexical errors fixed, full131072/ninepad/canonical/bothpending/real drained/metadata reviewed; no EDA or simulation"
+}

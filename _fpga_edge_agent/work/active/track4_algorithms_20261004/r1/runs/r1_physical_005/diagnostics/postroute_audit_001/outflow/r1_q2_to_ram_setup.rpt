@@ -1,0 +1,1096 @@
+
+Efinix report_timing Report
+Version: 2026.1.132
+Date: Mon Oct  5 00:43:36 2026
+
+Copyright (C) 2013 - 2026 Efinix, Inc. All rights reserved.
+
+User command: report_timing -setup -from $q2 -to $ram_cells -npaths 16 -nworst 1 -file r1_q2_to_ram_setup.rpt
+
+Timing Model: I3
+	process : typical
+	temperature : -40C to 100C
+	voltage : 0.95 +/-30mV
+	speedgrade : 3
+	technology : t16ff
+	status : final
+
+Summary:
+
+ Path #  | Slack(ns) |                 Start Pin                 |                          End Pin                           |  Launch Clock   |  Capture Clock
+=================================================================================================================================================================
+  1      |  35.916   | reset_adapter/reset_release_stage2~FF|CLK | core/window_before_median/older/pixel_lane[0].ram|RE       | core_25m (RISE) | core_25m (RISE)
+  2      |  36.118   | reset_adapter/reset_release_stage2~FF|CLK | core/window_before_median/recent/pixel_lane[0].ram|RE      | core_25m (RISE) | core_25m (RISE)
+  3      |  36.129   | reset_adapter/reset_release_stage2~FF|CLK | core/window_before_sobel/older/pixel_lane[1].ram|RADDR[8]  | core_25m (RISE) | core_25m (RISE)
+  4      |  36.248   | reset_adapter/reset_release_stage2~FF|CLK | core/window_before_median/recent/pixel_lane[1].ram|RE      | core_25m (RISE) | core_25m (RISE)
+  5      |  36.254   | reset_adapter/reset_release_stage2~FF|CLK | core/window_before_sobel/recent/pixel_lane[1].ram|RADDR[5] | core_25m (RISE) | core_25m (RISE)
+  6      |  36.271   | reset_adapter/reset_release_stage2~FF|CLK | core/window_before_sobel/older/pixel_lane[1].ram|RADDR[5]  | core_25m (RISE) | core_25m (RISE)
+  7      |  36.274   | reset_adapter/reset_release_stage2~FF|CLK | core/window_before_median/older/pixel_lane[1].ram|RE       | core_25m (RISE) | core_25m (RISE)
+  8      |  36.286   | reset_adapter/reset_release_stage2~FF|CLK | core/window_before_sobel/older/pixel_lane[0].ram|RADDR[7]  | core_25m (RISE) | core_25m (RISE)
+  9      |  36.312   | reset_adapter/reset_release_stage2~FF|CLK | core/window_before_median/older/pixel_lane[1].ram|RADDR[0] | core_25m (RISE) | core_25m (RISE)
+ 10      |  36.337   | reset_adapter/reset_release_stage2~FF|CLK | core/window_before_sobel/recent/pixel_lane[0].ram|RADDR[9] | core_25m (RISE) | core_25m (RISE)
+ 11      |  36.386   | reset_adapter/reset_release_stage2~FF|CLK | core/window_before_sobel/older/pixel_lane[0].ram|RE        | core_25m (RISE) | core_25m (RISE)
+ 12      |  36.422   | reset_adapter/reset_release_stage2~FF|CLK | core/window_before_sobel/older/pixel_lane[1].ram|RADDR[7]  | core_25m (RISE) | core_25m (RISE)
+ 13      |  36.460   | reset_adapter/reset_release_stage2~FF|CLK | core/window_before_sobel/older/pixel_lane[1].ram|RE        | core_25m (RISE) | core_25m (RISE)
+ 14      |  36.464   | reset_adapter/reset_release_stage2~FF|CLK | core/window_before_median/older/pixel_lane[0].ram|WE[0]    | core_25m (RISE) | core_25m (RISE)
+ 15      |  36.472   | reset_adapter/reset_release_stage2~FF|CLK | core/window_before_median/older/pixel_lane[0].ram|WCLKE    | core_25m (RISE) | core_25m (RISE)
+ 16      |  36.473   | reset_adapter/reset_release_stage2~FF|CLK | core/window_before_sobel/recent/pixel_lane[0].ram|RE       | core_25m (RISE) | core_25m (RISE)
+
+++++ Path 1 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 35.916 ns (required time - arrival time)                       
+Path Start      : reset_adapter/reset_release_stage2~FF|CLK                      
+Path End        : core/window_before_median/older/pixel_lane[0].ram|RE           
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 3.874 ns                                                       
+Logic Levels    : 7                                                              
+
+Launch Clock Path Delay        : 2.065
++ Clock To Q + Data Path Delay : 3.874
+--------------------------------------
+End-of-path arrival time       : 5.939
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.084
+---------------------------------------
+End-of-path required time      : 41.855
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)              Netlist Resource(s)
+==============================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                                  
+  (0,164)    input            0.126        0.126     clk_25m                                  
+             net (fo=2399)    1.939        2.065     clk_25m                                  
+  (152,3)    EFX_FF           0.000        2.065     reset_adapter/reset_release_stage2~FF|CLK
+
+Data Path
+  Location    Delay Type    Incr(ns)     Path(ns)                   Netlist Resource(s)
+========================================================================================================
+ (152,3)     EFX_FF (Tco)    0.130        0.130     reset_adapter/reset_release_stage2~FF|Q             
+             net (fo=308)    0.605        0.735     reset_adapter/reset_release_stage2                  
+ (152,59)    EFX_LUT4        0.061        0.796     LUT__10502|in[2]                                    
+ (152,59)    EFX_LUT4        0.000        0.796     LUT__10502|out                                      
+             net (fo=2)      0.061        0.857     n4699                                               
+ (152,58)    EFX_LUT4        0.061        0.918     LUT__10504|in[2]                                    
+ (152,58)    EFX_LUT4        0.000        0.918     LUT__10504|out                                      
+             net (fo=11)     0.061        0.979     core/sobel/pipeline_advance                         
+ (152,57)    EFX_LUT4        0.061        1.040     LUT__10508|in[0]                                    
+ (152,57)    EFX_LUT4        0.000        1.040     LUT__10508|out                                      
+             net (fo=6)      0.061        1.101     n4703                                               
+ (152,56)    EFX_LUT4        0.061        1.162     LUT__10510|in[0]                                    
+ (152,56)    EFX_LUT4        0.000        1.162     LUT__10510|out                                      
+             net (fo=7)      0.061        1.223     core/gray/pipeline_advance                          
+ (152,55)    EFX_LUT4        0.061        1.284     LUT__10527|in[0]                                    
+ (152,55)    EFX_LUT4        0.000        1.284     LUT__10527|out                                      
+             net (fo=8)      0.061        1.345     core/n1519                                          
+ (152,54)    EFX_LUT4        0.061        1.406     LUT__10566|in[0]                                    
+ (152,54)    EFX_LUT4        0.000        1.406     LUT__10566|out                                      
+             net (fo=563)    1.384        2.790     core/median/n1366                                   
+ (152,102)   EFX_LUT4        0.061        2.851     LUT__10928|in[0]                                    
+ (152,102)   EFX_LUT4        0.000        2.851     LUT__10928|out                                      
+             net (fo=4)      1.023        3.874     core/window_before_median/rd_en                     
+ (117,102)   EFX_RAM10       0.000        3.874     core/window_before_median/older/pixel_lane[0].ram|RE
+
+Capture Clock Path
+  Location      Delay Type       Incr(ns)     Path(ns)                    Netlist Resource(s)
+===============================================================================================================
+ (0,164)     input                 0.000       0.000     clk_25m                                               
+ (0,164)     input                 0.126       0.126     clk_25m                                               
+             net (fo=2399)         1.939       2.065     clk_25m                                               
+ (117,102)   EFX_RAM10             0.000       2.065     core/window_before_median/older/pixel_lane[0].ram|RCLK
+ (117,102)   EFX_RAM10 (Setup)    -0.084       1.981     core/window_before_median/older/pixel_lane[0].ram     
+
+++++ Path 2 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 36.118 ns (required time - arrival time)                       
+Path Start      : reset_adapter/reset_release_stage2~FF|CLK                      
+Path End        : core/window_before_median/recent/pixel_lane[0].ram|RE          
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 3.672 ns                                                       
+Logic Levels    : 7                                                              
+
+Launch Clock Path Delay        : 2.065
++ Clock To Q + Data Path Delay : 3.672
+--------------------------------------
+End-of-path arrival time       : 5.737
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.084
+---------------------------------------
+End-of-path required time      : 41.855
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)              Netlist Resource(s)
+==============================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                                  
+  (0,164)    input            0.126        0.126     clk_25m                                  
+             net (fo=2399)    1.939        2.065     clk_25m                                  
+  (152,3)    EFX_FF           0.000        2.065     reset_adapter/reset_release_stage2~FF|CLK
+
+Data Path
+  Location    Delay Type    Incr(ns)     Path(ns)                    Netlist Resource(s)
+=========================================================================================================
+ (152,3)     EFX_FF (Tco)    0.130        0.130     reset_adapter/reset_release_stage2~FF|Q              
+             net (fo=308)    0.605        0.735     reset_adapter/reset_release_stage2                   
+ (152,59)    EFX_LUT4        0.061        0.796     LUT__10502|in[2]                                     
+ (152,59)    EFX_LUT4        0.000        0.796     LUT__10502|out                                       
+             net (fo=2)      0.061        0.857     n4699                                                
+ (152,58)    EFX_LUT4        0.061        0.918     LUT__10504|in[2]                                     
+ (152,58)    EFX_LUT4        0.000        0.918     LUT__10504|out                                       
+             net (fo=11)     0.061        0.979     core/sobel/pipeline_advance                          
+ (152,57)    EFX_LUT4        0.061        1.040     LUT__10508|in[0]                                     
+ (152,57)    EFX_LUT4        0.000        1.040     LUT__10508|out                                       
+             net (fo=6)      0.061        1.101     n4703                                                
+ (152,56)    EFX_LUT4        0.061        1.162     LUT__10510|in[0]                                     
+ (152,56)    EFX_LUT4        0.000        1.162     LUT__10510|out                                       
+             net (fo=7)      0.061        1.223     core/gray/pipeline_advance                           
+ (152,55)    EFX_LUT4        0.061        1.284     LUT__10527|in[0]                                     
+ (152,55)    EFX_LUT4        0.000        1.284     LUT__10527|out                                       
+             net (fo=8)      0.061        1.345     core/n1519                                           
+ (152,54)    EFX_LUT4        0.061        1.406     LUT__10566|in[0]                                     
+ (152,54)    EFX_LUT4        0.000        1.406     LUT__10566|out                                       
+             net (fo=563)    1.384        2.790     core/median/n1366                                    
+ (152,102)   EFX_LUT4        0.061        2.851     LUT__10928|in[0]                                     
+ (152,102)   EFX_LUT4        0.000        2.851     LUT__10928|out                                       
+             net (fo=4)      0.821        3.672     core/window_before_median/rd_en                      
+ (147,102)   EFX_RAM10       0.000        3.672     core/window_before_median/recent/pixel_lane[0].ram|RE
+
+Capture Clock Path
+  Location      Delay Type       Incr(ns)     Path(ns)                     Netlist Resource(s)
+================================================================================================================
+ (0,164)     input                 0.000       0.000     clk_25m                                                
+ (0,164)     input                 0.126       0.126     clk_25m                                                
+             net (fo=2399)         1.939       2.065     clk_25m                                                
+ (147,102)   EFX_RAM10             0.000       2.065     core/window_before_median/recent/pixel_lane[0].ram|RCLK
+ (147,102)   EFX_RAM10 (Setup)    -0.084       1.981     core/window_before_median/recent/pixel_lane[0].ram     
+
+++++ Path 3 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 36.129 ns (required time - arrival time)                       
+Path Start      : reset_adapter/reset_release_stage2~FF|CLK                      
+Path End        : core/window_before_sobel/older/pixel_lane[1].ram|RADDR[8]      
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 3.713 ns                                                       
+Logic Levels    : 6                                                              
+
+Launch Clock Path Delay        : 2.065
++ Clock To Q + Data Path Delay : 3.713
+--------------------------------------
+End-of-path arrival time       : 5.778
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.032
+---------------------------------------
+End-of-path required time      : 41.907
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)              Netlist Resource(s)
+==============================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                                  
+  (0,164)    input            0.126        0.126     clk_25m                                  
+             net (fo=2399)    1.939        2.065     clk_25m                                  
+  (152,3)    EFX_FF           0.000        2.065     reset_adapter/reset_release_stage2~FF|CLK
+
+Data Path
+  Location    Delay Type    Incr(ns)     Path(ns)                      Netlist Resource(s)
+=============================================================================================================
+  (152,3)    EFX_FF (Tco)    0.130        0.130     reset_adapter/reset_release_stage2~FF|Q                  
+             net (fo=308)    0.605        0.735     reset_adapter/reset_release_stage2                       
+  (152,59)   EFX_LUT4        0.061        0.796     LUT__10502|in[2]                                         
+  (152,59)   EFX_LUT4        0.000        0.796     LUT__10502|out                                           
+             net (fo=2)      0.061        0.857     n4699                                                    
+  (152,58)   EFX_LUT4        0.061        0.918     LUT__10504|in[2]                                         
+  (152,58)   EFX_LUT4        0.000        0.918     LUT__10504|out                                           
+             net (fo=11)     0.500        1.418     core/sobel/pipeline_advance                              
+  (151,57)   EFX_LUT4        0.061        1.479     LUT__10578|in[0]                                         
+  (151,57)   EFX_LUT4        0.000        1.479     LUT__10578|out                                           
+             net (fo=2)      0.482        1.961     n4757                                                    
+  (126,57)   EFX_LUT4        0.063        2.024     LUT__11060|in[1]                                         
+  (126,57)   EFX_LUT4        0.000        2.024     LUT__11060|out                                           
+             net (fo=2)      0.109        2.133     n4939                                                    
+  (127,57)   EFX_LUT4        0.061        2.194     LUT__11080|in[2]                                         
+  (127,57)   EFX_LUT4        0.000        2.194     LUT__11080|out                                           
+             net (fo=53)     0.520        2.714     core/window_before_sobel/n2529                           
+  (127,55)   EFX_LUT4        0.061        2.775     LUT__11159|in[2]                                         
+  (127,55)   EFX_LUT4        0.000        2.775     LUT__11159|out                                           
+             net (fo=4)      0.938        3.713     core/window_before_sobel/rd_addr[0]                      
+  (132,82)   EFX_RAM10       0.000        3.713     core/window_before_sobel/older/pixel_lane[1].ram|RADDR[8]
+
+Capture Clock Path
+  Location      Delay Type       Incr(ns)     Path(ns)                    Netlist Resource(s)
+==============================================================================================================
+  (0,164)    input                 0.000       0.000     clk_25m                                              
+  (0,164)    input                 0.126       0.126     clk_25m                                              
+             net (fo=2399)         1.939       2.065     clk_25m                                              
+  (132,82)   EFX_RAM10             0.000       2.065     core/window_before_sobel/older/pixel_lane[1].ram|RCLK
+  (132,82)   EFX_RAM10 (Setup)    -0.032       2.033     core/window_before_sobel/older/pixel_lane[1].ram     
+
+++++ Path 4 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 36.248 ns (required time - arrival time)                       
+Path Start      : reset_adapter/reset_release_stage2~FF|CLK                      
+Path End        : core/window_before_median/recent/pixel_lane[1].ram|RE          
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 3.542 ns                                                       
+Logic Levels    : 7                                                              
+
+Launch Clock Path Delay        : 2.065
++ Clock To Q + Data Path Delay : 3.542
+--------------------------------------
+End-of-path arrival time       : 5.607
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.084
+---------------------------------------
+End-of-path required time      : 41.855
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)              Netlist Resource(s)
+==============================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                                  
+  (0,164)    input            0.126        0.126     clk_25m                                  
+             net (fo=2399)    1.939        2.065     clk_25m                                  
+  (152,3)    EFX_FF           0.000        2.065     reset_adapter/reset_release_stage2~FF|CLK
+
+Data Path
+  Location    Delay Type    Incr(ns)     Path(ns)                    Netlist Resource(s)
+=========================================================================================================
+ (152,3)     EFX_FF (Tco)    0.130        0.130     reset_adapter/reset_release_stage2~FF|Q              
+             net (fo=308)    0.605        0.735     reset_adapter/reset_release_stage2                   
+ (152,59)    EFX_LUT4        0.061        0.796     LUT__10502|in[2]                                     
+ (152,59)    EFX_LUT4        0.000        0.796     LUT__10502|out                                       
+             net (fo=2)      0.061        0.857     n4699                                                
+ (152,58)    EFX_LUT4        0.061        0.918     LUT__10504|in[2]                                     
+ (152,58)    EFX_LUT4        0.000        0.918     LUT__10504|out                                       
+             net (fo=11)     0.061        0.979     core/sobel/pipeline_advance                          
+ (152,57)    EFX_LUT4        0.061        1.040     LUT__10508|in[0]                                     
+ (152,57)    EFX_LUT4        0.000        1.040     LUT__10508|out                                       
+             net (fo=6)      0.061        1.101     n4703                                                
+ (152,56)    EFX_LUT4        0.061        1.162     LUT__10510|in[0]                                     
+ (152,56)    EFX_LUT4        0.000        1.162     LUT__10510|out                                       
+             net (fo=7)      0.061        1.223     core/gray/pipeline_advance                           
+ (152,55)    EFX_LUT4        0.061        1.284     LUT__10527|in[0]                                     
+ (152,55)    EFX_LUT4        0.000        1.284     LUT__10527|out                                       
+             net (fo=8)      0.061        1.345     core/n1519                                           
+ (152,54)    EFX_LUT4        0.061        1.406     LUT__10566|in[0]                                     
+ (152,54)    EFX_LUT4        0.000        1.406     LUT__10566|out                                       
+             net (fo=563)    1.384        2.790     core/median/n1366                                    
+ (152,102)   EFX_LUT4        0.061        2.851     LUT__10928|in[0]                                     
+ (152,102)   EFX_LUT4        0.000        2.851     LUT__10928|out                                       
+             net (fo=4)      0.691        3.542     core/window_before_median/rd_en                      
+ (156,102)   EFX_RAM10       0.000        3.542     core/window_before_median/recent/pixel_lane[1].ram|RE
+
+Capture Clock Path
+  Location      Delay Type       Incr(ns)     Path(ns)                     Netlist Resource(s)
+================================================================================================================
+ (0,164)     input                 0.000       0.000     clk_25m                                                
+ (0,164)     input                 0.126       0.126     clk_25m                                                
+             net (fo=2399)         1.939       2.065     clk_25m                                                
+ (156,102)   EFX_RAM10             0.000       2.065     core/window_before_median/recent/pixel_lane[1].ram|RCLK
+ (156,102)   EFX_RAM10 (Setup)    -0.084       1.981     core/window_before_median/recent/pixel_lane[1].ram     
+
+++++ Path 5 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 36.254 ns (required time - arrival time)                       
+Path Start      : reset_adapter/reset_release_stage2~FF|CLK                      
+Path End        : core/window_before_sobel/recent/pixel_lane[1].ram|RADDR[5]     
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 3.588 ns                                                       
+Logic Levels    : 6                                                              
+
+Launch Clock Path Delay        : 2.065
++ Clock To Q + Data Path Delay : 3.588
+--------------------------------------
+End-of-path arrival time       : 5.653
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.032
+---------------------------------------
+End-of-path required time      : 41.907
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)              Netlist Resource(s)
+==============================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                                  
+  (0,164)    input            0.126        0.126     clk_25m                                  
+             net (fo=2399)    1.939        2.065     clk_25m                                  
+  (152,3)    EFX_FF           0.000        2.065     reset_adapter/reset_release_stage2~FF|CLK
+
+Data Path
+  Location    Delay Type    Incr(ns)     Path(ns)                      Netlist Resource(s)
+==============================================================================================================
+  (152,3)    EFX_FF (Tco)    0.130        0.130     reset_adapter/reset_release_stage2~FF|Q                   
+             net (fo=308)    0.605        0.735     reset_adapter/reset_release_stage2                        
+  (152,59)   EFX_LUT4        0.061        0.796     LUT__10502|in[2]                                          
+  (152,59)   EFX_LUT4        0.000        0.796     LUT__10502|out                                            
+             net (fo=2)      0.061        0.857     n4699                                                     
+  (152,58)   EFX_LUT4        0.061        0.918     LUT__10504|in[2]                                          
+  (152,58)   EFX_LUT4        0.000        0.918     LUT__10504|out                                            
+             net (fo=11)     0.500        1.418     core/sobel/pipeline_advance                               
+  (151,57)   EFX_LUT4        0.061        1.479     LUT__10578|in[0]                                          
+  (151,57)   EFX_LUT4        0.000        1.479     LUT__10578|out                                            
+             net (fo=2)      0.482        1.961     n4757                                                     
+  (126,57)   EFX_LUT4        0.063        2.024     LUT__11060|in[1]                                          
+  (126,57)   EFX_LUT4        0.000        2.024     LUT__11060|out                                            
+             net (fo=2)      0.109        2.133     n4939                                                     
+  (127,57)   EFX_LUT4        0.061        2.194     LUT__11080|in[2]                                          
+  (127,57)   EFX_LUT4        0.000        2.194     LUT__11080|out                                            
+             net (fo=53)     0.494        2.688     core/window_before_sobel/n2529                            
+  (127,62)   EFX_LUT4        0.061        2.749     LUT__11152|in[2]                                          
+  (127,62)   EFX_LUT4        0.000        2.749     LUT__11152|out                                            
+             net (fo=4)      0.839        3.588     core/window_before_sobel/rd_addr[7]                       
+  (132,62)   EFX_RAM10       0.000        3.588     core/window_before_sobel/recent/pixel_lane[1].ram|RADDR[5]
+
+Capture Clock Path
+  Location      Delay Type       Incr(ns)     Path(ns)                    Netlist Resource(s)
+===============================================================================================================
+  (0,164)    input                 0.000       0.000     clk_25m                                               
+  (0,164)    input                 0.126       0.126     clk_25m                                               
+             net (fo=2399)         1.939       2.065     clk_25m                                               
+  (132,62)   EFX_RAM10             0.000       2.065     core/window_before_sobel/recent/pixel_lane[1].ram|RCLK
+  (132,62)   EFX_RAM10 (Setup)    -0.032       2.033     core/window_before_sobel/recent/pixel_lane[1].ram     
+
+++++ Path 6 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 36.271 ns (required time - arrival time)                       
+Path Start      : reset_adapter/reset_release_stage2~FF|CLK                      
+Path End        : core/window_before_sobel/older/pixel_lane[1].ram|RADDR[5]      
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 3.571 ns                                                       
+Logic Levels    : 6                                                              
+
+Launch Clock Path Delay        : 2.065
++ Clock To Q + Data Path Delay : 3.571
+--------------------------------------
+End-of-path arrival time       : 5.636
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.032
+---------------------------------------
+End-of-path required time      : 41.907
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)              Netlist Resource(s)
+==============================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                                  
+  (0,164)    input            0.126        0.126     clk_25m                                  
+             net (fo=2399)    1.939        2.065     clk_25m                                  
+  (152,3)    EFX_FF           0.000        2.065     reset_adapter/reset_release_stage2~FF|CLK
+
+Data Path
+  Location    Delay Type    Incr(ns)     Path(ns)                      Netlist Resource(s)
+=============================================================================================================
+  (152,3)    EFX_FF (Tco)    0.130        0.130     reset_adapter/reset_release_stage2~FF|Q                  
+             net (fo=308)    0.605        0.735     reset_adapter/reset_release_stage2                       
+  (152,59)   EFX_LUT4        0.061        0.796     LUT__10502|in[2]                                         
+  (152,59)   EFX_LUT4        0.000        0.796     LUT__10502|out                                           
+             net (fo=2)      0.061        0.857     n4699                                                    
+  (152,58)   EFX_LUT4        0.061        0.918     LUT__10504|in[2]                                         
+  (152,58)   EFX_LUT4        0.000        0.918     LUT__10504|out                                           
+             net (fo=11)     0.500        1.418     core/sobel/pipeline_advance                              
+  (151,57)   EFX_LUT4        0.061        1.479     LUT__10578|in[0]                                         
+  (151,57)   EFX_LUT4        0.000        1.479     LUT__10578|out                                           
+             net (fo=2)      0.482        1.961     n4757                                                    
+  (126,57)   EFX_LUT4        0.063        2.024     LUT__11060|in[1]                                         
+  (126,57)   EFX_LUT4        0.000        2.024     LUT__11060|out                                           
+             net (fo=2)      0.109        2.133     n4939                                                    
+  (127,57)   EFX_LUT4        0.061        2.194     LUT__11080|in[2]                                         
+  (127,57)   EFX_LUT4        0.000        2.194     LUT__11080|out                                           
+             net (fo=53)     0.494        2.688     core/window_before_sobel/n2529                           
+  (127,62)   EFX_LUT4        0.061        2.749     LUT__11152|in[2]                                         
+  (127,62)   EFX_LUT4        0.000        2.749     LUT__11152|out                                           
+             net (fo=4)      0.822        3.571     core/window_before_sobel/rd_addr[7]                      
+  (132,82)   EFX_RAM10       0.000        3.571     core/window_before_sobel/older/pixel_lane[1].ram|RADDR[5]
+
+Capture Clock Path
+  Location      Delay Type       Incr(ns)     Path(ns)                    Netlist Resource(s)
+==============================================================================================================
+  (0,164)    input                 0.000       0.000     clk_25m                                              
+  (0,164)    input                 0.126       0.126     clk_25m                                              
+             net (fo=2399)         1.939       2.065     clk_25m                                              
+  (132,82)   EFX_RAM10             0.000       2.065     core/window_before_sobel/older/pixel_lane[1].ram|RCLK
+  (132,82)   EFX_RAM10 (Setup)    -0.032       2.033     core/window_before_sobel/older/pixel_lane[1].ram     
+
+++++ Path 7 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 36.274 ns (required time - arrival time)                       
+Path Start      : reset_adapter/reset_release_stage2~FF|CLK                      
+Path End        : core/window_before_median/older/pixel_lane[1].ram|RE           
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 3.516 ns                                                       
+Logic Levels    : 7                                                              
+
+Launch Clock Path Delay        : 2.065
++ Clock To Q + Data Path Delay : 3.516
+--------------------------------------
+End-of-path arrival time       : 5.581
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.084
+---------------------------------------
+End-of-path required time      : 41.855
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)              Netlist Resource(s)
+==============================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                                  
+  (0,164)    input            0.126        0.126     clk_25m                                  
+             net (fo=2399)    1.939        2.065     clk_25m                                  
+  (152,3)    EFX_FF           0.000        2.065     reset_adapter/reset_release_stage2~FF|CLK
+
+Data Path
+  Location    Delay Type    Incr(ns)     Path(ns)                   Netlist Resource(s)
+========================================================================================================
+ (152,3)     EFX_FF (Tco)    0.130        0.130     reset_adapter/reset_release_stage2~FF|Q             
+             net (fo=308)    0.605        0.735     reset_adapter/reset_release_stage2                  
+ (152,59)    EFX_LUT4        0.061        0.796     LUT__10502|in[2]                                    
+ (152,59)    EFX_LUT4        0.000        0.796     LUT__10502|out                                      
+             net (fo=2)      0.061        0.857     n4699                                               
+ (152,58)    EFX_LUT4        0.061        0.918     LUT__10504|in[2]                                    
+ (152,58)    EFX_LUT4        0.000        0.918     LUT__10504|out                                      
+             net (fo=11)     0.061        0.979     core/sobel/pipeline_advance                         
+ (152,57)    EFX_LUT4        0.061        1.040     LUT__10508|in[0]                                    
+ (152,57)    EFX_LUT4        0.000        1.040     LUT__10508|out                                      
+             net (fo=6)      0.061        1.101     n4703                                               
+ (152,56)    EFX_LUT4        0.061        1.162     LUT__10510|in[0]                                    
+ (152,56)    EFX_LUT4        0.000        1.162     LUT__10510|out                                      
+             net (fo=7)      0.061        1.223     core/gray/pipeline_advance                          
+ (152,55)    EFX_LUT4        0.061        1.284     LUT__10527|in[0]                                    
+ (152,55)    EFX_LUT4        0.000        1.284     LUT__10527|out                                      
+             net (fo=8)      0.061        1.345     core/n1519                                          
+ (152,54)    EFX_LUT4        0.061        1.406     LUT__10566|in[0]                                    
+ (152,54)    EFX_LUT4        0.000        1.406     LUT__10566|out                                      
+             net (fo=563)    1.384        2.790     core/median/n1366                                   
+ (152,102)   EFX_LUT4        0.061        2.851     LUT__10928|in[0]                                    
+ (152,102)   EFX_LUT4        0.000        2.851     LUT__10928|out                                      
+             net (fo=4)      0.665        3.516     core/window_before_median/rd_en                     
+ (132,102)   EFX_RAM10       0.000        3.516     core/window_before_median/older/pixel_lane[1].ram|RE
+
+Capture Clock Path
+  Location      Delay Type       Incr(ns)     Path(ns)                    Netlist Resource(s)
+===============================================================================================================
+ (0,164)     input                 0.000       0.000     clk_25m                                               
+ (0,164)     input                 0.126       0.126     clk_25m                                               
+             net (fo=2399)         1.939       2.065     clk_25m                                               
+ (132,102)   EFX_RAM10             0.000       2.065     core/window_before_median/older/pixel_lane[1].ram|RCLK
+ (132,102)   EFX_RAM10 (Setup)    -0.084       1.981     core/window_before_median/older/pixel_lane[1].ram     
+
+++++ Path 8 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 36.286 ns (required time - arrival time)                       
+Path Start      : reset_adapter/reset_release_stage2~FF|CLK                      
+Path End        : core/window_before_sobel/older/pixel_lane[0].ram|RADDR[7]      
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 3.556 ns                                                       
+Logic Levels    : 6                                                              
+
+Launch Clock Path Delay        : 2.065
++ Clock To Q + Data Path Delay : 3.556
+--------------------------------------
+End-of-path arrival time       : 5.621
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.032
+---------------------------------------
+End-of-path required time      : 41.907
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)              Netlist Resource(s)
+==============================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                                  
+  (0,164)    input            0.126        0.126     clk_25m                                  
+             net (fo=2399)    1.939        2.065     clk_25m                                  
+  (152,3)    EFX_FF           0.000        2.065     reset_adapter/reset_release_stage2~FF|CLK
+
+Data Path
+  Location    Delay Type    Incr(ns)     Path(ns)                      Netlist Resource(s)
+=============================================================================================================
+  (152,3)    EFX_FF (Tco)    0.130        0.130     reset_adapter/reset_release_stage2~FF|Q                  
+             net (fo=308)    0.605        0.735     reset_adapter/reset_release_stage2                       
+  (152,59)   EFX_LUT4        0.061        0.796     LUT__10502|in[2]                                         
+  (152,59)   EFX_LUT4        0.000        0.796     LUT__10502|out                                           
+             net (fo=2)      0.061        0.857     n4699                                                    
+  (152,58)   EFX_LUT4        0.061        0.918     LUT__10504|in[2]                                         
+  (152,58)   EFX_LUT4        0.000        0.918     LUT__10504|out                                           
+             net (fo=11)     0.500        1.418     core/sobel/pipeline_advance                              
+  (151,57)   EFX_LUT4        0.061        1.479     LUT__10578|in[0]                                         
+  (151,57)   EFX_LUT4        0.000        1.479     LUT__10578|out                                           
+             net (fo=2)      0.482        1.961     n4757                                                    
+  (126,57)   EFX_LUT4        0.063        2.024     LUT__11060|in[1]                                         
+  (126,57)   EFX_LUT4        0.000        2.024     LUT__11060|out                                           
+             net (fo=2)      0.109        2.133     n4939                                                    
+  (127,57)   EFX_LUT4        0.061        2.194     LUT__11080|in[2]                                         
+  (127,57)   EFX_LUT4        0.000        2.194     LUT__11080|out                                           
+             net (fo=53)     0.480        2.674     core/window_before_sobel/n2529                           
+  (127,52)   EFX_LUT4        0.061        2.735     LUT__11150|in[2]                                         
+  (127,52)   EFX_LUT4        0.000        2.735     LUT__11150|out                                           
+             net (fo=4)      0.821        3.556     core/window_before_sobel/rd_addr[9]                      
+  (117,82)   EFX_RAM10       0.000        3.556     core/window_before_sobel/older/pixel_lane[0].ram|RADDR[7]
+
+Capture Clock Path
+  Location      Delay Type       Incr(ns)     Path(ns)                    Netlist Resource(s)
+==============================================================================================================
+  (0,164)    input                 0.000       0.000     clk_25m                                              
+  (0,164)    input                 0.126       0.126     clk_25m                                              
+             net (fo=2399)         1.939       2.065     clk_25m                                              
+  (117,82)   EFX_RAM10             0.000       2.065     core/window_before_sobel/older/pixel_lane[0].ram|RCLK
+  (117,82)   EFX_RAM10 (Setup)    -0.032       2.033     core/window_before_sobel/older/pixel_lane[0].ram     
+
+++++ Path 9 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 36.312 ns (required time - arrival time)                       
+Path Start      : reset_adapter/reset_release_stage2~FF|CLK                      
+Path End        : core/window_before_median/older/pixel_lane[1].ram|RADDR[0]     
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 3.530 ns                                                       
+Logic Levels    : 6                                                              
+
+Launch Clock Path Delay        : 2.065
++ Clock To Q + Data Path Delay : 3.530
+--------------------------------------
+End-of-path arrival time       : 5.595
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.032
+---------------------------------------
+End-of-path required time      : 41.907
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)              Netlist Resource(s)
+==============================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                                  
+  (0,164)    input            0.126        0.126     clk_25m                                  
+             net (fo=2399)    1.939        2.065     clk_25m                                  
+  (152,3)    EFX_FF           0.000        2.065     reset_adapter/reset_release_stage2~FF|CLK
+
+Data Path
+  Location    Delay Type    Incr(ns)     Path(ns)                      Netlist Resource(s)
+==============================================================================================================
+ (152,3)     EFX_FF (Tco)    0.130        0.130     reset_adapter/reset_release_stage2~FF|Q                   
+             net (fo=308)    0.605        0.735     reset_adapter/reset_release_stage2                        
+ (152,59)    EFX_LUT4        0.061        0.796     LUT__10502|in[2]                                          
+ (152,59)    EFX_LUT4        0.000        0.796     LUT__10502|out                                            
+             net (fo=2)      0.061        0.857     n4699                                                     
+ (152,58)    EFX_LUT4        0.061        0.918     LUT__10504|in[2]                                          
+ (152,58)    EFX_LUT4        0.000        0.918     LUT__10504|out                                            
+             net (fo=11)     0.061        0.979     core/sobel/pipeline_advance                               
+ (152,57)    EFX_LUT4        0.061        1.040     LUT__10508|in[0]                                          
+ (152,57)    EFX_LUT4        0.000        1.040     LUT__10508|out                                            
+             net (fo=6)      0.387        1.427     n4703                                                     
+ (151,53)    EFX_LUT4        0.061        1.488     LUT__10843|in[0]                                          
+ (151,53)    EFX_LUT4        0.000        1.488     LUT__10843|out                                            
+             net (fo=1)      0.061        1.549     n4888                                                     
+ (151,52)    EFX_LUT4        0.061        1.610     LUT__10844|in[2]                                          
+ (151,52)    EFX_LUT4        0.000        1.610     LUT__10844|out                                            
+             net (fo=52)     0.789        2.399     core/window_before_median/n2529                           
+ (152,104)   EFX_LUT4        0.061        2.460     LUT__10936|in[2]                                          
+ (152,104)   EFX_LUT4        0.000        2.460     LUT__10936|out                                            
+             net (fo=4)      1.070        3.530     core/window_before_median/rd_addr[2]                      
+ (132,102)   EFX_RAM10       0.000        3.530     core/window_before_median/older/pixel_lane[1].ram|RADDR[0]
+
+Capture Clock Path
+  Location      Delay Type       Incr(ns)     Path(ns)                    Netlist Resource(s)
+===============================================================================================================
+ (0,164)     input                 0.000       0.000     clk_25m                                               
+ (0,164)     input                 0.126       0.126     clk_25m                                               
+             net (fo=2399)         1.939       2.065     clk_25m                                               
+ (132,102)   EFX_RAM10             0.000       2.065     core/window_before_median/older/pixel_lane[1].ram|RCLK
+ (132,102)   EFX_RAM10 (Setup)    -0.032       2.033     core/window_before_median/older/pixel_lane[1].ram     
+
+++++ Path 10 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 36.337 ns (required time - arrival time)                       
+Path Start      : reset_adapter/reset_release_stage2~FF|CLK                      
+Path End        : core/window_before_sobel/recent/pixel_lane[0].ram|RADDR[9]     
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 3.505 ns                                                       
+Logic Levels    : 6                                                              
+
+Launch Clock Path Delay        : 2.065
++ Clock To Q + Data Path Delay : 3.505
+--------------------------------------
+End-of-path arrival time       : 5.570
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.032
+---------------------------------------
+End-of-path required time      : 41.907
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)              Netlist Resource(s)
+==============================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                                  
+  (0,164)    input            0.126        0.126     clk_25m                                  
+             net (fo=2399)    1.939        2.065     clk_25m                                  
+  (152,3)    EFX_FF           0.000        2.065     reset_adapter/reset_release_stage2~FF|CLK
+
+Data Path
+  Location    Delay Type    Incr(ns)     Path(ns)                      Netlist Resource(s)
+==============================================================================================================
+  (152,3)    EFX_FF (Tco)    0.130        0.130     reset_adapter/reset_release_stage2~FF|Q                   
+             net (fo=308)    0.605        0.735     reset_adapter/reset_release_stage2                        
+  (152,59)   EFX_LUT4        0.061        0.796     LUT__10502|in[2]                                          
+  (152,59)   EFX_LUT4        0.000        0.796     LUT__10502|out                                            
+             net (fo=2)      0.061        0.857     n4699                                                     
+  (152,58)   EFX_LUT4        0.061        0.918     LUT__10504|in[2]                                          
+  (152,58)   EFX_LUT4        0.000        0.918     LUT__10504|out                                            
+             net (fo=11)     0.500        1.418     core/sobel/pipeline_advance                               
+  (151,57)   EFX_LUT4        0.061        1.479     LUT__10578|in[0]                                          
+  (151,57)   EFX_LUT4        0.000        1.479     LUT__10578|out                                            
+             net (fo=2)      0.482        1.961     n4757                                                     
+  (126,57)   EFX_LUT4        0.063        2.024     LUT__11060|in[1]                                          
+  (126,57)   EFX_LUT4        0.000        2.024     LUT__11060|out                                            
+             net (fo=2)      0.109        2.133     n4939                                                     
+  (127,57)   EFX_LUT4        0.061        2.194     LUT__11080|in[2]                                          
+  (127,57)   EFX_LUT4        0.000        2.194     LUT__11080|out                                            
+             net (fo=53)     0.466        2.660     core/window_before_sobel/n2529                            
+  (127,59)   EFX_LUT4        0.061        2.721     LUT__11158|in[2]                                          
+  (127,59)   EFX_LUT4        0.000        2.721     LUT__11158|out                                            
+             net (fo=4)      0.784        3.505     core/window_before_sobel/rd_addr[1]                       
+  (117,62)   EFX_RAM10       0.000        3.505     core/window_before_sobel/recent/pixel_lane[0].ram|RADDR[9]
+
+Capture Clock Path
+  Location      Delay Type       Incr(ns)     Path(ns)                    Netlist Resource(s)
+===============================================================================================================
+  (0,164)    input                 0.000       0.000     clk_25m                                               
+  (0,164)    input                 0.126       0.126     clk_25m                                               
+             net (fo=2399)         1.939       2.065     clk_25m                                               
+  (117,62)   EFX_RAM10             0.000       2.065     core/window_before_sobel/recent/pixel_lane[0].ram|RCLK
+  (117,62)   EFX_RAM10 (Setup)    -0.032       2.033     core/window_before_sobel/recent/pixel_lane[0].ram     
+
+++++ Path 11 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 36.386 ns (required time - arrival time)                       
+Path Start      : reset_adapter/reset_release_stage2~FF|CLK                      
+Path End        : core/window_before_sobel/older/pixel_lane[0].ram|RE            
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 3.404 ns                                                       
+Logic Levels    : 6                                                              
+
+Launch Clock Path Delay        : 2.065
++ Clock To Q + Data Path Delay : 3.404
+--------------------------------------
+End-of-path arrival time       : 5.469
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.084
+---------------------------------------
+End-of-path required time      : 41.855
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)              Netlist Resource(s)
+==============================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                                  
+  (0,164)    input            0.126        0.126     clk_25m                                  
+             net (fo=2399)    1.939        2.065     clk_25m                                  
+  (152,3)    EFX_FF           0.000        2.065     reset_adapter/reset_release_stage2~FF|CLK
+
+Data Path
+  Location    Delay Type    Incr(ns)     Path(ns)                   Netlist Resource(s)
+=======================================================================================================
+  (152,3)    EFX_FF (Tco)    0.130        0.130     reset_adapter/reset_release_stage2~FF|Q            
+             net (fo=308)    0.605        0.735     reset_adapter/reset_release_stage2                 
+  (152,59)   EFX_LUT4        0.061        0.796     LUT__10502|in[2]                                   
+  (152,59)   EFX_LUT4        0.000        0.796     LUT__10502|out                                     
+             net (fo=2)      0.061        0.857     n4699                                              
+  (152,58)   EFX_LUT4        0.061        0.918     LUT__10504|in[2]                                   
+  (152,58)   EFX_LUT4        0.000        0.918     LUT__10504|out                                     
+             net (fo=11)     0.500        1.418     core/sobel/pipeline_advance                        
+  (151,57)   EFX_LUT4        0.061        1.479     LUT__10578|in[0]                                   
+  (151,57)   EFX_LUT4        0.000        1.479     LUT__10578|out                                     
+             net (fo=2)      0.482        1.961     n4757                                              
+  (126,57)   EFX_LUT4        0.063        2.024     LUT__11060|in[1]                                   
+  (126,57)   EFX_LUT4        0.000        2.024     LUT__11060|out                                     
+             net (fo=2)      0.109        2.133     n4939                                              
+  (127,57)   EFX_LUT4        0.061        2.194     LUT__11080|in[2]                                   
+  (127,57)   EFX_LUT4        0.000        2.194     LUT__11080|out                                     
+             net (fo=53)     0.495        2.689     core/window_before_sobel/n2529                     
+  (127,53)   EFX_LUT4        0.061        2.750     LUT__11149|in[3]                                   
+  (127,53)   EFX_LUT4        0.000        2.750     LUT__11149|out                                     
+             net (fo=4)      0.654        3.404     core/window_before_sobel/rd_en                     
+  (117,82)   EFX_RAM10       0.000        3.404     core/window_before_sobel/older/pixel_lane[0].ram|RE
+
+Capture Clock Path
+  Location      Delay Type       Incr(ns)     Path(ns)                    Netlist Resource(s)
+==============================================================================================================
+  (0,164)    input                 0.000       0.000     clk_25m                                              
+  (0,164)    input                 0.126       0.126     clk_25m                                              
+             net (fo=2399)         1.939       2.065     clk_25m                                              
+  (117,82)   EFX_RAM10             0.000       2.065     core/window_before_sobel/older/pixel_lane[0].ram|RCLK
+  (117,82)   EFX_RAM10 (Setup)    -0.084       1.981     core/window_before_sobel/older/pixel_lane[0].ram     
+
+++++ Path 12 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 36.422 ns (required time - arrival time)                       
+Path Start      : reset_adapter/reset_release_stage2~FF|CLK                      
+Path End        : core/window_before_sobel/older/pixel_lane[1].ram|RADDR[7]      
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 3.420 ns                                                       
+Logic Levels    : 6                                                              
+
+Launch Clock Path Delay        : 2.065
++ Clock To Q + Data Path Delay : 3.420
+--------------------------------------
+End-of-path arrival time       : 5.485
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.032
+---------------------------------------
+End-of-path required time      : 41.907
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)              Netlist Resource(s)
+==============================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                                  
+  (0,164)    input            0.126        0.126     clk_25m                                  
+             net (fo=2399)    1.939        2.065     clk_25m                                  
+  (152,3)    EFX_FF           0.000        2.065     reset_adapter/reset_release_stage2~FF|CLK
+
+Data Path
+  Location    Delay Type    Incr(ns)     Path(ns)                      Netlist Resource(s)
+=============================================================================================================
+  (152,3)    EFX_FF (Tco)    0.130        0.130     reset_adapter/reset_release_stage2~FF|Q                  
+             net (fo=308)    0.605        0.735     reset_adapter/reset_release_stage2                       
+  (152,59)   EFX_LUT4        0.061        0.796     LUT__10502|in[2]                                         
+  (152,59)   EFX_LUT4        0.000        0.796     LUT__10502|out                                           
+             net (fo=2)      0.061        0.857     n4699                                                    
+  (152,58)   EFX_LUT4        0.061        0.918     LUT__10504|in[2]                                         
+  (152,58)   EFX_LUT4        0.000        0.918     LUT__10504|out                                           
+             net (fo=11)     0.500        1.418     core/sobel/pipeline_advance                              
+  (151,57)   EFX_LUT4        0.061        1.479     LUT__10578|in[0]                                         
+  (151,57)   EFX_LUT4        0.000        1.479     LUT__10578|out                                           
+             net (fo=2)      0.482        1.961     n4757                                                    
+  (126,57)   EFX_LUT4        0.063        2.024     LUT__11060|in[1]                                         
+  (126,57)   EFX_LUT4        0.000        2.024     LUT__11060|out                                           
+             net (fo=2)      0.109        2.133     n4939                                                    
+  (127,57)   EFX_LUT4        0.061        2.194     LUT__11080|in[2]                                         
+  (127,57)   EFX_LUT4        0.000        2.194     LUT__11080|out                                           
+             net (fo=53)     0.480        2.674     core/window_before_sobel/n2529                           
+  (127,52)   EFX_LUT4        0.061        2.735     LUT__11150|in[2]                                         
+  (127,52)   EFX_LUT4        0.000        2.735     LUT__11150|out                                           
+             net (fo=4)      0.685        3.420     core/window_before_sobel/rd_addr[9]                      
+  (132,82)   EFX_RAM10       0.000        3.420     core/window_before_sobel/older/pixel_lane[1].ram|RADDR[7]
+
+Capture Clock Path
+  Location      Delay Type       Incr(ns)     Path(ns)                    Netlist Resource(s)
+==============================================================================================================
+  (0,164)    input                 0.000       0.000     clk_25m                                              
+  (0,164)    input                 0.126       0.126     clk_25m                                              
+             net (fo=2399)         1.939       2.065     clk_25m                                              
+  (132,82)   EFX_RAM10             0.000       2.065     core/window_before_sobel/older/pixel_lane[1].ram|RCLK
+  (132,82)   EFX_RAM10 (Setup)    -0.032       2.033     core/window_before_sobel/older/pixel_lane[1].ram     
+
+++++ Path 13 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 36.460 ns (required time - arrival time)                       
+Path Start      : reset_adapter/reset_release_stage2~FF|CLK                      
+Path End        : core/window_before_sobel/older/pixel_lane[1].ram|RE            
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 3.330 ns                                                       
+Logic Levels    : 6                                                              
+
+Launch Clock Path Delay        : 2.065
++ Clock To Q + Data Path Delay : 3.330
+--------------------------------------
+End-of-path arrival time       : 5.395
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.084
+---------------------------------------
+End-of-path required time      : 41.855
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)              Netlist Resource(s)
+==============================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                                  
+  (0,164)    input            0.126        0.126     clk_25m                                  
+             net (fo=2399)    1.939        2.065     clk_25m                                  
+  (152,3)    EFX_FF           0.000        2.065     reset_adapter/reset_release_stage2~FF|CLK
+
+Data Path
+  Location    Delay Type    Incr(ns)     Path(ns)                   Netlist Resource(s)
+=======================================================================================================
+  (152,3)    EFX_FF (Tco)    0.130        0.130     reset_adapter/reset_release_stage2~FF|Q            
+             net (fo=308)    0.605        0.735     reset_adapter/reset_release_stage2                 
+  (152,59)   EFX_LUT4        0.061        0.796     LUT__10502|in[2]                                   
+  (152,59)   EFX_LUT4        0.000        0.796     LUT__10502|out                                     
+             net (fo=2)      0.061        0.857     n4699                                              
+  (152,58)   EFX_LUT4        0.061        0.918     LUT__10504|in[2]                                   
+  (152,58)   EFX_LUT4        0.000        0.918     LUT__10504|out                                     
+             net (fo=11)     0.500        1.418     core/sobel/pipeline_advance                        
+  (151,57)   EFX_LUT4        0.061        1.479     LUT__10578|in[0]                                   
+  (151,57)   EFX_LUT4        0.000        1.479     LUT__10578|out                                     
+             net (fo=2)      0.482        1.961     n4757                                              
+  (126,57)   EFX_LUT4        0.063        2.024     LUT__11060|in[1]                                   
+  (126,57)   EFX_LUT4        0.000        2.024     LUT__11060|out                                     
+             net (fo=2)      0.109        2.133     n4939                                              
+  (127,57)   EFX_LUT4        0.061        2.194     LUT__11080|in[2]                                   
+  (127,57)   EFX_LUT4        0.000        2.194     LUT__11080|out                                     
+             net (fo=53)     0.495        2.689     core/window_before_sobel/n2529                     
+  (127,53)   EFX_LUT4        0.061        2.750     LUT__11149|in[3]                                   
+  (127,53)   EFX_LUT4        0.000        2.750     LUT__11149|out                                     
+             net (fo=4)      0.580        3.330     core/window_before_sobel/rd_en                     
+  (132,82)   EFX_RAM10       0.000        3.330     core/window_before_sobel/older/pixel_lane[1].ram|RE
+
+Capture Clock Path
+  Location      Delay Type       Incr(ns)     Path(ns)                    Netlist Resource(s)
+==============================================================================================================
+  (0,164)    input                 0.000       0.000     clk_25m                                              
+  (0,164)    input                 0.126       0.126     clk_25m                                              
+             net (fo=2399)         1.939       2.065     clk_25m                                              
+  (132,82)   EFX_RAM10             0.000       2.065     core/window_before_sobel/older/pixel_lane[1].ram|RCLK
+  (132,82)   EFX_RAM10 (Setup)    -0.084       1.981     core/window_before_sobel/older/pixel_lane[1].ram     
+
+++++ Path 14 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 36.464 ns (required time - arrival time)                       
+Path Start      : reset_adapter/reset_release_stage2~FF|CLK                      
+Path End        : core/window_before_median/older/pixel_lane[0].ram|WE[0]        
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 3.320 ns                                                       
+Logic Levels    : 7                                                              
+
+Launch Clock Path Delay        : 2.065
++ Clock To Q + Data Path Delay : 3.320
+--------------------------------------
+End-of-path arrival time       : 5.385
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.090
+---------------------------------------
+End-of-path required time      : 41.849
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)              Netlist Resource(s)
+==============================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                                  
+  (0,164)    input            0.126        0.126     clk_25m                                  
+             net (fo=2399)    1.939        2.065     clk_25m                                  
+  (152,3)    EFX_FF           0.000        2.065     reset_adapter/reset_release_stage2~FF|CLK
+
+Data Path
+  Location    Delay Type    Incr(ns)     Path(ns)                     Netlist Resource(s)
+===========================================================================================================
+ (152,3)     EFX_FF (Tco)    0.130        0.130     reset_adapter/reset_release_stage2~FF|Q                
+             net (fo=308)    0.605        0.735     reset_adapter/reset_release_stage2                     
+ (152,59)    EFX_LUT4        0.061        0.796     LUT__10502|in[2]                                       
+ (152,59)    EFX_LUT4        0.000        0.796     LUT__10502|out                                         
+             net (fo=2)      0.061        0.857     n4699                                                  
+ (152,58)    EFX_LUT4        0.061        0.918     LUT__10504|in[2]                                       
+ (152,58)    EFX_LUT4        0.000        0.918     LUT__10504|out                                         
+             net (fo=11)     0.061        0.979     core/sobel/pipeline_advance                            
+ (152,57)    EFX_LUT4        0.061        1.040     LUT__10508|in[0]                                       
+ (152,57)    EFX_LUT4        0.000        1.040     LUT__10508|out                                         
+             net (fo=6)      0.061        1.101     n4703                                                  
+ (152,56)    EFX_LUT4        0.061        1.162     LUT__10510|in[0]                                       
+ (152,56)    EFX_LUT4        0.000        1.162     LUT__10510|out                                         
+             net (fo=7)      0.061        1.223     core/gray/pipeline_advance                             
+ (152,55)    EFX_LUT4        0.061        1.284     LUT__10527|in[0]                                       
+ (152,55)    EFX_LUT4        0.000        1.284     LUT__10527|out                                         
+             net (fo=8)      0.061        1.345     core/n1519                                             
+ (152,54)    EFX_LUT4        0.061        1.406     LUT__10566|in[0]                                       
+ (152,54)    EFX_LUT4        0.000        1.406     LUT__10566|out                                         
+             net (fo=563)    1.370        2.776     core/median/n1366                                      
+ (127,102)   EFX_LUT4        0.061        2.837     LUT__10940|in[0]                                       
+ (127,102)   EFX_LUT4        0.000        2.837     LUT__10940|out                                         
+             net (fo=4)      0.483        3.320     core/window_before_median/older_wr_en                  
+ (117,102)   EFX_RAM10       0.000        3.320     core/window_before_median/older/pixel_lane[0].ram|WE[0]
+
+Capture Clock Path
+  Location      Delay Type       Incr(ns)     Path(ns)                    Netlist Resource(s)
+===============================================================================================================
+ (0,164)     input                 0.000       0.000     clk_25m                                               
+ (0,164)     input                 0.126       0.126     clk_25m                                               
+             net (fo=2399)         1.939       2.065     clk_25m                                               
+ (117,102)   EFX_RAM10             0.000       2.065     core/window_before_median/older/pixel_lane[0].ram|WCLK
+ (117,102)   EFX_RAM10 (Setup)    -0.090       1.975     core/window_before_median/older/pixel_lane[0].ram     
+
+++++ Path 15 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 36.472 ns (required time - arrival time)                       
+Path Start      : reset_adapter/reset_release_stage2~FF|CLK                      
+Path End        : core/window_before_median/older/pixel_lane[0].ram|WCLKE        
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 3.329 ns                                                       
+Logic Levels    : 7                                                              
+
+Launch Clock Path Delay        : 2.065
++ Clock To Q + Data Path Delay : 3.329
+--------------------------------------
+End-of-path arrival time       : 5.394
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.073
+---------------------------------------
+End-of-path required time      : 41.866
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)              Netlist Resource(s)
+==============================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                                  
+  (0,164)    input            0.126        0.126     clk_25m                                  
+             net (fo=2399)    1.939        2.065     clk_25m                                  
+  (152,3)    EFX_FF           0.000        2.065     reset_adapter/reset_release_stage2~FF|CLK
+
+Data Path
+  Location    Delay Type    Incr(ns)     Path(ns)                     Netlist Resource(s)
+===========================================================================================================
+ (152,3)     EFX_FF (Tco)    0.130        0.130     reset_adapter/reset_release_stage2~FF|Q                
+             net (fo=308)    0.605        0.735     reset_adapter/reset_release_stage2                     
+ (152,59)    EFX_LUT4        0.061        0.796     LUT__10502|in[2]                                       
+ (152,59)    EFX_LUT4        0.000        0.796     LUT__10502|out                                         
+             net (fo=2)      0.061        0.857     n4699                                                  
+ (152,58)    EFX_LUT4        0.061        0.918     LUT__10504|in[2]                                       
+ (152,58)    EFX_LUT4        0.000        0.918     LUT__10504|out                                         
+             net (fo=11)     0.061        0.979     core/sobel/pipeline_advance                            
+ (152,57)    EFX_LUT4        0.061        1.040     LUT__10508|in[0]                                       
+ (152,57)    EFX_LUT4        0.000        1.040     LUT__10508|out                                         
+             net (fo=6)      0.061        1.101     n4703                                                  
+ (152,56)    EFX_LUT4        0.061        1.162     LUT__10510|in[0]                                       
+ (152,56)    EFX_LUT4        0.000        1.162     LUT__10510|out                                         
+             net (fo=7)      0.061        1.223     core/gray/pipeline_advance                             
+ (152,55)    EFX_LUT4        0.061        1.284     LUT__10527|in[0]                                       
+ (152,55)    EFX_LUT4        0.000        1.284     LUT__10527|out                                         
+             net (fo=8)      0.061        1.345     core/n1519                                             
+ (152,54)    EFX_LUT4        0.061        1.406     LUT__10566|in[0]                                       
+ (152,54)    EFX_LUT4        0.000        1.406     LUT__10566|out                                         
+             net (fo=563)    1.370        2.776     core/median/n1366                                      
+ (127,102)   EFX_LUT4        0.061        2.837     LUT__10940|in[0]                                       
+ (127,102)   EFX_LUT4        0.000        2.837     LUT__10940|out                                         
+             net (fo=4)      0.492        3.329     core/window_before_median/older_wr_en                  
+ (117,102)   EFX_RAM10       0.000        3.329     core/window_before_median/older/pixel_lane[0].ram|WCLKE
+
+Capture Clock Path
+  Location      Delay Type       Incr(ns)     Path(ns)                    Netlist Resource(s)
+===============================================================================================================
+ (0,164)     input                 0.000       0.000     clk_25m                                               
+ (0,164)     input                 0.126       0.126     clk_25m                                               
+             net (fo=2399)         1.939       2.065     clk_25m                                               
+ (117,102)   EFX_RAM10             0.000       2.065     core/window_before_median/older/pixel_lane[0].ram|WCLK
+ (117,102)   EFX_RAM10 (Setup)    -0.073       1.992     core/window_before_median/older/pixel_lane[0].ram     
+
+++++ Path 16 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 36.473 ns (required time - arrival time)                       
+Path Start      : reset_adapter/reset_release_stage2~FF|CLK                      
+Path End        : core/window_before_sobel/recent/pixel_lane[0].ram|RE           
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 3.317 ns                                                       
+Logic Levels    : 6                                                              
+
+Launch Clock Path Delay        : 2.065
++ Clock To Q + Data Path Delay : 3.317
+--------------------------------------
+End-of-path arrival time       : 5.382
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.084
+---------------------------------------
+End-of-path required time      : 41.855
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)              Netlist Resource(s)
+==============================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                                  
+  (0,164)    input            0.126        0.126     clk_25m                                  
+             net (fo=2399)    1.939        2.065     clk_25m                                  
+  (152,3)    EFX_FF           0.000        2.065     reset_adapter/reset_release_stage2~FF|CLK
+
+Data Path
+  Location    Delay Type    Incr(ns)     Path(ns)                   Netlist Resource(s)
+========================================================================================================
+  (152,3)    EFX_FF (Tco)    0.130        0.130     reset_adapter/reset_release_stage2~FF|Q             
+             net (fo=308)    0.605        0.735     reset_adapter/reset_release_stage2                  
+  (152,59)   EFX_LUT4        0.061        0.796     LUT__10502|in[2]                                    
+  (152,59)   EFX_LUT4        0.000        0.796     LUT__10502|out                                      
+             net (fo=2)      0.061        0.857     n4699                                               
+  (152,58)   EFX_LUT4        0.061        0.918     LUT__10504|in[2]                                    
+  (152,58)   EFX_LUT4        0.000        0.918     LUT__10504|out                                      
+             net (fo=11)     0.500        1.418     core/sobel/pipeline_advance                         
+  (151,57)   EFX_LUT4        0.061        1.479     LUT__10578|in[0]                                    
+  (151,57)   EFX_LUT4        0.000        1.479     LUT__10578|out                                      
+             net (fo=2)      0.482        1.961     n4757                                               
+  (126,57)   EFX_LUT4        0.063        2.024     LUT__11060|in[1]                                    
+  (126,57)   EFX_LUT4        0.000        2.024     LUT__11060|out                                      
+             net (fo=2)      0.109        2.133     n4939                                               
+  (127,57)   EFX_LUT4        0.061        2.194     LUT__11080|in[2]                                    
+  (127,57)   EFX_LUT4        0.000        2.194     LUT__11080|out                                      
+             net (fo=53)     0.495        2.689     core/window_before_sobel/n2529                      
+  (127,53)   EFX_LUT4        0.061        2.750     LUT__11149|in[3]                                    
+  (127,53)   EFX_LUT4        0.000        2.750     LUT__11149|out                                      
+             net (fo=4)      0.567        3.317     core/window_before_sobel/rd_en                      
+  (117,62)   EFX_RAM10       0.000        3.317     core/window_before_sobel/recent/pixel_lane[0].ram|RE
+
+Capture Clock Path
+  Location      Delay Type       Incr(ns)     Path(ns)                    Netlist Resource(s)
+===============================================================================================================
+  (0,164)    input                 0.000       0.000     clk_25m                                               
+  (0,164)    input                 0.126       0.126     clk_25m                                               
+             net (fo=2399)         1.939       2.065     clk_25m                                               
+  (117,62)   EFX_RAM10             0.000       2.065     core/window_before_sobel/recent/pixel_lane[0].ram|RCLK
+  (117,62)   EFX_RAM10 (Setup)    -0.084       1.981     core/window_before_sobel/recent/pixel_lane[0].ram     
+

@@ -1,0 +1,65 @@
+{
+  "timestamp": "2026-10-13T20:58:48.9519315+08:00",
+  "session": "01a12a10-92e4-7b72-840a-f2b283200b13",
+  "task": "CAMERA_NO_ACK_NEW_GROUP_MATERIAL_REVIEW",
+  "mode": "READ_ONLY_REVIEW",
+  "original_materials_modified": false,
+  "hardware_operated": false,
+  "source_root": "new_project",
+  "display_without_camera": {
+    "confirmed_source_facts": [
+      "rtl/ti60f225_oob_top.v:845 w_confdone=1; video release follows delay at 867-877",
+      "rtl/frame_buffer_V4/frame_buffer.v:185-186 frame_stable gates commented out",
+      "rtl/user_cvo_axi_v2/cvo_axi_v2.v:410-416 scan controls read/DE; vout uses FIFO output"
+    ],
+    "inference": "Missing first valid camera frame can coexist with corrupted display; exact observed pixel origin is not established",
+    "observation": "observations/structured/H2-CAMERA-V7-disconnected-comparison-20261013.json"
+  },
+  "review_findings": [
+    {
+      "relevance": "Same camera/board but old v1 source basis",
+      "source": "Demo10_Vertical_Stripe_Fix_Guide.html",
+      "conclusion": "Retain RAW packing and 2-to-1 line phase leads for post-ACK video debugging; do not blindly apply H/2 because active v7 CVO already divides by PIXEL_NUM"
+    },
+    {
+      "relevance": "Different display mode; current monitor previously displayed stable colorbar",
+      "source": "Demo10_1024x600_Display_Solution.html",
+      "conclusion": "Does not explain address NACK"
+    },
+    {
+      "relevance": "Single RGB888 pixel processing and frame-boundary key mode selection",
+      "source": "rgb_image_proc.v; key_mode_select.v",
+      "conclusion": "Not instantiated by current v7; not camera startup/control repair"
+    },
+    {
+      "relevance": "Sensor register/clock/profile reference",
+      "source": "Cleaned_*.ini",
+      "conclusion": "All declare SlaveID=0x60, mclk=24, 2.8/1.8/1.2V supplies; 0x0d/0x10 filenames correspond profile register0x301f, not different I2C addresses"
+    },
+    {
+      "relevance": "Profile identity mismatch to filename",
+      "source": "Cleaned_0x10_SC431AI_MIPI_24Minput_4Lane_10bit_315Mbps_1920x1080_30fps_外供 (1).ini",
+      "conclusion": "Header retains2560x1440; final3208/3209=0x0780 and320a/320b=0x043a request1920x1082. Current official ROM uses0x0438. Must audit Bayer/crop chain before substitution; cannot explain NACK before register data"
+    },
+    {
+      "relevance": "Re-downloaded official source",
+      "source": "Ti60F225_DemoBoard_v4完整资料包-0927更新.zip",
+      "conclusion": "Agent verified outer14PDF/image files and camera v7.rar identical SHA256 to prior pack. No new module internal schematic found in inspected scope; unrelated nested archives not exhaustively opened"
+    },
+    {
+      "relevance": "Bare sensor reference",
+      "source": "SC431HAI_数据手册_V1.1.pdf",
+      "conclusion": "Same hash as existing; not module-level reset inverter or level-shifting schematic"
+    },
+    {
+      "source": "Ti60f225_sc431hai2hdmi_isp_v1.rar",
+      "relevance": "Same front-end camera control",
+      "conclusion": "I2C master/config ROM/startup/reset block and entire peri XML match official v7. Adds ISP processing; not evidence of no-ACK repair. Prebuilt bit hash1DC0CB2D7459410AEDECB6B449855ED0790B840C4248817E8D8D74E6E1DB658F; not loaded."
+    }
+  ],
+  "current_hardware": "User confirmed powered off with camera unplugged",
+  "next_step": "User has ordinary coarse probes; avoid tiny powered/unpowered connector probing. Prepared bounded original-J4-RST high-level identity comparison design, pending explicit version approval and later physical readiness.",
+  "formal_database_changed": false,
+  "formal_state_changed": false,
+  "next_design": "planning/design-TRACK4-CAM-RST-COMPARE-001.md"
+}

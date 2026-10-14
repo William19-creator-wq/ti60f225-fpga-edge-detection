@@ -1,0 +1,216 @@
+
+===== PDF PAGE 1 =====
+易灵思 ( 深圳 ) 科技有限公司
+国产化中高端 F P G A领军厂商 —— 加速您的创芯！
+DSP原语介绍
+钛金 FPGA Ti60F225
+Herbert
+2025.6
+===== PDF PAGE 2 =====
+DSP Block Diagram
+➢ 乘法、加法、减法、累加、可
+变右移操作
+➢ 单通道、双通道、四通道
+➢ 浮点支持：bfoat16 模式运算，
+并能实现FMA晕眩。
+➢ 支持符号运算
+➢ 支持级联
+➢ 多个小块（DSP12/24）会被
+合并到同一个DSP48
+➢ 接口寄存器参数可配
+➢ 超高性能FMax可达1GHz
+
+===== PDF PAGE 3 =====
+• 单通道
+• 双通道
+• 四通道
+• 相同模式DSP可级联
+整数
+运算
+• BFLOAT16
+浮点
+模式
+DSP 工作模式
+支持的原语：
+DSP48、DSP24、DSP12
+===== PDF PAGE 4 =====
+• 单通道
+• 双通道
+• 四通道
+整数
+运算
+• BFLOAT16浮点
+模式
+DSP 工作模式
+BF16/FP32之间的区别，主要在尾数位被截断16位，在损失有限
+精度的前提下，保持了与FP32相同的动态表达范围。
+===== PDF PAGE 5 =====
+➢如右图所示
+➢三种不同原语
+➢DSP48
+• 支持int和bf16
+• 支持多通道
+• 可并行计算不同通道
+➢DSP24/12：支持int计算
+DSP48原语
+
+===== PDF PAGE 6 =====
+DSP48 模板
+EFX_DSP48 #(
+ .MODE ("NORMAL"), // Normal mode
+ .A_REG (0), // enable A-register
+ .B_REG (0), // enable B-register
+ .C_REG (0), // enable C-register
+ .P_REG (0), // enable P-register
+ .OP_REG (0), // enable OP-register
+ .W_REG (0), // enable W-register
+ .O_REG (0), // enable O-register
+ .RST_SYNC (0), // set sync/async reset
+ .SIGNED (1), // set signed/unsigned multiply
+ .P_EXT ("ALIGN_RIGHT"), // left/right alignment for P
+ .C_EXT ("ALIGN_RIGHT"), // left/right alighment for C
+ .M_SEL ("P"), // select M-input to the adder
+ .N_SEL ("C"), // select N-input to the adder
+ .W_SEL ("X"), // select input to the shifter
+ .CASCOUT_SEL ("W"), // select cascout
+ .CLK_POLARITY (1), // clk polarity
+ .CE_POLARITY (1), // ce polarity
+ .RST_POLARITY (1), // rst polarity
+ .SHIFT_ENA_POLARITY (1), // shift_ena polarity
+ .ROUNDING ("RNE"), // rounding method
+ .A_REG_USE_CE (1), // A-register use clock enable
+ .B_REG_USE_CE (1), // B-register use clock enable
+ .C_REG_USE_CE (1), // C-register use clock enable
+ .OP_REG_USE_CE (1), // OP-register use clock enable
+ .P_REG_USE_CE (1), // P-register use clock enable
+ .W_REG_USE_CE (1), // W-register use clock enable
+ .O_REG_USE_CE (1), // Oregister use clock enable
+ .A_REG_USE_RST (1), // A-register use reset
+ .B_REG_USE_RST (1), // B-register use reset
+ .C_REG_USE_RST (1), // C-register use reset
+ .OP_REG_USE_RST (1), // OP-register use reset
+ .P_REG_USE_RST (1), // P-register use reset
+ .W_REG_USE_RST (1), // W-register use reset
+ .O_REG_USE_RST (1) // O-register use reset
+ )
+ dsp48_inst (
+ .A (A), // 19-bit A input
+ .B (B), // 18-bit B input
+ .C (C), // 17-bit C input
+ .CASCIN(0), // 48-bit cascin from another DSP block
+ .OP (2'b00), // 2-bit operation mode
+ .SHIFT_ENA(1'b1), // 1-bit shift_ena input
+ .CLK (clk), // 1-bit clock
+ .CE (ce), // 1-bit clock enable
+ .RST (rst), // 1-bit reset
+ .O (O), // 48-bit output
+ .CASCOUT(), // 48-bit cascout, hard-wired to another DSP block
+ .OVFL() // 1-bit overflow flag
+); 
+===== PDF PAGE 7 =====
+DSP48 24
+EFX_DSP24 #(
+ .A_REG (0), // enable A-register
+ .B_REG (0), // enable B-register
+ .C_REG (0), // enable C-register
+ .P_REG (0), // enable P-register
+ .OP_REG (0), // enable OP-register
+ .W_REG (0), // enable W-register
+ .O_REG (0), // enable O-register
+ .RST_SYNC (0), // set sync/async reset
+ .SIGNED (1), // set signed/unsigned multiply
+ .P_EXT ("ALIGN_RIGHT"), // left/right alignment for P
+ .C_EXT ("ALIGN_RIGHT"), // left/right alighment for C
+ .M_SEL ("P"), // select M-input to the adder
+ .N_SEL ("C"), // select N-input to the adder
+ .W_SEL ("X"), // select input to the shifter
+ .CASCOUT_SEL ("W"), // select cascout
+ .CLK_POLARITY (1), // clk polarity
+ .CE_POLARITY (1), // ce polarity
+ .RST_POLARITY (1), // rst polarity
+ .SHIFT_ENA_POLARITY (1), // shift_ena polarity
+ .A_REG_USE_CE (1), // A-register use clock enable
+ .B_REG_USE_CE (1), // B-register use clock enable
+ .C_REG_USE_CE (1), // C-register use clock enable
+ .OP_REG_USE_CE (1), // OP-register use clock enable
+ .P_REG_USE_CE (1), // P-register use clock enable
+ .W_REG_USE_CE (1), // W-register use clock enable
+ .O_REG_USE_CE (1), // Oregister use clock enable
+ .A_REG_USE_RST (1), // A-register use reset
+ .B_REG_USE_RST (1), // B-register use reset
+ .C_REG_USE_RST (1), // C-register use reset
+ .OP_REG_USE_RST (1), // OP-register use reset
+ .P_REG_USE_RST (1), // P-register use reset
+ .W_REG_USE_RST (1), // W-register use reset
+ .O_REG_USE_RST (1) // O-register use reset
+ )
+ dsp24_inst (
+ .A (A), // 8-bit A input
+ .B (B), // 8-bit B input
+ .C (C), // 8-bit C input
+ .CASCIN(0), // 24-bit cascin from another DSP block
+ .OP (2'b00), // 2-bit operation mode
+ .SHIFT_ENA(1'b1), // 1-bit shift_ena input
+ .CLK (clk), // 1-bit clock
+ .CE (ce), // 1-bit clock enable
+ .RST (rst), // 1-bit reset
+ .O (O), // 24-bit output
+ .CASCOUT(), // 24-bit cascout, hard-wired to another DSP block
+); 
+===== PDF PAGE 8 =====
+DSP48 12
+EFX_DSP12 #(
+ .A_REG (0), // enable A-register
+ .B_REG (0), // enable B-register
+ .C_REG (0), // enable C-register
+ .P_REG (0), // enable P-register
+ .OP_REG (0), // enable OP-register
+ .W_REG (0), // enable W-register
+ .O_REG (0), // enable O-register
+ .RST_SYNC (0), // set sync/async reset
+ .SIGNED (1), // set signed/unsigned multiply
+ .P_EXT ("ALIGN_RIGHT"), // left/right alignment for P
+ .C_EXT ("ALIGN_RIGHT"), // left/right alighment for C
+ .M_SEL ("P"), // select M-input to the adder
+ .N_SEL ("C"), // select N-input to the adder
+ .W_SEL ("X"), // select input to the shifter
+ .CASCOUT_SEL ("W"), // select cascout
+ .CLK_POLARITY (1), // clk polarity
+ .CE_POLARITY (1), // ce polarity
+ .RST_POLARITY (1), // rst polarity
+ .SHIFT_ENA_POLARITY (1), // shift_ena polarity
+ .A_REG_USE_CE (1), // A-register use clock enable
+ .B_REG_USE_CE (1), // B-register use clock enable
+ .C_REG_USE_CE (1), // C-register use clock enable
+ .OP_REG_USE_CE (1), // OP-register use clock enable
+ .P_REG_USE_CE (1), // P-register use clock enable
+ .W_REG_USE_CE (1), // W-register use clock enable
+ .O_REG_USE_CE (1), // Oregister use clock enable
+ .A_REG_USE_RST (1), // A-register use reset
+ .B_REG_USE_RST (1), // B-register use reset
+ .C_REG_USE_RST (1), // C-register use reset
+ .OP_REG_USE_RST (1), // OP-register use reset
+ .P_REG_USE_RST (1), // P-register use reset
+ .W_REG_USE_RST (1), // W-register use reset
+ .O_REG_USE_RST (1) // O-register use reset
+ )
+ dsp12_inst (
+ .A (A), // 4-bit A input
+ .B (B), // 4-bit B input
+ .C (C), // 4-bit C input
+ .CASCIN(0), // 12-bit cascin, hard-wired from another DSP block
+ .OP (2'b00), // 2-bit operation mode
+ .SHIFT_ENA(1'b1), // 1-bit shift_ena input
+ .CLK (clk), // 1-bit clock
+ .CE (ce), // 1-bit clock enable
+ .RST (rst), // 1-bit reset
+ .O (O), // 12-bit output
+ .CASCOUT(), // 12-bit cascout
+);
+===== PDF PAGE 9 =====
+w w w . e l i t e s t e k . c o m
+感 谢 您 的 观 看
+关注公众号 关注哔哩哔哩
+免责申明：
+1、任何在本文档上出现的信息仅作为参考，实际可能会有变动，请以实际情况为准。 2、本文档内任何一页未经允许禁止传播。
+3、“易灵思”及“Trion”、“钛金系列”等产品均版权归属易灵思（深圳）科技有限公司。

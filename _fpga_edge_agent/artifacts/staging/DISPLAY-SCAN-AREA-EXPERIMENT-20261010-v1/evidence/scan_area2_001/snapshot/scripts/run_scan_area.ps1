@@ -1,0 +1,92 @@
+param([Parameter(Mandatory)][ValidatePattern('^[A-Za-z0-9_-]+$')][string]$RunId,
+      [Parameter(Mandatory)][ValidateSet('area','area2')][string]$Mode)
+$ErrorActionPreference='Stop'
+$taskRoot='C:/Users/34528/FPGAEdgeLinks/Work/active/track4_algorithms_20261004/scan_area_experiment'
+$originalRoot='C:/Users/34528/FPGAEdgeLinks/Work/active/track4_algorithms_20261004/display_scan'
+$toolRoot='C:/Users/34528/FPGAEdgeLinks/Efinity2026_1'
+$runRoot=Join-Path $taskRoot ('runs/'+$RunId)
+function Json($Path,$Value){[IO.File]::WriteAllText($Path,($Value|ConvertTo-Json -Depth 10),[Text.UTF8Encoding]::new($false))}
+function Hash($Path){(Get-FileHash -LiteralPath $Path).Hash}
+function Require($Condition,$Message){if(-not $Condition){throw $Message}}
+try{
+    # SA01：31个已验证MAP输入和HD28输入保持原SHA，原组件目录只读。
+    $baseline=Get-Content -LiteralPath (Join-Path $taskRoot 'baseline.json') -Raw|ConvertFrom-Json
+    Require ($baseline.files.Count-eq37) 'Thirty-seven frozen inputs required'
+    foreach($item in $baseline.files){
+        Require ((Hash $item.path)-eq$item.sha256 -and (Hash $item.copy)-eq$item.sha256) 'Frozen input drift'
+        if($item.current_source){Require ((Hash $item.current_source)-eq$item.sha256) 'Current component source drift'}
+    }
+    $sim=Join-Path $originalRoot 'runs/scan_hd_001'
+    $result=Get-Content -LiteralPath (Join-Path $sim 'suite-result.json') -Raw|ConvertFrom-Json
+    Require ($result.status-eq'PASS' -and $result.finished-eq$true) 'Simulation prerequisite failed'
+    $hdSources=@(Get-Content -LiteralPath (Join-Path $sim 'source-manifest.json') -Raw|ConvertFrom-Json)
+    $sources=$hdSources
+    Require ($sources.Count-eq28) 'Twenty-eight simulated inputs required'
+    foreach($file in $sources){Require ((Hash $file.path)-eq$file.sha256) 'Simulation source drift'}
+    $oldMap=Join-Path $originalRoot 'runs/scan_map_001'
+    $oldResult=Get-Content -LiteralPath (Join-Path $oldMap 'Map.result.json') -Raw|ConvertFrom-Json
+    Require ($oldResult.exit_code-eq0 -and -not$oldResult.timed_out) 'Original MAP prerequisite failed'
+    $oldManifest=Get-Content -LiteralPath (Join-Path $oldMap 'snapshot-manifest.json') -Raw|ConvertFrom-Json
+    $sources=@($oldManifest.files)
+    Require ($sources.Count-eq31) 'Thirty-one mapped inputs required'
+    Require (-not(Test-Path -LiteralPath $runRoot)) 'Preserve attempt; choose new RunId'
+    foreach($dir in @('snapshot','flow/rtl','flow/project','flow/outflow')){New-Item -ItemType Directory -Path (Join-Path $runRoot $dir) -Force|Out-Null}
+    $projectName='display_scan_component.xml'
+    $runner=Join-Path $taskRoot 'scripts/run_scan_area.ps1'
+    $sources+=@{path=$runner;relative='scripts/run_scan_area.ps1';sha256=(Hash $runner)}
+    $copies=@()
+    foreach($file in $sources){
+        $copy=Join-Path $runRoot ('snapshot/'+$file.relative)
+        New-Item -ItemType Directory -Path (Split-Path $copy) -Force|Out-Null
+        Copy-Item -LiteralPath $file.path -Destination $copy
+        $copies+=@{path=$file.path;snapshot=$copy;relative=$file.relative;sha256=$file.sha256}
+        if($file.relative-match'^(rtl|project|deps)/'){
+            $flowCopy=Join-Path $runRoot ('flow/'+$file.relative)
+            New-Item -ItemType Directory -Path (Split-Path $flowCopy) -Force|Out-Null
+            Copy-Item -LiteralPath $file.path -Destination $flowCopy
+        }
+    }
+    # SA02：仅修改独立flow中的mode；规范化XML的其它节点必须相等。
+    $flowProject=Join-Path $runRoot ('flow/project/'+$projectName)
+    [xml]$originalXml=Get-Content -LiteralPath $flowProject -Raw
+    [xml]$flowXml=$originalXml.OuterXml
+    $modeNode=$flowXml.SelectSingleNode('//*[local-name()="synthesis"]/*[local-name()="param" and @name="mode"]')
+    Require ($null-ne$modeNode -and $modeNode.GetAttribute('value')-eq'speed') 'Original mode must be speed'
+    $modeNode.SetAttribute('value',$Mode)
+    [xml]$checkXml=$flowXml.OuterXml
+    $checkXml.SelectSingleNode('//*[local-name()="synthesis"]/*[local-name()="param" and @name="mode"]').SetAttribute('value','speed')
+    Require ($checkXml.OuterXml-eq$originalXml.OuterXml) 'Only mode may change'
+    $flowXml.Save($flowProject)
+    Json (Join-Path $runRoot 'configuration-diff.json') @{changed_attribute='synthesis/param[name=mode]/@value';old='speed';new=$Mode;other_xml_equal=$true;original_xml_sha256=(Hash (Join-Path $runRoot ('snapshot/project/'+$projectName)));flow_xml_sha256=(Hash $flowProject);retiming=0;seq_opt=0}
+    Json (Join-Path $runRoot 'snapshot-manifest.json') @{simulation_run='scan_hd_001';original_map='scan_map_001';files=$copies;top='display_scan_component';mode=$Mode;scope='COMPONENT_SYNTHESIS_ONLY_NO_BOARD_IO'}
+    $psi=[Diagnostics.ProcessStartInfo]::new()
+    $psi.FileName=Join-Path $toolRoot 'python311/bin/python.exe';$psi.WorkingDirectory=Join-Path $runRoot 'flow/project'
+    $psi.CreateNoWindow=$true;$psi.UseShellExecute=$false;$psi.RedirectStandardOutput=$true;$psi.RedirectStandardError=$true
+    $argv=@((Join-Path $toolRoot 'scripts/efx_run.py'),$projectName,'--flow','map',
+      '--output_dir',(Join-Path $runRoot 'flow/outflow'),'--work_dir',(Join-Path $runRoot 'flow/work_map'),'--timeout','3600')
+    foreach($argument in $argv){$psi.ArgumentList.Add($argument)}
+    foreach($item in @(@('EFINITY_HOME',''),@('EFXPT_HOME','pt'),@('EFXPGM_HOME','pgm'),@('EFXDBG_HOME','debugger'),@('EFXIPM_HOME','ipm'),@('PYTHONHOME','python311'),@('QT_PLUGIN_PATH','bin'),@('QT_QPA_PLATFORM_PLUGIN_PATH','python311/platforms'))){$psi.Environment[$item[0]]=($toolRoot+'/'+$item[1]).TrimEnd('/')}
+    $userIni=Join-Path ([Environment]::GetFolderPath('LocalApplicationData')) 'efinity/user_dir.ini'
+    Require (Test-Path -LiteralPath $userIni) 'Existing Efinity user configuration required'
+    $psi.Environment['EFINITY_USER_DIR_INI']=$userIni.Replace('\','/')
+    $psi.Environment['QT_LOGGING_CONF']=$toolRoot+'/bin/lc.ini'
+    $psi.Environment['QTWEBENGINE_CHROMIUM_FLAGS']='--disable-gpu'
+    $psi.Environment['PATH']=$toolRoot+'/python311/bin;'+$toolRoot+'/bin;'+$toolRoot+'/scripts;'+$psi.Environment['PATH']
+    $start=[DateTime]::UtcNow;$prefix=Join-Path $runRoot 'Map'
+    $process=[Diagnostics.Process]::Start($psi)
+    Json ($prefix+'.start.json') @{pid=$process.Id;parent_script_pid=$PID;executable=$psi.FileName;argv=$argv;cwd=$psi.WorkingDirectory;started_at=$start.ToString('o');process_start_time_utc=$process.StartTime.ToUniversalTime().ToString('o');timeout_seconds=3600}
+    $stdout=$process.StandardOutput.ReadToEndAsync();$stderr=$process.StandardError.ReadToEndAsync();$timedOut=$false;$progress=$start
+    while(-not $process.WaitForExit(1000)){
+        if(([DateTime]::UtcNow-$start).TotalSeconds-ge3600){$timedOut=$true;$process.Kill($true);break}
+        if(([DateTime]::UtcNow-$progress).TotalSeconds-ge30){Write-Output ('Map running pid='+$process.Id);$progress=[DateTime]::UtcNow}
+    }
+    $process.WaitForExit()
+    [IO.File]::WriteAllText($prefix+'.stdout.log',$stdout.GetAwaiter().GetResult(),[Text.UTF8Encoding]::new($false))
+    [IO.File]::WriteAllText($prefix+'.stderr.log',$stderr.GetAwaiter().GetResult(),[Text.UTF8Encoding]::new($false))
+    Json ($prefix+'.result.json') @{pid=$process.Id;exit_code=$process.ExitCode;timed_out=$timedOut;ended_at=[DateTime]::UtcNow.ToString('o');stdout_sha256=(Hash ($prefix+'.stdout.log'));stderr_sha256=(Hash ($prefix+'.stderr.log'))}
+    Require (-not$timedOut -and $process.ExitCode-eq0) 'Map failed; retain original logs'
+    foreach($file in $copies){Require ((Hash $file.path)-eq$file.sha256 -and (Hash $file.snapshot)-eq$file.sha256) 'Source drift'}
+    foreach($item in $baseline.files){Require ((Hash $item.path)-eq$item.sha256 -and (Hash $item.copy)-eq$item.sha256) 'Frozen input changed during MAP'}
+    Json (Join-Path $runRoot 'run-result.json') @{status='PASS_MAP_EXIT_AND_SOURCE_BINDING';finished=$true;mode=$Mode;source_snapshot_files=$copies.Count;production_rtl_changed=$false;mapped_dynamic_verified=$false;production_pnr_sta_bit_verified=$false;full_project_goal_complete=$false}
+    Write-Output 'Area experiment MAP exit0. Read actual resource report; no mapped dynamic/PNR/STA/bit claim.'
+}catch{Write-Error $_.Exception.Message -ErrorAction Continue;exit 1}

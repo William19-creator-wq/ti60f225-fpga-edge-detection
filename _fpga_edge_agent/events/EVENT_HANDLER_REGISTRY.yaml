@@ -1,0 +1,11 @@
+version: "1.0"
+handlers:
+  - event: BUILD_COMPLETED
+    handler: runtime/agent_runtime.py
+    action: register_artifact_and_wait_for_human_program
+  - event: HARDWARE_OBSERVATION_RECEIVED
+    handler: main_agent
+    action: validate_observation_and_transition_node
+  - event: EXCEPTION_RAISED
+    handler: runtime/generate_reports.py
+    action: append_alert_and_report

@@ -1,0 +1,231 @@
+// FC03..05/07：真正GEN与引用账本；服务请求借原子source hold直至收据消费。
+module display_scan_prefetch_core #(
+    parameter integer IMAGE_WIDTH=1920,IMAGE_HEIGHT=1080,FRAME_ALIGNMENT=64,
+    parameter logic [63:0] INIT_GENERATION=1,
+    parameter logic [32:0] ADDRESS_BYTES=33'h10000000,
+    parameter logic [3:0] READ_ID=2
+)(
+    input logic core_clk,video_clk,safe_reset_n,enable,
+    input logic service_valid,output wire service_claim_ready,input logic [480:0] service_request,
+    input logic service_cancel,
+    output wire service_receipt_valid,input logic service_receipt_ready,output wire [614:0] service_receipt,
+    output wire lookup_valid,input logic lookup_ready,output wire [478:0] lookup_demand,
+    input logic [941:0] lookup_bundle,input logic lookup_permitted,
+    input logic scope_query_valid,input logic [386:0] scope_query_ref,output logic local_scope_live,
+    output wire quarantined,
+    output wire [2:0] return_valid,
+    input logic [2:0] return_ready,
+    output wire [2:0][542:0] return_ticket,
+    output wire [2:0][1:0] return_kind,
+    output wire [2:0] row_valid,
+    input logic [2:0] row_ready,
+    output wire [2:0][542:0] row_ticket,
+    output wire [2:0] owned,
+    input logic [2:0] rd_request_valid,
+    output wire [2:0] rd_request_ready,
+    input logic [2:0][63:0] rd_generation,
+    input logic [2:0][9:0] rd_address,
+    output wire [2:0] rd_response_valid,
+    input logic [2:0] rd_response_ready,
+    output wire [2:0][53:0] rd_data,
+    output wire [2:0][9:0] rd_response_address,
+    output wire [2:0] rd_error,
+    input logic [2:0] release_valid,
+    output wire [2:0] release_ready,
+    input logic [2:0][63:0] release_generation,
+    input logic [2:0][1:0] release_kind,
+    output wire [2:0] release_error,
+    output wire m_axi_arvalid,input logic m_axi_arready,output wire [31:0] m_axi_araddr,
+    output wire [3:0] m_axi_arid,output wire [7:0] m_axi_arlen,output wire [2:0] m_axi_arsize,output wire [1:0] m_axi_arburst,
+    input logic m_axi_rvalid,output wire m_axi_rready,input logic [127:0] m_axi_rdata,
+    input logic [3:0] m_axi_rid,input logic [1:0] m_axi_rresp,input logic m_axi_rlast
+);
+    import display_fetch_pkg::*;
+    import display_row_pkg::*;
+    typedef enum logic [3:0] {IDLE,CHECK,LOOKUP,HEADER,HEADER_REJECT,ROW_FILL,ROW_ACK,START_READER,
+        REJECT_DRAIN,RUN,ABORT_REQUEST,ABORT_RETURN,RESULT,Q} state_t;
+    state_t state;
+    (* ASYNC_REG="TRUE" *) logic [1:0] reset_pipe;
+    wire rst=reset_pipe!=0;
+    request_t request_view;
+    receipt_t receipt;
+    row_ticket_t reader_ticket;
+    assign request_view=service_request;
+    logic [63:0] generation_stamp,generations[0:2];
+    frame_ref_t bank_ref[0:2];
+    logic [2:0] ref_valid;
+    logic busy_at_claim,exhausted_at_claim,cancel_latched,force_cancel,reader_started,granted;
+    logic local_fault;
+    logic [2:0] reply_status;
+    logic [1:0] terminal_outcome;
+    logic [7:0] terminal_reason;
+    logic terminal_drained,terminal_returned;
+    wire reader_job_ready,reader_reply_valid,reader_out_valid,reader_out_ready,reader_done_valid,reader_done_ready,reader_q,reader_drained;
+    wire [2:0] reader_reply_status;wire [53:0] reader_data;wire [9:0] reader_address;wire [63:0] reader_generation;
+    wire [1:0] reader_outcome,reader_bank;wire [542:0] saved_ticket;wire [7:0] reader_reason;
+    wire [10:0] reader_prepared,reader_delivered;wire [31:0] reader_beats;
+    wire [2:0] fill_ready,fill_reply_valid,wr_ready,publish_ready,abort_ready,bank_return_valid,core_busy,exhausted,bank_q,write_error;
+    wire [2:0][542:0] fill_reply_ticket,bank_return_ticket;wire [2:0][2:0] fill_reply_status;wire [2:0][1:0] bank_return_kind;
+    logic [2:0] fill_valid,fill_reply_ready,wr_valid,publish_valid,abort_valid,bank_return_ready,io_closed,producer_closed;
+    logic [2:0][542:0] fill_ticket;
+    logic [2:0][63:0] wr_generation,publish_generation,abort_generation;
+    logic [2:0][9:0] wr_address;logic [2:0][53:0] wr_data;
+    wire active_cancel=service_cancel && state!=IDLE && state!=RESULT && state!=Q;
+    wire send_cancel=force_cancel||cancel_latched||active_cancel||local_fault;
+    wire reader_reply_ready;
+    wire chosen=reader_bank<3;
+    wire internal_return=chosen && state==ABORT_RETURN;
+    wire lookup_fire=lookup_valid&&lookup_ready;
+    assign reader_ticket=saved_ticket;
+    assign quarantined=state==Q || reader_q || local_fault || (|bank_q);
+    assign service_claim_ready=!rst && state==IDLE && enable && !quarantined && reader_job_ready;
+    assign service_receipt_valid=!rst && state==RESULT;
+    assign lookup_valid=!rst && state==LOOKUP && reader_job_ready && !send_cancel && enable;
+    assign lookup_demand=request_view.demand;
+    always_comb begin
+        receipt='0;
+        receipt.bank=request_view.bank;
+        receipt.ticket=reader_started ? reader_ticket : row_ticket_t'({generation_stamp,request_view.demand});
+        receipt.status=reply_status;receipt.row_granted=granted;
+        receipt.outcome=terminal_outcome;receipt.reason=terminal_reason;
+        receipt.drained=terminal_drained;receipt.row_returned=terminal_returned;
+        if(reply_status==0)begin receipt.prepared=reader_prepared;receipt.delivered=reader_delivered;receipt.read_beats=reader_beats;end
+    end
+    assign service_receipt=receipt;
+    display_row_reader #(.IMAGE_WIDTH(IMAGE_WIDTH),.IMAGE_HEIGHT(IMAGE_HEIGHT),.FRAME_ALIGNMENT(FRAME_ALIGNMENT),.ADDRESS_BYTES(ADDRESS_BYTES),.READ_ID(READ_ID)) reader(
+        .clk(core_clk),.rst,.enable,.job_valid(lookup_fire),.job_ready(reader_job_ready),.job_bank(request_view.bank),
+        .job_ticket({generation_stamp,request_view.demand}),.job_bundle(lookup_bundle),.job_permitted(lookup_permitted),
+        .job_reply_valid(reader_reply_valid),.job_reply_ready(reader_reply_ready),.job_reply_status(reader_reply_status),.saved_bank(reader_bank),.saved_ticket,
+        .out_valid(reader_out_valid),.out_ready(reader_out_ready),.out_data(reader_data),.out_address(reader_address),.out_generation(reader_generation),
+        .cancel_valid(send_cancel),.cancel_bank(reader_bank),.cancel_ticket(saved_ticket),
+        .done_valid(reader_done_valid),.done_ready(reader_done_ready),.outcome(reader_outcome),.reason(reader_reason),.drained(reader_drained),
+        .prepared_pairs(reader_prepared),.delivered_pairs(reader_delivered),.read_beats(reader_beats),.quarantined(reader_q),
+        .m_axi_arvalid,.m_axi_arready,.m_axi_araddr,.m_axi_arid,.m_axi_arlen,.m_axi_arsize,.m_axi_arburst,
+        .m_axi_rvalid,.m_axi_rready,.m_axi_rdata,.m_axi_rid,.m_axi_rresp,.m_axi_rlast);
+    display_rows3 #(.IMAGE_WIDTH(IMAGE_WIDTH),.IMAGE_HEIGHT(IMAGE_HEIGHT),.INIT_GENERATION(INIT_GENERATION)) rows(
+        .core_clk,.video_clk,.safe_reset_n,.fill_valid,.fill_ready,.fill_ticket,.fill_reply_valid,.fill_reply_ready,.fill_reply_ticket,.fill_reply_status,
+        .wr_valid,.wr_ready,.wr_generation,.wr_address,.wr_data,.publish_valid,.publish_ready,.publish_generation,.io_closed,.producer_closed,.abort_valid,.abort_ready,.abort_generation,
+        .return_valid(bank_return_valid),.return_ready(bank_return_ready),.return_ticket(bank_return_ticket),.return_kind(bank_return_kind),.core_busy,.exhausted,.quarantined(bank_q),.write_error,
+        .row_valid,.row_ready,.row_ticket,.owned,.rd_request_valid,.rd_request_ready,.rd_generation,.rd_address,.rd_response_valid,.rd_response_ready,.rd_data,.rd_response_address,.rd_error,
+        .release_valid,.release_ready,.release_generation,.release_kind,.release_error);
+    assign return_ticket=bank_return_ticket;assign return_kind=bank_return_kind;
+    for(genvar b=0;b<3;b++)begin: public_return
+        assign return_valid[b]=!rst && bank_return_valid[b] && !(internal_return && reader_bank==b);
+    end
+    wire publish_fire=chosen && publish_valid[reader_bank] && publish_ready[reader_bank];
+    wire abort_fire=chosen && abort_valid[reader_bank] && abort_ready[reader_bank];
+    wire abort_return_fire=internal_return && bank_return_valid[reader_bank] && bank_return_ready[reader_bank];
+    assign reader_out_ready=!rst && state==RUN && chosen && wr_ready[reader_bank];
+    assign reader_reply_ready=!rst && (state==HEADER_REJECT || state==START_READER || state==REJECT_DRAIN);
+    assign reader_done_ready=!rst && ((state==REJECT_DRAIN && reader_done_valid) || publish_fire || abort_return_fire ||
+        (state==RUN && reader_done_valid && (reader_outcome==3 || !reader_drained)));
+    always_comb begin
+        fill_valid=0;fill_reply_ready=0;fill_ticket=0;wr_valid=0;wr_generation=0;wr_address=0;wr_data=0;
+        publish_valid=0;publish_generation=0;abort_valid=0;abort_generation=0;io_closed=0;producer_closed=0;
+        bank_return_ready=return_ready;
+        if(chosen)begin
+            fill_ticket[reader_bank]=saved_ticket;fill_valid[reader_bank]=state==ROW_FILL;
+            fill_reply_ready[reader_bank]=state==ROW_ACK;
+            wr_valid[reader_bank]=state==RUN && reader_out_valid;
+            wr_generation[reader_bank]=reader_generation;wr_address[reader_bank]=reader_address;wr_data[reader_bank]=reader_data;
+            io_closed[reader_bank]=reader_done_valid && reader_drained && reader_outcome!=3;
+            producer_closed[reader_bank]=reader_done_valid && reader_drained && !reader_out_valid && reader_outcome!=3;
+            publish_valid[reader_bank]=state==RUN && reader_done_valid && reader_outcome==0 && reader_drained;
+            publish_generation[reader_bank]=reader_generation;
+            abort_valid[reader_bank]=state==ABORT_REQUEST;abort_generation[reader_bank]=reader_generation;
+            if(internal_return)bank_return_ready[reader_bank]=1;
+        end
+        local_scope_live=0;
+        if(scope_query_valid)begin
+            if(state!=IDLE && (reader_started ? ticket_ref(reader_ticket) : demand_ref(request_view.demand))==scope_query_ref)local_scope_live=1;
+            for(integer b=0;b<3;b++)if(ref_valid[b] && bank_ref[b]==scope_query_ref)local_scope_live=1;
+        end
+    end
+    // 只改无行占用的控制终态；不写不存在的IO/pixel计数。
+    task automatic no_start(input logic [2:0] status,input logic [1:0] result,input logic [7:0] why);
+        begin reply_status<=status;terminal_outcome<=result;terminal_reason<=why;terminal_drained<=1;terminal_returned<=0;state<=RESULT;end
+    endtask
+    always_ff @(posedge core_clk or negedge safe_reset_n)
+        if(!safe_reset_n)reset_pipe<=2'b11;else reset_pipe<={reset_pipe[0],1'b0};
+    always_ff @(posedge core_clk)begin
+        if(rst)begin
+            state<=IDLE;generation_stamp<=0;busy_at_claim<=0;exhausted_at_claim<=0;cancel_latched<=0;force_cancel<=0;
+            reader_started<=0;granted<=0;local_fault<=0;reply_status<=0;terminal_outcome<=0;terminal_reason<=0;terminal_drained<=1;terminal_returned<=0;ref_valid<=0;
+            for(integer b=0;b<3;b++)begin generations[b]<=INIT_GENERATION;bank_ref[b]<=0;end
+        end else begin
+            if(active_cancel)cancel_latched<=1;
+            // actual return消费才推进；其它bank可与当前服务并行归还。
+            for(integer b=0;b<3;b++)if(bank_return_valid[b]&&bank_return_ready[b])begin
+                row_ticket_t returned_ticket;
+                returned_ticket=bank_return_ticket[b];
+                if(!ref_valid[b] || returned_ticket.generation!=generations[b] || ticket_ref(returned_ticket)!=bank_ref[b])local_fault<=1;
+                else begin
+                    ref_valid[b]<=0;
+                    if(generations[b]!=64'hffffffffffffffff)generations[b]<=generations[b]+64'd1;
+                end
+            end
+            case(state)
+                IDLE:if(service_valid&&service_claim_ready)begin
+                    generation_stamp<=request_view.bank<3 ? generations[request_view.bank] : 64'd0;
+                    busy_at_claim<=request_view.bank<3 ? core_busy[request_view.bank] : 1'b0;
+                    exhausted_at_claim<=request_view.bank<3 ? exhausted[request_view.bank] : 1'b0;
+                    cancel_latched<=service_cancel;force_cancel<=0;reader_started<=0;granted<=0;
+                    reply_status<=0;terminal_outcome<=0;terminal_reason<=0;terminal_drained<=1;terminal_returned<=0;state<=CHECK;
+                end
+                CHECK:begin
+                    if(request_view.bank>=3)no_start(FC_FIELD,1,1);
+                    else if(busy_at_claim)no_start(FC_BUSY,1,0);
+                    else if(exhausted_at_claim)no_start(FC_EXHAUSTED,1,0);
+                    else if(cancel_latched||active_cancel)no_start(FC_CANCEL_NO_START,2,128);
+                    else if(!enable)no_start(FC_DISABLED_NO_START,1,4);
+                    else state<=LOOKUP;
+                end
+                LOOKUP:begin
+                    if(cancel_latched||active_cancel)no_start(FC_CANCEL_NO_START,2,128);
+                    else if(!enable)no_start(FC_DISABLED_NO_START,1,4);
+                    else if(lookup_fire)begin reader_started<=1;state<=HEADER;end
+                end
+                HEADER:if(reader_reply_valid)begin
+                    if(reader_reply_status!=0)begin reply_status<=reader_reply_status;state<=HEADER_REJECT;end
+                    else state<=ROW_FILL;
+                end
+                HEADER_REJECT:if(reader_reply_valid)no_start(reply_status,1,reply_status==FC_PERMISSION ? 8'd5 : 8'd1);
+                ROW_FILL:if(chosen&&fill_ready[reader_bank])state<=ROW_ACK;
+                ROW_ACK:if(chosen&&fill_reply_valid[reader_bank])begin
+                    if(fill_reply_status[reader_bank]!=0 || fill_reply_ticket[reader_bank]!=saved_ticket)begin
+                        reply_status<=FC_ROW_REJECT;force_cancel<=1;state<=REJECT_DRAIN;
+                        if(fill_reply_ticket[reader_bank]!=saved_ticket)local_fault<=1;
+                    end else begin granted<=1;ref_valid[reader_bank]<=1;bank_ref[reader_bank]<=ticket_ref(reader_ticket);state<=START_READER;end
+                end
+                START_READER:if(reader_reply_valid)state<=RUN;
+                REJECT_DRAIN:if(reader_done_valid)begin
+                    if(reader_outcome==3||!reader_drained)begin terminal_outcome<=3;terminal_reason<=reader_reason;terminal_drained<=0;state<=RESULT;end
+                    else no_start(FC_ROW_REJECT,1,1);
+                end
+                RUN:if(reader_done_valid)begin
+                    if(reader_outcome==3 || !reader_drained || publish_fire)begin
+                        terminal_outcome<=reader_outcome;terminal_reason<=reader_reason;terminal_drained<=reader_drained;terminal_returned<=0;state<=RESULT;
+                    end else if(reader_outcome!=0)state<=ABORT_REQUEST;
+                end
+                ABORT_REQUEST:if(abort_fire)state<=ABORT_RETURN;
+                ABORT_RETURN:if(abort_return_fire)begin
+                    if(bank_return_ticket[reader_bank]!=saved_ticket || bank_return_kind[reader_bank]!=1)begin terminal_outcome<=3;terminal_reason<=3;terminal_drained<=0;terminal_returned<=0;end
+                    else begin terminal_outcome<=reader_outcome;terminal_reason<=reader_reason;terminal_drained<=reader_drained;terminal_returned<=1;end
+                    state<=RESULT;
+                end
+                RESULT:if(service_receipt_ready)state<=terminal_outcome==3 || !terminal_drained ? Q : IDLE;
+                Q:begin end
+                default:state<=Q;
+            endcase
+        end
+    end
+    // synthesis translate_off
+    initial if(INIT_GENERATION==0)$fatal(1,"Fetch GEN initial zero");
+    always @(posedge core_clk)if(!rst)begin
+        if(lookup_fire&&!reader_job_ready)$fatal(1,"Lookup lost reader admission");
+        if(publish_fire && (!granted || reader_outcome!=0 || !reader_drained || reader_delivered!=IMAGE_WIDTH/2))$fatal(1,"Fetch premature publish");
+        if(abort_fire && (!reader_drained || reader_outcome==3))$fatal(1,"Fetch unknown row reclaimed");
+        if(service_receipt_valid && !granted && (receipt.prepared!=0 || receipt.delivered!=0 || receipt.read_beats!=0 || receipt.row_returned))$fatal(1,"NoStarted forged row/IO effects");
+    end
+    // synthesis translate_on
+endmodule

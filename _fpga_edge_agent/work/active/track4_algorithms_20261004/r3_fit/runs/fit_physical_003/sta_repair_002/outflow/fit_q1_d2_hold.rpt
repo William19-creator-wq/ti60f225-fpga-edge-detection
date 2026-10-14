@@ -1,0 +1,70 @@
+
+Efinix report_timing Report
+Version: 2026.1.132
+Date: Thu Oct  8 11:35:37 2026
+
+Copyright (C) 2013 - 2026 Efinix, Inc. All rights reserved.
+
+User command: report_timing -hold -from $q1 -to $d2 -npaths 1 -file fit_q1_d2_hold.rpt
+
+Timing Model: I3
+	process : typical
+	temperature : -40C to 100C
+	voltage : 0.95 +/-30mV
+	speedgrade : 3
+	technology : t16ff
+	status : final
+
+Summary:
+
+ Path #  | Slack(ns) |                 Start Pin                 |                 End Pin                 |  Launch Clock   |  Capture Clock
+==============================================================================================================================================
+ 1       |  0.142    | reset_adapter/reset_release_stage1~FF|CLK | reset_adapter/reset_release_stage2~FF|D | core_25m (RISE) | core_25m (RISE)
+
+++++ Path 1 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 0.142 ns (arrival time - required time)                        
+Path Start      : reset_adapter/reset_release_stage1~FF|CLK                      
+Path End        : reset_adapter/reset_release_stage2~FF|D                        
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Min at Fast Process Corner                                     
+Data Path Delay : 0.212 ns                                                       
+Logic Levels    : 0                                                              
+
+Launch Clock Path Delay        : 1.167
++ Clock To Q + Data Path Delay : 0.212
+--------------------------------------
+End-of-path arrival time       : 1.379
+
+Constraint                     : 0.000
++ Capture Clock Path Delay     : 1.167
++ Clock Uncertainty            : 0.070
++ Hold                         : 0.000
+--------------------------------------
+End-of-path required time      : 1.237
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)              Netlist Resource(s)
+==============================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                                  
+  (0,164)    input            0.070        0.070     clk_25m                                  
+             net (fo=7998)    1.097        1.167     clk_25m                                  
+  (216,9)    EFX_FF           0.000        1.167     reset_adapter/reset_release_stage1~FF|CLK
+
+Data Path
+  Location    Delay Type    Incr(ns)     Path(ns)             Netlist Resource(s)
+===========================================================================================
+  (216,9)    EFX_FF (Tco)    0.072        0.072     reset_adapter/reset_release_stage1~FF|Q
+             net (fo=1)      0.140        0.212     reset_adapter/reset_release_stage1     
+  (216,8)    EFX_FF          0.000        0.212     reset_adapter/reset_release_stage2~FF|D
+
+Capture Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)              Netlist Resource(s)
+==============================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                                  
+  (0,164)    input            0.070        0.070     clk_25m                                  
+             net (fo=7998)    1.097        1.167     clk_25m                                  
+  (216,8)    EFX_FF           0.000        1.167     reset_adapter/reset_release_stage2~FF|CLK
+  (216,8)    EFX_FF (Hold)    0.000        1.167     reset_adapter/reset_release_stage2~FF    
+

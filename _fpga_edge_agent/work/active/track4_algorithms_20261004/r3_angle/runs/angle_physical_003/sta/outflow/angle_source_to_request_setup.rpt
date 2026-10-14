@@ -1,0 +1,610 @@
+
+Efinix report_timing Report
+Version: 2026.1.132
+Date: Thu Oct  8 20:01:04 2026
+
+Copyright (C) 2013 - 2026 Efinix, Inc. All rights reserved.
+
+User command: foreach transition $transitions {
+ set name [lindex $transition 0];set starts [endpoint_union [lindex $transition 1]];set ends [endpoint_union [lindex $transition 2]]
+ puts "DATA_${name}_SOURCE_COUNT=[llength $starts]";puts "DATA_${name}_DEST_COUNT=[llength $ends]"
+ if {[llength $starts] == 0 || [llength $ends] == 0} {error "Data endpoint collection empty"}
+ report_timing -setup -from $starts -to $ends -npaths 8 -nworst 1 -file angle_${name}_setup.rpt
+ report_timing -hold -from $starts -to $ends -npaths 8 -nworst 1 -file angle_${name}_hold.rpt
+}
+
+Timing Model: I3
+	process : typical
+	temperature : -40C to 100C
+	voltage : 0.95 +/-30mV
+	speedgrade : 3
+	technology : t16ff
+	status : final
+
+Summary:
+
+ Path #  | Slack(ns) |       Start Pin        |        End Pin         |  Launch Clock   |  Capture Clock
+==========================================================================================================
+ 1       |  35.988   | source_lfsr[10]~FF|CLK | request_slot[235]~FF|D | core_25m (RISE) | core_25m (RISE)
+ 2       |  36.114   | source_lfsr[10]~FF|CLK | request_slot[236]~FF|D | core_25m (RISE) | core_25m (RISE)
+ 3       |  36.246   | source_lfsr[10]~FF|CLK | request_slot[233]~FF|D | core_25m (RISE) | core_25m (RISE)
+ 4       |  36.275   | source_lfsr[10]~FF|CLK | request_slot[234]~FF|D | core_25m (RISE) | core_25m (RISE)
+ 5       |  36.419   | source_lfsr[10]~FF|CLK | request_slot[239]~FF|D | core_25m (RISE) | core_25m (RISE)
+ 6       |  36.483   | source_lfsr[10]~FF|CLK | request_slot[237]~FF|D | core_25m (RISE) | core_25m (RISE)
+ 7       |  36.577   | source_lfsr[10]~FF|CLK | request_slot[226]~FF|D | core_25m (RISE) | core_25m (RISE)
+ 8       |  36.585   | source_lfsr[10]~FF|CLK | request_slot[238]~FF|D | core_25m (RISE) | core_25m (RISE)
+
+++++ Path 1 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 35.988 ns (required time - arrival time)                       
+Path Start      : source_lfsr[10]~FF|CLK                                         
+Path End        : request_slot[235]~FF|D                                         
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 3.883 ns                                                       
+Logic Levels    : 9                                                              
+
+Launch Clock Path Delay        : 2.065
++ Clock To Q + Data Path Delay : 3.883
+--------------------------------------
+End-of-path arrival time       : 5.948
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.003
+---------------------------------------
+End-of-path required time      : 41.936
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)    Netlist Resource(s)
+===========================================================================
+ (0,164)     input            0.000        0.000     clk_25m               
+ (0,164)     input            0.126        0.126     clk_25m               
+             net (fo=1721)    1.939        2.065     clk_25m               
+ (178,133)   EFX_FF           0.000        2.065     source_lfsr[10]~FF|CLK
+
+Data Path
+  Location    Delay Type    Incr(ns)     Path(ns)    Netlist Resource(s)
+==========================================================================
+ (178,133)   EFX_FF (Tco)    0.130        0.130     source_lfsr[10]~FF|Q  
+             net (fo=12)     0.729        0.859     source_lfsr[10]       
+ (188,119)   EFX_LUT4        0.061        0.920     LUT__7759|in[0]       
+ (188,119)   EFX_LUT4        0.000        0.920     LUT__7759|out         
+             net (fo=3)      0.233        1.153     n4255                 
+ (193,121)   EFX_LUT4        0.061        1.214     LUT__7760|in[1]       
+ (193,121)   EFX_LUT4        0.000        1.214     LUT__7760|out         
+             net (fo=6)      0.259        1.473     n4256                 
+ (189,126)   EFX_LUT4        0.063        1.536     LUT__7761|in[3]       
+ (189,126)   EFX_LUT4        0.000        1.536     LUT__7761|out         
+             net (fo=6)      0.314        1.850     n4257                 
+ (187,136)   EFX_LUT4        0.061        1.911     LUT__7763|in[1]       
+ (187,136)   EFX_LUT4        0.000        1.911     LUT__7763|out         
+             net (fo=4)      0.270        2.181     n4259                 
+ (183,135)   EFX_LUT4        0.063        2.244     LUT__7770|in[0]       
+ (183,135)   EFX_LUT4        0.000        2.244     LUT__7770|out         
+             net (fo=5)      0.234        2.478     n4265                 
+ (184,134)   EFX_LUT4        0.061        2.539     LUT__7801|in[0]       
+ (184,134)   EFX_LUT4        0.000        2.539     LUT__7801|out         
+             net (fo=9)      0.602        3.141     n4287                 
+ (189,116)   EFX_LUT4        0.063        3.204     LUT__7817|in[0]       
+ (189,116)   EFX_LUT4        0.000        3.204     LUT__7817|out         
+             net (fo=1)      0.061        3.265     n4300                 
+ (189,115)   EFX_LUT4        0.063        3.328     LUT__7819|in[2]       
+ (189,115)   EFX_LUT4        0.000        3.328     LUT__7819|out         
+             net (fo=1)      0.494        3.822     n4302                 
+ (172,116)   EFX_LUT4        0.061        3.883     LUT__7820|in[2]       
+ (172,116)   EFX_LUT4        0.000        3.883     LUT__7820|out         
+             net (fo=1)      0.000        3.883     next_payload[13]      
+ (172,116)   EFX_FF          0.000        3.883     request_slot[235]~FF|D
+
+Capture Clock Path
+  Location     Delay Type     Incr(ns)     Path(ns)     Netlist Resource(s)
+==============================================================================
+ (0,164)     input              0.000       0.000     clk_25m                 
+ (0,164)     input              0.126       0.126     clk_25m                 
+             net (fo=1721)      1.939       2.065     clk_25m                 
+ (172,116)   EFX_FF             0.000       2.065     request_slot[235]~FF|CLK
+ (172,116)   EFX_FF (Setup)    -0.003       2.062     request_slot[235]~FF    
+
+++++ Path 2 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 36.114 ns (required time - arrival time)                       
+Path Start      : source_lfsr[10]~FF|CLK                                         
+Path End        : request_slot[236]~FF|D                                         
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 3.757 ns                                                       
+Logic Levels    : 8                                                              
+
+Launch Clock Path Delay        : 2.065
++ Clock To Q + Data Path Delay : 3.757
+--------------------------------------
+End-of-path arrival time       : 5.822
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.003
+---------------------------------------
+End-of-path required time      : 41.936
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)    Netlist Resource(s)
+===========================================================================
+ (0,164)     input            0.000        0.000     clk_25m               
+ (0,164)     input            0.126        0.126     clk_25m               
+             net (fo=1721)    1.939        2.065     clk_25m               
+ (178,133)   EFX_FF           0.000        2.065     source_lfsr[10]~FF|CLK
+
+Data Path
+  Location    Delay Type    Incr(ns)     Path(ns)    Netlist Resource(s)
+==========================================================================
+ (178,133)   EFX_FF (Tco)    0.130        0.130     source_lfsr[10]~FF|Q  
+             net (fo=12)     0.729        0.859     source_lfsr[10]       
+ (188,119)   EFX_LUT4        0.061        0.920     LUT__7759|in[0]       
+ (188,119)   EFX_LUT4        0.000        0.920     LUT__7759|out         
+             net (fo=3)      0.233        1.153     n4255                 
+ (193,121)   EFX_LUT4        0.061        1.214     LUT__7760|in[1]       
+ (193,121)   EFX_LUT4        0.000        1.214     LUT__7760|out         
+             net (fo=6)      0.259        1.473     n4256                 
+ (189,126)   EFX_LUT4        0.063        1.536     LUT__7761|in[3]       
+ (189,126)   EFX_LUT4        0.000        1.536     LUT__7761|out         
+             net (fo=6)      0.314        1.850     n4257                 
+ (187,136)   EFX_LUT4        0.061        1.911     LUT__7763|in[1]       
+ (187,136)   EFX_LUT4        0.000        1.911     LUT__7763|out         
+             net (fo=4)      0.270        2.181     n4259                 
+ (183,135)   EFX_LUT4        0.063        2.244     LUT__7770|in[0]       
+ (183,135)   EFX_LUT4        0.000        2.244     LUT__7770|out         
+             net (fo=5)      0.234        2.478     n4265                 
+ (184,134)   EFX_LUT4        0.061        2.539     LUT__7801|in[0]       
+ (184,134)   EFX_LUT4        0.000        2.539     LUT__7801|out         
+             net (fo=9)      0.561        3.100     n4287                 
+ (188,117)   EFX_LUT4        0.061        3.161     LUT__7821|in[0]       
+ (188,117)   EFX_LUT4        0.000        3.161     LUT__7821|out         
+             net (fo=1)      0.535        3.696     n4303                 
+ (182,98)    EFX_LUT4        0.061        3.757     LUT__7827|in[0]       
+ (182,98)    EFX_LUT4        0.000        3.757     LUT__7827|out         
+             net (fo=1)      0.000        3.757     next_payload[14]      
+ (182,98)    EFX_FF          0.000        3.757     request_slot[236]~FF|D
+
+Capture Clock Path
+  Location     Delay Type     Incr(ns)     Path(ns)     Netlist Resource(s)
+==============================================================================
+  (0,164)    input              0.000       0.000     clk_25m                 
+  (0,164)    input              0.126       0.126     clk_25m                 
+             net (fo=1721)      1.939       2.065     clk_25m                 
+  (182,98)   EFX_FF             0.000       2.065     request_slot[236]~FF|CLK
+  (182,98)   EFX_FF (Setup)    -0.003       2.062     request_slot[236]~FF    
+
+++++ Path 3 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 36.246 ns (required time - arrival time)                       
+Path Start      : source_lfsr[10]~FF|CLK                                         
+Path End        : request_slot[233]~FF|D                                         
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 3.625 ns                                                       
+Logic Levels    : 9                                                              
+
+Launch Clock Path Delay        : 2.065
++ Clock To Q + Data Path Delay : 3.625
+--------------------------------------
+End-of-path arrival time       : 5.690
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.003
+---------------------------------------
+End-of-path required time      : 41.936
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)    Netlist Resource(s)
+===========================================================================
+ (0,164)     input            0.000        0.000     clk_25m               
+ (0,164)     input            0.126        0.126     clk_25m               
+             net (fo=1721)    1.939        2.065     clk_25m               
+ (178,133)   EFX_FF           0.000        2.065     source_lfsr[10]~FF|CLK
+
+Data Path
+  Location    Delay Type    Incr(ns)     Path(ns)    Netlist Resource(s)
+==========================================================================
+ (178,133)   EFX_FF (Tco)    0.130        0.130     source_lfsr[10]~FF|Q  
+             net (fo=12)     0.729        0.859     source_lfsr[10]       
+ (188,119)   EFX_LUT4        0.061        0.920     LUT__7759|in[0]       
+ (188,119)   EFX_LUT4        0.000        0.920     LUT__7759|out         
+             net (fo=3)      0.233        1.153     n4255                 
+ (193,121)   EFX_LUT4        0.061        1.214     LUT__7760|in[1]       
+ (193,121)   EFX_LUT4        0.000        1.214     LUT__7760|out         
+             net (fo=6)      0.259        1.473     n4256                 
+ (189,126)   EFX_LUT4        0.063        1.536     LUT__7761|in[3]       
+ (189,126)   EFX_LUT4        0.000        1.536     LUT__7761|out         
+             net (fo=6)      0.314        1.850     n4257                 
+ (187,136)   EFX_LUT4        0.061        1.911     LUT__7763|in[1]       
+ (187,136)   EFX_LUT4        0.000        1.911     LUT__7763|out         
+             net (fo=4)      0.270        2.181     n4259                 
+ (183,135)   EFX_LUT4        0.063        2.244     LUT__7770|in[0]       
+ (183,135)   EFX_LUT4        0.000        2.244     LUT__7770|out         
+             net (fo=5)      0.234        2.478     n4265                 
+ (184,134)   EFX_LUT4        0.061        2.539     LUT__7801|in[0]       
+ (184,134)   EFX_LUT4        0.000        2.539     LUT__7801|out         
+             net (fo=9)      0.687        3.226     n4287                 
+ (185,117)   EFX_LUT4        0.061        3.287     LUT__7806|in[0]       
+ (185,117)   EFX_LUT4        0.000        3.287     LUT__7806|out         
+             net (fo=1)      0.061        3.348     n4291                 
+ (185,116)   EFX_LUT4        0.061        3.409     LUT__7810|in[2]       
+ (185,116)   EFX_LUT4        0.000        3.409     LUT__7810|out         
+             net (fo=1)      0.155        3.564     n4295                 
+ (182,116)   EFX_LUT4        0.061        3.625     LUT__7811|in[2]       
+ (182,116)   EFX_LUT4        0.000        3.625     LUT__7811|out         
+             net (fo=1)      0.000        3.625     next_payload[11]      
+ (182,116)   EFX_FF          0.000        3.625     request_slot[233]~FF|D
+
+Capture Clock Path
+  Location     Delay Type     Incr(ns)     Path(ns)     Netlist Resource(s)
+==============================================================================
+ (0,164)     input              0.000       0.000     clk_25m                 
+ (0,164)     input              0.126       0.126     clk_25m                 
+             net (fo=1721)      1.939       2.065     clk_25m                 
+ (182,116)   EFX_FF             0.000       2.065     request_slot[233]~FF|CLK
+ (182,116)   EFX_FF (Setup)    -0.003       2.062     request_slot[233]~FF    
+
+++++ Path 4 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 36.275 ns (required time - arrival time)                       
+Path Start      : source_lfsr[10]~FF|CLK                                         
+Path End        : request_slot[234]~FF|D                                         
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 3.596 ns                                                       
+Logic Levels    : 8                                                              
+
+Launch Clock Path Delay        : 2.065
++ Clock To Q + Data Path Delay : 3.596
+--------------------------------------
+End-of-path arrival time       : 5.661
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.003
+---------------------------------------
+End-of-path required time      : 41.936
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)    Netlist Resource(s)
+===========================================================================
+ (0,164)     input            0.000        0.000     clk_25m               
+ (0,164)     input            0.126        0.126     clk_25m               
+             net (fo=1721)    1.939        2.065     clk_25m               
+ (178,133)   EFX_FF           0.000        2.065     source_lfsr[10]~FF|CLK
+
+Data Path
+  Location    Delay Type    Incr(ns)     Path(ns)    Netlist Resource(s)
+==========================================================================
+ (178,133)   EFX_FF (Tco)    0.130        0.130     source_lfsr[10]~FF|Q  
+             net (fo=12)     0.729        0.859     source_lfsr[10]       
+ (188,119)   EFX_LUT4        0.061        0.920     LUT__7759|in[0]       
+ (188,119)   EFX_LUT4        0.000        0.920     LUT__7759|out         
+             net (fo=3)      0.233        1.153     n4255                 
+ (193,121)   EFX_LUT4        0.061        1.214     LUT__7760|in[1]       
+ (193,121)   EFX_LUT4        0.000        1.214     LUT__7760|out         
+             net (fo=6)      0.259        1.473     n4256                 
+ (189,126)   EFX_LUT4        0.063        1.536     LUT__7761|in[3]       
+ (189,126)   EFX_LUT4        0.000        1.536     LUT__7761|out         
+             net (fo=6)      0.314        1.850     n4257                 
+ (187,136)   EFX_LUT4        0.061        1.911     LUT__7763|in[1]       
+ (187,136)   EFX_LUT4        0.000        1.911     LUT__7763|out         
+             net (fo=4)      0.270        2.181     n4259                 
+ (183,135)   EFX_LUT4        0.063        2.244     LUT__7770|in[0]       
+ (183,135)   EFX_LUT4        0.000        2.244     LUT__7770|out         
+             net (fo=5)      0.234        2.478     n4265                 
+ (184,134)   EFX_LUT4        0.061        2.539     LUT__7801|in[0]       
+ (184,134)   EFX_LUT4        0.000        2.539     LUT__7801|out         
+             net (fo=9)      0.874        3.413     n4287                 
+ (184,117)   EFX_LUT4        0.061        3.474     LUT__7814|in[2]       
+ (184,117)   EFX_LUT4        0.000        3.474     LUT__7814|out         
+             net (fo=1)      0.061        3.535     n4298                 
+ (184,116)   EFX_LUT4        0.061        3.596     LUT__7815|in[1]       
+ (184,116)   EFX_LUT4        0.000        3.596     LUT__7815|out         
+             net (fo=1)      0.000        3.596     next_payload[12]      
+ (184,116)   EFX_FF          0.000        3.596     request_slot[234]~FF|D
+
+Capture Clock Path
+  Location     Delay Type     Incr(ns)     Path(ns)     Netlist Resource(s)
+==============================================================================
+ (0,164)     input              0.000       0.000     clk_25m                 
+ (0,164)     input              0.126       0.126     clk_25m                 
+             net (fo=1721)      1.939       2.065     clk_25m                 
+ (184,116)   EFX_FF             0.000       2.065     request_slot[234]~FF|CLK
+ (184,116)   EFX_FF (Setup)    -0.003       2.062     request_slot[234]~FF    
+
+++++ Path 5 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 36.419 ns (required time - arrival time)                       
+Path Start      : source_lfsr[10]~FF|CLK                                         
+Path End        : request_slot[239]~FF|D                                         
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 3.452 ns                                                       
+Logic Levels    : 9                                                              
+
+Launch Clock Path Delay        : 2.065
++ Clock To Q + Data Path Delay : 3.452
+--------------------------------------
+End-of-path arrival time       : 5.517
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.003
+---------------------------------------
+End-of-path required time      : 41.936
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)    Netlist Resource(s)
+===========================================================================
+ (0,164)     input            0.000        0.000     clk_25m               
+ (0,164)     input            0.126        0.126     clk_25m               
+             net (fo=1721)    1.939        2.065     clk_25m               
+ (178,133)   EFX_FF           0.000        2.065     source_lfsr[10]~FF|CLK
+
+Data Path
+  Location    Delay Type    Incr(ns)     Path(ns)    Netlist Resource(s)
+==========================================================================
+ (178,133)   EFX_FF (Tco)    0.130        0.130     source_lfsr[10]~FF|Q  
+             net (fo=12)     0.729        0.859     source_lfsr[10]       
+ (188,119)   EFX_LUT4        0.061        0.920     LUT__7759|in[0]       
+ (188,119)   EFX_LUT4        0.000        0.920     LUT__7759|out         
+             net (fo=3)      0.233        1.153     n4255                 
+ (193,121)   EFX_LUT4        0.061        1.214     LUT__7760|in[1]       
+ (193,121)   EFX_LUT4        0.000        1.214     LUT__7760|out         
+             net (fo=6)      0.259        1.473     n4256                 
+ (189,126)   EFX_LUT4        0.063        1.536     LUT__7761|in[3]       
+ (189,126)   EFX_LUT4        0.000        1.536     LUT__7761|out         
+             net (fo=6)      0.314        1.850     n4257                 
+ (187,136)   EFX_LUT4        0.061        1.911     LUT__7763|in[1]       
+ (187,136)   EFX_LUT4        0.000        1.911     LUT__7763|out         
+             net (fo=4)      0.270        2.181     n4259                 
+ (183,135)   EFX_LUT4        0.063        2.244     LUT__7770|in[0]       
+ (183,135)   EFX_LUT4        0.000        2.244     LUT__7770|out         
+             net (fo=5)      0.234        2.478     n4265                 
+ (184,134)   EFX_LUT4        0.061        2.539     LUT__7801|in[0]       
+ (184,134)   EFX_LUT4        0.000        2.539     LUT__7801|out         
+             net (fo=9)      0.225        2.764     n4287                 
+ (189,129)   EFX_LUT4        0.063        2.827     LUT__7842|in[1]       
+ (189,129)   EFX_LUT4        0.000        2.827     LUT__7842|out         
+             net (fo=1)      0.213        3.040     n4321                 
+ (189,128)   EFX_LUT4        0.063        3.103     LUT__7843|in[0]       
+ (189,128)   EFX_LUT4        0.000        3.103     LUT__7843|out         
+             net (fo=1)      0.288        3.391     n4322                 
+ (188,126)   EFX_LUT4        0.061        3.452     LUT__7844|in[2]       
+ (188,126)   EFX_LUT4        0.000        3.452     LUT__7844|out         
+             net (fo=1)      0.000        3.452     next_payload[17]      
+ (188,126)   EFX_FF          0.000        3.452     request_slot[239]~FF|D
+
+Capture Clock Path
+  Location     Delay Type     Incr(ns)     Path(ns)     Netlist Resource(s)
+==============================================================================
+ (0,164)     input              0.000       0.000     clk_25m                 
+ (0,164)     input              0.126       0.126     clk_25m                 
+             net (fo=1721)      1.939       2.065     clk_25m                 
+ (188,126)   EFX_FF             0.000       2.065     request_slot[239]~FF|CLK
+ (188,126)   EFX_FF (Setup)    -0.003       2.062     request_slot[239]~FF    
+
+++++ Path 6 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 36.483 ns (required time - arrival time)                       
+Path Start      : source_lfsr[10]~FF|CLK                                         
+Path End        : request_slot[237]~FF|D                                         
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 3.388 ns                                                       
+Logic Levels    : 8                                                              
+
+Launch Clock Path Delay        : 2.065
++ Clock To Q + Data Path Delay : 3.388
+--------------------------------------
+End-of-path arrival time       : 5.453
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.003
+---------------------------------------
+End-of-path required time      : 41.936
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)    Netlist Resource(s)
+===========================================================================
+ (0,164)     input            0.000        0.000     clk_25m               
+ (0,164)     input            0.126        0.126     clk_25m               
+             net (fo=1721)    1.939        2.065     clk_25m               
+ (178,133)   EFX_FF           0.000        2.065     source_lfsr[10]~FF|CLK
+
+Data Path
+  Location    Delay Type    Incr(ns)     Path(ns)    Netlist Resource(s)
+==========================================================================
+ (178,133)   EFX_FF (Tco)    0.130        0.130     source_lfsr[10]~FF|Q  
+             net (fo=12)     0.729        0.859     source_lfsr[10]       
+ (188,119)   EFX_LUT4        0.061        0.920     LUT__7759|in[0]       
+ (188,119)   EFX_LUT4        0.000        0.920     LUT__7759|out         
+             net (fo=3)      0.233        1.153     n4255                 
+ (193,121)   EFX_LUT4        0.061        1.214     LUT__7760|in[1]       
+ (193,121)   EFX_LUT4        0.000        1.214     LUT__7760|out         
+             net (fo=6)      0.259        1.473     n4256                 
+ (189,126)   EFX_LUT4        0.063        1.536     LUT__7761|in[3]       
+ (189,126)   EFX_LUT4        0.000        1.536     LUT__7761|out         
+             net (fo=6)      0.314        1.850     n4257                 
+ (187,136)   EFX_LUT4        0.061        1.911     LUT__7763|in[1]       
+ (187,136)   EFX_LUT4        0.000        1.911     LUT__7763|out         
+             net (fo=4)      0.270        2.181     n4259                 
+ (183,135)   EFX_LUT4        0.063        2.244     LUT__7770|in[0]       
+ (183,135)   EFX_LUT4        0.000        2.244     LUT__7770|out         
+             net (fo=5)      0.234        2.478     n4265                 
+ (184,134)   EFX_LUT4        0.061        2.539     LUT__7801|in[0]       
+ (184,134)   EFX_LUT4        0.000        2.539     LUT__7801|out         
+             net (fo=9)      0.397        2.936     n4287                 
+ (189,122)   EFX_LUT4        0.063        2.999     LUT__7831|in[1]       
+ (189,122)   EFX_LUT4        0.000        2.999     LUT__7831|out         
+             net (fo=1)      0.326        3.325     n4312                 
+ (192,120)   EFX_LUT4        0.063        3.388     LUT__7832|in[1]       
+ (192,120)   EFX_LUT4        0.000        3.388     LUT__7832|out         
+             net (fo=1)      0.000        3.388     next_payload[15]      
+ (192,120)   EFX_FF          0.000        3.388     request_slot[237]~FF|D
+
+Capture Clock Path
+  Location     Delay Type     Incr(ns)     Path(ns)     Netlist Resource(s)
+==============================================================================
+ (0,164)     input              0.000       0.000     clk_25m                 
+ (0,164)     input              0.126       0.126     clk_25m                 
+             net (fo=1721)      1.939       2.065     clk_25m                 
+ (192,120)   EFX_FF             0.000       2.065     request_slot[237]~FF|CLK
+ (192,120)   EFX_FF (Setup)    -0.003       2.062     request_slot[237]~FF    
+
+++++ Path 7 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 36.577 ns (required time - arrival time)                       
+Path Start      : source_lfsr[10]~FF|CLK                                         
+Path End        : request_slot[226]~FF|D                                         
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 3.294 ns                                                       
+Logic Levels    : 7                                                              
+
+Launch Clock Path Delay        : 2.065
++ Clock To Q + Data Path Delay : 3.294
+--------------------------------------
+End-of-path arrival time       : 5.359
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.003
+---------------------------------------
+End-of-path required time      : 41.936
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)    Netlist Resource(s)
+===========================================================================
+ (0,164)     input            0.000        0.000     clk_25m               
+ (0,164)     input            0.126        0.126     clk_25m               
+             net (fo=1721)    1.939        2.065     clk_25m               
+ (178,133)   EFX_FF           0.000        2.065     source_lfsr[10]~FF|CLK
+
+Data Path
+  Location    Delay Type    Incr(ns)     Path(ns)    Netlist Resource(s)
+==========================================================================
+ (178,133)   EFX_FF (Tco)    0.130        0.130     source_lfsr[10]~FF|Q  
+             net (fo=12)     0.729        0.859     source_lfsr[10]       
+ (188,119)   EFX_LUT4        0.061        0.920     LUT__7759|in[0]       
+ (188,119)   EFX_LUT4        0.000        0.920     LUT__7759|out         
+             net (fo=3)      0.233        1.153     n4255                 
+ (193,121)   EFX_LUT4        0.061        1.214     LUT__7760|in[1]       
+ (193,121)   EFX_LUT4        0.000        1.214     LUT__7760|out         
+             net (fo=6)      0.259        1.473     n4256                 
+ (189,126)   EFX_LUT4        0.063        1.536     LUT__7761|in[3]       
+ (189,126)   EFX_LUT4        0.000        1.536     LUT__7761|out         
+             net (fo=6)      0.314        1.850     n4257                 
+ (187,136)   EFX_LUT4        0.061        1.911     LUT__7763|in[1]       
+ (187,136)   EFX_LUT4        0.000        1.911     LUT__7763|out         
+             net (fo=4)      0.270        2.181     n4259                 
+ (183,135)   EFX_LUT4        0.063        2.244     LUT__7770|in[0]       
+ (183,135)   EFX_LUT4        0.000        2.244     LUT__7770|out         
+             net (fo=5)      0.387        2.631     n4265                 
+ (181,141)   EFX_LUT4        0.061        2.692     LUT__7786|in[1]       
+ (181,141)   EFX_LUT4        0.000        2.692     LUT__7786|out         
+             net (fo=2)      0.541        3.233     n4279                 
+ (178,141)   EFX_LUT4        0.061        3.294     LUT__7788|in[0]       
+ (178,141)   EFX_LUT4        0.000        3.294     LUT__7788|out         
+             net (fo=1)      0.000        3.294     next_payload[4]       
+ (178,141)   EFX_FF          0.000        3.294     request_slot[226]~FF|D
+
+Capture Clock Path
+  Location     Delay Type     Incr(ns)     Path(ns)     Netlist Resource(s)
+==============================================================================
+ (0,164)     input              0.000       0.000     clk_25m                 
+ (0,164)     input              0.126       0.126     clk_25m                 
+             net (fo=1721)      1.939       2.065     clk_25m                 
+ (178,141)   EFX_FF             0.000       2.065     request_slot[226]~FF|CLK
+ (178,141)   EFX_FF (Setup)    -0.003       2.062     request_slot[226]~FF    
+
+++++ Path 8 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 36.585 ns (required time - arrival time)                       
+Path Start      : source_lfsr[10]~FF|CLK                                         
+Path End        : request_slot[238]~FF|D                                         
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 3.286 ns                                                       
+Logic Levels    : 8                                                              
+
+Launch Clock Path Delay        : 2.065
++ Clock To Q + Data Path Delay : 3.286
+--------------------------------------
+End-of-path arrival time       : 5.351
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.003
+---------------------------------------
+End-of-path required time      : 41.936
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)    Netlist Resource(s)
+===========================================================================
+ (0,164)     input            0.000        0.000     clk_25m               
+ (0,164)     input            0.126        0.126     clk_25m               
+             net (fo=1721)    1.939        2.065     clk_25m               
+ (178,133)   EFX_FF           0.000        2.065     source_lfsr[10]~FF|CLK
+
+Data Path
+  Location    Delay Type    Incr(ns)     Path(ns)    Netlist Resource(s)
+==========================================================================
+ (178,133)   EFX_FF (Tco)    0.130        0.130     source_lfsr[10]~FF|Q  
+             net (fo=12)     0.729        0.859     source_lfsr[10]       
+ (188,119)   EFX_LUT4        0.061        0.920     LUT__7759|in[0]       
+ (188,119)   EFX_LUT4        0.000        0.920     LUT__7759|out         
+             net (fo=3)      0.233        1.153     n4255                 
+ (193,121)   EFX_LUT4        0.061        1.214     LUT__7760|in[1]       
+ (193,121)   EFX_LUT4        0.000        1.214     LUT__7760|out         
+             net (fo=6)      0.259        1.473     n4256                 
+ (189,126)   EFX_LUT4        0.063        1.536     LUT__7761|in[3]       
+ (189,126)   EFX_LUT4        0.000        1.536     LUT__7761|out         
+             net (fo=6)      0.314        1.850     n4257                 
+ (187,136)   EFX_LUT4        0.061        1.911     LUT__7763|in[1]       
+ (187,136)   EFX_LUT4        0.000        1.911     LUT__7763|out         
+             net (fo=4)      0.270        2.181     n4259                 
+ (183,135)   EFX_LUT4        0.063        2.244     LUT__7770|in[0]       
+ (183,135)   EFX_LUT4        0.000        2.244     LUT__7770|out         
+             net (fo=5)      0.234        2.478     n4265                 
+ (184,134)   EFX_LUT4        0.061        2.539     LUT__7801|in[0]       
+ (184,134)   EFX_LUT4        0.000        2.539     LUT__7801|out         
+             net (fo=9)      0.564        3.103     n4287                 
+ (188,123)   EFX_LUT4        0.061        3.164     LUT__7836|in[2]       
+ (188,123)   EFX_LUT4        0.000        3.164     LUT__7836|out         
+             net (fo=1)      0.061        3.225     n4316                 
+ (188,122)   EFX_LUT4        0.061        3.286     LUT__7837|in[1]       
+ (188,122)   EFX_LUT4        0.000        3.286     LUT__7837|out         
+             net (fo=1)      0.000        3.286     next_payload[16]      
+ (188,122)   EFX_FF          0.000        3.286     request_slot[238]~FF|D
+
+Capture Clock Path
+  Location     Delay Type     Incr(ns)     Path(ns)     Netlist Resource(s)
+==============================================================================
+ (0,164)     input              0.000       0.000     clk_25m                 
+ (0,164)     input              0.126       0.126     clk_25m                 
+             net (fo=1721)      1.939       2.065     clk_25m                 
+ (188,122)   EFX_FF             0.000       2.065     request_slot[238]~FF|CLK
+ (188,122)   EFX_FF (Setup)    -0.003       2.062     request_slot[238]~FF    
+

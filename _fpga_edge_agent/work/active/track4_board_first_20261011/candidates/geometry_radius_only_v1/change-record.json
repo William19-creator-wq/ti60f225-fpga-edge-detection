@@ -1,0 +1,53 @@
+{
+  "task_id": "TRACK4-GEOMETRY-RADIUS-ONLY-001",
+  "contract_revision": "v1",
+  "created_at_utc": "2026-10-11T14:31:15.7152483Z",
+  "status": "IMPLEMENTED_CANDIDATE_ONLY_NOT_COMPILED",
+  "authority": "ROOT read back and presented the short card and 180-to-132 call-count limitation, then authorized the exact independent candidate under continuing user autonomous scope/local audit; no new specified-version approval asserted",
+  "design_path": "planning/design-TRACK4-GEOMETRY-RADIUS-ONLY-001.md",
+  "design_sha256": "BD01AFA1E9E776F7F5555FD8CD7309E8AFAEC932F230A70D46054DFA88D70DDD",
+  "source_baseline_path": "candidates/geometry_point_math_v1/board/rtl/board_geometry_point_math.sv",
+  "source_baseline_sha256": "83172157F710AB694F11782E73E0C75914B0B906415F9B8B507E120A3579CB21",
+  "source_before_path": "before/board/rtl/board_geometry_point_math.sv",
+  "source_before_sha256": "83172157F710AB694F11782E73E0C75914B0B906415F9B8B507E120A3579CB21",
+  "candidate_path": "board/rtl/board_geometry_point_math.sv",
+  "candidate_sha256": "CC4BF36A1E51325948F12640379346865C48EC5F8778D3C4AAD7209504E64C05",
+  "original_pm_changed": false,
+  "main_changed": false,
+  "cf_changed": false,
+  "running_057_changed": false,
+  "actual_rtl_diff": [
+    "Append default0 ENABLE_RADIUS_ONLY after existing SHARED_RETURN_WORDS parameter",
+    "Append one-bit eval_radius_only input after original return-word ports",
+    "Add constant-gated effective wire and its EVAL borrow-lifetime comment; no new snapshot",
+    "Extend only the successful NUM_CLOSE pc5 terminal condition with effective radius-only; explicitly set normal_ok0 on that pc5 branch"
+  ],
+  "static_review": [
+    "Default ENABLE_RADIUS_ONLY=0 makes effective0 even with unconnected new input; previous eighteen-step/zero-radius control and outputs remain",
+    "Enabled input0 preserves original eighteen-step control; enabled input1 executes original pc0..5 only and terminates after actual pc5 num_rsp consume plus num_quiet",
+    "NUM_SCAN full25 words, REG_WRITE full8 words, exact radius18 save on word7, shared-return-word ports/select/sign extension all retained",
+    "Success terminal normal_ok is explicitly0 only for pc5 radius-only; original pc17 normal result is not cleared",
+    "numeric_failed branch keeps priority over success terminal; known failure/LOCAL_CLOSE/UNKNOWN/ISOLATED response and drain behavior unchanged",
+    "closed_sequence increments or locks MAX on the same num_quiet close edge, never on EVAL/pass/seed start; MAX at last pc5 can finish this EVAL but prevents another request",
+    "No change to numeric ID C1/sequence/owner0/scope96, REQ622/RSP585, targets/operands/qualifiers or output identity",
+    "Output RESULT remains held under backpressure; borrowed new input must stay stable to EVAL consume and PM quiet, and until common reset for UNKNOWN",
+    "Read-back no-index diff shows four intended hunks only; no based numeric literal directly adjacent to a question mark was added"
+  ],
+  "mandatory_parent_contracts": [
+    "Enable parameter only in actual parent integration and provide definite eval_radius_only0/1 throughout borrowed EVAL lifetime",
+    "Set1 only for B/c1,C/c0,D/c0,D/c2; set0 for HIST/c0,A/c0,B/c0,C/c1,D/c1,E/c2",
+    "Do not use normal_ok as a member predicate in radius-only sub-stages",
+    "Do not infer radius-only solely from pass tag; centers/sub-stages within the same pass differ"
+  ],
+  "performance": "Call-count estimate only: HIST+one full peak uses at most6 full18-instruction PM and4 radius6-instruction PM =132 scalar calls per raw point, versus180; excludes FIT/STATS/CR/ANGLE/DDR/loading/qualification/closing and is not realtime evidence",
+  "remaining": [
+    "Parent CF EVAL port/phase wiring and actual scalar/index owner integration",
+    "Actual area/timing and functional runtime evidence"
+  ],
+  "not_run": [
+    "EDA",
+    "Simulation",
+    "New testbench",
+    "Hardware"
+  ]
+}

@@ -1,0 +1,28 @@
+﻿test_id,function,scope,status,evidence_relative_to_report,limitation
+EF-01,Ti60 device/project and synthesis,CORE,PASS,20260923T084901Z_build_minimal_ascii/efinity_compile.log,ASCII alias required for this local layout
+EF-02,Interface PLL and pin generation,CORE,PASS,20260923T084901Z_build_minimal_ascii/efinity_compile.log,Reference VF LED configuration only
+EF-03,Placement and routing,CORE,PASS,20260923T084901Z_build_minimal_ascii/efinity_compile.log,Minimal design with two threads
+EF-04,Static timing report,CORE,PASS_LIMITED,20260923T084901Z_build_minimal_ascii/build_result.json,Internal clock setup 8.506ns hold 0.101ns; not board IO signoff
+EF-05,bit and hex generation and hashes,CORE,PASS,artifact_manifest.json,No hardware programming
+EF-06,Original debug insertion profile,OPTIONAL_DEBUG,FAIL,20260923T084809Z_build_compile_ascii/efinity_compile.log,Missing generated debug_top.v
+IP-01,FIFO 8.1 validate and generate,CORE,PASS,20260923T085741Z_ip_ascii/ip_generation_result.json,Generation only; simulation is a separate gate
+SIM-01,Plain LED HDL compilation,CORE,PASS,../environment_20260923/simulation_vlog.txt,Does not imply simulation license
+SIM-02,ModelSim simulation license checkout,CORE,BLOCKED,../environment_20260923/simulation_vsim.txt,Valid product license not configured
+SIM-03,Current vendor FIFO HDL compilation,CORE,FAIL,20260923T090001Z_fifo_compile/fifo_vlog.log,Old compiler syntax and protected model key errors
+SIM-04,Intentional syntax error detection,CORE,PASS,20260923T090001Z_fifo_compile/negative_syntax_compile.log,Expected nonzero code 2
+SIM-05,Behavior assertions and negative assertion,CORE,BLOCKED,../environment_20260923/simulation_probe.json,Needs working compatible simulator
+SIM-06,Waveform generation and viewing,CORE,BLOCKED,../environment_20260923/simulation_probe.json,No successful simulation yet
+SIM-07,Vendor primitive FIFO RAM simulation,CORE,BLOCKED,20260923T090001Z_fifo_compile/fifo_compile_result.json,Compatible simulator and valid license/models needed
+SIM-08,Mapped/post-route simulation,CORE,BLOCKED,20260923T090001Z_fifo_compile/fifo_compile_result.json,Simulator compatibility unresolved
+OBS-01,Event append and read,AGENT,PASS,20260923T084403Z_local/local_runtime_tests.json,Isolated test records
+OBS-02,Checkpoint read and hash,AGENT,PASS,20260923T084403Z_local/local_runtime_tests.json,Roundtrip only; not full runtime resume
+OBS-03,Artifact hash change detection,AGENT,PASS,20260923T084403Z_local/local_runtime_tests.json,Isolated altered file
+OBS-04,Alerts deduplication and report export,AGENT,PASS,20260923T084403Z_local/local_runtime_tests.json,MD CSV JSON HTML and missing DB/human gate alerts
+GATE-01,Reject illegal transition and missing observation,AGENT,FAIL,20260923T084403Z_local/local_runtime_tests.json,Event recorder accepts illegal transition; enforcement not implemented
+GATE-02,Approval pause/resume and side effect idempotency,AGENT,NOT_IMPLEMENTED,,Full execution layer not available; no successful test claimed
+DB-01,PostgreSQL connection schema migration and transaction,AGENT,BLOCKED,20260923T084403Z_local/local_runtime_tests.json,No URL/service/approved driver; no fallback used
+BOARD-01,Target DDR CSI and display IP configuration,TARGET_DEPENDENT,BLOCKED,,Actual hardware and modes undecided
+BOARD-02,Driver downloader and hardware observation,HUMAN_ONLY,BLOCKED,,No confirmed connected hardware; human programming mandatory
+GUI-01,Full GUI and waveform interaction,CORE,NOT_TESTED,,Command-line testing does not prove GUI interaction
+OPT-01,TinyML RISC-V C++ SDK,NOT_SELECTED,NOT_APPLICABLE,,Not selected for track 4 implementation
+OPT-02,Additional plugin MCP,NOT_REQUIRED,NOT_APPLICABLE,,No external plugin or MCP required for these probes

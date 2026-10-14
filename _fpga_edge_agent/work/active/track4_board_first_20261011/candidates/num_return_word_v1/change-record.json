@@ -1,0 +1,115 @@
+{
+  "task_id": "TRACK4-NUM-RETURN-WORD-001",
+  "version": "v1.1",
+  "created_at_utc": "2026-10-11T21:43:17.274457+08:00",
+  "design_path": "planning/design-TRACK4-NUM-RETURN-WORD-001.md",
+  "design_sha256": "E8A2F8CB4AEFD10F166EFAAA5D0E9A2DE1A3D06DEEA6F24904AC22ED91BD7031",
+  "status": "ADOPTED_ACTIVE_WORK_056_SYNTHESIS_PASS_CAPACITY_FAIL",
+  "authority": "ROOT presented/read back card and authorized isolated five-file implementation under user autonomous continuation/waived new independent TB",
+  "main_changed": true,
+  "files": [
+    {
+      "path": "board/rtl/board_algorithm_rpc.sv",
+      "before_path": "before/board/rtl/board_algorithm_rpc.sv",
+      "before_sha256": "E6D9A67BAE455477822FB2332829E76700A2FB5F3AD31AC10D56357BFDE626BF",
+      "candidate_sha256": "14E8BAC5A362AE37D6091516569AAFB841AE5B1613C46340D0EBD6D6CDAE2E88",
+      "main_sha256_after": "14E8BAC5A362AE37D6091516569AAFB841AE5B1613C46340D0EBD6D6CDAE2E88",
+      "main_sha256_after_candidate_generation": "E6D9A67BAE455477822FB2332829E76700A2FB5F3AD31AC10D56357BFDE626BF",
+      "original_v1_candidate_sha256": "3EF09E04A930C04C88693998490BF44F1C1480161DBEA2850B4232C09FDC657D"
+    },
+    {
+      "path": "board/rtl/board_recognition_stats.sv",
+      "before_path": "before/board/rtl/board_recognition_stats.sv",
+      "before_sha256": "F82C3E93CB3F191E91980EE70BDF8D28784F39E85DD9380FE9E8FC2620166128",
+      "candidate_sha256": "35B4AB6B70A270FACE0423F433B159FFEADEAFC143AD33B683A67B122FE3808F",
+      "main_sha256_after": "35B4AB6B70A270FACE0423F433B159FFEADEAFC143AD33B683A67B122FE3808F",
+      "main_sha256_after_candidate_generation": "F82C3E93CB3F191E91980EE70BDF8D28784F39E85DD9380FE9E8FC2620166128"
+    },
+    {
+      "path": "board/recognition_numeric/fit_core.sv",
+      "before_path": "before/board/recognition_numeric/fit_core.sv",
+      "before_sha256": "50FA87C0036FF838B79C89D535F521F9F6CD4E40CFF9F60358281A2DA91A25EE",
+      "candidate_sha256": "875083D9835283FCABA45372A08BE2CF2B8056AA99F310F24DA15135565242F6",
+      "main_sha256_after": "875083D9835283FCABA45372A08BE2CF2B8056AA99F310F24DA15135565242F6",
+      "main_sha256_after_candidate_generation": "50FA87C0036FF838B79C89D535F521F9F6CD4E40CFF9F60358281A2DA91A25EE"
+    },
+    {
+      "path": "board/recognition_numeric/scalar_bridge.sv",
+      "before_path": "before/board/recognition_numeric/scalar_bridge.sv",
+      "before_sha256": "CA1392F51BAC22768B31D7599E8E729017F822DBE13DE01CA9590890DE757DC5",
+      "candidate_sha256": "81BD861C64746F89AEF48AC45EB1E8CD4CAAB948A7676FF364790F67DBACC22F",
+      "main_sha256_after": "81BD861C64746F89AEF48AC45EB1E8CD4CAAB948A7676FF364790F67DBACC22F",
+      "main_sha256_after_candidate_generation": "CA1392F51BAC22768B31D7599E8E729017F822DBE13DE01CA9590890DE757DC5"
+    },
+    {
+      "path": "board/rtl/board_circle_seeds.sv",
+      "before_path": "before/board/rtl/board_circle_seeds.sv",
+      "before_sha256": "C45B239B359388FE934DE4EA4BCD1A8EDC58CA9BFB78F544BB06C3FC122ED71D",
+      "candidate_sha256": "CBD5DA39684C6960C32A4AA44E39427DD62196D4C3C1602529436F88B1FEE2FD",
+      "main_sha256_after": "CBD5DA39684C6960C32A4AA44E39427DD62196D4C3C1602529436F88B1FEE2FD",
+      "main_sha256_after_candidate_generation": "C45B239B359388FE934DE4EA4BCD1A8EDC58CA9BFB78F544BB06C3FC122ED71D"
+    }
+  ],
+  "scalar_core_words_read_only_sha256": "1568D08773306D8F56C35E77E399502D4BEADA46D15234D537DFF30BBA7DA4E4",
+  "geometry_candidate_changed": false,
+  "structural_change": "Only combinational 5-bit index and 16-bit return wires, default-false parameters, central RPC selector; no new state/FF/RAM/DSP/scalar instance",
+  "mandatory_contracts": [
+    "FIT CHILD_RETURN_WORDS active only EXTERNAL_SCALAR and BORROW_RESULT; defaults keep original full-body/snapshot slicing",
+    "Bridge word16 uses result_metadata[9:8]==VALUE, else zero for CMD_CHECK abort/exhausted, bad identity/matrix and CHILD_CLOSE abort",
+    "Central word16 remains available after child rsp consume/quiet until outer FIT/bridge close; do not gate it by rsp_valid or quiet",
+    "Index0..23 unchanged 16-bit words; index24 raw bit384 with high15 zero; each consumer restores its original signed extension; index25..31 zero",
+    "FIT all25 qualification words and12 save words; SEED all25 qualification words and8 writes; modulo64 zero writes and all original fixed low fields retained",
+    "Original FSM/handshake/owner transitions/reset/cancel/full385 predicates retained"
+  ],
+  "static_review_status": "COMPLETED_DIRECTED_SOURCE_DIFF_AND_CONTRACT_REVIEW_NOT_EDA",
+  "not_run": [
+    "Simulation",
+    "New testbench",
+    "Hardware operations"
+  ],
+  "limitations": [
+    "056 actual packed logic decreased333 but routing allocation increased334;physical61197/60800 capacityFAIL",
+    "Not a downloadable hardware version and not full A6",
+    "Future geometry share merge separate"
+  ],
+  "static_review": [
+    "Read back actual five-file git diff; changes only parameter/wire/port declarations, connection and three return-piece combinational expressions; original sequential blocks and original FSM/handshake expressions unchanged",
+    "Default SHARED_RETURN_WORDS=0 and CHILD_RETURN_WORDS=0 keep original slices; unconnected new data inputs are not selected; private-scalar FIT falls back because EXTERNAL_SCALAR=0",
+    "RPC chooses only five-bit owner index before one shared 385-to16 selector; raw index24 high15 zero and bit384 preserved; invalid25..31 zero",
+    "FIT and SEED reconstruct original index24 sign extension; FIT SCAN_RETURN24..0/SAVE_RETURN0..11 and SEED NUM_SCAN0..24/REG_WRITE0..7 state updates retained",
+    "Bridge meta gate result_metadata[9:8]==VALUE returns zero on CMD_CHECK abort/exhausted, WAIT_CHILD bad identity/matrix, and CHILD_CLOSE abort even if child retains old successful full",
+    "No rsp_valid or quiet gate on rawword; borrowed data remains readable during bridge RESULT_HELD after child quiet until original true outer FIT close",
+    "Full385 and fixed low-field predicates, slot/type qualification, COMPARE and sign checks retained; local_piece/input operands untouched; modulo64 high four write words still zero",
+    "Five original files were hashed before and after isolated creation; scalar_core_words untouched; before byte hashes match recorded baselines; no geometry candidate edits"
+  ],
+  "main_adopted_for_measurement": true,
+  "adopted_at_utc": "2026-10-11T13:49:01.6994213Z",
+  "root_static_review": "PASS: complete five-file diff, baseline hashes, index and bridge metadata/held/default contracts read back; no FSM/CE/handshake change",
+  "independent_static_review": "PASS: five complete diffs; bridge zero/quiet held, index24, all25 qualifiers, SAVE/REG cursors, default ports and all FSM/CE/handshake preserved; no EDA benefit claim",
+  "intended_compile_run": "board_compile_056",
+  "lexical_repair": {
+    "failed_run": "board_compile_055",
+    "result": "ANALYSIS_SYNTAX_FAIL",
+    "line": 238,
+    "before": "shared_num_rsp_word_index<5'd25?",
+    "after": "shared_num_rsp_word_index < 5'd25 ?",
+    "behavior_changed": false,
+    "frozen_failed_inputs_preserved": true
+  },
+  "measured_build_result": {
+    "dsp48": 154,
+    "run": "board_compile_056",
+    "lut4": 44186,
+    "capacity": 60800,
+    "ff": 20036,
+    "ram10": 225,
+    "physical_xlr": 61197,
+    "hardware_passed": false,
+    "bit_generated": false,
+    "synthesis_passed": true,
+    "final_timing_passed": null,
+    "packed_xlr": 57903,
+    "routing_xlr": 3294,
+    "capacity_passed": false
+  }
+}

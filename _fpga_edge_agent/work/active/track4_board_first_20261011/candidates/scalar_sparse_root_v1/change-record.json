@@ -1,0 +1,71 @@
+{
+  "task_id": "TRACK4-SCALAR-SPARSE-INIT-001+TRACK4-SCALAR-ROOT-PREFIX-001",
+  "version": "v1-combined",
+  "created_at_utc": "2026-10-11T22:41:46.315169+08:00",
+  "designs": [
+    {
+      "path": "planning/design-TRACK4-SCALAR-SPARSE-INIT-001.md",
+      "sha256": "44D74F39B05BF87E97856BD2F66AB195CDDB6B1B114C3936874D7ACD8A915836"
+    },
+    {
+      "path": "planning/design-TRACK4-SCALAR-ROOT-PREFIX-001.md",
+      "sha256": "8DDA86153F8F830A3A9FB3FDDC5A75C637A207253898980EC01675E59FFAFE19"
+    }
+  ],
+  "authority": "ROOT independently read/presented both cards and authorized sequential candidates under continuing user autonomy; init-only retained, combined applies ROOT to actual new init-candidate SHA",
+  "status": "ADOPTED_MAIN_STATIC_ROOT_AND_INDEPENDENT_PASS_EDA_PENDING",
+  "main_changed": true,
+  "files": [
+    {
+      "path": "board/recognition_numeric/scalar_core_words.sv",
+      "immediate_baseline": "candidates/scalar_sparse_init_v1/board/recognition_numeric/scalar_core_words.sv",
+      "immediate_baseline_sha256": "4CE475055C2E8FA0EB0929F002299C93DD935842AEC2BE35DD2B9F71DF4EC0E5",
+      "before_path": "before/board/recognition_numeric/scalar_core_words.sv",
+      "before_sha256": "4CE475055C2E8FA0EB0929F002299C93DD935842AEC2BE35DD2B9F71DF4EC0E5",
+      "candidate_sha256": "6266734BEDD5CD1439355CC2153AE4B3FB0630079CADF9097433D9A0F89E4037",
+      "main_sha256_at_creation": "73F230DFB7B2D2F12A3220C8EE4FC4FF4B8C90E18AD916E3E05D24C084BA31F0"
+    },
+    {
+      "path": "board/rtl/board_algorithm_rpc.sv",
+      "immediate_baseline": "candidates/scalar_sparse_init_v1/board/rtl/board_algorithm_rpc.sv",
+      "immediate_baseline_sha256": "B43348C0086C1C4D2ACBC4CF2D3502A033F67A018E076C77251DB2EEAA37B532",
+      "before_path": "before/board/rtl/board_algorithm_rpc.sv",
+      "before_sha256": "B43348C0086C1C4D2ACBC4CF2D3502A033F67A018E076C77251DB2EEAA37B532",
+      "candidate_sha256": "7F4B21CE09F81FBF2236E54000748B32FD522F889AD4997860292B3E5544EE93",
+      "main_sha256_at_creation": "E692D5D88836034A6825B82D0778524CDC5A6F6531A662E66ACD0FEBBEF3161D"
+    }
+  ],
+  "original_main_baselines": {
+    "board/recognition_numeric/scalar_core_words.sv": "73F230DFB7B2D2F12A3220C8EE4FC4FF4B8C90E18AD916E3E05D24C084BA31F0",
+    "board/rtl/board_algorithm_rpc.sv": "E692D5D88836034A6825B82D0778524CDC5A6F6531A662E66ACD0FEBBEF3161D"
+  },
+  "baseline_note": "ROOT card lists original main baseline; combination before is actual implemented sparse-init candidate. These baselines are explicitly distinct, not represented as the same SHA.",
+  "init_only_candidate_retained": "candidates/scalar_sparse_init_v1",
+  "root_delta": "Only defaultfalse ROOT_SKIP_ZERO_PREFIX parameter and kind4/7 DISPATCH original root_remaining20/96 assignment plus RPC opening parameter; all sparse-init/input-word/return-word paths retained",
+  "root_contract": "Use20 iff complete original_a[191:40]==0; otherwise96. No input truncation or format/385bit qualification removal.",
+  "latency_contract": "Valid/ready variable delay; earlier HELD keeps original published VALUE on later cancel, no withdrawal or false DROP equivalence by absolute cycle",
+  "static_review_status": "COMPLETED_DIRECTED_ACTUAL_DIFF_AND_PREFIX_INVARIANT_REVIEW_NOT_EDA",
+  "not_run": [
+    "Simulation/new TB",
+    "EDA",
+    "Hardware actions"
+  ],
+  "limitations": [
+    "Resource/routing and end-to-end time unmeasured",
+    "Only init/prefix arithmetic delays addressed; full A6 not closed",
+    "Candidate not a new hardware version"
+  ],
+  "static_review": [
+    "Read back actual combination diff against retained sparse-init candidate; only new defaultfalse parameter, sole kind4/7 DISPATCH count assignment and RPC parameter opening, with comments",
+    "Complete192bit original_a high152 zero test selects20, otherwise96; exact boundary A=2^40-1/2^40 and highestbit preserved; no input masking/truncation/schema change",
+    "BR13/BROOT13 initialized zero by init-only profile; skipped76 zero pairs leave both zero and cannot subtract; BT is overwritten13 words before next valid comparison",
+    "Original root loops/RNE/COPY/result-sign/full25word assembly/full385 qualification and CHECK/cancel/HELD/body borrow unchanged",
+    "Original matching cancel semantics use real HELD publication; earlier VALUE remains held on later cancel, no false absolute-cycle equality claim",
+    "Prior sparse-init parameter remains1 and all input-word/return-word paths retained; init-only source and before hashes rechecked unchanged",
+    "No new state registers/RAM/DSP/clocks/interfaces or EDA/newTB; estimated removed8360 cycles applies only qualifying root calls, not full-frame throughput"
+  ],
+  "adopted_at_utc": "2026-10-11T14:53:17.0375224Z",
+  "adopted_run": "board_compile_058",
+  "root_static_review": "PASS; actual diff and baseline/preaccept/borrowed close semantics reviewed",
+  "independent_static_review": "PASS; existing_area_options actual diffs/hash/defaults/footprint or source lock/24 beats/no false RSP/UNKNOWN reviewed; no TB/EDA"
+}

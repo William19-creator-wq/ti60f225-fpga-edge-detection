@@ -1,0 +1,15 @@
+# Exception Log
+
+| ID | Severity | State | First seen | Condition | Action | Evidence |
+| --- | --- | --- | --- | --- | --- | --- |
+| EXC-001 | medium | OPEN | 2026-09-22 | Requested path `D:\大三\FPGA\_verilog` does not exist; workspace is `D:\大三\FPGA_verilog`. | Use confirmed workspace path and record discrepancy. | Environment inspection |
+| EXC-002 | medium | OPEN | 2026-09-22 | No PostgreSQL connection string, `psql`, `pg_dump`, or PostgreSQL service detected during configuration. | Stop DB-backed runtime until `FPGA_AGENT_DATABASE_URL` and approved client/driver are available. | Environment inspection |
+| EXC-003 | medium | OPEN | 2026-09-22 | Efinity versions and historical project outputs are mixed; workspace path contains non-ASCII characters. | Require toolchain decision and ASCII work copy before build. | HDK/toolchain review |
+| EXC-004 | low | OPEN | 2026-09-22 | Some videos and binary/generated artifacts were catalogued rather than semantically decoded frame-by-frame. | Keep reading boundary in audit; do not claim full semantic interpretation. | Reading audit |
+| EXC-005 | high | OPEN | 2026-09-23 | ModelSim 10.1c HDL compile passed, but simulation exited 4 due to invalid license environment. | Configure valid license or request an approved alternative; no license bypass. | reports/audit/environment_20260923/simulation_probe.json |
+| EXC-006 | medium | OPEN | 2026-09-23 | V4 guide contains sensor/memory and DSI revision contradictions; SC431 v7 source was not located within inspected files. | Resolve against actual source and physical hardware before porting. | docs/requirements/HARDWARE_AND_TOOLCHAIN_EVIDENCE.md |
+| EXC-007 | medium | OPEN | 2026-09-23 | Control plane static checks do not prove PostgreSQL, approval enforcement or durable runtime acceptance. | Preserve partial status; complete service and enforcement validation before formal node execution. | planning/CURRENT_PLAN.md |
+| EXC-008 | low | RESOLVED | 2026-09-23 | Legacy task CSV had extra/misaligned columns and only six baseline rows. | Preserve prior CSV snapshot; rebuild consistent ledger covering baseline, six advanced tasks and release. | reports/audit/environment_20260923/TASK_LEDGER.before_track4.csv |
+| EXC-009 | high | OPEN | 2026-09-23 | ModelSim10.1c cannot compile current FIFO8.1 syntax/protected model. License configuration alone is insufficient. | Select a compatible authorized simulator/model and rerun compile plus simulation. | reports/audit/environment_acceptance/20260923T090001Z_fifo_compile/fifo_vlog.log |
+| EXC-010 | medium | MITIGATED_FOR_TEST | 2026-09-23 | Efinity native database load failed under Unicode installation path; temporary ASCII alias allowed minimum build. | Retain original paths; choose durable ASCII setup before accepting environment. | reports/audit/environment_acceptance/ENVIRONMENT_ACCEPTANCE.md |
+| EXC-011 | high | OPEN | 2026-09-23 | Negative test shows event helper accepts READY to PASSED without observation. | Implement and test actual state/approval enforcement; do not declare runtime accepted. | reports/audit/environment_acceptance/20260923T084403Z_local/local_runtime_tests.json |

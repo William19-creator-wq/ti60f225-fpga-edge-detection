@@ -1,0 +1,151 @@
+# TRACK4-ALGORITHM-R3-FIT-001：拟合、交点与距离设计 v0.1
+
+设计状态：LOCAL_DESIGN / NOT_READY / NOT_APPROVED / NOT_IMPLEMENTED / NOT_RUN。
+
+## 通用计划字段
+
+- Goal：实现kind11/12/13/14/15/17/18，补齐独立圆LS、TLS细线、交点、精确两类距离与最终统计诊断，为完整圆/任意旋转矩形识别服务。
+- Current state：kind0–7已交付，kind8/9/10/16设计v1.1待批准；本七项仍仅设计。完整目标和原1080p要求保留。
+- Target state：先局部中文语句草图和完整接口，再按指定版本批准实现，模块单测→真实调用链/观察顶层→物理验证→bit登记后停止硬件步骤。
+- Gap / Open questions：F-B01…04，没有READY或实现批准；不能将旧数学式和可复用scalar称为完整调度已完成。
+- Assumptions：父同域、可暂停、单外部事务；W偶数6…1920/H5…1080，N=W·H。输入是冻结统计或量化几何，不在本核重新选择支撑。
+- Dependencies：根v0.2/模板、R3总稿/原NUMERIC、当前scalar原字节；数学补强和手算案例见[数值审查](D:/大三/FPGA_verilog/_fpga_edge_agent/experiments/track4_algorithms_20261004/03_review/r3-fit-distance-math-review-v0.1.md)。不以DDR模型为本算术核前置。
+- Milestones / Detailed steps：B整体→C交接→D格式→E子操作/slot→F语言/预算→G文件/验证→H追踪→关闭B项→READY→指定批准。
+- State transitions：父IDLE→CHECK→EXECUTE→PACK→HELD→IDLE；私有bridge候选CMD_HELD→CHILD_LIVE→RESULT_HELD→IDLE，取消另有DRAIN。
+- Artifacts and hashes：仅本稿与数值审查，引用源hash在A；尚未冻结实施基线、源码/工具清单。
+- Validation / Failure handling：G全部NOT_RUN；数值域外/退化与输入/内部破坏分开，私有义务收尾后才能返失败/取消；工具失败保留证据。
+- Human approval gates：READY后需明确批准版本/范围/基线与本批本地审计。旧R3 scalar及角度设计都不自动授权本核；正式DB和硬件状态不改。
+- Rollback / Completion criteria：未来仅新独立work；原资料/既有实现只读。当前交付标准是可读设计与明确缺口，完整软件完成仍需实际全部实现/验证。
+
+## A. 来源、模块位置与剩余阻塞
+
+本批是A6数值部分，保持NUM_REQ622/RESP585和NUM_ID176，不接旧phase_key或543/540接口。真实来源：R3总稿SHA6D071B0AADD685E1185A7BA41D58EC33441055D59C1BE7F399CE8C0B011F8C5D、NUMERIC SHA17C4A290414970260BBADC7B5286F6C6F5608E3B03E0FF38E08E3E5E1491F39A；本轮D2/E4–E8与原E4/E5/E6实读。现有scalar_core全文实读，SHA DAA31292536F4860C23DE5CFAF73AC444CD18B2AB5E9D2ED9C9B8092217EA0F0。
+
+| 阻塞 | 下一步与影响 |
+|---|---|
+| F-B01 | 完整private bridge身份、单调序号/耗尽/冷reset、目的资格、cancel/回传与错误映射待冻结；影响所有执行交接 |
+| F-B02 | 七项逐个子指令、typed工作slot寿命、读写顺序/每步目标宽度/首错、可审查最大步数未列齐；数学宽度不是可执行调度 |
+| F-B03 | 全文件/参考/TB/probe、随机/确定场景、源码与工具基线、单核资源/计算沿预算、真实数据扇出和STA范围未冻结 |
+| F-B04 | 拟合/距离部分错误矩阵须与NUMERIC精确分类逐步核齐；n低于最少支持和n>N不同，坏normal原文为INTERNAL，几何域外不让child target18抢先报OVERFLOW |
+
+R4支撑、profile/质量、候选排序、目标去重和生产存储是后续明确范围，不通过此核数值PASS代签。当前可以独立补齐上述内部设计，不需要先实现程序求结果才READY。
+
+## B. 整体外部行为
+
+| REQ | 数值/事务保证 |
+|---|---|
+| FT01 | 一笔622请求原子接纳，一笔585结果保持至消费，冷reset共同作废单列；不收第二父请求 |
+| FT02 | kind11圆中心/n/quality；kind17只n/quality，不算或检查未使用中心 |
+| FT03 | kind12规范Q30 normal/tangent、rho/μ/anis/K/M；kind18仅n/anis，无新几何域门 |
+| FT04 | kind13两Q30细线全宽交点，一次RNE，平行局部退化，几何域外有原原因不裁剪 |
+| FT05 | kind14精确RNE(|f|/sqrtK)与K/M；kind15有限边原N/D与精确RNE sqrt(N/D)，两类K守卫不同 |
+| FT06 | 私有算术先完整结果、再类型/几何资格；无回绕/饱和/近似norm直接定inlier；typed目标不足不改变错误语义 |
+| FT07 | 匹配取消保留旧child握手/held响应，关闭所有私有义务后父DROP；旧父HELD全文不改；同域冷reset共同作废 |
+| FT08 | 独立整数参考、协议/私有调用/slot追踪、实际模块与物理验证；不以旧scalar PASS当新父调度PASS |
+
+样例详见数值审查：圆synthetic中心131072超过s18最高值而诊断58253有效；TLS synthetic μ12000000越域而anis65535有效；K1的有限短边距离合法。样例是代数/表示走查，未运行、不是真实图像质量集。
+
+## C. 整体职责与交接
+
+路径：caller —FT-IF01→父fit_core检查/统计快照→子步骤调度 —FT-IF04→private scalar_bridge —FT-IF05→只读复用scalar_core→完整算术响应→父写当前slot→继续/资格→FT-IF02响应。caller —FT-IF03→父cancel→bridge真实关闭。reset由同域共同作废，KEY外部同步仅未来probe处理。
+
+父拥有外部ID、统计/几何、有限slot、首错和外部结果；bridge拥有一笔私有命令/实际child ID/目的与private序号，child拥有一笔算术快照。不能各自声称对方已消费，不能让同一个调用序号冒充全部私有调用。支持是父R4责任，本核不读点/DDR、维护profile或绘制。
+
+原字节复用当前scalar核心/pkg是候选，新的bridge和父FSM仍属新实现。备选是派生无NUM_ID的私有算术核，会改变源码/接口并增加验证；F-B01关闭时必须明确采用一种，不先生成两份试验程序。
+
+组合检查：父必须在发私有命令前预留目的/结果消费能力；外部rsp_ready不能反向堵住旧child排空。父仅HELD时可外部反压，届时私有计算已结束。取消同沿先计旧cmd/child req/rsp fire，再禁新子命令；已valid child响应按原body收取并DISCARD。
+
+## D. 接口与布局
+
+外部字段沿R3：NUM_ID176/W11/H11/version8/kind5/flags2/target9/payload400；复合flags/target0、version1/owner0。返回原ID/kind/target/outcome/reason/value385，非VALUE全值0。各signed独立二补码，不将整个复合385bit sign_extend。
+
+| kind | payload低到高 | VALUE低到高 |
+|---|---|---|
+| 11 | n21/A43/B s44/C43/D s56/F s56/det_min16/zero121 | cx s18/cy s18/n21/quality16/zero312 |
+| 12 | n21/Sx s33/Sy s33/Sxx43/Syy43/Sxy s44/anis_min16/zero167 | nx/ny/tx/ty各s32，rho/μ各s18，anis16/K65/M33/zero107 |
+| 13 | 两组nx s32/ny s32/rho s18共164/zero236 | xQ4 s18/yQ4 s18/zero349 |
+| 14 | nx s32/ny s32/rho s18/x11/y11/zero296 | q21/K65/M33/zero266 |
+| 15 | Ax/Ay/Bx/By各s18 Q4、x11/y11/zero306 | N78/D39/q19/zero249 |
+| 17 | n21/A43/B s44/C43/D s56/F s56/zero137 | n21/quality16/zero348 |
+| 18 | n21/Sx s33/Sy s33/Sxx43/Syy43/Sxy s44/zero183 | n21/anis16/zero348 |
+
+所有数量与padding已按400/385求和；n上界N、原图point x/y域、normal守卫及首错仍要在F-B04冻成完整矩阵。独立核不追加目标尺寸/个数/噪声的验收硬界限。
+
+FT-IF04拟包含op/flags/target/A192/B192/目的及cmd valid/ready；FT-IF05使用原scalar622/585。父和bridge的当前目的只有一份资格，结果尚未搬入slot不能再发覆盖它的命令。私有ID和完整字段/出入宽度待F-B01。
+
+## E. 局部中文步骤、slot与有限循环
+
+### E1. 接纳、错误与结果
+
+IDLE沿前fire锁完整外部消息；CHECK按尺寸→版本/owner/kind→flags/target→padding→本操作输入规则。错误不进入后项，取消覆盖未暴露错误而不改HELD。EXECUTE只使用当前已完成私有响应，完整值通过高位/符号检查再写目的；下一状态才能读新slot。PACK后HELD，外部fire后下一沿复用。
+
+只存一笔输入/外部输出，拟复用16×192 typed工作slot；每步说明哪slot旧值仍活、哪个可覆盖。完整385 child结果不能直接低192截入工作区；检查后才收。超过192位的中间值若有必须先改变调度/容器设计，不能隐藏一个额外全宽缓存。
+
+### E2. 圆LS/诊断
+
+顺序：输入计数与统计资格→AC和B²→s89 Δ→T/T²→条件full交叉乘→Q4 Nx/Ny分子→完整RNE商→s18几何检查→完整quality→结果。kind17在T/Δ资格后直接quality，不走Nx/Ny。父中心商不请求target18，先保足够宽signed商，再分类GEOM_RANGE，见数值审查。
+
+slot初案：w0T、w1Δ、w2T²、w3质量分子、w4Nx、w5Ny、w6/7两Q4分子、w8/9宽中心商、w10quality；暂存产品与后续写入寿命待逐子指令表明确。统计从原payload读取，不再锁第二份全统计。
+
+### E3. TLS/诊断
+
+形成s67 Cxx/Cyy/Cxy，先非负及全宽PSD，再收u64/u64/s65→u/v/D→Rq16→完整各向异性门/anis。kind18止于此，输出n/anis。kind12继续t85/L86→t<<30的宽商→规范normal→唯一t=(ny,-nx)→rho/μ完整单次RNE→s18检查→K/M→结果。
+
+slot初案沿总R3：w0/1/2协方差（Cxy在PSD前s67）；w3/4 u/v；w5 D；w6 Rq16；w7/8 t；w9 L；w10/11 normal；w12 K；w13 M；w14 rho；w15 μ/anis可分字段。过期u/v或t何时可覆盖及trace/PSD临时值须F-B02列齐，不能假设16槽天然够用。
+
+### E4. 交点/直线距离
+
+两个normal分别全域/K守卫。交点先完整den，0局部退化；负den先扩位同时变号分子/分母。RNE完整商后s18域外分类，不能私有target18抢先变算术错误。
+
+直线距离先f/K/M→q0→F4/上下奇平方乘K→至多±1修正→再次双边资格→输出q21/K/M。严格使用数值审查中的even/odd等号规则，不能拿近似q0直接决定inlier。正常坏normal原文为INTERNAL帧失败；这和有限边短K不相同。
+
+### E5. 有限边距离
+
+全宽p/d/K/z/c→K0退化→按z≤0/≥K/内部形成原N/D→19步binary predicate→最终两边资格→N78/D39/q19输出。循环lo/hi/u20 mid和所有乘积先扩位；predicate按4N与(2mid+1)²D，等且mid偶属于q≤mid。不能对短边施加Q30 K守卫。
+
+真实整数几何两类距离不能到half-integer，推导见数值审查；等号政策由隔离helper合成输入验证，不能以非法normal/force私有结果冒充主DUT覆盖。
+
+### E6. 私有交接、取消与reset
+
+父先形成可保持命令与目的→bridge真实接受→child真实req_fire→WAIT→完整child held→父实际capture/消费→下一状态写后使用。父取消先登记旧接受；未发布私有命令不再发，已valid未接受命令保持/匹配取消到实际关闭；child已有HELD则原body消费DISCARD，未HELD可用原child取消形成DROP。bridge pending和child义务均关闭后才父DROP。
+
+共同cold reset才可清在途有效性，父/bridge/child/consumer一起记录作废。普通cancel不清旧身份/计数，不等待普通外部destination ready。父已经HELD的VALUE/拒绝/错误/DROP均保持全文不改。具体call_seq与counter耗尽仍F-B01，不借此草图宣布实现已闭合。
+
+## F. 语言与工程预算
+
+拟SV2009/Python整数参考，无C++/浮点。RTL A数值为D/E全宽guard；B正沿旧值/沿后提交；C/D外部和私有真实fire分别计；E held与预约返回不受外部stall阻塞；F计算沿/最大私有步数尚F-B02；G共同同步cold reset与cancel分开；H所有threshold/W/H快照；I16slot和一结果、真实寿命尚待表；J父/私有ID显式映射；K核同域/外部CDC不在本核；L具体25MHz工程、资源与工具清单待F-B03。
+
+共同数值、硬件执行、软件↔真实事务三份对应必须分别实现。参考直接大整数公式/整数平方根/精确有理平方比较，不照抄子状态机。slot≈3072bit只是候选存储，不当实际FF/旧5732bit总预算；bridge/child/body/观察顶层均另计，DSP/RAM/XLR与最长运算在冻结前列清。
+
+## G. 实施与文字验证计划（尚未完整冻结）
+
+候选文件职责：fit_protocol_pkg、fit_core、scalar_bridge、原字节scalar_core/pkg、reset_sync、fit_probe_top；独立fit_reference/fit_vectors、helpers/bridge/core/probe TB、sim/build/STA和三工程。具体文件名/总数、是否另复制scalar数学参考、private ID种子/边界testbench、实际probe来源与物理路径还未冻结，故不能生成。
+
+| TEST | 已明确文字场景；全部NOT_RUN |
+|---|---|
+| FT-T01 | LS平行Δ0、条件等号/两侧、n最少与>N、正负完整中心/几何域边界；独立全宽式 |
+| FT-T02 | TLS水平/竖直/斜线、u正负、PSD失败、trace/D0、normal反号、rho/μ一次舍入、anis门等号 |
+| FT-T03 | 两个明确synthetic诊断案例：完整几何拒绝但kind17/18只诊断有效；不当真实图像覆盖 |
+| FT-T04 | 交点den0/负den/近平行、宽商GEOM_RANGE与child算术溢出分层；法线字段/K守卫 |
+| FT-T05 | q0近阈值/真实±1修正、精确资格/nearest不比q；隔离等号政策，不要求非法主normal产生VALUE |
+| FT-T06 | K1短边、z0/K边界、端点/内部、四边等距、N/D与19步predicate；整数几何half不可达分层 |
+| FT-T07 | 私有command/req/rsp长stall、错返回ID/kind/target的隔离monitor反例、目的/slot有效性及不覆盖；不伪称真实child错误路径 |
+| FT-T08 | 父cancel同私有fire/held、所有阶段与cold reset、计数耗尽不回绕、真实义务关闭后DROP |
+| FT-T09 | 全1080p域及合成全宽统计、固定seed随机合法点集生成统计、独立参考/原响应计账、真正非零fatal退出 |
+| FT-T10 | 真实probe所有七kind实际来源/消费者/CRC、复位恢复；同源物理资源/未约束/数据D路径与合理pins/STA，门槛通过才bit |
+
+详细确定case/seed/采样规则/覆盖、工具entry/hash、runner失败/致错守卫及恢复路径需F-B03。没有这些不标READY。
+
+## H. 双向追踪
+
+FT01/07→父/bridge/child、IF01/02/03/04/05、E1/E6、T07/08；FT02→LS/诊断E2、T01/03；FT03→TLS/诊断E3、T02/03；FT04→交点E4、T04；FT05→两类距离E4/E5、T05/06；FT06→全值/窄化E/F、T01…06；FT08→参考/probe/运行器、T09/10。实际符号/文件与反向逐单元表在F-B02/03闭合时回填，当前没有源码定位。
+
+## I. 十项门槛与停止点
+
+①B整体有内容；②C职责/复用已调查；③D外部布局明确、私有IF和组合仍B01；④E中文数学/沿草图有内容、slot逐子操作仍B02；⑤F初步语言、预算未冻；⑥E/G有正常/失败走查、完整调度待补；⑦G/H候选文件/验证/追踪未完整；⑧有F-B01…04；⑨保存读回及用户可查看，但不等于READY；⑩v0.1与范围明确、实施基线未冻。结论NOT_READY，当前不请求该七项实施批准。
+
+## J–L. 修订、实录与阅读
+
+新纯设计，原来源/批准/已交付scalar和待批angle不变。恢复从A的源hash、数值审查、B项、实际审批与源码差异开始；未来freeze后重要行为/接口/时间/资源变化先修订指定批准。当前只保存文档，无RTL/参考/功能脚本/TB/EDA/bit/硬件/网络/DB。
+
+按B→C→D→E1共同事务→E2圆→E3 TLS→E4/5距离→E6真实私有交接→F/G/H/I阅读。最终完整识别、Canny滞后连接、DDR生产资格、相机/HDMI/CDC/阈值/冻结/叠加及整包性能仍未完成；当前局部数学与设计不代替完整软件实现证明。

@@ -1,0 +1,279 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta charset="UTF-8"><meta name="generator" content="DITA-OT"><meta name="description" content=""><meta name="prodname" content="Efinity"><meta name="version" content="UG-CORE-BRAM-WRAPPER-v1.9"><meta name="rights" content="© 2026 Efinix, Inc."><title>IP Manager</title>
+	
+	<script src="../../../../../../doc/js/jquery-3.4.1.min.js"></script>
+	
+	<!-- Bootstrap 5 -->
+	<link href="../../../../../../doc/css/bootstrap5.css" rel="stylesheet">
+	<script src="../../../../../../doc/js/bootstrap.bundle.min.js"></script>
+	
+	<!-- special styles for doc output -->
+	<link href="../../../../../../doc/css/efx-styles.css" rel="stylesheet">
+	<link href="../../../../../../doc/css/glyphicons.css" rel="stylesheet" type="text/css">	
+	
+</head><body id="ipm_main"><header role="banner"><div>
+  <script>
+    function store_nav_state(clicked_id) {
+    var id = $(clicked_id).attr("id");
+    var div_id = id.replace(/^btn-/, 'drop-');
+    // alert(id);
+    
+    //		if ( $('#'+div_id).hasClass( "show" ) ) {	
+    if ( $('#'+id).hasClass( "collapsed" ) ) {		
+    // trigger is opposite of what you would think
+    // alert("hide");
+    localStorage.removeItem(div_id);
+    $('#'+id).children('span').addClass("glyphicon-plus-sign");
+    $('#'+id).children('span').removeClass("glyphicon-minus-sign");
+    
+    $('#'+id).children('span').addClass("black");
+    $('#'+id).children('span').removeClass("blue");
+    }
+    else {
+    // alert("show");
+    localStorage.setItem(div_id, "in");
+    $('#'+id).children('span').addClass("glyphicon-minus-sign");
+    $('#'+id).children('span').removeClass("glyphicon-plus-sign");
+    
+    $('#'+id).children('span').addClass("blue");
+    $('#'+id).children('span').removeClass("black");
+    }
+    }
+    
+    $(function(){
+    $( "div[id^=drop-]" ).each(function( index ) {
+    var drop_id = $(this).attr("id");	
+    var btn_id = drop_id.replace(/^drop-/, 'btn-');
+    // console.log( index + ": " + drop_id);	
+    
+    var nav_stored = localStorage.getItem(drop_id);
+    if (nav_stored == "in") {
+    // console.log( index + ": " + drop_id);
+    // $( '#'+drop_id ).last().addClass( "collapse" );
+    $( '#'+drop_id ).collapse("show");
+    // alert(nav_stored);
+    // $( '#'+btn_id ).toggle();
+    
+    $('#'+btn_id).children('span').addClass("glyphicon-minus-sign");
+    $('#'+btn_id).children('span').removeClass("glyphicon-plus-sign");
+    
+    $('#'+btn_id).children('span').addClass("blue");
+    }
+    });
+    });
+    
+    // row hack
+    $(function(){
+    $( "tr[class=row]" ).each(function( index ) {
+    $('tr[class=row]').removeClass("row");
+    });
+    }); 
+  </script>
+  
+  
+  
+  <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-blue">
+    <div class="container-fluid"> 
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#defaultNavbar1" aria-controls="main-nav-items" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button> 
+        <a class="navbar-brand" href="../../../../../../doc/topics/efnug-intro.html"><img src="../../../../../../doc/logo/efinity-help.png" alt="Efinix, Inc."></a>
+      </div>
+      
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="defaultNavbar1">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="/#" id="help" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Efinity Help<span class="caret"></span></a>
+            
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/efnug-intro.html">Overview</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/efnug-new.html">New in This Release</a></li> 
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/efn-quickstart.html">Quick Start</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/efn-hwsw-req.html">Hardware and Software Requirements</a></li>
+              
+              <li><hr class="dropdown-divider"></li>
+              
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/efn-proj-prefs.html">Projects and Preferences</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/efn-running-tool-flow.html">Running the Flow</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/ip-packager-intro.html">IP Packager</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/ipmgr.html">IP Manager</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/syn-intro.html">Synthesis</a></li>
+              <li><a class="dropdown-item" href="../../../../../../pt/doc/topics/hlp-id-intro.html">Interface Designer</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/tim-intro.html">Timing</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/efn-simulating.html">Simulation</a></li>
+              <li><a class="dropdown-item" href="../../../../../../pgm/doc/topics/hlp-pg-intro.html">Programmer</a></li>
+              <li><a class="dropdown-item" href="../../../../../../debugger/doc/topics/hlp-dbg-intro.html">Debugger</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/efinity-files.html">Efinity Project Files</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/efn-messages.html">Efinity Messages</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/cli-intro.html">Command-Line Interface</a></li>
+            </ul>
+          </li>
+          
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="/#" id="tut" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Tutorials<span class="caret"></span></a>
+            
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/efn-tut-intro.html">Efinity Tutorial</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/efn-unified-intro.html">Unified Design Tutorial</a></li>
+              <li><a class="dropdown-item" href="../../../../../../debugger/doc/topics/tut-debug-intro.html">Debugger Tutorial</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/efinity-trans-debug-intro.html">Transceiver Debugger Tutorial</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/efx-bram-tutorial.html">BRAM Initial Content Editor Tutorial</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/internal-reconfig-tutorial.html">Internal Reconfiguration Tutorial</a></li>
+            </ul>
+          </li>
+          
+          <li class="nav-item">
+            <a class="nav-link" href="../../../../../../doc/topics/ipmgr-supported-ip-byfamily.html">IP Help</a>
+          </li> 
+          
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="/#" id="pdf" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              PDFs<span class="caret"></span></a>
+            
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="../../../../../../doc/pdf/efinity-ug.pdf" target="_blank">Efinity Software User Guide</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/pdf/efinity-installation.pdf" target="_blank">Efinity Installation User Guide</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/pdf/efinity-quantum-ti-primitives-ug.pdf" target="_blank">Quantum Titanium Primitives User Guide</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/pdf/efinity-quantum-tz-primitives-ug.pdf" target="_blank">Quantum Topaz Primitives User Guide</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/pdf/efinity-quantum-primitives-ug.pdf" target="_blank">Quantum Trion Primitives User Guide</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/pdf/efinity-synthesis.pdf" target="_blank">Efinity Synthesis User Guide</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/pdf/efinity-timing-closure.pdf" target="_blank">Efinity Timing Closure User Guide</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/pdf/efinity-python-api.pdf" target="_blank">Efinity Python API</a></li>
+            </ul>
+          </li>
+          
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="/#" id="support" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Support<span class="caret"></span></a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="https://www.efinixinc.com/support/index.php">Support Center</a></li>
+              <li><a class="dropdown-item" href="https://www.efinixinc.com/products-efinity-training.html">Training Videos</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <!-- /.navbar-collapse --> 
+    </div>
+  </nav>  
+  
+	
+</div></header><div class="efx-nav col-xs-12 col-md-4 col-xl-3"><nav class="toc" role="navigation"><ul id="toc"><li class="nav-item"><a href="../topics/hlp-bram-wrapper.html">BRAM Wrapper Core User Guide</a><button class="btn btn-light btn-sm btn-leftnav" data-bs-toggle="collapse" aria-expanded="false" onClick="store_nav_state(this)" data-bs-target="#drop-bram" id="btn-bram"><span class="glyphicon glyphicon-plus-sign"></span></button><div class="collapse" id="drop-bram"><ul><li class="nav-item"><a href="../topics/bram-wrapper-core-features.html">Features</a></li><li class="nav-item"><a href="../topics/bram-wrapper-core-fd.html">Functional Description</a></li><li class="active"><a href="../topics/ipm-main.html">IP Manager</a></li><li class="nav-item"><a href="../topics/bram-wrapper-core-params.html">Customizing the BRAM Wrapper</a></li></ul></div></li></ul></nav></div><div class="efx-block col-xs-12 col-md-8 col-xl-9"><main role="main"><article role="article" aria-labelledby="ariaid-title1">
+    <h1 class="title topictitle1" id="ariaid-title1">IP Manager</h1>
+    
+    <div class="body conbody"><p class="shortdesc">
+        
+    </p>
+        <section class="section" id="ipm_main__section_bcl_5t3_snb">
+            <p class="p">The <span class="ph">Efinity®</span> IP Manager is an
+            interactive wizard that helps you customize and generate <span class="ph">Efinix®</span> IP cores. The IP Manager performs
+            validation checks on the parameters you set to ensure that your selections are valid.
+            When you generate the IP core, you can optionally generate an example design targeting
+            an <span class="ph">Efinix</span> development board and/or a
+            testbench. This wizard is helpful when you use several IP cores, multiple instances of
+            an IP core with different parameters, or the same IP core across different projects.</p>
+            <div class="p">
+                <div class="note note note_note" id="ipm_main__note_dn1_zgr_sxb"><span class="note__title">Note:</span> Not all <span class="ph">Efinix</span> IP cores include
+            an example design or a testbench.</div>
+            </div>
+            <p class="p">The IP Manager is included with the <span class="ph">Efinity</span> software v2020.2 and higher.</p>
+  
+            <div class="p">The IP Manager consists of:<ul class="ul" id="ipm_main__ul_fm2_553_snb">
+                <li class="li"><em class="ph i">IP Catalog</em>—Provides a catalog of IP cores you can select. Open the IP
+                    Catalog using the toolbar button or using <span class="ph menucascade"><span class="ph uicontrol">Tools</span><abbr title="and then"> &gt; </abbr><span class="ph uicontrol">Open IP Catalog</span></span>.</li>
+                <li class="li"><em class="ph i">IP Configuration</em>—Wizard to customize IP core parameters, select IP core
+                    deliverables, review the IP core settings, and generate the custom
+                    variation.</li>
+                <li class="li"><em class="ph i">IP Editor</em>—Helps you manage IP, add IP, and import IP into your
+                    project.</li>
+            </ul></div>
+        </section>
+        <section class="section" id="ipm_main__section_o4q_vv3_snb"><h2 class="title sectiontitle">Generating the <span class="keyword">BRAM Wrapper</span> Core with the IP Manager</h2>
+            
+            <div class="p" id="ipm_main__steps">The following steps explain how to customize an IP core with the IP
+                Configuration wizard.<ol class="ol" id="ipm_main__ol_gtf_cw3_snb">
+                    <li class="li">Open the IP Catalog.</li>
+                    <li class="li">Choose <span class="ph menucascade"><span class="ph uicontrol"><span class="keyword">Memory</span></span><abbr title="and then"> &gt; </abbr><span class="ph uicontrol"><span class="keyword">BRAM Wrapper</span></span></span> core and click <span class="ph uicontrol">Next</span>. The <span class="ph uicontrol">IP
+                            Configuration</span> wizard opens.</li>
+                    <li class="li">Enter the module name in the <span class="ph uicontrol">Module Name</span> box.<div class="note note note_note" id="ipm_main__note_pb2_pfr_sxb"><span class="note__title">Note:</span> You cannot generate the core without a module
+                            name.</div></li>
+                    <li class="li">Customize the IP core using the options shown in the wizard. For detailed
+                        information on the options, refer to the <em class="ph i">Customizing the <span class="keyword">BRAM Wrapper</span></em> section.</li>
+                    <li class="li">(Optional) In the <span class="ph uicontrol">Deliverables</span> tab, specify whether
+                        to generate an IP core example design targeting an <span class="ph">Efinix®</span> development board
+                        and/or testbench. These options are turned on by default.</li>
+                    <li class="li">(Optional) In the <span class="ph uicontrol">Summary</span> tab, review your
+                        selections.</li>
+                    <li class="li">Click <span class="ph uicontrol">Generate</span> to generate the IP core and other
+                        selected deliverables. </li>
+                    <li class="li">In the <span class="ph uicontrol">Review configuration generation</span> dialog box,
+                        click <span class="ph uicontrol">Generate</span>. The Console in the
+                            <span class="ph uicontrol">Summary</span> tab shows the generation status.<div class="note note note_note" id="ipm_main__note_qb2_pfr_sxb"><span class="note__title">Note:</span> You can disable the <span class="ph uicontrol">Review
+                                configuration generation</span> dialog box by turning off the
+                                <span class="ph uicontrol">Show Confirmation Box</span> option in the
+                            wizard.</div></li>
+                    <li class="li">When generation finishes, the wizard displays the <span class="ph uicontrol">Generation
+                            Success</span> dialog box. Click <span class="ph uicontrol">OK</span> to close
+                        the wizard. </li>
+                </ol></div>
+            <p class="p" id="ipm_main__result2">The wizard adds the IP to your project and displays it under
+                    <span class="ph uicontrol">IP</span> in the Project pane.</p>
+
+        </section>
+        <section class="section" id="ipm_main__section_pnq_5t3_snb"><h2 class="title sectiontitle">Generated Files</h2>
+            
+            <div class="p" id="ipm_main__files">The IP Manager generates these files and directories:<ul class="ul" id="ipm_main__ul_vhg_3yn_vkb">
+                    <li class="li"><span class="ph filepath">&lt;module name&gt;_define.vh</span>—Contains the customized
+                        parameters.</li>
+                    <li class="li"><span class="ph filepath">&lt;module name&gt;_tmpl.v</span>—Verilog HDL instantiation
+                        template.</li>
+                    <li class="li"><span class="ph filepath">&lt;module name&gt;_tmpl.vhd</span>—VHDL instantiation
+                        template.</li>
+                    <li class="li"><span class="ph filepath">&lt;module name&gt;.v</span>—IP source code.</li>
+                    <li class="li"><span class="ph filepath">settings.json</span>—Configuration file.</li>
+                    <li class="li"><span class="ph filepath">&lt;kit name&gt;_devkit</span>—Has generated RTL, example design,
+                        and <span class="ph">Efinity®</span> project targeting
+                        a specific development board.</li>
+                    <li class="li"><span class="ph filepath">Testbench</span>—Contains generated RTL and testbench
+                        files.</li>
+                </ul></div>
+             </section>
+        
+        <section class="section" id="ipm_main__section_pnq_5t3_sb"><h2 class="title sectiontitle">Instantiating the IP</h2>
+            
+        </section>
+        
+        <section class="section">
+            <div class="p">The IP Manager creates these template files in the
+                &lt;<em class="ph i">project</em>&gt;<span class="ph filepath">/ip/</span>&lt;<em class="ph i">module name</em>&gt; directory:<ul class="ul" id="ipm_main__ul_kym_qng_xnb">
+                    <li class="li">&lt;<em class="ph i">module name</em>&gt;<span class="ph filepath">tmpl.v</span> is the Verilog HDL
+                        module.</li>
+                    <li class="li">&lt;<em class="ph i">module name</em>&gt;<span class="ph filepath">tmpl.vhd</span> is the VHDL component
+                        declaration and instantiation template.</li>
+                </ul>To use the IP, copy and paste the code from the template file into your design and
+                update the signal names to instantiate the IP.</div>
+            <div class="note important note_important"><span class="note__title">Important:</span> When you generate the IP, the software automatically adds the
+                module file (&lt;<em class="ph i">module name</em>&gt;<span class="ph filepath">.v</span>) to your project and
+                lists it in the <span class="ph uicontrol">IP</span> folder in the Project pane. Do not add the
+                    &lt;<em class="ph i">module name</em>&gt;<span class="ph filepath">.v</span> file manually (for example, by
+                adding it using the Project Editor); otherwise the <span class="ph">Efinity®</span> software will issue errors
+                during compilation. <figure class="fig fignone" id="ipm_main__fig_z4q_dfh_xnb">
+                    
+                    <img class="image" id="ipm_main__image_qt3_2fh_xnb" src="../art/efinity/ip-folder.png" height="1867" width="2680">
+                </figure></div>
+        </section>
+        <section class="section" id="ipm_main__section_lqx_tzj_xcc">
+            
+        </section>
+        
+    </div>
+<nav role="navigation" class="related-links"><div class="familylinks"><div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="../topics/hlp-bram-wrapper.html">BRAM Wrapper Core User Guide</a></div></div></nav></article></main></div><footer role="contentinfo"><div class="navbar fixed-bottom" id="help-botbar">
+    <p id="copyright">Copyright (c) 2026 | All Rights Reserved</p>
+</div></footer></body></html>

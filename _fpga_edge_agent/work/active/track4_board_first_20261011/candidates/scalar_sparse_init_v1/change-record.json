@@ -1,0 +1,64 @@
+{
+  "task_id": "TRACK4-SCALAR-SPARSE-INIT-001",
+  "version": "v1",
+  "created_at_utc": "2026-10-11T14:39:47.876171+00:00",
+  "design_path": "planning/design-TRACK4-SCALAR-SPARSE-INIT-001.md",
+  "design_sha256": "44D74F39B05BF87E97856BD2F66AB195CDDB6B1B114C3936874D7ACD8A915836",
+  "authority": "ROOT read/presented card and authorized isolated two-file candidate under continuing user autonomy and waived new independent TB",
+  "status": "IMPLEMENTED_CANDIDATE_ONLY_NOT_COMPILED",
+  "main_changed": false,
+  "files": [
+    {
+      "path": "board/recognition_numeric/scalar_core_words.sv",
+      "baseline_sha256": "73F230DFB7B2D2F12A3220C8EE4FC4FF4B8C90E18AD916E3E05D24C084BA31F0",
+      "before_path": "before/board/recognition_numeric/scalar_core_words.sv",
+      "before_sha256": "73F230DFB7B2D2F12A3220C8EE4FC4FF4B8C90E18AD916E3E05D24C084BA31F0",
+      "candidate_sha256": "4CE475055C2E8FA0EB0929F002299C93DD935842AEC2BE35DD2B9F71DF4EC0E5",
+      "main_sha256_after": "73F230DFB7B2D2F12A3220C8EE4FC4FF4B8C90E18AD916E3E05D24C084BA31F0"
+    },
+    {
+      "path": "board/rtl/board_algorithm_rpc.sv",
+      "baseline_sha256": "E692D5D88836034A6825B82D0778524CDC5A6F6531A662E66ACD0FEBBEF3161D",
+      "before_path": "before/board/rtl/board_algorithm_rpc.sv",
+      "before_sha256": "E692D5D88836034A6825B82D0778524CDC5A6F6531A662E66ACD0FEBBEF3161D",
+      "candidate_sha256": "B43348C0086C1C4D2ACBC4CF2D3502A033F67A018E076C77251DB2EEAA37B532",
+      "main_sha256_after": "E692D5D88836034A6825B82D0778524CDC5A6F6531A662E66ACD0FEBBEF3161D"
+    }
+  ],
+  "profiles": {
+    "0": 49,
+    "1": 24,
+    "2": 24,
+    "3": 76,
+    "4": 51,
+    "5": 48,
+    "6": 63,
+    "7": 38
+  },
+  "effective_condition": "SPARSE_INITIALIZE&&AREA_RAM_WORDS; default0 retains original256-address initialization",
+  "contract": "Only first/next/last physical initialization cursor changed; final write edge preserved before ABS_A; original data/WE/address expression and all other FSM states/format/full192/385 predicates retained",
+  "root_prefix_optimization_included": false,
+  "performance": "PM18-call init4608->758 cycles only; no end-to-end speed/physical-resource claim",
+  "static_review_status": "COMPLETED_DIRECTED_ACTUAL_DIFF_AND_ADDRESS_DEPENDENCY_REVIEW_NOT_EDA",
+  "not_run": [
+    "New simulation/testbench",
+    "EDA",
+    "Hardware actions"
+  ],
+  "latest_root_report": "057 SYNTH PASS physical61201/60800 CAPACITY_FAIL401; no live EDA implied",
+  "limitations": [
+    "Actual LUT/routing/STA unknown",
+    "Performance still dominated by other arithmetic/DDR/candidates",
+    "Not full A6 or downloadable hardware version"
+  ],
+  "static_review": [
+    "Actual two-file diff read back; scalar differences limited to defaultfalse/effectiveAREA parameter, combinational first/next/last and CHECK/INITIALIZE cursor control; RPC only opens parameter",
+    "Each kind walks exact approved address intervals and counts49/24/24/76/51/48/63/38; final old-state INITIALIZE edge still writes last address before ABS_A",
+    "All original write_data/WE/write_address and paired memory writes retained; A/B windows preserve full12 words; DIV BB+12 zero remains required",
+    "BP25 all fresh for MUL; ADD complete overwrite; COMPARE high24 zero; DIV/ROOT low13 copy and high12 fresh zero, then full25 assembly/qualification",
+    "BT complete overwrite precedes read; NEG right0 and SHIFT/COPY ignore BZERO data; RNE ADD reads fresh BZERO13",
+    "All other FSM/192bit input/385bit output/format/padding/sign/rounding/cancel/HELD/borrow and previous input-word/return-word interfaces unchanged",
+    "Default SPARSE_INITIALIZE0 or AREA_RAM_WORDS0 retains original first0/increment/full255 last; no new stateFF/RAM/DSP/clock",
+    "Only source/contract static checks; no executable tests or EDA; initialization cycle saving is not complete performance proof"
+  ]
+}

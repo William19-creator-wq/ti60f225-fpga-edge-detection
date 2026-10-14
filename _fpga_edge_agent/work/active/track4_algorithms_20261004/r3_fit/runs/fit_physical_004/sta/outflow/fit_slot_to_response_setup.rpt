@@ -1,0 +1,1459 @@
+
+Efinix report_timing Report
+Version: 2026.1.132
+Date: Thu Oct  8 12:09:52 2026
+
+Copyright (C) 2013 - 2026 Efinix, Inc. All rights reserved.
+
+User command: foreach transition $transitions {
+ set name [lindex $transition 0]
+ set starts [endpoint_union [lindex $transition 1]]
+ set ends [endpoint_union [lindex $transition 2]]
+ puts "DATA_${name}_SOURCE_COUNT=[llength $starts]"
+ puts "DATA_${name}_DEST_COUNT=[llength $ends]"
+ if {[llength $starts] == 0 || [llength $ends] == 0} {error "Data endpoint collection empty"}
+ report_timing -setup -from $starts -to $ends -npaths 8 -nworst 1 -file fit_${name}_setup.rpt
+ report_timing -hold -from $starts -to $ends -npaths 8 -nworst 1 -file fit_${name}_hold.rpt
+}
+
+Timing Model: I3
+	process : typical
+	temperature : -40C to 100C
+	voltage : 0.95 +/-30mV
+	speedgrade : 3
+	technology : t16ff
+	status : final
+
+Summary:
+
+ Path #  | Slack(ns) |             Start Pin              |      End Pin       |  Launch Clock   |  Capture Clock
+==================================================================================================================
+ 1       |  22.550   | arithmetic/work_slot[3][1]~FF|CLK  | rsp_body[191]~FF|D | core_25m (RISE) | core_25m (RISE)
+ 2       |  22.684   | arithmetic/work_slot[3][1]~FF|CLK  | rsp_body[190]~FF|D | core_25m (RISE) | core_25m (RISE)
+ 3       |  22.740   | arithmetic/work_slot[3][1]~FF|CLK  | rsp_body[194]~FF|D | core_25m (RISE) | core_25m (RISE)
+ 4       |  22.807   | arithmetic/work_slot[3][1]~FF|CLK  | rsp_body[195]~FF|D | core_25m (RISE) | core_25m (RISE)
+ 5       |  22.970   | arithmetic/work_slot[5][4]~FF|CLK  | rsp_body[192]~FF|D | core_25m (RISE) | core_25m (RISE)
+ 6       |  23.116   | arithmetic/work_slot[3][1]~FF|CLK  | rsp_body[193]~FF|D | core_25m (RISE) | core_25m (RISE)
+ 7       |  32.093   | arithmetic/work_slot[10][2]~FF|CLK | rsp_body[326]~FF|D | core_25m (RISE) | core_25m (RISE)
+ 8       |  32.156   | arithmetic/work_slot[10][2]~FF|CLK | rsp_body[327]~FF|D | core_25m (RISE) | core_25m (RISE)
+
+++++ Path 1 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 22.550 ns (required time - arrival time)                       
+Path Start      : arithmetic/work_slot[3][1]~FF|CLK                              
+Path End        : rsp_body[191]~FF|D                                             
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 17.321 ns                                                      
+Logic Levels    : 25                                                             
+
+Launch Clock Path Delay        :  2.065
++ Clock To Q + Data Path Delay : 17.321
+---------------------------------------
+End-of-path arrival time       : 19.386
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.003
+---------------------------------------
+End-of-path required time      : 41.936
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)          Netlist Resource(s)
+======================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                          
+  (0,164)    input            0.126        0.126     clk_25m                          
+             net (fo=8004)    1.939        2.065     clk_25m                          
+  (146,30)   EFX_FF           0.000        2.065     arithmetic/work_slot[3][1]~FF|CLK
+
+Data Path
+  Location    Delay Type    Incr(ns)     Path(ns)         Netlist Resource(s)
+===================================================================================
+ (146,30)    EFX_FF (Tco)    0.130         0.130    arithmetic/work_slot[3][1]~FF|Q
+             net (fo=17)     0.997         1.127    arithmetic/work_slot[3][1]     
+ (124,8)     EFX_LUT4        0.061         1.188    LUT__44706|in[1]               
+ (124,8)     EFX_LUT4        0.000         1.188    LUT__44706|out                 
+             net (fo=5)      0.140         1.328    n22946                         
+ (124,6)     EFX_LUT4        0.061         1.389    LUT__44707|in[2]               
+ (124,6)     EFX_LUT4        0.000         1.389    LUT__44707|out                 
+             net (fo=6)      0.493         1.882    n22947                         
+ (126,6)     EFX_LUT4        0.063         1.945    LUT__44708|in[3]               
+ (126,6)     EFX_LUT4        0.000         1.945    LUT__44708|out                 
+             net (fo=5)      1.008         2.953    n22948                         
+ (151,147)   EFX_LUT4        0.061         3.014    LUT__44718|in[0]               
+ (151,147)   EFX_LUT4        0.000         3.014    LUT__44718|out                 
+             net (fo=1)      0.420         3.434    n22958                         
+ (158,177)   EFX_LUT4        0.061         3.495    LUT__44734|in[1]               
+ (158,177)   EFX_LUT4        0.000         3.495    LUT__44734|out                 
+             net (fo=5)      0.340         3.835    n22974                         
+ (143,177)   EFX_LUT4        0.061         3.896    LUT__44735|in[0]               
+ (143,177)   EFX_LUT4        0.000         3.896    LUT__44735|out                 
+             net (fo=3)      0.763         4.659    n22975                         
+ (137,222)   EFX_LUT4        0.061         4.720    LUT__44740|in[0]               
+ (137,222)   EFX_LUT4        0.000         4.720    LUT__44740|out                 
+             net (fo=186)    1.631         6.351    n22980                         
+ (139,9)     EFX_LUT4        0.061         6.412    LUT__45415|in[0]               
+ (139,9)     EFX_LUT4        0.000         6.412    LUT__45415|out                 
+             net (fo=1)      0.669         7.081    n23645                         
+ (124,3)     EFX_LUT4        0.061         7.142    LUT__45416|in[3]               
+ (124,3)     EFX_LUT4        0.000         7.142    LUT__45416|out                 
+             net (fo=1)      0.061         7.203    n23646                         
+ (124,2)     EFX_LUT4        0.061         7.264    LUT__45417|in[2]               
+ (124,2)     EFX_LUT4        0.000         7.264    LUT__45417|out                 
+             net (fo=1)      0.703         7.967    n23647                         
+ (114,17)    EFX_LUT4        0.063         8.030    LUT__45433|in[1]               
+ (114,17)    EFX_LUT4        0.000         8.030    LUT__45433|out                 
+             net (fo=1)      0.761         8.791    n23663                         
+ (106,39)    EFX_LUT4        0.061         8.852    LUT__45434|in[3]               
+ (106,39)    EFX_LUT4        0.000         8.852    LUT__45434|out                 
+             net (fo=1)      0.102         8.954    n23664                         
+ (106,40)    EFX_LUT4        0.061         9.015    LUT__45435|in[3]               
+ (106,40)    EFX_LUT4        0.000         9.015    LUT__45435|out                 
+             net (fo=3)      1.166        10.181    n23665                         
+ (120,156)   EFX_LUT4        0.063        10.244    LUT__45481|in[0]               
+ (120,156)   EFX_LUT4        0.000        10.244    LUT__45481|out                 
+             net (fo=1)      0.251        10.495    n23711                         
+ (120,153)   EFX_LUT4        0.063        10.558    LUT__45482|in[3]               
+ (120,153)   EFX_LUT4        0.000        10.558    LUT__45482|out                 
+             net (fo=1)      0.512        11.070    n23712                         
+ (131,163)   EFX_LUT4        0.061        11.131    LUT__45498|in[2]               
+ (131,163)   EFX_LUT4        0.000        11.131    LUT__45498|out                 
+             net (fo=1)      0.552        11.683    n23725                         
+ (133,203)   EFX_LUT4        0.061        11.744    LUT__46525|in[1]               
+ (133,203)   EFX_LUT4        0.000        11.744    LUT__46525|out                 
+             net (fo=1)      0.307        12.051    n24750                         
+ (134,206)   EFX_LUT4        0.061        12.112    LUT__49519|in[1]               
+ (134,206)   EFX_LUT4        0.000        12.112    LUT__49519|out                 
+             net (fo=105)    1.293        13.405    n27739                         
+ (129,311)   EFX_LUT4        0.063        13.468    LUT__50723|in[3]               
+ (129,311)   EFX_LUT4        0.000        13.468    LUT__50723|out                 
+             net (fo=1)      0.520        13.988    n28943                         
+ (106,261)   EFX_LUT4        0.061        14.049    LUT__50742|in[1]               
+ (106,261)   EFX_LUT4        0.000        14.049    LUT__50742|out                 
+             net (fo=1)      0.654        14.703    n28962                         
+ (131,248)   EFX_LUT4        0.061        14.764    LUT__50800|in[1]               
+ (131,248)   EFX_LUT4        0.000        14.764    LUT__50800|out                 
+             net (fo=1)      0.109        14.873    n29020                         
+ (131,243)   EFX_LUT4        0.061        14.934    LUT__51001|in[2]               
+ (131,243)   EFX_LUT4        0.000        14.934    LUT__51001|out                 
+             net (fo=4)      0.925        15.859    n29221                         
+ (142,194)   EFX_LUT4        0.061        15.920    LUT__52645|in[1]               
+ (142,194)   EFX_LUT4        0.000        15.920    LUT__52645|out                 
+             net (fo=9)      0.662        16.582    n30857                         
+ (202,184)   EFX_LUT4        0.061        16.643    LUT__54183|in[0]               
+ (202,184)   EFX_LUT4        0.000        16.643    LUT__54183|out                 
+             net (fo=3)      0.617        17.260    n32395                         
+ (209,180)   EFX_LUT4        0.061        17.321    LUT__74838|in[3]               
+ (209,180)   EFX_LUT4        0.000        17.321    LUT__74838|out                 
+             net (fo=1)      0.000        17.321    arithmetic/n88862              
+ (209,180)   EFX_FF          0.000        17.321    rsp_body[191]~FF|D             
+
+Capture Clock Path
+  Location     Delay Type     Incr(ns)     Path(ns)   Netlist Resource(s)
+==========================================================================
+ (0,164)     input              0.000       0.000     clk_25m             
+ (0,164)     input              0.126       0.126     clk_25m             
+             net (fo=8004)      1.939       2.065     clk_25m             
+ (209,180)   EFX_FF             0.000       2.065     rsp_body[191]~FF|CLK
+ (209,180)   EFX_FF (Setup)    -0.003       2.062     rsp_body[191]~FF    
+
+++++ Path 2 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 22.684 ns (required time - arrival time)                       
+Path Start      : arithmetic/work_slot[3][1]~FF|CLK                              
+Path End        : rsp_body[190]~FF|D                                             
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 17.187 ns                                                      
+Logic Levels    : 25                                                             
+
+Launch Clock Path Delay        :  2.065
++ Clock To Q + Data Path Delay : 17.187
+---------------------------------------
+End-of-path arrival time       : 19.252
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.003
+---------------------------------------
+End-of-path required time      : 41.936
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)          Netlist Resource(s)
+======================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                          
+  (0,164)    input            0.126        0.126     clk_25m                          
+             net (fo=8004)    1.939        2.065     clk_25m                          
+  (146,30)   EFX_FF           0.000        2.065     arithmetic/work_slot[3][1]~FF|CLK
+
+Data Path
+  Location    Delay Type    Incr(ns)     Path(ns)         Netlist Resource(s)
+===================================================================================
+ (146,30)    EFX_FF (Tco)    0.130         0.130    arithmetic/work_slot[3][1]~FF|Q
+             net (fo=17)     0.997         1.127    arithmetic/work_slot[3][1]     
+ (124,8)     EFX_LUT4        0.061         1.188    LUT__44706|in[1]               
+ (124,8)     EFX_LUT4        0.000         1.188    LUT__44706|out                 
+             net (fo=5)      0.140         1.328    n22946                         
+ (124,6)     EFX_LUT4        0.061         1.389    LUT__44707|in[2]               
+ (124,6)     EFX_LUT4        0.000         1.389    LUT__44707|out                 
+             net (fo=6)      0.493         1.882    n22947                         
+ (126,6)     EFX_LUT4        0.063         1.945    LUT__44708|in[3]               
+ (126,6)     EFX_LUT4        0.000         1.945    LUT__44708|out                 
+             net (fo=5)      1.008         2.953    n22948                         
+ (151,147)   EFX_LUT4        0.061         3.014    LUT__44718|in[0]               
+ (151,147)   EFX_LUT4        0.000         3.014    LUT__44718|out                 
+             net (fo=1)      0.420         3.434    n22958                         
+ (158,177)   EFX_LUT4        0.061         3.495    LUT__44734|in[1]               
+ (158,177)   EFX_LUT4        0.000         3.495    LUT__44734|out                 
+             net (fo=5)      0.340         3.835    n22974                         
+ (143,177)   EFX_LUT4        0.061         3.896    LUT__44735|in[0]               
+ (143,177)   EFX_LUT4        0.000         3.896    LUT__44735|out                 
+             net (fo=3)      0.763         4.659    n22975                         
+ (137,222)   EFX_LUT4        0.061         4.720    LUT__44740|in[0]               
+ (137,222)   EFX_LUT4        0.000         4.720    LUT__44740|out                 
+             net (fo=186)    1.631         6.351    n22980                         
+ (139,9)     EFX_LUT4        0.061         6.412    LUT__45415|in[0]               
+ (139,9)     EFX_LUT4        0.000         6.412    LUT__45415|out                 
+             net (fo=1)      0.669         7.081    n23645                         
+ (124,3)     EFX_LUT4        0.061         7.142    LUT__45416|in[3]               
+ (124,3)     EFX_LUT4        0.000         7.142    LUT__45416|out                 
+             net (fo=1)      0.061         7.203    n23646                         
+ (124,2)     EFX_LUT4        0.061         7.264    LUT__45417|in[2]               
+ (124,2)     EFX_LUT4        0.000         7.264    LUT__45417|out                 
+             net (fo=1)      0.703         7.967    n23647                         
+ (114,17)    EFX_LUT4        0.063         8.030    LUT__45433|in[1]               
+ (114,17)    EFX_LUT4        0.000         8.030    LUT__45433|out                 
+             net (fo=1)      0.761         8.791    n23663                         
+ (106,39)    EFX_LUT4        0.061         8.852    LUT__45434|in[3]               
+ (106,39)    EFX_LUT4        0.000         8.852    LUT__45434|out                 
+             net (fo=1)      0.102         8.954    n23664                         
+ (106,40)    EFX_LUT4        0.061         9.015    LUT__45435|in[3]               
+ (106,40)    EFX_LUT4        0.000         9.015    LUT__45435|out                 
+             net (fo=3)      1.166        10.181    n23665                         
+ (120,156)   EFX_LUT4        0.063        10.244    LUT__45481|in[0]               
+ (120,156)   EFX_LUT4        0.000        10.244    LUT__45481|out                 
+             net (fo=1)      0.251        10.495    n23711                         
+ (120,153)   EFX_LUT4        0.063        10.558    LUT__45482|in[3]               
+ (120,153)   EFX_LUT4        0.000        10.558    LUT__45482|out                 
+             net (fo=1)      0.512        11.070    n23712                         
+ (131,163)   EFX_LUT4        0.061        11.131    LUT__45498|in[2]               
+ (131,163)   EFX_LUT4        0.000        11.131    LUT__45498|out                 
+             net (fo=1)      0.552        11.683    n23725                         
+ (133,203)   EFX_LUT4        0.061        11.744    LUT__46525|in[1]               
+ (133,203)   EFX_LUT4        0.000        11.744    LUT__46525|out                 
+             net (fo=1)      0.307        12.051    n24750                         
+ (134,206)   EFX_LUT4        0.061        12.112    LUT__49519|in[1]               
+ (134,206)   EFX_LUT4        0.000        12.112    LUT__49519|out                 
+             net (fo=105)    1.293        13.405    n27739                         
+ (129,311)   EFX_LUT4        0.063        13.468    LUT__50723|in[3]               
+ (129,311)   EFX_LUT4        0.000        13.468    LUT__50723|out                 
+             net (fo=1)      0.520        13.988    n28943                         
+ (106,261)   EFX_LUT4        0.061        14.049    LUT__50742|in[1]               
+ (106,261)   EFX_LUT4        0.000        14.049    LUT__50742|out                 
+             net (fo=1)      0.654        14.703    n28962                         
+ (131,248)   EFX_LUT4        0.061        14.764    LUT__50800|in[1]               
+ (131,248)   EFX_LUT4        0.000        14.764    LUT__50800|out                 
+             net (fo=1)      0.109        14.873    n29020                         
+ (131,243)   EFX_LUT4        0.061        14.934    LUT__51001|in[2]               
+ (131,243)   EFX_LUT4        0.000        14.934    LUT__51001|out                 
+             net (fo=4)      0.925        15.859    n29221                         
+ (142,194)   EFX_LUT4        0.061        15.920    LUT__52645|in[1]               
+ (142,194)   EFX_LUT4        0.000        15.920    LUT__52645|out                 
+             net (fo=9)      0.767        16.687    n30857                         
+ (202,185)   EFX_LUT4        0.061        16.748    LUT__52648|in[1]               
+ (202,185)   EFX_LUT4        0.000        16.748    LUT__52648|out                 
+             net (fo=2)      0.378        17.126    n30860                         
+ (208,182)   EFX_LUT4        0.061        17.187    LUT__54184|in[1]               
+ (208,182)   EFX_LUT4        0.000        17.187    LUT__54184|out                 
+             net (fo=1)      0.000        17.187    arithmetic/n88863              
+ (208,182)   EFX_FF          0.000        17.187    rsp_body[190]~FF|D             
+
+Capture Clock Path
+  Location     Delay Type     Incr(ns)     Path(ns)   Netlist Resource(s)
+==========================================================================
+ (0,164)     input              0.000       0.000     clk_25m             
+ (0,164)     input              0.126       0.126     clk_25m             
+             net (fo=8004)      1.939       2.065     clk_25m             
+ (208,182)   EFX_FF             0.000       2.065     rsp_body[190]~FF|CLK
+ (208,182)   EFX_FF (Setup)    -0.003       2.062     rsp_body[190]~FF    
+
+++++ Path 3 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 22.740 ns (required time - arrival time)                       
+Path Start      : arithmetic/work_slot[3][1]~FF|CLK                              
+Path End        : rsp_body[194]~FF|D                                             
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 17.131 ns                                                      
+Logic Levels    : 25                                                             
+
+Launch Clock Path Delay        :  2.065
++ Clock To Q + Data Path Delay : 17.131
+---------------------------------------
+End-of-path arrival time       : 19.196
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.003
+---------------------------------------
+End-of-path required time      : 41.936
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)          Netlist Resource(s)
+======================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                          
+  (0,164)    input            0.126        0.126     clk_25m                          
+             net (fo=8004)    1.939        2.065     clk_25m                          
+  (146,30)   EFX_FF           0.000        2.065     arithmetic/work_slot[3][1]~FF|CLK
+
+Data Path
+  Location    Delay Type    Incr(ns)     Path(ns)         Netlist Resource(s)
+===================================================================================
+ (146,30)    EFX_FF (Tco)    0.130         0.130    arithmetic/work_slot[3][1]~FF|Q
+             net (fo=17)     0.997         1.127    arithmetic/work_slot[3][1]     
+ (124,8)     EFX_LUT4        0.061         1.188    LUT__44706|in[1]               
+ (124,8)     EFX_LUT4        0.000         1.188    LUT__44706|out                 
+             net (fo=5)      0.140         1.328    n22946                         
+ (124,6)     EFX_LUT4        0.061         1.389    LUT__44707|in[2]               
+ (124,6)     EFX_LUT4        0.000         1.389    LUT__44707|out                 
+             net (fo=6)      0.493         1.882    n22947                         
+ (126,6)     EFX_LUT4        0.063         1.945    LUT__44708|in[3]               
+ (126,6)     EFX_LUT4        0.000         1.945    LUT__44708|out                 
+             net (fo=5)      1.008         2.953    n22948                         
+ (151,147)   EFX_LUT4        0.061         3.014    LUT__44718|in[0]               
+ (151,147)   EFX_LUT4        0.000         3.014    LUT__44718|out                 
+             net (fo=1)      0.420         3.434    n22958                         
+ (158,177)   EFX_LUT4        0.061         3.495    LUT__44734|in[1]               
+ (158,177)   EFX_LUT4        0.000         3.495    LUT__44734|out                 
+             net (fo=5)      0.340         3.835    n22974                         
+ (143,177)   EFX_LUT4        0.061         3.896    LUT__44735|in[0]               
+ (143,177)   EFX_LUT4        0.000         3.896    LUT__44735|out                 
+             net (fo=3)      0.763         4.659    n22975                         
+ (137,222)   EFX_LUT4        0.061         4.720    LUT__44740|in[0]               
+ (137,222)   EFX_LUT4        0.000         4.720    LUT__44740|out                 
+             net (fo=186)    1.631         6.351    n22980                         
+ (139,9)     EFX_LUT4        0.061         6.412    LUT__45415|in[0]               
+ (139,9)     EFX_LUT4        0.000         6.412    LUT__45415|out                 
+             net (fo=1)      0.669         7.081    n23645                         
+ (124,3)     EFX_LUT4        0.061         7.142    LUT__45416|in[3]               
+ (124,3)     EFX_LUT4        0.000         7.142    LUT__45416|out                 
+             net (fo=1)      0.061         7.203    n23646                         
+ (124,2)     EFX_LUT4        0.061         7.264    LUT__45417|in[2]               
+ (124,2)     EFX_LUT4        0.000         7.264    LUT__45417|out                 
+             net (fo=1)      0.703         7.967    n23647                         
+ (114,17)    EFX_LUT4        0.063         8.030    LUT__45433|in[1]               
+ (114,17)    EFX_LUT4        0.000         8.030    LUT__45433|out                 
+             net (fo=1)      0.761         8.791    n23663                         
+ (106,39)    EFX_LUT4        0.061         8.852    LUT__45434|in[3]               
+ (106,39)    EFX_LUT4        0.000         8.852    LUT__45434|out                 
+             net (fo=1)      0.102         8.954    n23664                         
+ (106,40)    EFX_LUT4        0.061         9.015    LUT__45435|in[3]               
+ (106,40)    EFX_LUT4        0.000         9.015    LUT__45435|out                 
+             net (fo=3)      1.166        10.181    n23665                         
+ (120,156)   EFX_LUT4        0.063        10.244    LUT__45481|in[0]               
+ (120,156)   EFX_LUT4        0.000        10.244    LUT__45481|out                 
+             net (fo=1)      0.251        10.495    n23711                         
+ (120,153)   EFX_LUT4        0.063        10.558    LUT__45482|in[3]               
+ (120,153)   EFX_LUT4        0.000        10.558    LUT__45482|out                 
+             net (fo=1)      0.512        11.070    n23712                         
+ (131,163)   EFX_LUT4        0.061        11.131    LUT__45498|in[2]               
+ (131,163)   EFX_LUT4        0.000        11.131    LUT__45498|out                 
+             net (fo=1)      0.552        11.683    n23725                         
+ (133,203)   EFX_LUT4        0.061        11.744    LUT__46525|in[1]               
+ (133,203)   EFX_LUT4        0.000        11.744    LUT__46525|out                 
+             net (fo=1)      0.307        12.051    n24750                         
+ (134,206)   EFX_LUT4        0.061        12.112    LUT__49519|in[1]               
+ (134,206)   EFX_LUT4        0.000        12.112    LUT__49519|out                 
+             net (fo=105)    1.293        13.405    n27739                         
+ (129,311)   EFX_LUT4        0.063        13.468    LUT__50723|in[3]               
+ (129,311)   EFX_LUT4        0.000        13.468    LUT__50723|out                 
+             net (fo=1)      0.520        13.988    n28943                         
+ (106,261)   EFX_LUT4        0.061        14.049    LUT__50742|in[1]               
+ (106,261)   EFX_LUT4        0.000        14.049    LUT__50742|out                 
+             net (fo=1)      0.654        14.703    n28962                         
+ (131,248)   EFX_LUT4        0.061        14.764    LUT__50800|in[1]               
+ (131,248)   EFX_LUT4        0.000        14.764    LUT__50800|out                 
+             net (fo=1)      0.109        14.873    n29020                         
+ (131,243)   EFX_LUT4        0.061        14.934    LUT__51001|in[2]               
+ (131,243)   EFX_LUT4        0.000        14.934    LUT__51001|out                 
+             net (fo=4)      0.925        15.859    n29221                         
+ (142,194)   EFX_LUT4        0.061        15.920    LUT__52645|in[1]               
+ (142,194)   EFX_LUT4        0.000        15.920    LUT__52645|out                 
+             net (fo=9)      0.845        16.765    n30857                         
+ (200,187)   EFX_LUT4        0.061        16.826    LUT__74738|in[0]               
+ (200,187)   EFX_LUT4        0.000        16.826    LUT__74738|out                 
+             net (fo=1)      0.244        17.070    n49131                         
+ (205,187)   EFX_LUT4        0.061        17.131    LUT__74748|in[0]               
+ (205,187)   EFX_LUT4        0.000        17.131    LUT__74748|out                 
+             net (fo=1)      0.000        17.131    arithmetic/n88870              
+ (205,187)   EFX_FF          0.000        17.131    rsp_body[194]~FF|D             
+
+Capture Clock Path
+  Location     Delay Type     Incr(ns)     Path(ns)   Netlist Resource(s)
+==========================================================================
+ (0,164)     input              0.000       0.000     clk_25m             
+ (0,164)     input              0.126       0.126     clk_25m             
+             net (fo=8004)      1.939       2.065     clk_25m             
+ (205,187)   EFX_FF             0.000       2.065     rsp_body[194]~FF|CLK
+ (205,187)   EFX_FF (Setup)    -0.003       2.062     rsp_body[194]~FF    
+
+++++ Path 4 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 22.807 ns (required time - arrival time)                       
+Path Start      : arithmetic/work_slot[3][1]~FF|CLK                              
+Path End        : rsp_body[195]~FF|D                                             
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 17.064 ns                                                      
+Logic Levels    : 25                                                             
+
+Launch Clock Path Delay        :  2.065
++ Clock To Q + Data Path Delay : 17.064
+---------------------------------------
+End-of-path arrival time       : 19.129
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.003
+---------------------------------------
+End-of-path required time      : 41.936
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)          Netlist Resource(s)
+======================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                          
+  (0,164)    input            0.126        0.126     clk_25m                          
+             net (fo=8004)    1.939        2.065     clk_25m                          
+  (146,30)   EFX_FF           0.000        2.065     arithmetic/work_slot[3][1]~FF|CLK
+
+Data Path
+  Location    Delay Type    Incr(ns)     Path(ns)         Netlist Resource(s)
+===================================================================================
+ (146,30)    EFX_FF (Tco)    0.130         0.130    arithmetic/work_slot[3][1]~FF|Q
+             net (fo=17)     0.997         1.127    arithmetic/work_slot[3][1]     
+ (124,8)     EFX_LUT4        0.061         1.188    LUT__44706|in[1]               
+ (124,8)     EFX_LUT4        0.000         1.188    LUT__44706|out                 
+             net (fo=5)      0.140         1.328    n22946                         
+ (124,6)     EFX_LUT4        0.061         1.389    LUT__44707|in[2]               
+ (124,6)     EFX_LUT4        0.000         1.389    LUT__44707|out                 
+             net (fo=6)      0.493         1.882    n22947                         
+ (126,6)     EFX_LUT4        0.063         1.945    LUT__44708|in[3]               
+ (126,6)     EFX_LUT4        0.000         1.945    LUT__44708|out                 
+             net (fo=5)      1.008         2.953    n22948                         
+ (151,147)   EFX_LUT4        0.061         3.014    LUT__44718|in[0]               
+ (151,147)   EFX_LUT4        0.000         3.014    LUT__44718|out                 
+             net (fo=1)      0.420         3.434    n22958                         
+ (158,177)   EFX_LUT4        0.061         3.495    LUT__44734|in[1]               
+ (158,177)   EFX_LUT4        0.000         3.495    LUT__44734|out                 
+             net (fo=5)      0.340         3.835    n22974                         
+ (143,177)   EFX_LUT4        0.061         3.896    LUT__44735|in[0]               
+ (143,177)   EFX_LUT4        0.000         3.896    LUT__44735|out                 
+             net (fo=3)      0.763         4.659    n22975                         
+ (137,222)   EFX_LUT4        0.061         4.720    LUT__44740|in[0]               
+ (137,222)   EFX_LUT4        0.000         4.720    LUT__44740|out                 
+             net (fo=186)    1.631         6.351    n22980                         
+ (139,9)     EFX_LUT4        0.061         6.412    LUT__45415|in[0]               
+ (139,9)     EFX_LUT4        0.000         6.412    LUT__45415|out                 
+             net (fo=1)      0.669         7.081    n23645                         
+ (124,3)     EFX_LUT4        0.061         7.142    LUT__45416|in[3]               
+ (124,3)     EFX_LUT4        0.000         7.142    LUT__45416|out                 
+             net (fo=1)      0.061         7.203    n23646                         
+ (124,2)     EFX_LUT4        0.061         7.264    LUT__45417|in[2]               
+ (124,2)     EFX_LUT4        0.000         7.264    LUT__45417|out                 
+             net (fo=1)      0.703         7.967    n23647                         
+ (114,17)    EFX_LUT4        0.063         8.030    LUT__45433|in[1]               
+ (114,17)    EFX_LUT4        0.000         8.030    LUT__45433|out                 
+             net (fo=1)      0.761         8.791    n23663                         
+ (106,39)    EFX_LUT4        0.061         8.852    LUT__45434|in[3]               
+ (106,39)    EFX_LUT4        0.000         8.852    LUT__45434|out                 
+             net (fo=1)      0.102         8.954    n23664                         
+ (106,40)    EFX_LUT4        0.061         9.015    LUT__45435|in[3]               
+ (106,40)    EFX_LUT4        0.000         9.015    LUT__45435|out                 
+             net (fo=3)      1.166        10.181    n23665                         
+ (120,156)   EFX_LUT4        0.063        10.244    LUT__45481|in[0]               
+ (120,156)   EFX_LUT4        0.000        10.244    LUT__45481|out                 
+             net (fo=1)      0.251        10.495    n23711                         
+ (120,153)   EFX_LUT4        0.063        10.558    LUT__45482|in[3]               
+ (120,153)   EFX_LUT4        0.000        10.558    LUT__45482|out                 
+             net (fo=1)      0.512        11.070    n23712                         
+ (131,163)   EFX_LUT4        0.061        11.131    LUT__45498|in[2]               
+ (131,163)   EFX_LUT4        0.000        11.131    LUT__45498|out                 
+             net (fo=1)      0.552        11.683    n23725                         
+ (133,203)   EFX_LUT4        0.061        11.744    LUT__46525|in[1]               
+ (133,203)   EFX_LUT4        0.000        11.744    LUT__46525|out                 
+             net (fo=1)      0.307        12.051    n24750                         
+ (134,206)   EFX_LUT4        0.061        12.112    LUT__49519|in[1]               
+ (134,206)   EFX_LUT4        0.000        12.112    LUT__49519|out                 
+             net (fo=105)    1.293        13.405    n27739                         
+ (129,311)   EFX_LUT4        0.063        13.468    LUT__50723|in[3]               
+ (129,311)   EFX_LUT4        0.000        13.468    LUT__50723|out                 
+             net (fo=1)      0.520        13.988    n28943                         
+ (106,261)   EFX_LUT4        0.061        14.049    LUT__50742|in[1]               
+ (106,261)   EFX_LUT4        0.000        14.049    LUT__50742|out                 
+             net (fo=1)      0.654        14.703    n28962                         
+ (131,248)   EFX_LUT4        0.061        14.764    LUT__50800|in[1]               
+ (131,248)   EFX_LUT4        0.000        14.764    LUT__50800|out                 
+             net (fo=1)      0.109        14.873    n29020                         
+ (131,243)   EFX_LUT4        0.061        14.934    LUT__51001|in[2]               
+ (131,243)   EFX_LUT4        0.000        14.934    LUT__51001|out                 
+             net (fo=4)      0.925        15.859    n29221                         
+ (142,194)   EFX_LUT4        0.061        15.920    LUT__52645|in[1]               
+ (142,194)   EFX_LUT4        0.000        15.920    LUT__52645|out                 
+             net (fo=9)      0.911        16.831    n30857                         
+ (204,183)   EFX_LUT4        0.063        16.894    LUT__74750|in[0]               
+ (204,183)   EFX_LUT4        0.000        16.894    LUT__74750|out                 
+             net (fo=1)      0.109        17.003    n49142                         
+ (205,183)   EFX_LUT4        0.061        17.064    LUT__74753|in[1]               
+ (205,183)   EFX_LUT4        0.000        17.064    LUT__74753|out                 
+             net (fo=1)      0.000        17.064    arithmetic/n88869              
+ (205,183)   EFX_FF          0.000        17.064    rsp_body[195]~FF|D             
+
+Capture Clock Path
+  Location     Delay Type     Incr(ns)     Path(ns)   Netlist Resource(s)
+==========================================================================
+ (0,164)     input              0.000       0.000     clk_25m             
+ (0,164)     input              0.126       0.126     clk_25m             
+             net (fo=8004)      1.939       2.065     clk_25m             
+ (205,183)   EFX_FF             0.000       2.065     rsp_body[195]~FF|CLK
+ (205,183)   EFX_FF (Setup)    -0.003       2.062     rsp_body[195]~FF    
+
+++++ Path 5 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 22.970 ns (required time - arrival time)                       
+Path Start      : arithmetic/work_slot[5][4]~FF|CLK                              
+Path End        : rsp_body[192]~FF|D                                             
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 16.901 ns                                                      
+Logic Levels    : 197                                                            
+
+Launch Clock Path Delay        :  2.065
++ Clock To Q + Data Path Delay : 16.901
+---------------------------------------
+End-of-path arrival time       : 18.966
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.003
+---------------------------------------
+End-of-path required time      : 41.936
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)          Netlist Resource(s)
+======================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                          
+  (0,164)    input            0.126        0.126     clk_25m                          
+             net (fo=8004)    1.939        2.065     clk_25m                          
+  (88,40)    EFX_FF           0.000        2.065     arithmetic/work_slot[5][4]~FF|CLK
+
+Data Path
+  Location    Delay Type    Incr(ns)     Path(ns)          Netlist Resource(s)
+======================================================================================
+ (88,40)     EFX_FF (Tco)    0.130         0.130    arithmetic/work_slot[5][4]~FF|Q   
+             net (fo=6)      0.798         0.928    arithmetic/work_slot[5][4]        
+ (136,40)    EFX_LUT4        0.061         0.989    LUT__44131|in[1]                  
+ (136,40)    EFX_LUT4        0.000         0.989    LUT__44131|out                    
+             net (fo=1)      0.305         1.294    n22371                            
+ (141,47)    EFX_LUT4        0.063         1.357    LUT__44132|in[1]                  
+ (141,47)    EFX_LUT4        0.000         1.357    LUT__44132|out                    
+             net (fo=1)      0.308         1.665    n22372                            
+ (144,57)    EFX_LUT4        0.063         1.728    LUT__44135|in[0]                  
+ (144,57)    EFX_LUT4        0.000         1.728    LUT__44135|out                    
+             net (fo=1)      0.098         1.826    n22375                            
+ (144,56)    EFX_LUT4        0.063         1.889    LUT__44142|in[0]                  
+ (144,56)    EFX_LUT4        0.000         1.889    LUT__44142|out                    
+             net (fo=1)      0.061         1.950    n22382                            
+ (144,55)    EFX_LUT4        0.063         2.013    LUT__44149|in[1]                  
+ (144,55)    EFX_LUT4        0.000         2.013    LUT__44149|out                    
+             net (fo=1)      0.918         2.931    n22389                            
+ (181,152)   EFX_LUT4        0.061         2.992    LUT__44165|in[0]                  
+ (181,152)   EFX_LUT4        0.000         2.992    LUT__44165|out                    
+             net (fo=1)      0.229         3.221    n22405                            
+ (184,152)   EFX_LUT4        0.061         3.282    LUT__44181|in[0]                  
+ (184,152)   EFX_LUT4        0.000         3.282    LUT__44181|out                    
+             net (fo=1)      0.061         3.343    n22421                            
+ (184,151)   EFX_LUT4        0.061         3.404    LUT__44197|in[0]                  
+ (184,151)   EFX_LUT4        0.000         3.404    LUT__44197|out                    
+             net (fo=1)      0.732         4.136    n22437                            
+ (188,245)   EFX_LUT4        0.061         4.197    LUT__44230|in[0]                  
+ (188,245)   EFX_LUT4        0.000         4.197    LUT__44230|out                    
+             net (fo=1)      0.097         4.294    n22470                            
+ (188,244)   EFX_LUT4        0.061         4.355    LUT__44266|in[0]                  
+ (188,244)   EFX_LUT4        0.000         4.355    LUT__44266|out                    
+             net (fo=1)      0.061         4.416    n22506                            
+ (188,243)   EFX_LUT4        0.061         4.477    LUT__44299|in[0]                  
+ (188,243)   EFX_LUT4        0.000         4.477    LUT__44299|out                    
+             net (fo=41)     0.641         5.118    n22539                            
+ (143,218)   EFX_LUT4        0.061         5.179    LUT__44350|in[0]                  
+ (143,218)   EFX_LUT4        0.000         5.179    LUT__44350|out                    
+             net (fo=184)    0.876         6.055    n22590                            
+ (110,207)   EFX_LUT4        0.061         6.116    LUT__45181|in[0]                  
+ (110,207)   EFX_LUT4        0.000         6.116    LUT__45181|out                    
+             net (fo=44)     0.607         6.723    arithmetic/plan_width[1]          
+ (114,202)   EFX_LUT4        0.063         6.786    LUT__45354|in[0]                  
+ (114,202)   EFX_LUT4        0.000         6.786    LUT__45354|out                    
+             net (fo=19)     0.147         6.933    n23584                            
+ (119,202)   EFX_LUT4        0.061         6.994    LUT__74678|in[2]                  
+ (119,202)   EFX_LUT4        0.000         6.994    LUT__74678|out                    
+             net (fo=4)      0.306         7.300    n49117                            
+ (118,201)   EFX_LUT4        0.061         7.361    LUT__74710|in[1]                  
+ (118,201)   EFX_LUT4        0.000         7.361    LUT__74710|out                    
+             net (fo=1)      0.492         7.853    arithmetic/n38257                 
+ (122,131)   EFX_ADD         0.052         7.905    arithmetic/sub_18793/add_2/i2|I0  
+ (122,131)   EFX_ADD         0.000         7.905    arithmetic/sub_18793/add_2/i2|CO  
+             net (fo=1)      0.000         7.905    arithmetic/sub_18793/add_2/n4     
+ (122,132)   EFX_ADD         0.024         7.929    arithmetic/sub_18793/add_2/i3|CI  
+ (122,132)   EFX_ADD         0.000         7.929    arithmetic/sub_18793/add_2/i3|CO  
+             net (fo=1)      0.000         7.929    arithmetic/sub_18793/add_2/n6     
+ (122,133)   EFX_ADD         0.024         7.953    arithmetic/sub_18793/add_2/i4|CI  
+ (122,133)   EFX_ADD         0.000         7.953    arithmetic/sub_18793/add_2/i4|CO  
+             net (fo=1)      0.000         7.953    arithmetic/sub_18793/add_2/n8     
+ (122,134)   EFX_ADD         0.024         7.977    arithmetic/sub_18793/add_2/i5|CI  
+ (122,134)   EFX_ADD         0.000         7.977    arithmetic/sub_18793/add_2/i5|CO  
+             net (fo=1)      0.000         7.977    arithmetic/sub_18793/add_2/n10    
+ (122,135)   EFX_ADD         0.024         8.001    arithmetic/sub_18793/add_2/i6|CI  
+ (122,135)   EFX_ADD         0.000         8.001    arithmetic/sub_18793/add_2/i6|CO  
+             net (fo=1)      0.000         8.001    arithmetic/sub_18793/add_2/n12    
+ (122,136)   EFX_ADD         0.024         8.025    arithmetic/sub_18793/add_2/i7|CI  
+ (122,136)   EFX_ADD         0.000         8.025    arithmetic/sub_18793/add_2/i7|CO  
+             net (fo=1)      0.000         8.025    arithmetic/sub_18793/add_2/n14    
+ (122,137)   EFX_ADD         0.024         8.049    arithmetic/sub_18793/add_2/i8|CI  
+ (122,137)   EFX_ADD         0.000         8.049    arithmetic/sub_18793/add_2/i8|CO  
+             net (fo=1)      0.000         8.049    arithmetic/sub_18793/add_2/n16    
+ (122,138)   EFX_ADD         0.024         8.073    arithmetic/sub_18793/add_2/i9|CI  
+ (122,138)   EFX_ADD         0.000         8.073    arithmetic/sub_18793/add_2/i9|CO  
+             net (fo=1)      0.000         8.073    arithmetic/sub_18793/add_2/n18    
+ (122,139)   EFX_ADD         0.024         8.097    arithmetic/sub_18793/add_2/i10|CI 
+ (122,139)   EFX_ADD         0.000         8.097    arithmetic/sub_18793/add_2/i10|CO 
+             net (fo=1)      0.000         8.097    arithmetic/sub_18793/add_2/n20    
+ (122,140)   EFX_ADD         0.024         8.121    arithmetic/sub_18793/add_2/i11|CI 
+ (122,140)   EFX_ADD         0.000         8.121    arithmetic/sub_18793/add_2/i11|CO 
+             net (fo=1)      0.000         8.121    arithmetic/sub_18793/add_2/n22    
+ (122,141)   EFX_ADD         0.024         8.145    arithmetic/sub_18793/add_2/i12|CI 
+ (122,141)   EFX_ADD         0.000         8.145    arithmetic/sub_18793/add_2/i12|CO 
+             net (fo=1)      0.000         8.145    arithmetic/sub_18793/add_2/n24    
+ (122,142)   EFX_ADD         0.024         8.169    arithmetic/sub_18793/add_2/i13|CI 
+ (122,142)   EFX_ADD         0.000         8.169    arithmetic/sub_18793/add_2/i13|CO 
+             net (fo=1)      0.000         8.169    arithmetic/sub_18793/add_2/n26    
+ (122,143)   EFX_ADD         0.024         8.193    arithmetic/sub_18793/add_2/i14|CI 
+ (122,143)   EFX_ADD         0.000         8.193    arithmetic/sub_18793/add_2/i14|CO 
+             net (fo=1)      0.000         8.193    arithmetic/sub_18793/add_2/n28    
+ (122,144)   EFX_ADD         0.024         8.217    arithmetic/sub_18793/add_2/i15|CI 
+ (122,144)   EFX_ADD         0.000         8.217    arithmetic/sub_18793/add_2/i15|CO 
+             net (fo=1)      0.000         8.217    arithmetic/sub_18793/add_2/n30    
+ (122,145)   EFX_ADD         0.024         8.241    arithmetic/sub_18793/add_2/i16|CI 
+ (122,145)   EFX_ADD         0.000         8.241    arithmetic/sub_18793/add_2/i16|CO 
+             net (fo=1)      0.000         8.241    arithmetic/sub_18793/add_2/n32    
+ (122,146)   EFX_ADD         0.024         8.265    arithmetic/sub_18793/add_2/i17|CI 
+ (122,146)   EFX_ADD         0.000         8.265    arithmetic/sub_18793/add_2/i17|CO 
+             net (fo=1)      0.000         8.265    arithmetic/sub_18793/add_2/n34    
+ (122,147)   EFX_ADD         0.024         8.289    arithmetic/sub_18793/add_2/i18|CI 
+ (122,147)   EFX_ADD         0.000         8.289    arithmetic/sub_18793/add_2/i18|CO 
+             net (fo=1)      0.000         8.289    arithmetic/sub_18793/add_2/n36    
+ (122,148)   EFX_ADD         0.024         8.313    arithmetic/sub_18793/add_2/i19|CI 
+ (122,148)   EFX_ADD         0.000         8.313    arithmetic/sub_18793/add_2/i19|CO 
+             net (fo=1)      0.000         8.313    arithmetic/sub_18793/add_2/n38    
+ (122,149)   EFX_ADD         0.024         8.337    arithmetic/sub_18793/add_2/i20|CI 
+ (122,149)   EFX_ADD         0.000         8.337    arithmetic/sub_18793/add_2/i20|CO 
+             net (fo=1)      0.000         8.337    arithmetic/sub_18793/add_2/n40    
+ (122,150)   EFX_ADD         0.024         8.361    arithmetic/sub_18793/add_2/i21|CI 
+ (122,150)   EFX_ADD         0.000         8.361    arithmetic/sub_18793/add_2/i21|CO 
+             net (fo=1)      0.000         8.361    arithmetic/sub_18793/add_2/n42    
+ (122,151)   EFX_ADD         0.024         8.385    arithmetic/sub_18793/add_2/i22|CI 
+ (122,151)   EFX_ADD         0.000         8.385    arithmetic/sub_18793/add_2/i22|CO 
+             net (fo=1)      0.000         8.385    arithmetic/sub_18793/add_2/n44    
+ (122,152)   EFX_ADD         0.024         8.409    arithmetic/sub_18793/add_2/i23|CI 
+ (122,152)   EFX_ADD         0.000         8.409    arithmetic/sub_18793/add_2/i23|CO 
+             net (fo=1)      0.000         8.409    arithmetic/sub_18793/add_2/n46    
+ (122,153)   EFX_ADD         0.024         8.433    arithmetic/sub_18793/add_2/i24|CI 
+ (122,153)   EFX_ADD         0.000         8.433    arithmetic/sub_18793/add_2/i24|CO 
+             net (fo=1)      0.000         8.433    arithmetic/sub_18793/add_2/n48    
+ (122,154)   EFX_ADD         0.024         8.457    arithmetic/sub_18793/add_2/i25|CI 
+ (122,154)   EFX_ADD         0.000         8.457    arithmetic/sub_18793/add_2/i25|CO 
+             net (fo=1)      0.000         8.457    arithmetic/sub_18793/add_2/n50    
+ (122,155)   EFX_ADD         0.024         8.481    arithmetic/sub_18793/add_2/i26|CI 
+ (122,155)   EFX_ADD         0.000         8.481    arithmetic/sub_18793/add_2/i26|CO 
+             net (fo=1)      0.000         8.481    arithmetic/sub_18793/add_2/n52    
+ (122,156)   EFX_ADD         0.024         8.505    arithmetic/sub_18793/add_2/i27|CI 
+ (122,156)   EFX_ADD         0.000         8.505    arithmetic/sub_18793/add_2/i27|CO 
+             net (fo=1)      0.000         8.505    arithmetic/sub_18793/add_2/n54    
+ (122,157)   EFX_ADD         0.024         8.529    arithmetic/sub_18793/add_2/i28|CI 
+ (122,157)   EFX_ADD         0.000         8.529    arithmetic/sub_18793/add_2/i28|CO 
+             net (fo=1)      0.000         8.529    arithmetic/sub_18793/add_2/n56    
+ (122,158)   EFX_ADD         0.024         8.553    arithmetic/sub_18793/add_2/i29|CI 
+ (122,158)   EFX_ADD         0.000         8.553    arithmetic/sub_18793/add_2/i29|CO 
+             net (fo=1)      0.000         8.553    arithmetic/sub_18793/add_2/n58    
+ (122,159)   EFX_ADD         0.024         8.577    arithmetic/sub_18793/add_2/i30|CI 
+ (122,159)   EFX_ADD         0.000         8.577    arithmetic/sub_18793/add_2/i30|CO 
+             net (fo=1)      0.000         8.577    arithmetic/sub_18793/add_2/n60    
+ (122,160)   EFX_ADD         0.024         8.601    arithmetic/sub_18793/add_2/i31|CI 
+ (122,160)   EFX_ADD         0.000         8.601    arithmetic/sub_18793/add_2/i31|CO 
+             net (fo=1)      0.000         8.601    arithmetic/sub_18793/add_2/n62    
+ (122,161)   EFX_ADD         0.024         8.625    arithmetic/sub_18793/add_2/i32|CI 
+ (122,161)   EFX_ADD         0.000         8.625    arithmetic/sub_18793/add_2/i32|CO 
+             net (fo=1)      0.000         8.625    arithmetic/sub_18793/add_2/n64    
+ (122,162)   EFX_ADD         0.024         8.649    arithmetic/sub_18793/add_2/i33|CI 
+ (122,162)   EFX_ADD         0.000         8.649    arithmetic/sub_18793/add_2/i33|CO 
+             net (fo=1)      0.000         8.649    arithmetic/sub_18793/add_2/n66    
+ (122,163)   EFX_ADD         0.024         8.673    arithmetic/sub_18793/add_2/i34|CI 
+ (122,163)   EFX_ADD         0.000         8.673    arithmetic/sub_18793/add_2/i34|CO 
+             net (fo=1)      0.000         8.673    arithmetic/sub_18793/add_2/n68    
+ (122,164)   EFX_ADD         0.024         8.697    arithmetic/sub_18793/add_2/i35|CI 
+ (122,164)   EFX_ADD         0.000         8.697    arithmetic/sub_18793/add_2/i35|CO 
+             net (fo=1)      0.000         8.697    arithmetic/sub_18793/add_2/n70    
+ (122,165)   EFX_ADD         0.024         8.721    arithmetic/sub_18793/add_2/i36|CI 
+ (122,165)   EFX_ADD         0.000         8.721    arithmetic/sub_18793/add_2/i36|CO 
+             net (fo=1)      0.000         8.721    arithmetic/sub_18793/add_2/n72    
+ (122,166)   EFX_ADD         0.024         8.745    arithmetic/sub_18793/add_2/i37|CI 
+ (122,166)   EFX_ADD         0.000         8.745    arithmetic/sub_18793/add_2/i37|CO 
+             net (fo=1)      0.000         8.745    arithmetic/sub_18793/add_2/n74    
+ (122,167)   EFX_ADD         0.024         8.769    arithmetic/sub_18793/add_2/i38|CI 
+ (122,167)   EFX_ADD         0.000         8.769    arithmetic/sub_18793/add_2/i38|CO 
+             net (fo=1)      0.000         8.769    arithmetic/sub_18793/add_2/n76    
+ (122,168)   EFX_ADD         0.024         8.793    arithmetic/sub_18793/add_2/i39|CI 
+ (122,168)   EFX_ADD         0.000         8.793    arithmetic/sub_18793/add_2/i39|CO 
+             net (fo=1)      0.000         8.793    arithmetic/sub_18793/add_2/n78    
+ (122,169)   EFX_ADD         0.024         8.817    arithmetic/sub_18793/add_2/i40|CI 
+ (122,169)   EFX_ADD         0.000         8.817    arithmetic/sub_18793/add_2/i40|CO 
+             net (fo=1)      0.000         8.817    arithmetic/sub_18793/add_2/n80    
+ (122,170)   EFX_ADD         0.024         8.841    arithmetic/sub_18793/add_2/i41|CI 
+ (122,170)   EFX_ADD         0.000         8.841    arithmetic/sub_18793/add_2/i41|CO 
+             net (fo=1)      0.000         8.841    arithmetic/sub_18793/add_2/n82    
+ (122,171)   EFX_ADD         0.024         8.865    arithmetic/sub_18793/add_2/i42|CI 
+ (122,171)   EFX_ADD         0.000         8.865    arithmetic/sub_18793/add_2/i42|CO 
+             net (fo=1)      0.000         8.865    arithmetic/sub_18793/add_2/n84    
+ (122,172)   EFX_ADD         0.024         8.889    arithmetic/sub_18793/add_2/i43|CI 
+ (122,172)   EFX_ADD         0.000         8.889    arithmetic/sub_18793/add_2/i43|CO 
+             net (fo=1)      0.000         8.889    arithmetic/sub_18793/add_2/n86    
+ (122,173)   EFX_ADD         0.024         8.913    arithmetic/sub_18793/add_2/i44|CI 
+ (122,173)   EFX_ADD         0.000         8.913    arithmetic/sub_18793/add_2/i44|CO 
+             net (fo=1)      0.000         8.913    arithmetic/sub_18793/add_2/n88    
+ (122,174)   EFX_ADD         0.024         8.937    arithmetic/sub_18793/add_2/i45|CI 
+ (122,174)   EFX_ADD         0.000         8.937    arithmetic/sub_18793/add_2/i45|CO 
+             net (fo=1)      0.000         8.937    arithmetic/sub_18793/add_2/n90    
+ (122,175)   EFX_ADD         0.024         8.961    arithmetic/sub_18793/add_2/i46|CI 
+ (122,175)   EFX_ADD         0.000         8.961    arithmetic/sub_18793/add_2/i46|CO 
+             net (fo=1)      0.000         8.961    arithmetic/sub_18793/add_2/n92    
+ (122,176)   EFX_ADD         0.024         8.985    arithmetic/sub_18793/add_2/i47|CI 
+ (122,176)   EFX_ADD         0.000         8.985    arithmetic/sub_18793/add_2/i47|CO 
+             net (fo=1)      0.000         8.985    arithmetic/sub_18793/add_2/n94    
+ (122,177)   EFX_ADD         0.024         9.009    arithmetic/sub_18793/add_2/i48|CI 
+ (122,177)   EFX_ADD         0.000         9.009    arithmetic/sub_18793/add_2/i48|CO 
+             net (fo=1)      0.000         9.009    arithmetic/sub_18793/add_2/n96    
+ (122,178)   EFX_ADD         0.024         9.033    arithmetic/sub_18793/add_2/i49|CI 
+ (122,178)   EFX_ADD         0.000         9.033    arithmetic/sub_18793/add_2/i49|CO 
+             net (fo=1)      0.000         9.033    arithmetic/sub_18793/add_2/n98    
+ (122,179)   EFX_ADD         0.024         9.057    arithmetic/sub_18793/add_2/i50|CI 
+ (122,179)   EFX_ADD         0.000         9.057    arithmetic/sub_18793/add_2/i50|CO 
+             net (fo=1)      0.000         9.057    arithmetic/sub_18793/add_2/n100   
+ (122,180)   EFX_ADD         0.024         9.081    arithmetic/sub_18793/add_2/i51|CI 
+ (122,180)   EFX_ADD         0.000         9.081    arithmetic/sub_18793/add_2/i51|CO 
+             net (fo=1)      0.000         9.081    arithmetic/sub_18793/add_2/n102   
+ (122,181)   EFX_ADD         0.024         9.105    arithmetic/sub_18793/add_2/i52|CI 
+ (122,181)   EFX_ADD         0.000         9.105    arithmetic/sub_18793/add_2/i52|CO 
+             net (fo=1)      0.000         9.105    arithmetic/sub_18793/add_2/n104   
+ (122,182)   EFX_ADD         0.024         9.129    arithmetic/sub_18793/add_2/i53|CI 
+ (122,182)   EFX_ADD         0.000         9.129    arithmetic/sub_18793/add_2/i53|CO 
+             net (fo=1)      0.000         9.129    arithmetic/sub_18793/add_2/n106   
+ (122,183)   EFX_ADD         0.024         9.153    arithmetic/sub_18793/add_2/i54|CI 
+ (122,183)   EFX_ADD         0.000         9.153    arithmetic/sub_18793/add_2/i54|CO 
+             net (fo=1)      0.000         9.153    arithmetic/sub_18793/add_2/n108   
+ (122,184)   EFX_ADD         0.024         9.177    arithmetic/sub_18793/add_2/i55|CI 
+ (122,184)   EFX_ADD         0.000         9.177    arithmetic/sub_18793/add_2/i55|CO 
+             net (fo=1)      0.000         9.177    arithmetic/sub_18793/add_2/n110   
+ (122,185)   EFX_ADD         0.024         9.201    arithmetic/sub_18793/add_2/i56|CI 
+ (122,185)   EFX_ADD         0.000         9.201    arithmetic/sub_18793/add_2/i56|CO 
+             net (fo=1)      0.000         9.201    arithmetic/sub_18793/add_2/n112   
+ (122,186)   EFX_ADD         0.024         9.225    arithmetic/sub_18793/add_2/i57|CI 
+ (122,186)   EFX_ADD         0.000         9.225    arithmetic/sub_18793/add_2/i57|CO 
+             net (fo=1)      0.000         9.225    arithmetic/sub_18793/add_2/n114   
+ (122,187)   EFX_ADD         0.024         9.249    arithmetic/sub_18793/add_2/i58|CI 
+ (122,187)   EFX_ADD         0.000         9.249    arithmetic/sub_18793/add_2/i58|CO 
+             net (fo=1)      0.000         9.249    arithmetic/sub_18793/add_2/n116   
+ (122,188)   EFX_ADD         0.024         9.273    arithmetic/sub_18793/add_2/i59|CI 
+ (122,188)   EFX_ADD         0.000         9.273    arithmetic/sub_18793/add_2/i59|CO 
+             net (fo=1)      0.000         9.273    arithmetic/sub_18793/add_2/n118   
+ (122,189)   EFX_ADD         0.024         9.297    arithmetic/sub_18793/add_2/i60|CI 
+ (122,189)   EFX_ADD         0.000         9.297    arithmetic/sub_18793/add_2/i60|CO 
+             net (fo=1)      0.000         9.297    arithmetic/sub_18793/add_2/n120   
+ (122,190)   EFX_ADD         0.024         9.321    arithmetic/sub_18793/add_2/i61|CI 
+ (122,190)   EFX_ADD         0.000         9.321    arithmetic/sub_18793/add_2/i61|CO 
+             net (fo=1)      0.000         9.321    arithmetic/sub_18793/add_2/n122   
+ (122,191)   EFX_ADD         0.024         9.345    arithmetic/sub_18793/add_2/i62|CI 
+ (122,191)   EFX_ADD         0.000         9.345    arithmetic/sub_18793/add_2/i62|CO 
+             net (fo=1)      0.000         9.345    arithmetic/sub_18793/add_2/n124   
+ (122,192)   EFX_ADD         0.024         9.369    arithmetic/sub_18793/add_2/i63|CI 
+ (122,192)   EFX_ADD         0.000         9.369    arithmetic/sub_18793/add_2/i63|CO 
+             net (fo=1)      0.000         9.369    arithmetic/sub_18793/add_2/n126   
+ (122,193)   EFX_ADD         0.024         9.393    arithmetic/sub_18793/add_2/i64|CI 
+ (122,193)   EFX_ADD         0.000         9.393    arithmetic/sub_18793/add_2/i64|CO 
+             net (fo=1)      0.000         9.393    arithmetic/sub_18793/add_2/n128   
+ (122,194)   EFX_ADD         0.024         9.417    arithmetic/sub_18793/add_2/i65|CI 
+ (122,194)   EFX_ADD         0.000         9.417    arithmetic/sub_18793/add_2/i65|CO 
+             net (fo=1)      0.000         9.417    arithmetic/sub_18793/add_2/n130   
+ (122,195)   EFX_ADD         0.024         9.441    arithmetic/sub_18793/add_2/i66|CI 
+ (122,195)   EFX_ADD         0.000         9.441    arithmetic/sub_18793/add_2/i66|CO 
+             net (fo=1)      0.000         9.441    arithmetic/sub_18793/add_2/n132   
+ (122,196)   EFX_ADD         0.024         9.465    arithmetic/sub_18793/add_2/i67|CI 
+ (122,196)   EFX_ADD         0.000         9.465    arithmetic/sub_18793/add_2/i67|CO 
+             net (fo=1)      0.000         9.465    arithmetic/sub_18793/add_2/n134   
+ (122,197)   EFX_ADD         0.024         9.489    arithmetic/sub_18793/add_2/i68|CI 
+ (122,197)   EFX_ADD         0.000         9.489    arithmetic/sub_18793/add_2/i68|CO 
+             net (fo=1)      0.000         9.489    arithmetic/sub_18793/add_2/n136   
+ (122,198)   EFX_ADD         0.024         9.513    arithmetic/sub_18793/add_2/i69|CI 
+ (122,198)   EFX_ADD         0.000         9.513    arithmetic/sub_18793/add_2/i69|CO 
+             net (fo=1)      0.000         9.513    arithmetic/sub_18793/add_2/n138   
+ (122,199)   EFX_ADD         0.024         9.537    arithmetic/sub_18793/add_2/i70|CI 
+ (122,199)   EFX_ADD         0.000         9.537    arithmetic/sub_18793/add_2/i70|CO 
+             net (fo=1)      0.000         9.537    arithmetic/sub_18793/add_2/n140   
+ (122,200)   EFX_ADD         0.024         9.561    arithmetic/sub_18793/add_2/i71|CI 
+ (122,200)   EFX_ADD         0.000         9.561    arithmetic/sub_18793/add_2/i71|CO 
+             net (fo=1)      0.000         9.561    arithmetic/sub_18793/add_2/n142   
+ (122,201)   EFX_ADD         0.024         9.585    arithmetic/sub_18793/add_2/i72|CI 
+ (122,201)   EFX_ADD         0.000         9.585    arithmetic/sub_18793/add_2/i72|CO 
+             net (fo=1)      0.000         9.585    arithmetic/sub_18793/add_2/n144   
+ (122,202)   EFX_ADD         0.024         9.609    arithmetic/sub_18793/add_2/i73|CI 
+ (122,202)   EFX_ADD         0.000         9.609    arithmetic/sub_18793/add_2/i73|CO 
+             net (fo=1)      0.000         9.609    arithmetic/sub_18793/add_2/n146   
+ (122,203)   EFX_ADD         0.024         9.633    arithmetic/sub_18793/add_2/i74|CI 
+ (122,203)   EFX_ADD         0.000         9.633    arithmetic/sub_18793/add_2/i74|CO 
+             net (fo=1)      0.000         9.633    arithmetic/sub_18793/add_2/n148   
+ (122,204)   EFX_ADD         0.024         9.657    arithmetic/sub_18793/add_2/i75|CI 
+ (122,204)   EFX_ADD         0.000         9.657    arithmetic/sub_18793/add_2/i75|CO 
+             net (fo=1)      0.000         9.657    arithmetic/sub_18793/add_2/n150   
+ (122,205)   EFX_ADD         0.024         9.681    arithmetic/sub_18793/add_2/i76|CI 
+ (122,205)   EFX_ADD         0.000         9.681    arithmetic/sub_18793/add_2/i76|CO 
+             net (fo=1)      0.000         9.681    arithmetic/sub_18793/add_2/n152   
+ (122,206)   EFX_ADD         0.024         9.705    arithmetic/sub_18793/add_2/i77|CI 
+ (122,206)   EFX_ADD         0.000         9.705    arithmetic/sub_18793/add_2/i77|CO 
+             net (fo=1)      0.000         9.705    arithmetic/sub_18793/add_2/n154   
+ (122,207)   EFX_ADD         0.024         9.729    arithmetic/sub_18793/add_2/i78|CI 
+ (122,207)   EFX_ADD         0.000         9.729    arithmetic/sub_18793/add_2/i78|CO 
+             net (fo=1)      0.000         9.729    arithmetic/sub_18793/add_2/n156   
+ (122,208)   EFX_ADD         0.024         9.753    arithmetic/sub_18793/add_2/i79|CI 
+ (122,208)   EFX_ADD         0.000         9.753    arithmetic/sub_18793/add_2/i79|CO 
+             net (fo=1)      0.000         9.753    arithmetic/sub_18793/add_2/n158   
+ (122,209)   EFX_ADD         0.024         9.777    arithmetic/sub_18793/add_2/i80|CI 
+ (122,209)   EFX_ADD         0.000         9.777    arithmetic/sub_18793/add_2/i80|CO 
+             net (fo=1)      0.000         9.777    arithmetic/sub_18793/add_2/n160   
+ (122,210)   EFX_ADD         0.024         9.801    arithmetic/sub_18793/add_2/i81|CI 
+ (122,210)   EFX_ADD         0.000         9.801    arithmetic/sub_18793/add_2/i81|CO 
+             net (fo=1)      0.000         9.801    arithmetic/sub_18793/add_2/n162   
+ (122,211)   EFX_ADD         0.024         9.825    arithmetic/sub_18793/add_2/i82|CI 
+ (122,211)   EFX_ADD         0.000         9.825    arithmetic/sub_18793/add_2/i82|CO 
+             net (fo=1)      0.000         9.825    arithmetic/sub_18793/add_2/n164   
+ (122,212)   EFX_ADD         0.024         9.849    arithmetic/sub_18793/add_2/i83|CI 
+ (122,212)   EFX_ADD         0.000         9.849    arithmetic/sub_18793/add_2/i83|CO 
+             net (fo=1)      0.000         9.849    arithmetic/sub_18793/add_2/n166   
+ (122,213)   EFX_ADD         0.024         9.873    arithmetic/sub_18793/add_2/i84|CI 
+ (122,213)   EFX_ADD         0.000         9.873    arithmetic/sub_18793/add_2/i84|CO 
+             net (fo=1)      0.000         9.873    arithmetic/sub_18793/add_2/n168   
+ (122,214)   EFX_ADD         0.024         9.897    arithmetic/sub_18793/add_2/i85|CI 
+ (122,214)   EFX_ADD         0.000         9.897    arithmetic/sub_18793/add_2/i85|CO 
+             net (fo=1)      0.000         9.897    arithmetic/sub_18793/add_2/n170   
+ (122,215)   EFX_ADD         0.024         9.921    arithmetic/sub_18793/add_2/i86|CI 
+ (122,215)   EFX_ADD         0.000         9.921    arithmetic/sub_18793/add_2/i86|CO 
+             net (fo=1)      0.000         9.921    arithmetic/sub_18793/add_2/n172   
+ (122,216)   EFX_ADD         0.024         9.945    arithmetic/sub_18793/add_2/i87|CI 
+ (122,216)   EFX_ADD         0.000         9.945    arithmetic/sub_18793/add_2/i87|CO 
+             net (fo=1)      0.000         9.945    arithmetic/sub_18793/add_2/n174   
+ (122,217)   EFX_ADD         0.024         9.969    arithmetic/sub_18793/add_2/i88|CI 
+ (122,217)   EFX_ADD         0.000         9.969    arithmetic/sub_18793/add_2/i88|CO 
+             net (fo=1)      0.000         9.969    arithmetic/sub_18793/add_2/n176   
+ (122,218)   EFX_ADD         0.024         9.993    arithmetic/sub_18793/add_2/i89|CI 
+ (122,218)   EFX_ADD         0.000         9.993    arithmetic/sub_18793/add_2/i89|CO 
+             net (fo=1)      0.000         9.993    arithmetic/sub_18793/add_2/n178   
+ (122,219)   EFX_ADD         0.024        10.017    arithmetic/sub_18793/add_2/i90|CI 
+ (122,219)   EFX_ADD         0.000        10.017    arithmetic/sub_18793/add_2/i90|CO 
+             net (fo=1)      0.000        10.017    arithmetic/sub_18793/add_2/n180   
+ (122,220)   EFX_ADD         0.024        10.041    arithmetic/sub_18793/add_2/i91|CI 
+ (122,220)   EFX_ADD         0.000        10.041    arithmetic/sub_18793/add_2/i91|CO 
+             net (fo=1)      0.000        10.041    arithmetic/sub_18793/add_2/n182   
+ (122,221)   EFX_ADD         0.024        10.065    arithmetic/sub_18793/add_2/i92|CI 
+ (122,221)   EFX_ADD         0.000        10.065    arithmetic/sub_18793/add_2/i92|CO 
+             net (fo=1)      0.000        10.065    arithmetic/sub_18793/add_2/n184   
+ (122,222)   EFX_ADD         0.024        10.089    arithmetic/sub_18793/add_2/i93|CI 
+ (122,222)   EFX_ADD         0.000        10.089    arithmetic/sub_18793/add_2/i93|CO 
+             net (fo=1)      0.000        10.089    arithmetic/sub_18793/add_2/n186   
+ (122,223)   EFX_ADD         0.024        10.113    arithmetic/sub_18793/add_2/i94|CI 
+ (122,223)   EFX_ADD         0.000        10.113    arithmetic/sub_18793/add_2/i94|CO 
+             net (fo=1)      0.000        10.113    arithmetic/sub_18793/add_2/n188   
+ (122,224)   EFX_ADD         0.024        10.137    arithmetic/sub_18793/add_2/i95|CI 
+ (122,224)   EFX_ADD         0.000        10.137    arithmetic/sub_18793/add_2/i95|CO 
+             net (fo=1)      0.000        10.137    arithmetic/sub_18793/add_2/n190   
+ (122,225)   EFX_ADD         0.024        10.161    arithmetic/sub_18793/add_2/i96|CI 
+ (122,225)   EFX_ADD         0.000        10.161    arithmetic/sub_18793/add_2/i96|CO 
+             net (fo=1)      0.000        10.161    arithmetic/sub_18793/add_2/n192   
+ (122,226)   EFX_ADD         0.024        10.185    arithmetic/sub_18793/add_2/i97|CI 
+ (122,226)   EFX_ADD         0.000        10.185    arithmetic/sub_18793/add_2/i97|CO 
+             net (fo=1)      0.000        10.185    arithmetic/sub_18793/add_2/n194   
+ (122,227)   EFX_ADD         0.024        10.209    arithmetic/sub_18793/add_2/i98|CI 
+ (122,227)   EFX_ADD         0.000        10.209    arithmetic/sub_18793/add_2/i98|CO 
+             net (fo=1)      0.000        10.209    arithmetic/sub_18793/add_2/n196   
+ (122,228)   EFX_ADD         0.024        10.233    arithmetic/sub_18793/add_2/i99|CI 
+ (122,228)   EFX_ADD         0.000        10.233    arithmetic/sub_18793/add_2/i99|CO 
+             net (fo=1)      0.000        10.233    arithmetic/sub_18793/add_2/n198   
+ (122,229)   EFX_ADD         0.024        10.257    arithmetic/sub_18793/add_2/i100|CI
+ (122,229)   EFX_ADD         0.000        10.257    arithmetic/sub_18793/add_2/i100|CO
+             net (fo=1)      0.000        10.257    arithmetic/sub_18793/add_2/n200   
+ (122,230)   EFX_ADD         0.024        10.281    arithmetic/sub_18793/add_2/i101|CI
+ (122,230)   EFX_ADD         0.000        10.281    arithmetic/sub_18793/add_2/i101|CO
+             net (fo=1)      0.000        10.281    arithmetic/sub_18793/add_2/n202   
+ (122,231)   EFX_ADD         0.024        10.305    arithmetic/sub_18793/add_2/i102|CI
+ (122,231)   EFX_ADD         0.000        10.305    arithmetic/sub_18793/add_2/i102|CO
+             net (fo=1)      0.000        10.305    arithmetic/sub_18793/add_2/n204   
+ (122,232)   EFX_ADD         0.024        10.329    arithmetic/sub_18793/add_2/i103|CI
+ (122,232)   EFX_ADD         0.000        10.329    arithmetic/sub_18793/add_2/i103|CO
+             net (fo=1)      0.000        10.329    arithmetic/sub_18793/add_2/n206   
+ (122,233)   EFX_ADD         0.024        10.353    arithmetic/sub_18793/add_2/i104|CI
+ (122,233)   EFX_ADD         0.000        10.353    arithmetic/sub_18793/add_2/i104|CO
+             net (fo=1)      0.000        10.353    arithmetic/sub_18793/add_2/n208   
+ (122,234)   EFX_ADD         0.024        10.377    arithmetic/sub_18793/add_2/i105|CI
+ (122,234)   EFX_ADD         0.000        10.377    arithmetic/sub_18793/add_2/i105|CO
+             net (fo=1)      0.000        10.377    arithmetic/sub_18793/add_2/n210   
+ (122,235)   EFX_ADD         0.024        10.401    arithmetic/sub_18793/add_2/i106|CI
+ (122,235)   EFX_ADD         0.000        10.401    arithmetic/sub_18793/add_2/i106|CO
+             net (fo=1)      0.000        10.401    arithmetic/sub_18793/add_2/n212   
+ (122,236)   EFX_ADD         0.024        10.425    arithmetic/sub_18793/add_2/i107|CI
+ (122,236)   EFX_ADD         0.000        10.425    arithmetic/sub_18793/add_2/i107|CO
+             net (fo=1)      0.000        10.425    arithmetic/sub_18793/add_2/n214   
+ (122,237)   EFX_ADD         0.024        10.449    arithmetic/sub_18793/add_2/i108|CI
+ (122,237)   EFX_ADD         0.000        10.449    arithmetic/sub_18793/add_2/i108|CO
+             net (fo=1)      0.000        10.449    arithmetic/sub_18793/add_2/n216   
+ (122,238)   EFX_ADD         0.024        10.473    arithmetic/sub_18793/add_2/i109|CI
+ (122,238)   EFX_ADD         0.000        10.473    arithmetic/sub_18793/add_2/i109|CO
+             net (fo=1)      0.000        10.473    arithmetic/sub_18793/add_2/n218   
+ (122,239)   EFX_ADD         0.024        10.497    arithmetic/sub_18793/add_2/i110|CI
+ (122,239)   EFX_ADD         0.000        10.497    arithmetic/sub_18793/add_2/i110|CO
+             net (fo=1)      0.000        10.497    arithmetic/sub_18793/add_2/n220   
+ (122,240)   EFX_ADD         0.024        10.521    arithmetic/sub_18793/add_2/i111|CI
+ (122,240)   EFX_ADD         0.000        10.521    arithmetic/sub_18793/add_2/i111|CO
+             net (fo=1)      0.000        10.521    arithmetic/sub_18793/add_2/n222   
+ (122,241)   EFX_ADD         0.024        10.545    arithmetic/sub_18793/add_2/i112|CI
+ (122,241)   EFX_ADD         0.000        10.545    arithmetic/sub_18793/add_2/i112|CO
+             net (fo=1)      0.000        10.545    arithmetic/sub_18793/add_2/n224   
+ (122,242)   EFX_ADD         0.024        10.569    arithmetic/sub_18793/add_2/i113|CI
+ (122,242)   EFX_ADD         0.000        10.569    arithmetic/sub_18793/add_2/i113|CO
+             net (fo=1)      0.000        10.569    arithmetic/sub_18793/add_2/n226   
+ (122,243)   EFX_ADD         0.024        10.593    arithmetic/sub_18793/add_2/i114|CI
+ (122,243)   EFX_ADD         0.000        10.593    arithmetic/sub_18793/add_2/i114|CO
+             net (fo=1)      0.000        10.593    arithmetic/sub_18793/add_2/n228   
+ (122,244)   EFX_ADD         0.024        10.617    arithmetic/sub_18793/add_2/i115|CI
+ (122,244)   EFX_ADD         0.000        10.617    arithmetic/sub_18793/add_2/i115|CO
+             net (fo=1)      0.000        10.617    arithmetic/sub_18793/add_2/n230   
+ (122,245)   EFX_ADD         0.024        10.641    arithmetic/sub_18793/add_2/i116|CI
+ (122,245)   EFX_ADD         0.000        10.641    arithmetic/sub_18793/add_2/i116|CO
+             net (fo=1)      0.000        10.641    arithmetic/sub_18793/add_2/n232   
+ (122,246)   EFX_ADD         0.024        10.665    arithmetic/sub_18793/add_2/i117|CI
+ (122,246)   EFX_ADD         0.000        10.665    arithmetic/sub_18793/add_2/i117|CO
+             net (fo=1)      0.000        10.665    arithmetic/sub_18793/add_2/n234   
+ (122,247)   EFX_ADD         0.024        10.689    arithmetic/sub_18793/add_2/i118|CI
+ (122,247)   EFX_ADD         0.000        10.689    arithmetic/sub_18793/add_2/i118|CO
+             net (fo=1)      0.000        10.689    arithmetic/sub_18793/add_2/n236   
+ (122,248)   EFX_ADD         0.024        10.713    arithmetic/sub_18793/add_2/i119|CI
+ (122,248)   EFX_ADD         0.000        10.713    arithmetic/sub_18793/add_2/i119|CO
+             net (fo=1)      0.000        10.713    arithmetic/sub_18793/add_2/n238   
+ (122,249)   EFX_ADD         0.024        10.737    arithmetic/sub_18793/add_2/i120|CI
+ (122,249)   EFX_ADD         0.000        10.737    arithmetic/sub_18793/add_2/i120|CO
+             net (fo=1)      0.000        10.737    arithmetic/sub_18793/add_2/n240   
+ (122,250)   EFX_ADD         0.024        10.761    arithmetic/sub_18793/add_2/i121|CI
+ (122,250)   EFX_ADD         0.000        10.761    arithmetic/sub_18793/add_2/i121|CO
+             net (fo=1)      0.000        10.761    arithmetic/sub_18793/add_2/n242   
+ (122,251)   EFX_ADD         0.024        10.785    arithmetic/sub_18793/add_2/i122|CI
+ (122,251)   EFX_ADD         0.000        10.785    arithmetic/sub_18793/add_2/i122|CO
+             net (fo=1)      0.000        10.785    arithmetic/sub_18793/add_2/n244   
+ (122,252)   EFX_ADD         0.024        10.809    arithmetic/sub_18793/add_2/i123|CI
+ (122,252)   EFX_ADD         0.000        10.809    arithmetic/sub_18793/add_2/i123|CO
+             net (fo=1)      0.000        10.809    arithmetic/sub_18793/add_2/n246   
+ (122,253)   EFX_ADD         0.024        10.833    arithmetic/sub_18793/add_2/i124|CI
+ (122,253)   EFX_ADD         0.000        10.833    arithmetic/sub_18793/add_2/i124|CO
+             net (fo=1)      0.000        10.833    arithmetic/sub_18793/add_2/n248   
+ (122,254)   EFX_ADD         0.024        10.857    arithmetic/sub_18793/add_2/i125|CI
+ (122,254)   EFX_ADD         0.000        10.857    arithmetic/sub_18793/add_2/i125|CO
+             net (fo=1)      0.000        10.857    arithmetic/sub_18793/add_2/n250   
+ (122,255)   EFX_ADD         0.024        10.881    arithmetic/sub_18793/add_2/i126|CI
+ (122,255)   EFX_ADD         0.000        10.881    arithmetic/sub_18793/add_2/i126|CO
+             net (fo=1)      0.000        10.881    arithmetic/sub_18793/add_2/n252   
+ (122,256)   EFX_ADD         0.024        10.905    arithmetic/sub_18793/add_2/i127|CI
+ (122,256)   EFX_ADD         0.000        10.905    arithmetic/sub_18793/add_2/i127|CO
+             net (fo=1)      0.000        10.905    arithmetic/sub_18793/add_2/n254   
+ (122,257)   EFX_ADD         0.024        10.929    arithmetic/sub_18793/add_2/i128|CI
+ (122,257)   EFX_ADD         0.000        10.929    arithmetic/sub_18793/add_2/i128|CO
+             net (fo=1)      0.000        10.929    arithmetic/sub_18793/add_2/n256   
+ (122,258)   EFX_ADD         0.024        10.953    arithmetic/sub_18793/add_2/i129|CI
+ (122,258)   EFX_ADD         0.000        10.953    arithmetic/sub_18793/add_2/i129|CO
+             net (fo=1)      0.000        10.953    arithmetic/sub_18793/add_2/n258   
+ (122,259)   EFX_ADD         0.024        10.977    arithmetic/sub_18793/add_2/i130|CI
+ (122,259)   EFX_ADD         0.000        10.977    arithmetic/sub_18793/add_2/i130|CO
+             net (fo=1)      0.000        10.977    arithmetic/sub_18793/add_2/n260   
+ (122,260)   EFX_ADD         0.024        11.001    arithmetic/sub_18793/add_2/i131|CI
+ (122,260)   EFX_ADD         0.000        11.001    arithmetic/sub_18793/add_2/i131|CO
+             net (fo=1)      0.000        11.001    arithmetic/sub_18793/add_2/n262   
+ (122,261)   EFX_ADD         0.024        11.025    arithmetic/sub_18793/add_2/i132|CI
+ (122,261)   EFX_ADD         0.000        11.025    arithmetic/sub_18793/add_2/i132|CO
+             net (fo=1)      0.000        11.025    arithmetic/sub_18793/add_2/n264   
+ (122,262)   EFX_ADD         0.024        11.049    arithmetic/sub_18793/add_2/i133|CI
+ (122,262)   EFX_ADD         0.000        11.049    arithmetic/sub_18793/add_2/i133|CO
+             net (fo=1)      0.000        11.049    arithmetic/sub_18793/add_2/n266   
+ (122,263)   EFX_ADD         0.024        11.073    arithmetic/sub_18793/add_2/i134|CI
+ (122,263)   EFX_ADD         0.000        11.073    arithmetic/sub_18793/add_2/i134|CO
+             net (fo=1)      0.000        11.073    arithmetic/sub_18793/add_2/n268   
+ (122,264)   EFX_ADD         0.024        11.097    arithmetic/sub_18793/add_2/i135|CI
+ (122,264)   EFX_ADD         0.000        11.097    arithmetic/sub_18793/add_2/i135|CO
+             net (fo=1)      0.000        11.097    arithmetic/sub_18793/add_2/n270   
+ (122,265)   EFX_ADD         0.024        11.121    arithmetic/sub_18793/add_2/i136|CI
+ (122,265)   EFX_ADD         0.000        11.121    arithmetic/sub_18793/add_2/i136|CO
+             net (fo=1)      0.000        11.121    arithmetic/sub_18793/add_2/n272   
+ (122,266)   EFX_ADD         0.024        11.145    arithmetic/sub_18793/add_2/i137|CI
+ (122,266)   EFX_ADD         0.000        11.145    arithmetic/sub_18793/add_2/i137|CO
+             net (fo=1)      0.000        11.145    arithmetic/sub_18793/add_2/n274   
+ (122,267)   EFX_ADD         0.024        11.169    arithmetic/sub_18793/add_2/i138|CI
+ (122,267)   EFX_ADD         0.000        11.169    arithmetic/sub_18793/add_2/i138|CO
+             net (fo=1)      0.000        11.169    arithmetic/sub_18793/add_2/n276   
+ (122,268)   EFX_ADD         0.024        11.193    arithmetic/sub_18793/add_2/i139|CI
+ (122,268)   EFX_ADD         0.000        11.193    arithmetic/sub_18793/add_2/i139|CO
+             net (fo=1)      0.000        11.193    arithmetic/sub_18793/add_2/n278   
+ (122,269)   EFX_ADD         0.024        11.217    arithmetic/sub_18793/add_2/i140|CI
+ (122,269)   EFX_ADD         0.000        11.217    arithmetic/sub_18793/add_2/i140|CO
+             net (fo=1)      0.000        11.217    arithmetic/sub_18793/add_2/n280   
+ (122,270)   EFX_ADD         0.024        11.241    arithmetic/sub_18793/add_2/i141|CI
+ (122,270)   EFX_ADD         0.000        11.241    arithmetic/sub_18793/add_2/i141|CO
+             net (fo=1)      0.000        11.241    arithmetic/sub_18793/add_2/n282   
+ (122,271)   EFX_ADD         0.024        11.265    arithmetic/sub_18793/add_2/i142|CI
+ (122,271)   EFX_ADD         0.000        11.265    arithmetic/sub_18793/add_2/i142|CO
+             net (fo=1)      0.000        11.265    arithmetic/sub_18793/add_2/n284   
+ (122,272)   EFX_ADD         0.024        11.289    arithmetic/sub_18793/add_2/i143|CI
+ (122,272)   EFX_ADD         0.000        11.289    arithmetic/sub_18793/add_2/i143|CO
+             net (fo=1)      0.000        11.289    arithmetic/sub_18793/add_2/n286   
+ (122,273)   EFX_ADD         0.024        11.313    arithmetic/sub_18793/add_2/i144|CI
+ (122,273)   EFX_ADD         0.000        11.313    arithmetic/sub_18793/add_2/i144|CO
+             net (fo=1)      0.000        11.313    arithmetic/sub_18793/add_2/n288   
+ (122,274)   EFX_ADD         0.024        11.337    arithmetic/sub_18793/add_2/i145|CI
+ (122,274)   EFX_ADD         0.000        11.337    arithmetic/sub_18793/add_2/i145|CO
+             net (fo=1)      0.000        11.337    arithmetic/sub_18793/add_2/n290   
+ (122,275)   EFX_ADD         0.024        11.361    arithmetic/sub_18793/add_2/i146|CI
+ (122,275)   EFX_ADD         0.000        11.361    arithmetic/sub_18793/add_2/i146|CO
+             net (fo=1)      0.000        11.361    arithmetic/sub_18793/add_2/n292   
+ (122,276)   EFX_ADD         0.024        11.385    arithmetic/sub_18793/add_2/i147|CI
+ (122,276)   EFX_ADD         0.000        11.385    arithmetic/sub_18793/add_2/i147|CO
+             net (fo=1)      0.000        11.385    arithmetic/sub_18793/add_2/n294   
+ (122,277)   EFX_ADD         0.024        11.409    arithmetic/sub_18793/add_2/i148|CI
+ (122,277)   EFX_ADD         0.000        11.409    arithmetic/sub_18793/add_2/i148|CO
+             net (fo=1)      0.000        11.409    arithmetic/sub_18793/add_2/n296   
+ (122,278)   EFX_ADD         0.024        11.433    arithmetic/sub_18793/add_2/i149|CI
+ (122,278)   EFX_ADD         0.000        11.433    arithmetic/sub_18793/add_2/i149|CO
+             net (fo=1)      0.000        11.433    arithmetic/sub_18793/add_2/n298   
+ (122,279)   EFX_ADD         0.024        11.457    arithmetic/sub_18793/add_2/i150|CI
+ (122,279)   EFX_ADD         0.000        11.457    arithmetic/sub_18793/add_2/i150|CO
+             net (fo=1)      0.000        11.457    arithmetic/sub_18793/add_2/n300   
+ (122,280)   EFX_ADD         0.024        11.481    arithmetic/sub_18793/add_2/i151|CI
+ (122,280)   EFX_ADD         0.000        11.481    arithmetic/sub_18793/add_2/i151|CO
+             net (fo=1)      0.000        11.481    arithmetic/sub_18793/add_2/n302   
+ (122,281)   EFX_ADD         0.024        11.505    arithmetic/sub_18793/add_2/i152|CI
+ (122,281)   EFX_ADD         0.000        11.505    arithmetic/sub_18793/add_2/i152|CO
+             net (fo=1)      0.000        11.505    arithmetic/sub_18793/add_2/n304   
+ (122,282)   EFX_ADD         0.024        11.529    arithmetic/sub_18793/add_2/i153|CI
+ (122,282)   EFX_ADD         0.000        11.529    arithmetic/sub_18793/add_2/i153|CO
+             net (fo=1)      0.000        11.529    arithmetic/sub_18793/add_2/n306   
+ (122,283)   EFX_ADD         0.024        11.553    arithmetic/sub_18793/add_2/i154|CI
+ (122,283)   EFX_ADD         0.000        11.553    arithmetic/sub_18793/add_2/i154|CO
+             net (fo=1)      0.000        11.553    arithmetic/sub_18793/add_2/n308   
+ (122,284)   EFX_ADD         0.024        11.577    arithmetic/sub_18793/add_2/i155|CI
+ (122,284)   EFX_ADD         0.000        11.577    arithmetic/sub_18793/add_2/i155|CO
+             net (fo=1)      0.000        11.577    arithmetic/sub_18793/add_2/n310   
+ (122,285)   EFX_ADD         0.024        11.601    arithmetic/sub_18793/add_2/i156|CI
+ (122,285)   EFX_ADD         0.000        11.601    arithmetic/sub_18793/add_2/i156|CO
+             net (fo=1)      0.000        11.601    arithmetic/sub_18793/add_2/n312   
+ (122,286)   EFX_ADD         0.024        11.625    arithmetic/sub_18793/add_2/i157|CI
+ (122,286)   EFX_ADD         0.000        11.625    arithmetic/sub_18793/add_2/i157|CO
+             net (fo=1)      0.000        11.625    arithmetic/sub_18793/add_2/n314   
+ (122,287)   EFX_ADD         0.024        11.649    arithmetic/sub_18793/add_2/i158|CI
+ (122,287)   EFX_ADD         0.000        11.649    arithmetic/sub_18793/add_2/i158|CO
+             net (fo=1)      0.000        11.649    arithmetic/sub_18793/add_2/n316   
+ (122,288)   EFX_ADD         0.024        11.673    arithmetic/sub_18793/add_2/i159|CI
+ (122,288)   EFX_ADD         0.000        11.673    arithmetic/sub_18793/add_2/i159|CO
+             net (fo=1)      0.000        11.673    arithmetic/sub_18793/add_2/n318   
+ (122,289)   EFX_ADD         0.024        11.697    arithmetic/sub_18793/add_2/i160|CI
+ (122,289)   EFX_ADD         0.000        11.697    arithmetic/sub_18793/add_2/i160|CO
+             net (fo=1)      0.000        11.697    arithmetic/sub_18793/add_2/n320   
+ (122,290)   EFX_ADD         0.024        11.721    arithmetic/sub_18793/add_2/i161|CI
+ (122,290)   EFX_ADD         0.000        11.721    arithmetic/sub_18793/add_2/i161|CO
+             net (fo=1)      0.000        11.721    arithmetic/sub_18793/add_2/n322   
+ (122,291)   EFX_ADD         0.024        11.745    arithmetic/sub_18793/add_2/i162|CI
+ (122,291)   EFX_ADD         0.000        11.745    arithmetic/sub_18793/add_2/i162|CO
+             net (fo=1)      0.000        11.745    arithmetic/sub_18793/add_2/n324   
+ (122,292)   EFX_ADD         0.024        11.769    arithmetic/sub_18793/add_2/i163|CI
+ (122,292)   EFX_ADD         0.000        11.769    arithmetic/sub_18793/add_2/i163|CO
+             net (fo=1)      0.000        11.769    arithmetic/sub_18793/add_2/n326   
+ (122,293)   EFX_ADD         0.024        11.793    arithmetic/sub_18793/add_2/i164|CI
+ (122,293)   EFX_ADD         0.000        11.793    arithmetic/sub_18793/add_2/i164|CO
+             net (fo=1)      0.000        11.793    arithmetic/sub_18793/add_2/n328   
+ (122,294)   EFX_ADD         0.024        11.817    arithmetic/sub_18793/add_2/i165|CI
+ (122,294)   EFX_ADD         0.000        11.817    arithmetic/sub_18793/add_2/i165|CO
+             net (fo=1)      0.000        11.817    arithmetic/sub_18793/add_2/n330   
+ (122,295)   EFX_ADD         0.024        11.841    arithmetic/sub_18793/add_2/i166|CI
+ (122,295)   EFX_ADD         0.000        11.841    arithmetic/sub_18793/add_2/i166|CO
+             net (fo=1)      0.000        11.841    arithmetic/sub_18793/add_2/n332   
+ (122,296)   EFX_ADD         0.024        11.865    arithmetic/sub_18793/add_2/i167|CI
+ (122,296)   EFX_ADD         0.000        11.865    arithmetic/sub_18793/add_2/i167|CO
+             net (fo=1)      0.000        11.865    arithmetic/sub_18793/add_2/n334   
+ (122,297)   EFX_ADD         0.024        11.889    arithmetic/sub_18793/add_2/i168|CI
+ (122,297)   EFX_ADD         0.000        11.889    arithmetic/sub_18793/add_2/i168|CO
+             net (fo=1)      0.000        11.889    arithmetic/sub_18793/add_2/n336   
+ (122,298)   EFX_ADD         0.024        11.913    arithmetic/sub_18793/add_2/i169|CI
+ (122,298)   EFX_ADD         0.000        11.913    arithmetic/sub_18793/add_2/i169|CO
+             net (fo=1)      0.000        11.913    arithmetic/sub_18793/add_2/n338   
+ (122,299)   EFX_ADD         0.024        11.937    arithmetic/sub_18793/add_2/i170|CI
+ (122,299)   EFX_ADD         0.000        11.937    arithmetic/sub_18793/add_2/i170|CO
+             net (fo=1)      0.000        11.937    arithmetic/sub_18793/add_2/n340   
+ (122,300)   EFX_ADD         0.097        12.034    arithmetic/sub_18793/add_2/i171|CI
+ (122,300)   EFX_ADD         0.000        12.034    arithmetic/sub_18793/add_2/i171|O 
+             net (fo=2)      0.925        12.959    arithmetic/n38281                 
+ (115,170)   EFX_LUT4        0.061        13.020    LUT__50203|in[3]                  
+ (115,170)   EFX_LUT4        0.000        13.020    LUT__50203|out                    
+             net (fo=1)      0.243        13.263    n28423                            
+ (124,170)   EFX_LUT4        0.061        13.324    LUT__50208|in[1]                  
+ (124,170)   EFX_LUT4        0.000        13.324    LUT__50208|out                    
+             net (fo=1)      0.572        13.896    n28428                            
+ (125,245)   EFX_LUT4        0.061        13.957    LUT__50209|in[3]                  
+ (125,245)   EFX_LUT4        0.000        13.957    LUT__50209|out                    
+             net (fo=1)      0.235        14.192    n28429                            
+ (125,238)   EFX_LUT4        0.061        14.253    LUT__50285|in[1]                  
+ (125,238)   EFX_LUT4        0.000        14.253    LUT__50285|out                    
+             net (fo=1)      0.061        14.314    n28505                            
+ (125,237)   EFX_LUT4        0.061        14.375    LUT__50286|in[0]                  
+ (125,237)   EFX_LUT4        0.000        14.375    LUT__50286|out                    
+             net (fo=1)      0.235        14.610    n28506                            
+ (134,237)   EFX_LUT4        0.061        14.671    LUT__50355|in[0]                  
+ (134,237)   EFX_LUT4        0.000        14.671    LUT__50355|out                    
+             net (fo=1)      0.140        14.811    n28575                            
+ (134,235)   EFX_LUT4        0.061        14.872    LUT__50356|in[2]                  
+ (134,235)   EFX_LUT4        0.000        14.872    LUT__50356|out                    
+             net (fo=1)      0.061        14.933    n28576                            
+ (134,234)   EFX_LUT4        0.061        14.994    LUT__50357|in[3]                  
+ (134,234)   EFX_LUT4        0.000        14.994    LUT__50357|out                    
+             net (fo=4)      0.719        15.713    n28577                            
+ (145,193)   EFX_LUT4        0.061        15.774    LUT__64076|in[1]                  
+ (145,193)   EFX_LUT4        0.000        15.774    LUT__64076|out                    
+             net (fo=3)      0.903        16.677    n40191                            
+ (184,187)   EFX_LUT4        0.061        16.738    LUT__64081|in[0]                  
+ (184,187)   EFX_LUT4        0.000        16.738    LUT__64081|out                    
+             net (fo=1)      0.102        16.840    n40196                            
+ (184,188)   EFX_LUT4        0.061        16.901    LUT__64082|in[1]                  
+ (184,188)   EFX_LUT4        0.000        16.901    LUT__64082|out                    
+             net (fo=1)      0.000        16.901    arithmetic/n88872                 
+ (184,188)   EFX_FF          0.000        16.901    rsp_body[192]~FF|D                
+
+Capture Clock Path
+  Location     Delay Type     Incr(ns)     Path(ns)   Netlist Resource(s)
+==========================================================================
+ (0,164)     input              0.000       0.000     clk_25m             
+ (0,164)     input              0.126       0.126     clk_25m             
+             net (fo=8004)      1.939       2.065     clk_25m             
+ (184,188)   EFX_FF             0.000       2.065     rsp_body[192]~FF|CLK
+ (184,188)   EFX_FF (Setup)    -0.003       2.062     rsp_body[192]~FF    
+
+++++ Path 6 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 23.116 ns (required time - arrival time)                       
+Path Start      : arithmetic/work_slot[3][1]~FF|CLK                              
+Path End        : rsp_body[193]~FF|D                                             
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 16.755 ns                                                      
+Logic Levels    : 25                                                             
+
+Launch Clock Path Delay        :  2.065
++ Clock To Q + Data Path Delay : 16.755
+---------------------------------------
+End-of-path arrival time       : 18.820
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.003
+---------------------------------------
+End-of-path required time      : 41.936
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)          Netlist Resource(s)
+======================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                          
+  (0,164)    input            0.126        0.126     clk_25m                          
+             net (fo=8004)    1.939        2.065     clk_25m                          
+  (146,30)   EFX_FF           0.000        2.065     arithmetic/work_slot[3][1]~FF|CLK
+
+Data Path
+  Location    Delay Type    Incr(ns)     Path(ns)         Netlist Resource(s)
+===================================================================================
+ (146,30)    EFX_FF (Tco)    0.130         0.130    arithmetic/work_slot[3][1]~FF|Q
+             net (fo=17)     0.997         1.127    arithmetic/work_slot[3][1]     
+ (124,8)     EFX_LUT4        0.061         1.188    LUT__44706|in[1]               
+ (124,8)     EFX_LUT4        0.000         1.188    LUT__44706|out                 
+             net (fo=5)      0.140         1.328    n22946                         
+ (124,6)     EFX_LUT4        0.061         1.389    LUT__44707|in[2]               
+ (124,6)     EFX_LUT4        0.000         1.389    LUT__44707|out                 
+             net (fo=6)      0.493         1.882    n22947                         
+ (126,6)     EFX_LUT4        0.063         1.945    LUT__44708|in[3]               
+ (126,6)     EFX_LUT4        0.000         1.945    LUT__44708|out                 
+             net (fo=5)      1.008         2.953    n22948                         
+ (151,147)   EFX_LUT4        0.061         3.014    LUT__44718|in[0]               
+ (151,147)   EFX_LUT4        0.000         3.014    LUT__44718|out                 
+             net (fo=1)      0.420         3.434    n22958                         
+ (158,177)   EFX_LUT4        0.061         3.495    LUT__44734|in[1]               
+ (158,177)   EFX_LUT4        0.000         3.495    LUT__44734|out                 
+             net (fo=5)      0.340         3.835    n22974                         
+ (143,177)   EFX_LUT4        0.061         3.896    LUT__44735|in[0]               
+ (143,177)   EFX_LUT4        0.000         3.896    LUT__44735|out                 
+             net (fo=3)      0.763         4.659    n22975                         
+ (137,222)   EFX_LUT4        0.061         4.720    LUT__44740|in[0]               
+ (137,222)   EFX_LUT4        0.000         4.720    LUT__44740|out                 
+             net (fo=186)    1.631         6.351    n22980                         
+ (139,9)     EFX_LUT4        0.061         6.412    LUT__45415|in[0]               
+ (139,9)     EFX_LUT4        0.000         6.412    LUT__45415|out                 
+             net (fo=1)      0.669         7.081    n23645                         
+ (124,3)     EFX_LUT4        0.061         7.142    LUT__45416|in[3]               
+ (124,3)     EFX_LUT4        0.000         7.142    LUT__45416|out                 
+             net (fo=1)      0.061         7.203    n23646                         
+ (124,2)     EFX_LUT4        0.061         7.264    LUT__45417|in[2]               
+ (124,2)     EFX_LUT4        0.000         7.264    LUT__45417|out                 
+             net (fo=1)      0.703         7.967    n23647                         
+ (114,17)    EFX_LUT4        0.063         8.030    LUT__45433|in[1]               
+ (114,17)    EFX_LUT4        0.000         8.030    LUT__45433|out                 
+             net (fo=1)      0.761         8.791    n23663                         
+ (106,39)    EFX_LUT4        0.061         8.852    LUT__45434|in[3]               
+ (106,39)    EFX_LUT4        0.000         8.852    LUT__45434|out                 
+             net (fo=1)      0.102         8.954    n23664                         
+ (106,40)    EFX_LUT4        0.061         9.015    LUT__45435|in[3]               
+ (106,40)    EFX_LUT4        0.000         9.015    LUT__45435|out                 
+             net (fo=3)      1.166        10.181    n23665                         
+ (120,156)   EFX_LUT4        0.063        10.244    LUT__45481|in[0]               
+ (120,156)   EFX_LUT4        0.000        10.244    LUT__45481|out                 
+             net (fo=1)      0.251        10.495    n23711                         
+ (120,153)   EFX_LUT4        0.063        10.558    LUT__45482|in[3]               
+ (120,153)   EFX_LUT4        0.000        10.558    LUT__45482|out                 
+             net (fo=1)      0.512        11.070    n23712                         
+ (131,163)   EFX_LUT4        0.061        11.131    LUT__45498|in[2]               
+ (131,163)   EFX_LUT4        0.000        11.131    LUT__45498|out                 
+             net (fo=1)      0.552        11.683    n23725                         
+ (133,203)   EFX_LUT4        0.061        11.744    LUT__46525|in[1]               
+ (133,203)   EFX_LUT4        0.000        11.744    LUT__46525|out                 
+             net (fo=1)      0.307        12.051    n24750                         
+ (134,206)   EFX_LUT4        0.061        12.112    LUT__49519|in[1]               
+ (134,206)   EFX_LUT4        0.000        12.112    LUT__49519|out                 
+             net (fo=105)    1.293        13.405    n27739                         
+ (129,311)   EFX_LUT4        0.063        13.468    LUT__50723|in[3]               
+ (129,311)   EFX_LUT4        0.000        13.468    LUT__50723|out                 
+             net (fo=1)      0.520        13.988    n28943                         
+ (106,261)   EFX_LUT4        0.061        14.049    LUT__50742|in[1]               
+ (106,261)   EFX_LUT4        0.000        14.049    LUT__50742|out                 
+             net (fo=1)      0.654        14.703    n28962                         
+ (131,248)   EFX_LUT4        0.061        14.764    LUT__50800|in[1]               
+ (131,248)   EFX_LUT4        0.000        14.764    LUT__50800|out                 
+             net (fo=1)      0.109        14.873    n29020                         
+ (131,243)   EFX_LUT4        0.061        14.934    LUT__51001|in[2]               
+ (131,243)   EFX_LUT4        0.000        14.934    LUT__51001|out                 
+             net (fo=4)      0.925        15.859    n29221                         
+ (142,194)   EFX_LUT4        0.061        15.920    LUT__52645|in[1]               
+ (142,194)   EFX_LUT4        0.000        15.920    LUT__52645|out                 
+             net (fo=9)      0.593        16.513    n30857                         
+ (202,189)   EFX_LUT4        0.061        16.574    LUT__74730|in[3]               
+ (202,189)   EFX_LUT4        0.000        16.574    LUT__74730|out                 
+             net (fo=1)      0.120        16.694    n49124                         
+ (205,189)   EFX_LUT4        0.061        16.755    LUT__74737|in[1]               
+ (205,189)   EFX_LUT4        0.000        16.755    LUT__74737|out                 
+             net (fo=1)      0.000        16.755    arithmetic/n88871              
+ (205,189)   EFX_FF          0.000        16.755    rsp_body[193]~FF|D             
+
+Capture Clock Path
+  Location     Delay Type     Incr(ns)     Path(ns)   Netlist Resource(s)
+==========================================================================
+ (0,164)     input              0.000       0.000     clk_25m             
+ (0,164)     input              0.126       0.126     clk_25m             
+             net (fo=8004)      1.939       2.065     clk_25m             
+ (205,189)   EFX_FF             0.000       2.065     rsp_body[193]~FF|CLK
+ (205,189)   EFX_FF (Setup)    -0.003       2.062     rsp_body[193]~FF    
+
+++++ Path 7 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 32.093 ns (required time - arrival time)                       
+Path Start      : arithmetic/work_slot[10][2]~FF|CLK                             
+Path End        : rsp_body[326]~FF|D                                             
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 7.778 ns                                                       
+Logic Levels    : 13                                                             
+
+Launch Clock Path Delay        : 2.065
++ Clock To Q + Data Path Delay : 7.778
+--------------------------------------
+End-of-path arrival time       : 9.843
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.003
+---------------------------------------
+End-of-path required time      : 41.936
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)          Netlist Resource(s)
+=======================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                           
+  (0,164)    input            0.126        0.126     clk_25m                           
+             net (fo=8004)    1.939        2.065     clk_25m                           
+  (101,36)   EFX_FF           0.000        2.065     arithmetic/work_slot[10][2]~FF|CLK
+
+Data Path
+  Location    Delay Type    Incr(ns)     Path(ns)         Netlist Resource(s)
+====================================================================================
+  (101,36)   EFX_FF (Tco)    0.130        0.130     arithmetic/work_slot[10][2]~FF|Q
+             net (fo=12)     2.150        2.280     arithmetic/work_slot[10][2]     
+  (178,42)   EFX_LUT4        0.061        2.341     LUT__74190|in[2]                
+  (178,42)   EFX_LUT4        0.000        2.341     LUT__74190|out                  
+             net (fo=3)      0.242        2.583     n49020                          
+  (173,36)   EFX_LUT4        0.061        2.644     LUT__74197|in[2]                
+  (173,36)   EFX_LUT4        0.000        2.644     LUT__74197|out                  
+             net (fo=3)      0.272        2.916     n49025                          
+  (169,32)   EFX_LUT4        0.061        2.977     LUT__74204|in[2]                
+  (169,32)   EFX_LUT4        0.000        2.977     LUT__74204|out                  
+             net (fo=4)      0.177        3.154     n49030                          
+  (166,27)   EFX_LUT4        0.061        3.215     LUT__74214|in[3]                
+  (166,27)   EFX_LUT4        0.000        3.215     LUT__74214|out                  
+             net (fo=2)      0.142        3.357     n49037                          
+  (162,27)   EFX_LUT4        0.063        3.420     LUT__74218|in[1]                
+  (162,27)   EFX_LUT4        0.000        3.420     LUT__74218|out                  
+             net (fo=3)      0.542        3.962     n49040                          
+  (122,23)   EFX_LUT4        0.061        4.023     LUT__74225|in[2]                
+  (122,23)   EFX_LUT4        0.000        4.023     LUT__74225|out                  
+             net (fo=3)      0.372        4.395     n49045                          
+  (116,16)   EFX_LUT4        0.061        4.456     LUT__74232|in[2]                
+  (116,16)   EFX_LUT4        0.000        4.456     LUT__74232|out                  
+             net (fo=5)      0.645        5.101     n49050                          
+  (113,12)   EFX_LUT4        0.061        5.162     LUT__74246|in[0]                
+  (113,12)   EFX_LUT4        0.000        5.162     LUT__74246|out                  
+             net (fo=2)      0.098        5.260     n49060                          
+  (113,9)    EFX_LUT4        0.061        5.321     LUT__74250|in[1]                
+  (113,9)    EFX_LUT4        0.000        5.321     LUT__74250|out                  
+             net (fo=4)      1.015        6.336     n49063                          
+  (105,6)    EFX_LUT4        0.063        6.399     LUT__74272|in[0]                
+  (105,6)    EFX_LUT4        0.000        6.399     LUT__74272|out                  
+             net (fo=3)      0.775        7.174     n49078                          
+  (106,6)    EFX_LUT4        0.061        7.235     LUT__74276|in[2]                
+  (106,6)    EFX_LUT4        0.000        7.235     LUT__74276|out                  
+             net (fo=2)      0.238        7.473     n49080                          
+  (104,6)    EFX_LUT4        0.061        7.534     LUT__74277|in[0]                
+  (104,6)    EFX_LUT4        0.000        7.534     LUT__74277|out                  
+             net (fo=1)      0.183        7.717     n49081                          
+  (101,11)   EFX_LUT4        0.061        7.778     LUT__74278|in[2]                
+  (101,11)   EFX_LUT4        0.000        7.778     LUT__74278|out                  
+             net (fo=1)      0.000        7.778     arithmetic/n89137               
+  (101,11)   EFX_FF          0.000        7.778     rsp_body[326]~FF|D              
+
+Capture Clock Path
+  Location     Delay Type     Incr(ns)     Path(ns)   Netlist Resource(s)
+==========================================================================
+  (0,164)    input              0.000       0.000     clk_25m             
+  (0,164)    input              0.126       0.126     clk_25m             
+             net (fo=8004)      1.939       2.065     clk_25m             
+  (101,11)   EFX_FF             0.000       2.065     rsp_body[326]~FF|CLK
+  (101,11)   EFX_FF (Setup)    -0.003       2.062     rsp_body[326]~FF    
+
+++++ Path 8 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 32.156 ns (required time - arrival time)                       
+Path Start      : arithmetic/work_slot[10][2]~FF|CLK                             
+Path End        : rsp_body[327]~FF|D                                             
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 7.715 ns                                                       
+Logic Levels    : 13                                                             
+
+Launch Clock Path Delay        : 2.065
++ Clock To Q + Data Path Delay : 7.715
+--------------------------------------
+End-of-path arrival time       : 9.780
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.003
+---------------------------------------
+End-of-path required time      : 41.936
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)          Netlist Resource(s)
+=======================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                           
+  (0,164)    input            0.126        0.126     clk_25m                           
+             net (fo=8004)    1.939        2.065     clk_25m                           
+  (101,36)   EFX_FF           0.000        2.065     arithmetic/work_slot[10][2]~FF|CLK
+
+Data Path
+  Location    Delay Type    Incr(ns)     Path(ns)         Netlist Resource(s)
+====================================================================================
+  (101,36)   EFX_FF (Tco)    0.130        0.130     arithmetic/work_slot[10][2]~FF|Q
+             net (fo=12)     2.150        2.280     arithmetic/work_slot[10][2]     
+  (178,42)   EFX_LUT4        0.061        2.341     LUT__74190|in[2]                
+  (178,42)   EFX_LUT4        0.000        2.341     LUT__74190|out                  
+             net (fo=3)      0.242        2.583     n49020                          
+  (173,36)   EFX_LUT4        0.061        2.644     LUT__74197|in[2]                
+  (173,36)   EFX_LUT4        0.000        2.644     LUT__74197|out                  
+             net (fo=3)      0.272        2.916     n49025                          
+  (169,32)   EFX_LUT4        0.061        2.977     LUT__74204|in[2]                
+  (169,32)   EFX_LUT4        0.000        2.977     LUT__74204|out                  
+             net (fo=4)      0.177        3.154     n49030                          
+  (166,27)   EFX_LUT4        0.061        3.215     LUT__74214|in[3]                
+  (166,27)   EFX_LUT4        0.000        3.215     LUT__74214|out                  
+             net (fo=2)      0.142        3.357     n49037                          
+  (162,27)   EFX_LUT4        0.063        3.420     LUT__74218|in[1]                
+  (162,27)   EFX_LUT4        0.000        3.420     LUT__74218|out                  
+             net (fo=3)      0.542        3.962     n49040                          
+  (122,23)   EFX_LUT4        0.061        4.023     LUT__74225|in[2]                
+  (122,23)   EFX_LUT4        0.000        4.023     LUT__74225|out                  
+             net (fo=3)      0.372        4.395     n49045                          
+  (116,16)   EFX_LUT4        0.061        4.456     LUT__74232|in[2]                
+  (116,16)   EFX_LUT4        0.000        4.456     LUT__74232|out                  
+             net (fo=5)      0.645        5.101     n49050                          
+  (113,12)   EFX_LUT4        0.061        5.162     LUT__74246|in[0]                
+  (113,12)   EFX_LUT4        0.000        5.162     LUT__74246|out                  
+             net (fo=2)      0.098        5.260     n49060                          
+  (113,9)    EFX_LUT4        0.061        5.321     LUT__74250|in[1]                
+  (113,9)    EFX_LUT4        0.000        5.321     LUT__74250|out                  
+             net (fo=4)      1.015        6.336     n49063                          
+  (105,6)    EFX_LUT4        0.063        6.399     LUT__74272|in[0]                
+  (105,6)    EFX_LUT4        0.000        6.399     LUT__74272|out                  
+             net (fo=3)      0.775        7.174     n49078                          
+  (106,6)    EFX_LUT4        0.061        7.235     LUT__74276|in[2]                
+  (106,6)    EFX_LUT4        0.000        7.235     LUT__74276|out                  
+             net (fo=2)      0.238        7.473     n49080                          
+  (112,6)    EFX_LUT4        0.061        7.534     LUT__74279|in[1]                
+  (112,6)    EFX_LUT4        0.000        7.534     LUT__74279|out                  
+             net (fo=1)      0.120        7.654     n49082                          
+  (110,6)    EFX_LUT4        0.061        7.715     LUT__74280|in[2]                
+  (110,6)    EFX_LUT4        0.000        7.715     LUT__74280|out                  
+             net (fo=1)      0.000        7.715     arithmetic/n89136               
+  (110,6)    EFX_FF          0.000        7.715     rsp_body[327]~FF|D              
+
+Capture Clock Path
+  Location     Delay Type     Incr(ns)     Path(ns)   Netlist Resource(s)
+==========================================================================
+  (0,164)    input              0.000       0.000     clk_25m             
+  (0,164)    input              0.126       0.126     clk_25m             
+             net (fo=8004)      1.939       2.065     clk_25m             
+  (110,6)    EFX_FF             0.000       2.065     rsp_body[327]~FF|CLK
+  (110,6)    EFX_FF (Setup)    -0.003       2.062     rsp_body[327]~FF    
+

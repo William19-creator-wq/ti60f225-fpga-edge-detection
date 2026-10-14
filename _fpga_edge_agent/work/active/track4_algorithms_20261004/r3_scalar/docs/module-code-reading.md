@@ -1,0 +1,25 @@
+# R3算术：整体到局部的代码阅读入口
+
+批准原卡：TRACK4-ALGORITHM-R3-SCALAR-001 v1；实际批准见03_review/approval-r3-scalar-v1.md。此稿随实现更新，原批准卡保持字节不变。
+
+先读scalar_protocol_pkg的622/585/176位布局，再读scalar_core的端口与QUIET/CHECK/SETUP/QUALIFY/PACK/HELD。中间计算按MUL_INIT/PART/EMIT/LAST/DONE、ADD_DIGIT/ADD_DONE、DIV_BIT/CHECK/ROUND、ROOT_PAIR/ROOT_START划开，计数只在该状态真正工作时推进。
+
+实现草图与原卡一致：握手锁原输入→按唯一顺序检查→初始化当前操作工作槽→每沿处理一个digit/位/根组→最后沿之后再读完成值→完整385位检查目标容器→形成结果→保持到消费。数学原式在Python参考，参考不复制硬件状态机。错误只返回FRAME_FAIL和零value；未暴露结果取消直接关闭内部寄存器工作并形成DROP，HELD结果保持。
+
+具体同沿：req_fire沿只是锁输入；CHECK下一沿才检查。mul末word提交后进入MUL_DONE，不能同沿把末word当新结果；ADD最后digit与ADD_DONE分开；DIV末bit与DIV_CHECK分开；ROOT末pair与ROOT_START分开。PACK沿之后才rsp_valid，下一沿才消费。取消直接进入HELD避免持续cancel电平让PACK无法退出；这一内部调度保持原卡的≤3沿取消和既有valid不撤回合同。
+
+工作A/B排他复用；原622位输入始终保存，所以根内部三次平方覆盖A/B不丢原A。full385用于完整乘积或完整算术候选，response_value385另外保存已形成输出；结果堵塞时不再运算。所有计数和guard见对应中文注释。
+
+拟验证顺序：模型/向量→core TB逐位与事件→真实probe源/响应/CRC→25MHz独立物理工程。当前是实现中的阅读稿，尚未宣称测试或整机通过。
+
+运行器修订001：scalar_suite_001中故意fatal探针确实触发，但Questa停止run后继续执行quit0，实际exit0，不能通过退出保护。先记录草图：onerror与onbreak都明确quit1，普通完成才quit0；新run重做探针与全部依赖验证，不更改数学比较或原失败日志。
+
+修订002：scalar_suite_002显示inline -do中的onbreak/onerror只有macro上下文才能生效，仍exit0。改为运行器派生真正的.do文件：onbreak检查TB的finished资格，只有全部断言与结果写入完成才置1；fatal保持0并quit1，意外run返回也quit1。finished是测试完成资格，不改变业务RTL；001/002均保留失败，不采用其结果作为通过。
+
+时序查询修订001：Map/Interface/PNR均成功；独立postroute_001查询缺工作目录的primplace数据库而exit1，尚未执行Tcl。先保留失败，再把同一已布线work_pnr的实际辅助数据库一并复制到新的work_sta，逐文件记录原路径/副本/hash；不改SDC、布局布线结果或RTL。最终只采用成功且已确认同一已布线输入的查询。
+
+修订002：postroute_002继续报告outflow缺netlist；新postroute_003完整复制同一PNR的outflow及work_pnr原始数据库，逐文件核副本身份，再执行原Tcl。前两次查询失败均保留。工具报告输出变化只发生在独立诊断副本，不把新的STA日志当原始输入。
+
+修订003：SDK的load route要求troutingtraces同时位于work_sta；postroute_003尚未进入Tcl。对照既有实际STA输入清单确认该需求，新postroute_004将同一原始troutingtraces按hash再复制一份到工作目录，其他原始数据库/RTL/约束不变。
+
+RTL收窄修订001：物理001提示mul首digit的5位表达式赋4位寄存器，合法column0…22时值始终0…11，但隐式窄化不符合可读性规范。先在5位组合first_digit求column−11，MUL_INIT检查column≤22且first_digit≤11后显式取[3:0]；非法内部状态仍为既有INTERNAL。正常算法/接口不变；新完整仿真和新物理run重新绑定修改后源码，旧物理001保留作历史。

@@ -1,0 +1,49 @@
+{
+  "task_id": "TRACK4-GEOMETRY-NUMERIC-SHARE-001",
+  "design_read": "planning/design-TRACK4-GEOMETRY-NUMERIC-SHARE-001.md v1",
+  "contract_revision": "v1.1 strict STAT-close ready precondition confirmed by root; root updates design card",
+  "created_at_utc": "2026-10-11T13:32:10.605043+00:00",
+  "status": "IMPLEMENTED_CANDIDATE_ONLY_NOT_COMPILED",
+  "authority": "User autonomous continuation and waiver of new long sketches/independent TB as relayed by root; no new approval asserted",
+  "source_baseline_sha256": "F82C3E93CB3F191E91980EE70BDF8D28784F39E85DD9380FE9E8FC2620166128",
+  "candidate_path": "board/rtl/board_recognition_stats.sv",
+  "candidate_sha256": "B6B8CF63BB3215E707395C5394A4C2ADE8D9E6783C45342BED20D3A0587700C2",
+  "main_changed": false,
+  "default_profile": "ENABLE_GEOMETRY=0: owner constant zero; LS_TLS_ONLY=1; original two-pass FSM and reset retained",
+  "enabled_profile": "One stats_core and one fit_core; LS_TLS_ONLY=0; one-bit lease owner; no new scalar or NUM body snapshots",
+  "mandatory_caller_contracts": [
+    "geometry_stat_ready may be 1 only if geometry_fit_quiet && !geometry_fit_req_valid; this is a BORROW close port, not arbitrary ready consumption",
+    "Keep TOKEN low 176-bit ID stable from START until STAT actual consume and STATS quiet",
+    "Keep full FIT 622-bit request body stable until FIT response consume and FIT quiet",
+    "NUM ID owner field remains 0; lease owner is internal control only",
+    "geometry_fault is current real STATS fault or held FIT FRAME_FAIL; parent captures first error; LOCAL_REJECT is not a fault"
+  ],
+  "lease_contracts": [
+    "Bind only in original IDLE/COMPLETE with no start and STATS/FIT/shared scalar quiet; original start dominates simultaneous start/bind",
+    "While owned original start_ready is zero; original FSM and DDR/pack/anchor activity are frozen",
+    "Release only with STATS/FIT/shared scalar quiet and no geometry TOKEN/FIT request/cancel valid; no new request or cancel on release edge",
+    "Original global done/fault remain original two-pass status; geometry completion is explicit release handshake",
+    "Quiet outputs are exposed only while geometry owns the lease"
+  ],
+  "static_review": [
+    "Main baseline SHA checked before copy and after edits",
+    "Default owner constant 0 makes all original mux branches and handshake gates equal to baseline",
+    "Original state branches, counters, memory packing, reset assignments and two-pass sequencing retained",
+    "STAT ready guard retained without withdrawing STAT valid; caller ready precondition explicitly documented",
+    "Release checks child quiet and absence of new operations; no forced owner clear on failures",
+    "Responses are direct wires from the same cores; no 622/585-bit snapshot added"
+  ],
+  "not_run": [
+    "New EDA compile",
+    "Simulation",
+    "Testbench",
+    "Hardware operations"
+  ],
+  "remaining": [
+    "Parent RPC scalar owner switching",
+    "POINT replay/predicate backend",
+    "Circle five-pass and rectangle six-pass implementation",
+    "DDR geometry regions and final publication closure",
+    "Full-profile resource/timing and hardware verification"
+  ]
+}

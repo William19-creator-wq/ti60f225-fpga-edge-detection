@@ -1,0 +1,305 @@
+`timescale 1ns/1ps
+// PF01..07：从字节AXI到实际native三行RAM，测试驱动只在负沿改变。
+module tb_fetch_core #(
+ parameter integer TEST_FETCH_W=20,TEST_FETCH_H=8,TEST_FETCH_ROWS=36,TEST_FETCH_MAX=0
+);
+ import display_row_pkg::*;
+ import display_fetch_pkg::*;
+ localparam logic [63:0] START_GEN=TEST_FETCH_MAX ? 64'hfffffffffffffffd : 64'd1;
+ localparam integer P=TEST_FETCH_W/2,N=TEST_FETCH_W*TEST_FETCH_H;
+ logic core_clk=0,video_clk=0,safe_reset_n=0,enable=1,video_clock_running=1;
+ always #5 core_clk=~core_clk;
+ always #6.734 if(video_clock_running)video_clk=~video_clk;
+ logic video_request_valid=0,video_receipt_ready=0,video_cancel=0;
+ request_t video_request;
+ receipt_t receipt;
+ wire video_request_ready,video_receipt_valid,video_busy,video_q;
+ wire [614:0] video_receipt,service_receipt;
+ wire service_valid,service_claim_ready,service_cancel,service_receipt_valid,service_receipt_ready;
+ wire [480:0] service_request;
+ wire transport_live,core_idle,core_q;
+ wire [386:0] transport_ref;
+ logic lookup_pause=0,lookup_permitted=1;
+ wire lookup_valid;wire [478:0] lookup_demand;
+ logic scope_query_valid=0;logic [386:0] scope_query_ref=0;wire local_scope_live,engine_q;
+ logic [1:0] job_bank=0;
+ row_ticket_t job_ticket,held_ticket;
+ frame_owner_pkg::reply_t job_bundle;
+ assign video_request={job_bank,job_ticket[478:0]};
+ assign receipt=video_receipt;
+ wire [2:0] return_valid,row_valid,owned,rd_request_ready,rd_response_valid,rd_error,release_ready,release_error;
+ wire [2:0][542:0] return_ticket,row_ticket;wire [2:0][1:0] return_kind;
+ wire [2:0][53:0] rd_data;wire [2:0][9:0] rd_response_address;
+ logic [2:0] return_ready=0,row_ready=0,rd_request_valid=0,rd_response_ready=0,release_valid=0;
+ logic [2:0][63:0] rd_generation=0,release_generation=0;
+ logic [2:0][9:0] rd_address=0;logic [2:0][1:0] release_kind=0;
+ wire arvalid,arready,rvalid,rready,rlast;wire [31:0] araddr,ar_count,r_count;
+ wire [3:0] arid,rid;wire [7:0] arlen;wire [2:0] arsize;wire [1:0] arburst,rresp;wire [127:0] rdata;
+ logic ideal=0,ar_pause=0,r_pause=0;logic [2:0] fault_mode=0;
+ logic [2:0][2:0] source_for_result=0;wire slave_idle;
+ display_fetch_link link(
+ .core_clk,.video_clk,.safe_reset_n,.video_request_valid,.video_request_ready,.video_request,
+ .video_cancel,.video_receipt_valid,.video_receipt_ready,.video_receipt,.video_busy,.video_quarantined(video_q),
+ .service_valid,.service_claim_ready,.service_request,.service_cancel,.service_receipt_valid,.service_receipt_ready,.service_receipt,
+ .transport_live,.transport_ref,.core_idle,.core_quarantined(core_q));
+ display_scan_prefetch_core #(.IMAGE_WIDTH(TEST_FETCH_W),.IMAGE_HEIGHT(TEST_FETCH_H),.INIT_GENERATION(START_GEN)) dut(
+ .core_clk,.video_clk,.safe_reset_n,.enable,.service_valid,.service_claim_ready,.service_request,.service_cancel,
+ .service_receipt_valid,.service_receipt_ready,.service_receipt,
+ .lookup_valid,.lookup_ready(!lookup_pause),.lookup_demand,.lookup_bundle(job_bundle),.lookup_permitted,
+ .scope_query_valid,.scope_query_ref,.local_scope_live,.quarantined(engine_q),
+ .return_valid,.return_ready,.return_ticket,.return_kind,.row_valid,.row_ready,.row_ticket,.owned,.rd_request_valid,.rd_request_ready,.rd_generation,.rd_address,.rd_response_valid,.rd_response_ready,.rd_data,.rd_response_address,.rd_error,.release_valid,.release_ready,.release_generation,.release_kind,.release_error,
+ .m_axi_arvalid(arvalid),.m_axi_arready(arready),.m_axi_araddr(araddr),.m_axi_arid(arid),.m_axi_arlen(arlen),.m_axi_arsize(arsize),.m_axi_arburst(arburst),
+ .m_axi_rvalid(rvalid),.m_axi_rready(rready),.m_axi_rdata(rdata),.m_axi_rid(rid),.m_axi_rresp(rresp),.m_axi_rlast(rlast));
+ axi_read_byte_slave #(.IMAGE_WIDTH(TEST_FETCH_W),.IMAGE_HEIGHT(TEST_FETCH_H)) memory(
+ .clk(core_clk),.rst(!safe_reset_n),.source_for_result,.ideal,.ar_pause,.r_pause,.fault_mode,
+ .arvalid,.arready,.araddr,.arid,.arlen,.arsize,.arburst,.rvalid,.rready,.rdata,.rid,.rresp,.rlast,.ar_count,.r_count,.idle(slave_idle));
+ integer logfd,metricfd,case_id=0,cycle=0,normal_rows=0,read_pixels=0,rejected=0,safe_failed=0,q_cases=0;
+ integer current_case=0,wr_count=0,rd_count=0,case_start=0,ideal_cycles=0;
+ logic finished=0,keep_row=0,same_claim_gate=0;integer held_case;logic [63:0] generations[0:2];
+ row_ticket_t parked_ticket[0:2];integer parked_case[0:2];
+ logic [63:0] sequence_counter=1;
+ logic ar_stalled=0,r_stalled=0,out_stalled=0,receipt_stalled=0;
+ logic [48:0] ar_old;logic [134:0] r_old;logic [614:0] receipt_old;
+ logic [63:0] out_old;
+ function automatic logic [31:0] align16(input logic [31:0] x);return (x+15)&32'hfffffff0;endfunction
+ function automatic logic [53:0] expected_pair(input row_ticket_t t,input integer a);
+  integer x,y,f,r0,g0,b0,r1,g1,b1;logic [47:0] rgb;logic [1:0] e;logic [3:0] ann;
+  begin
+   x=2*a;y=t.source_y;f=int'(t.origin[2:0])+1;
+   r0=(37*x+11*y+3*f)%256;g0=(13*x+47*y+7*f)%256;b0=(53*x+19*y+17*f)%256;
+   r1=(37*(x+1)+11*y+3*f)%256;g1=(13*(x+1)+47*y+7*f)%256;b1=(53*(x+1)+19*y+17*f)%256;
+   rgb=t.required_mask[0] ? {8'(r1),8'(g1),8'(b1),8'(r0),8'(g0),8'(b0)} : 0;
+   e=t.required_mask[1] ? {1'(((x+1+y+f)%3)==0),1'(((x+y+f)%3)==0)} : 0;
+   ann=t.required_mask[2] ? {2'((7*(x+1)+3*y+f)%4),2'((7*x+3*y+f)%4)} : 0;
+   return {ann,e,rgb};
+  end
+ endfunction
+ task automatic prepare(input integer mode,y,bank);
+  logic [95:0] sd,ed,ad;logic [111:0] render;integer ss,rs,sy,mask;
+  begin
+   ss=case_id%6;rs=case_id%3;sy=y;mask=0;
+   case(mode)0:begin mask=y<TEST_FETCH_H/2 ? 1 : 2;sy=2*(y%(TEST_FETCH_H/2));end
+    1,2:mask=1;3:mask=2;4:mask=3;5:mask=7;endcase
+   job_bundle='0;job_bundle.op=5;job_bundle.source_handle=64'(100+ss);job_bundle.result_handle=64'(1000+case_id);
+   job_bundle.origin={job_bundle.source_handle,32'(200+ss),32'd77,job_bundle.source_handle,3'(ss)};
+   job_bundle.source_slot=3'(ss);job_bundle.result_slot=2'(rs);job_bundle.policy=64'(10+case_id);
+   job_bundle.cj={1'b1,1'b1,11'd400,11'd80,11'(TEST_FETCH_H),11'(TEST_FETCH_W),32'd9,32'(200+ss),32'd77};
+   sd={32'(ss)*32'h00800000,32'(3*N),align16(32'(3*N))};ed=0;ad=0;
+   if(mode!=1&&mode!=2)ed={32'h03000000+32'(rs)*32'h00800000,32'((N+7)/8),align16(32'((N+7)/8))};
+   if(mode==5)ad={32'h03100000+32'(rs)*32'h00800000,32'(4224+(N+3)/4),align16(32'(4224+(N+3)/4))};
+   render={3'(mode),11'(TEST_FETCH_H/2),24'hff0000,24'h00ff00,24'hffffff,24'hffff00,2'd3};
+   job_bundle.body={sd,ed,ad,render};
+   job_ticket={generations[bank],sequence_counter,64'(20+case_id),job_bundle.result_handle,job_bundle.policy,job_bundle.origin,11'(y),11'(sy),3'(mode),3'(mask)};
+   job_bank=2'(bank);lookup_permitted=1;video_cancel=0;lookup_pause=0;fault_mode=0;enable=1;ar_pause=0;r_pause=0;
+  end
+ endtask
+ task automatic set_cancel;
+  @(negedge video_clk);video_cancel=1;
+ endtask
+ task automatic reset_safe;
+  begin
+   // 本TB先停止并清掉受控slave旧活动；这不是对真实DDR reset资格的证明。
+   @(negedge core_clk);safe_reset_n=0;video_request_valid=0;video_receipt_ready=0;video_cancel=0;lookup_pause=0;
+   row_ready=0;rd_request_valid=0;rd_response_ready=0;release_valid=0;return_ready=0;enable=1;ar_pause=0;r_pause=0;fault_mode=0;
+   repeat(8)@(negedge core_clk);safe_reset_n=1;repeat(10)@(negedge core_clk);
+   for(integer b=0;b<3;b++)generations[b]=START_GEN;
+   $fdisplay(logfd,"{\"event\":\"reset\",\"case\":%0d,\"cycle\":%0d}",current_case,cycle);
+  end
+ endtask
+ task automatic consume_row(input integer b,input row_ticket_t t,input integer log_case,input bit align_with_claim=0);
+  begin
+   @(negedge video_clk);row_ready[b]=1;
+   do @(posedge video_clk);while(!row_valid[b]);
+   if(row_ticket[b]!==t)$fatal(1,"Video full ticket mismatch");
+   @(negedge video_clk);row_ready[b]=0;
+   for(integer a=0;a<P;a++)begin
+    rd_generation[b]=t.generation;rd_address[b]=10'(a);rd_request_valid[b]=1;
+    do @(posedge video_clk);while(!rd_request_ready[b]);
+    @(negedge video_clk);rd_request_valid[b]=0;
+    // 每17项制造响应holding，必须保留native已读出的完整54bit。
+    if(a%17==0)repeat(3)@(negedge video_clk);
+    rd_response_ready[b]=1;
+    do @(posedge video_clk);while(!rd_response_valid[b]);
+    if(rd_error[b] || rd_response_address[b]!=a || rd_data[b]!==expected_pair(t,a))$fatal(1,"Native video response mismatch case=%0d a=%0d got=%h exp=%h",current_case,a,rd_data[b],expected_pair(t,a));
+    $fdisplay(logfd,"{\"event\":\"read\",\"case\":%0d,\"bank\":%0d,\"address\":%0d,\"data\":\"%h\"}",log_case,b,a,rd_data[b]);
+    rd_count++;read_pixels+=2;
+    @(negedge video_clk);rd_response_ready[b]=0;
+   end
+   release_valid[b]=1;release_generation[b]=t.generation;release_kind[b]=0;
+   do @(posedge video_clk);while(!release_ready[b]);
+   @(negedge video_clk);release_valid[b]=0;
+   @(negedge core_clk);return_ready[b]=0;
+   do @(posedge core_clk);while(!return_valid[b]);
+   repeat(5)@(negedge core_clk);
+   scope_query_valid=1;scope_query_ref=ticket_ref(t);
+   #1;if(!local_scope_live)$fatal(1,"Scope closed before actual core return consumption");
+   $fdisplay(logfd,"{\"event\":\"query\",\"case\":%0d,\"ref\":\"%h\",\"live\":%0d,\"expected\":1,\"cycle\":%0d}",log_case,scope_query_ref,local_scope_live,cycle);
+   // JREQ3：借用同一真实return，等新需求CDC到达后才允许这次消费。
+   if(align_with_claim)begin
+    same_claim_gate=1;
+    do @(negedge core_clk);while(!(service_valid&&service_claim_ready));
+   end
+   return_ready[b]=1;
+   do @(posedge core_clk);while(!return_valid[b]);
+   if(return_ticket[b]!==t||return_kind[b]!=0)$fatal(1,"Actual consumed return mismatch");
+   #1; // 记录沿号时先等monitor的cycle更新；不改变实际return fire。
+   $fdisplay(logfd,"{\"event\":\"return\",\"case\":%0d,\"bank\":%0d,\"ticket\":\"%h\",\"kind\":%0d,\"cycle\":%0d}",log_case,b,return_ticket[b],return_kind[b],cycle);
+   @(negedge core_clk);return_ready[b]=0;if(generations[b]!=64'hffffffffffffffff)generations[b]++;repeat(2)@(negedge core_clk);
+  end
+ endtask
+ task automatic run_case(input integer mode,y,b,scenario,fault);
+  integer expect_status,expect_outcome,start_ar,start_cycle;row_ticket_t actual_ticket;receipt_t held_receipt;
+  begin
+   case_id++;current_case=case_id;wr_count=0;rd_count=0;sequence_counter++;
+   @(negedge video_clk);prepare(mode,y,b);expect_status=0;expect_outcome=0;
+   case(scenario)
+    1:begin lookup_permitted=0;expect_status=2;expect_outcome=1;end
+    2:begin job_bundle.origin[131]=~job_bundle.origin[131];expect_status=1;expect_outcome=1;end
+    3:begin job_bundle.body[336]=~job_bundle.body[336];expect_status=1;expect_outcome=1;end
+    4:begin job_ticket.required_mask^=3'b001;expect_status=1;expect_outcome=1;end
+    5,32:begin expect_status=3;expect_outcome=1;end
+    6:begin job_ticket.sequence_id=0;expect_status=1;expect_outcome=1;end
+    7:begin video_cancel=1;expect_status=5;expect_outcome=2;end
+    8:begin ar_pause=1;expect_outcome=2;end
+    9:begin r_pause=1;expect_outcome=2;end
+    10,11,12:expect_outcome=0;
+    13:expect_outcome=1;
+    14,15,16,17:expect_outcome=3;
+    18:begin lookup_pause=1;expect_status=5;expect_outcome=2;end
+    19:begin job_ticket.policy++;expect_status=1;expect_outcome=1;end
+    20:begin job_ticket.result_handle++;expect_status=1;expect_outcome=1;end
+    21:begin job_ticket.source_y=11'((job_ticket.source_y+1)%TEST_FETCH_H);expect_status=1;expect_outcome=1;end
+    22:begin job_bank=3;job_ticket.generation=0;expect_status=1;expect_outcome=1;end
+    23:begin job_bundle.source_slot=6;expect_status=1;expect_outcome=1;end
+    24:begin job_ticket.sequence_id=0;expect_status=1;expect_outcome=1;end
+    25:begin job_ticket.scan=0;expect_status=1;expect_outcome=1;end
+    26:begin expect_status=6;expect_outcome=1;end
+    27:begin job_bundle.op=6;expect_status=1;expect_outcome=1;end
+    28:begin job_bundle.body[112]=~job_bundle.body[112];expect_status=1;expect_outcome=1;end
+    29:begin enable=0;expect_status=7;expect_outcome=1;end
+   endcase
+   fault_mode=3'(fault);start_ar=ar_count;start_cycle=cycle;
+   scope_query_valid=1;scope_query_ref=ticket_ref(job_ticket);
+   $fdisplay(logfd,"{\"event\":\"job\",\"case\":%0d,\"scenario\":%0d,\"fault\":%0d,\"bank\":%0d,\"ticket\":\"%h\",\"bundle\":\"%h\",\"permission\":%0d,\"expect_status\":%0d,\"expect_outcome\":%0d,\"cycle\":%0d}",current_case,scenario,fault,job_bank,job_ticket,job_bundle,lookup_permitted,expect_status,expect_outcome,cycle);
+   video_request_valid=1;do @(posedge video_clk);while(!video_request_ready);
+   @(negedge video_clk);video_request_valid=0;
+   if(scenario==30)begin
+    // JREQ2：低相位停钟，实际核心与原子响应继续；没有视频ACK就不能idle。
+    video_clock_running=0;
+    wait(link.await_response_ack);
+    repeat(200)begin
+     @(posedge core_clk);#1;
+     if(!transport_live||core_idle||!video_busy||video_receipt_valid)$fatal(1,"Stopped video falsely ACKed/closed transport");
+     if(service_request!==video_request)$fatal(1,"Stopped video lost held request identity");
+    end
+    $fdisplay(logfd,"{\"event\":\"video_pause\",\"case\":%0d,\"edges\":200,\"cycle\":%0d}",current_case,cycle);
+    video_clock_running=1;
+   end
+   if(scenario==8)begin wait(arvalid);repeat(8)@(negedge core_clk);set_cancel();repeat(5)@(negedge core_clk);ar_pause=0;end
+   if(scenario==9)begin wait(ar_count>start_ar);repeat(7)@(negedge core_clk);set_cancel();repeat(5)@(negedge core_clk);r_pause=0;end
+   if(scenario==10)begin wait(dut.reader_out_valid && dut.reader_address==P-1);set_cancel();end
+   if(scenario==12)begin do @(posedge core_clk);while(!(lookup_valid&&!lookup_pause));@(negedge core_clk);job_bundle='1;end
+   if(scenario==17)begin wait(ar_count>start_ar);@(negedge core_clk);enable=0;end
+   if(scenario==18)begin wait(lookup_valid);repeat(7)@(negedge core_clk);set_cancel();end
+   do @(posedge video_clk);while(!video_receipt_valid);
+   held_receipt=receipt;
+   if(receipt.status!=expect_status || receipt.outcome!=expect_outcome)$fatal(1,"Receipt mismatch case %0d status=%0d/%0d outcome=%0d/%0d",current_case,receipt.status,expect_status,receipt.outcome,expect_outcome);
+   if(receipt.ticket!==job_ticket || receipt.bank!=job_bank)$fatal(1,"Complete assigned GEN/ticket echo case %0d got=%h expected=%h",current_case,receipt.ticket,job_ticket);
+   if(!transport_live || transport_ref!=ticket_ref(job_ticket))$fatal(1,"Transport falsely closed before actual reply ACK");
+   if(expect_status!=0)begin
+    if(ar_count!=start_ar||wr_count!=0||receipt.row_granted||receipt.row_returned||!receipt.drained||receipt.read_beats||receipt.prepared||receipt.delivered)$fatal(1,"NoStarted has effects");rejected++;
+   end else begin
+    if(!receipt.row_granted)$fatal(1,"Actual row grant missing");
+    if(expect_outcome==0 && (!receipt.drained||receipt.row_returned||wr_count!=P||receipt.prepared!=P||receipt.delivered!=P))$fatal(1,"Success not actual full writes");
+    if((expect_outcome==1||expect_outcome==2) && (!receipt.drained||!receipt.row_returned||!slave_idle))$fatal(1,"Safe failure not actual IO/row close");
+    if(expect_outcome==3 && (receipt.drained||receipt.row_returned||!engine_q))$fatal(1,"Q falsely closed");
+   end
+   if(scenario==11)set_cancel();
+   repeat(7)@(negedge video_clk);
+   if(receipt!==held_receipt)$fatal(1,"615-bit receipt changed under holding");
+   video_receipt_ready=1;do @(posedge video_clk);while(!video_receipt_valid);
+   $fdisplay(logfd,"{\"event\":\"receipt\",\"case\":%0d,\"packet\":\"%h\",\"cycle\":%0d}",current_case,receipt,cycle);
+   actual_ticket=receipt.ticket;
+   @(negedge video_clk);video_receipt_ready=0;video_cancel=0;enable=1;lookup_pause=0;
+   if(expect_status==0 && expect_outcome==0)begin
+    normal_rows++;if(keep_row)begin held_ticket=actual_ticket;held_case=current_case;end else consume_row(b,actual_ticket,current_case);
+   end else if(expect_status==0 && expect_outcome<3)begin safe_failed++;if(generations[b]!=64'hffffffffffffffff)generations[b]++;end
+   if(expect_status==0 && expect_outcome==3)begin
+    q_cases++;repeat(30)@(negedge video_clk);
+    if(video_request_ready||video_receipt_valid||!video_q||!core_q||!transport_live||!local_scope_live)$fatal(1,"Q reopened/repeated/lost scope");reset_safe();
+   end else begin
+    do @(posedge video_clk);while(!video_request_ready);
+    @(negedge core_clk);
+    if(transport_live)$fatal(1,"Idle transport still live");
+    if(local_scope_live!==keep_row)$fatal(1,"Local scope/query wrong after true close case %0d live=%0d keep=%0d",current_case,local_scope_live,keep_row);
+   end
+  end
+ endtask
+ always @(negedge core_clk)if(lookup_valid && !lookup_pause && job_bundle.result_slot<3)
+  source_for_result[job_bundle.result_slot]=job_bundle.source_slot;
+ always @(posedge core_clk)begin
+  cycle++;
+  if(safe_reset_n && !dut.rst)begin
+   if(service_valid&&service_claim_ready)begin
+    $fdisplay(logfd,"{\"event\":\"claim\",\"case\":%0d,\"request\":\"%h\",\"cycle\":%0d}",current_case,service_request,cycle);
+    if(|(return_valid&return_ready))$fdisplay(logfd,"{\"event\":\"same_edge_claim\",\"case\":%0d,\"cycle\":%0d}",current_case,cycle);
+   end
+   if(service_receipt_valid&&service_receipt_ready)$fdisplay(logfd,"{\"event\":\"core_receipt\",\"case\":%0d,\"packet\":\"%h\",\"cycle\":%0d}",current_case,service_receipt,cycle);
+   if(dut.chosen && dut.fill_reply_valid[dut.reader_bank] && dut.fill_reply_ready[dut.reader_bank] && dut.fill_reply_status[dut.reader_bank]==0)
+    $fdisplay(logfd,"{\"event\":\"grant\",\"case\":%0d,\"ticket\":\"%h\",\"cycle\":%0d}",current_case,dut.fill_reply_ticket[dut.reader_bank],cycle);
+  end
+  if(safe_reset_n && !dut.rst)begin
+   if(ar_stalled && (!arvalid || {araddr,arid,arlen,arsize,arburst}!==ar_old))$fatal(1,"AR holding");
+   if(r_stalled && (!rvalid || {rdata,rid,rresp,rlast}!==r_old))$fatal(1,"R holding");
+   if(out_stalled && (!dut.reader_out_valid || {dut.reader_data,dut.reader_address}!==out_old))$fatal(1,"Pair holding");
+   ar_stalled=arvalid&&!arready;ar_old={araddr,arid,arlen,arsize,arburst};r_stalled=rvalid&&!rready;r_old={rdata,rid,rresp,rlast};
+   out_stalled=dut.reader_out_valid&&!dut.reader_out_ready;out_old={dut.reader_data,dut.reader_address};
+   if(arvalid&&arready)$fdisplay(logfd,"{\"event\":\"ar\",\"case\":%0d,\"address\":%0d,\"id\":%0d,\"len\":%0d,\"cycle\":%0d}",current_case,araddr,arid,arlen,cycle);
+   if(rvalid&&rready)$fdisplay(logfd,"{\"event\":\"r\",\"case\":%0d,\"id\":%0d,\"resp\":%0d,\"last\":%0d,\"data\":\"%h\",\"cycle\":%0d}",current_case,rid,rresp,rlast,rdata,cycle);
+   if(dut.reader_out_valid&&dut.reader_out_ready)begin
+    if(dut.reader_address!=wr_count||dut.reader_data!==expected_pair(row_ticket_t'(dut.saved_ticket),wr_count))$fatal(1,"Actual WR mismatch case %0d a=%0d got=%h expected=%h",current_case,wr_count,dut.reader_data,expected_pair(row_ticket_t'(dut.saved_ticket),wr_count));
+    $fdisplay(logfd,"{\"event\":\"write\",\"case\":%0d,\"address\":%0d,\"data\":\"%h\",\"cycle\":%0d}",current_case,dut.reader_address,dut.reader_data,cycle);wr_count++;
+   end
+   if(dut.publish_fire)$fdisplay(logfd,"{\"event\":\"publish\",\"case\":%0d,\"cycle\":%0d}",current_case,cycle);
+   if(dut.abort_fire)$fdisplay(logfd,"{\"event\":\"abort\",\"case\":%0d,\"cycle\":%0d}",current_case,cycle);
+   if(dut.abort_return_fire)$fdisplay(logfd,"{\"event\":\"abort_return\",\"case\":%0d,\"ticket\":\"%h\",\"kind\":%0d,\"cycle\":%0d}",current_case,dut.bank_return_ticket[dut.reader_bank],dut.bank_return_kind[dut.reader_bank],cycle);
+  end else begin ar_stalled=0;r_stalled=0;out_stalled=0;end
+ end
+ initial begin
+  if($test$plusargs("EXPECT_FATAL"))begin #1;$fatal(1,"fatal exit probe");end
+  logfd=$fopen("fetch-events.jsonl","w");if(!logfd)$fatal(1,"Cannot open events");
+  reset_safe();
+  if(TEST_FETCH_MAX)begin
+   for(integer k=0;k<3;k++)run_case(5,TEST_FETCH_H-1,0,0,0);
+   run_case(5,TEST_FETCH_H-1,0,26,0);
+  end else begin
+  for(integer row=0;row<TEST_FETCH_ROWS;row++)run_case(row%6,row%TEST_FETCH_H,row%3,0,0);
+  for(integer s=1;s<=4;s++)run_case(5,TEST_FETCH_H-1,0,s,0);
+  run_case(5,TEST_FETCH_H-1,0,6,0);
+  keep_row=1;run_case(5,TEST_FETCH_H-1,0,0,0);keep_row=0;
+  run_case(5,TEST_FETCH_H-1,0,5,0);consume_row(0,held_ticket,held_case);
+  for(integer s=18;s<=28;s++)if(s!=26)run_case(5,TEST_FETCH_H-1,0,s,0);
+  keep_row=1;
+  for(integer b=0;b<3;b++)begin run_case(5,TEST_FETCH_H-1,b,0,0);parked_ticket[b]=held_ticket;parked_case[b]=held_case;end
+  keep_row=0;run_case(5,TEST_FETCH_H-1,2,5,0);
+  for(integer b=0;b<3;b++)consume_row(b,parked_ticket[b],parked_case[b]);
+  for(integer s=7;s<=12;s++)run_case(5,TEST_FETCH_H-1,1,s,0);
+  run_case(5,TEST_FETCH_H-1,1,13,1);
+  // early-LAST必须选至少2 beat的RGB；错ID/min一拍仍保持Q而不伪造drain。
+  run_case(1,0,1,14,2);run_case(1,1,1,15,3);run_case(1,0,1,16,4);run_case(5,0,1,17,0);
+  ideal=1;run_case(5,TEST_FETCH_H-1,2,0,0);ideal=0;
+  run_case(5,TEST_FETCH_H-1,0,29,0);
+  run_case(5,TEST_FETCH_H-1,0,30,0);
+  keep_row=1;run_case(5,TEST_FETCH_H-1,0,0,0);keep_row=0;same_claim_gate=0;
+  fork
+   consume_row(0,held_ticket,held_case,1);
+   begin wait(same_claim_gate);run_case(5,TEST_FETCH_H-1,0,32,0);end
+  join
+  run_case(5,TEST_FETCH_H-1,0,0,0);
+  end
+  metricfd=$fopen("protocol-metrics.json","w");
+  $fdisplay(metricfd,"{\"initial_generation\":\"%h\",\"width\":%0d,\"height\":%0d,\"cases\":%0d,\"normal_rows\":%0d,\"read_pixels\":%0d,\"rejected\":%0d,\"safe_failed\":%0d,\"quarantined\":%0d,\"ideal_mode5_cycles\":%0d,\"finished\":true}",START_GEN,TEST_FETCH_W,TEST_FETCH_H,case_id,normal_rows,read_pixels,rejected,safe_failed,q_cases,ideal_cycles);
+  $fclose(metricfd);$fclose(logfd);finished=1;$display("FETCH PASS W=%0d H=%0d rows=%0d cases=%0d ideal_mode5_cycles=%0d",TEST_FETCH_W,TEST_FETCH_H,normal_rows,case_id,ideal_cycles);$finish;
+ end
+ initial begin #1000000000;$fatal(1,"Fetch watchdog case=%0d state=%0d reader=%0d span=%0d prepared=%0d delivered=%0d",current_case,dut.state,dut.reader.state,dut.reader.spans.state,dut.reader.prepared_pairs,dut.reader.delivered_pairs);end
+endmodule

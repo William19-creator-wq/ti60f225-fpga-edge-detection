@@ -1,0 +1,24 @@
+# Hardware Observation
+
+- Observation ID:
+- Node ID:
+- Artifact ID:
+- Build ID:
+- Programmed by:
+- Program method:
+- Program time:
+- Board silk-screen / variant:
+- Camera and adapter:
+- Display path:
+- Power/reset behavior:
+- Clock/lock indicators:
+- Video present: `yes | no | unknown`
+- Resolution / frame rate observed:
+- Frame stability:
+- Drop / tearing / skew:
+- Image orientation:
+- Edge output behavior:
+- Reproduction steps:
+- Evidence paths:
+- Result: `PASS | REWORK_REQUIRED | BLOCKED | UNKNOWN`
+- Human notes:

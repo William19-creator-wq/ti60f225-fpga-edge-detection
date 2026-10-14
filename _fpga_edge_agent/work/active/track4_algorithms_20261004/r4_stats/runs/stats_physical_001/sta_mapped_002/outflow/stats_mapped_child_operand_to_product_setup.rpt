@@ -1,0 +1,1339 @@
+
+Efinix report_timing Report
+Version: 2026.1.132
+Date: Thu Oct  8 19:30:01 2026
+
+Copyright (C) 2013 - 2026 Efinix, Inc. All rights reserved.
+
+User command: foreach transition $transitions {
+ set name [lindex $transition 0]
+ set starts [endpoint_union [lindex $transition 1]]
+ set ends [endpoint_union [lindex $transition 2]]
+ puts "DATA_${name}_SOURCE_COUNT=[llength $starts]"
+ puts "DATA_${name}_DEST_COUNT=[llength $ends]"
+ if {[llength $starts] == 0 || [llength $ends] == 0} {error "Data endpoint collection empty"}
+ report_timing -setup -from $starts -to $ends -npaths 8 -nworst 1 -file stats_mapped_${name}_setup.rpt
+ report_timing -hold -from $starts -to $ends -npaths 8 -nworst 1 -file stats_mapped_${name}_hold.rpt
+}
+
+Timing Model: I3
+	process : typical
+	temperature : -40C to 100C
+	voltage : 0.95 +/-30mV
+	speedgrade : 3
+	technology : t16ff
+	status : final
+
+Summary:
+
+ Path #  | Slack(ns) |                  Start Pin                   |                    End Pin                     |  Launch Clock   |  Capture Clock
+========================================================================================================================================================
+ 1       |  32.265   | fitting/private_arithmetic/work_b[54]~FF|CLK | fitting/private_arithmetic/column_sum[29]~FF|D | core_25m (RISE) | core_25m (RISE)
+ 2       |  32.304   | fitting/private_arithmetic/work_b[54]~FF|CLK | fitting/private_arithmetic/column_sum[34]~FF|D | core_25m (RISE) | core_25m (RISE)
+ 3       |  32.321   | fitting/private_arithmetic/work_b[54]~FF|CLK | fitting/private_arithmetic/column_sum[33]~FF|D | core_25m (RISE) | core_25m (RISE)
+ 4       |  32.356   | fitting/private_arithmetic/work_b[54]~FF|CLK | fitting/private_arithmetic/column_sum[30]~FF|D | core_25m (RISE) | core_25m (RISE)
+ 5       |  32.358   | fitting/private_arithmetic/work_b[54]~FF|CLK | fitting/private_arithmetic/column_sum[36]~FF|D | core_25m (RISE) | core_25m (RISE)
+ 6       |  32.383   | fitting/private_arithmetic/work_b[54]~FF|CLK | fitting/private_arithmetic/column_sum[35]~FF|D | core_25m (RISE) | core_25m (RISE)
+ 7       |  32.456   | fitting/private_arithmetic/work_b[54]~FF|CLK | fitting/private_arithmetic/column_sum[31]~FF|D | core_25m (RISE) | core_25m (RISE)
+ 8       |  32.458   | fitting/private_arithmetic/work_b[54]~FF|CLK | fitting/private_arithmetic/column_sum[32]~FF|D | core_25m (RISE) | core_25m (RISE)
+
+++++ Path 1 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 32.265 ns (required time - arrival time)                       
+Path Start      : fitting/private_arithmetic/work_b[54]~FF|CLK                   
+Path End        : fitting/private_arithmetic/column_sum[29]~FF|D                 
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 7.606 ns                                                       
+Logic Levels    : 35                                                             
+
+Launch Clock Path Delay        : 2.065
++ Clock To Q + Data Path Delay : 7.606
+--------------------------------------
+End-of-path arrival time       : 9.671
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.003
+---------------------------------------
+End-of-path required time      : 41.936
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)               Netlist Resource(s)
+=================================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                                     
+  (0,164)    input            0.126        0.126     clk_25m                                     
+             net (fo=9826)    1.939        2.065     clk_25m                                     
+  (53,55)    EFX_FF           0.000        2.065     fitting/private_arithmetic/work_b[54]~FF|CLK
+
+Data Path
+  Location    Delay Type    Incr(ns)     Path(ns)                Netlist Resource(s)
+==================================================================================================
+  (53,55)    EFX_FF (Tco)    0.130        0.130     fitting/private_arithmetic/work_b[54]~FF|Q    
+             net (fo=9)      1.429        1.559     fitting/private_arithmetic/work_b[54]         
+  (23,38)    EFX_LUT4        0.061        1.620     LUT__60826|in[0]                              
+  (23,38)    EFX_LUT4        0.000        1.620     LUT__60826|out                                
+             net (fo=1)      1.063        2.683     n34113                                        
+  (17,120)   EFX_LUT4        0.061        2.744     LUT__60830|in[0]                              
+  (17,120)   EFX_LUT4        0.000        2.744     LUT__60830|out                                
+             net (fo=1)      0.589        3.333     n34117                                        
+  (16,168)   EFX_LUT4        0.061        3.394     LUT__60833|in[0]                              
+  (16,168)   EFX_LUT4        0.000        3.394     LUT__60833|out                                
+             net (fo=1)      0.663        4.057     fitting/private_arithmetic/n1188              
+  (24,202)   EFX_DSP48       1.317        5.374     fitting/private_arithmetic/mult_96|B[6]       
+  (24,202)   EFX_DSP48       0.000        5.374     fitting/private_arithmetic/mult_96|O[0]       
+             net (fo=1)      0.944        6.318     fitting/private_arithmetic/partial_product[0] 
+  (6,215)    EFX_ADD         0.055        6.373     fitting/private_arithmetic/add_97/i1|I1       
+  (6,215)    EFX_ADD         0.000        6.373     fitting/private_arithmetic/add_97/i1|CO       
+             net (fo=1)      0.000        6.373     fitting/private_arithmetic/add_97/n2          
+  (6,216)    EFX_ADD         0.025        6.398     fitting/private_arithmetic/add_97/i2|CI       
+  (6,216)    EFX_ADD         0.000        6.398     fitting/private_arithmetic/add_97/i2|CO       
+             net (fo=1)      0.000        6.398     fitting/private_arithmetic/add_97/n4          
+  (6,217)    EFX_ADD         0.025        6.423     fitting/private_arithmetic/add_97/i3|CI       
+  (6,217)    EFX_ADD         0.000        6.423     fitting/private_arithmetic/add_97/i3|CO       
+             net (fo=1)      0.000        6.423     fitting/private_arithmetic/add_97/n6          
+  (6,218)    EFX_ADD         0.025        6.448     fitting/private_arithmetic/add_97/i4|CI       
+  (6,218)    EFX_ADD         0.000        6.448     fitting/private_arithmetic/add_97/i4|CO       
+             net (fo=1)      0.000        6.448     fitting/private_arithmetic/add_97/n8          
+  (6,219)    EFX_ADD         0.025        6.473     fitting/private_arithmetic/add_97/i5|CI       
+  (6,219)    EFX_ADD         0.000        6.473     fitting/private_arithmetic/add_97/i5|CO       
+             net (fo=1)      0.000        6.473     fitting/private_arithmetic/add_97/n10         
+  (6,220)    EFX_ADD         0.025        6.498     fitting/private_arithmetic/add_97/i6|CI       
+  (6,220)    EFX_ADD         0.000        6.498     fitting/private_arithmetic/add_97/i6|CO       
+             net (fo=1)      0.000        6.498     fitting/private_arithmetic/add_97/n12         
+  (6,221)    EFX_ADD         0.025        6.523     fitting/private_arithmetic/add_97/i7|CI       
+  (6,221)    EFX_ADD         0.000        6.523     fitting/private_arithmetic/add_97/i7|CO       
+             net (fo=1)      0.000        6.523     fitting/private_arithmetic/add_97/n14         
+  (6,222)    EFX_ADD         0.025        6.548     fitting/private_arithmetic/add_97/i8|CI       
+  (6,222)    EFX_ADD         0.000        6.548     fitting/private_arithmetic/add_97/i8|CO       
+             net (fo=1)      0.000        6.548     fitting/private_arithmetic/add_97/n16         
+  (6,223)    EFX_ADD         0.025        6.573     fitting/private_arithmetic/add_97/i9|CI       
+  (6,223)    EFX_ADD         0.000        6.573     fitting/private_arithmetic/add_97/i9|CO       
+             net (fo=1)      0.000        6.573     fitting/private_arithmetic/add_97/n18         
+  (6,224)    EFX_ADD         0.025        6.598     fitting/private_arithmetic/add_97/i10|CI      
+  (6,224)    EFX_ADD         0.000        6.598     fitting/private_arithmetic/add_97/i10|CO      
+             net (fo=1)      0.000        6.598     fitting/private_arithmetic/add_97/n20         
+  (6,225)    EFX_ADD         0.025        6.623     fitting/private_arithmetic/add_97/i11|CI      
+  (6,225)    EFX_ADD         0.000        6.623     fitting/private_arithmetic/add_97/i11|CO      
+             net (fo=1)      0.000        6.623     fitting/private_arithmetic/add_97/n22         
+  (6,226)    EFX_ADD         0.025        6.648     fitting/private_arithmetic/add_97/i12|CI      
+  (6,226)    EFX_ADD         0.000        6.648     fitting/private_arithmetic/add_97/i12|CO      
+             net (fo=1)      0.000        6.648     fitting/private_arithmetic/add_97/n24         
+  (6,227)    EFX_ADD         0.025        6.673     fitting/private_arithmetic/add_97/i13|CI      
+  (6,227)    EFX_ADD         0.000        6.673     fitting/private_arithmetic/add_97/i13|CO      
+             net (fo=1)      0.000        6.673     fitting/private_arithmetic/add_97/n26         
+  (6,228)    EFX_ADD         0.025        6.698     fitting/private_arithmetic/add_97/i14|CI      
+  (6,228)    EFX_ADD         0.000        6.698     fitting/private_arithmetic/add_97/i14|CO      
+             net (fo=1)      0.000        6.698     fitting/private_arithmetic/add_97/n28         
+  (6,229)    EFX_ADD         0.025        6.723     fitting/private_arithmetic/add_97/i15|CI      
+  (6,229)    EFX_ADD         0.000        6.723     fitting/private_arithmetic/add_97/i15|CO      
+             net (fo=1)      0.000        6.723     fitting/private_arithmetic/add_97/n30         
+  (6,230)    EFX_ADD         0.025        6.748     fitting/private_arithmetic/add_97/i16|CI      
+  (6,230)    EFX_ADD         0.000        6.748     fitting/private_arithmetic/add_97/i16|CO      
+             net (fo=1)      0.000        6.748     fitting/private_arithmetic/add_97/n32         
+  (6,231)    EFX_ADD         0.025        6.773     fitting/private_arithmetic/add_97/i17|CI      
+  (6,231)    EFX_ADD         0.000        6.773     fitting/private_arithmetic/add_97/i17|CO      
+             net (fo=1)      0.000        6.773     fitting/private_arithmetic/add_97/n34         
+  (6,232)    EFX_ADD         0.025        6.798     fitting/private_arithmetic/add_97/i18|CI      
+  (6,232)    EFX_ADD         0.000        6.798     fitting/private_arithmetic/add_97/i18|CO      
+             net (fo=1)      0.000        6.798     fitting/private_arithmetic/add_97/n36         
+  (6,233)    EFX_ADD         0.025        6.823     fitting/private_arithmetic/add_97/i19|CI      
+  (6,233)    EFX_ADD         0.000        6.823     fitting/private_arithmetic/add_97/i19|CO      
+             net (fo=1)      0.000        6.823     fitting/private_arithmetic/add_97/n38         
+  (6,234)    EFX_ADD         0.025        6.848     fitting/private_arithmetic/add_97/i20|CI      
+  (6,234)    EFX_ADD         0.000        6.848     fitting/private_arithmetic/add_97/i20|CO      
+             net (fo=1)      0.000        6.848     fitting/private_arithmetic/add_97/n40         
+  (6,235)    EFX_ADD         0.025        6.873     fitting/private_arithmetic/add_97/i21|CI      
+  (6,235)    EFX_ADD         0.000        6.873     fitting/private_arithmetic/add_97/i21|CO      
+             net (fo=1)      0.000        6.873     fitting/private_arithmetic/add_97/n42         
+  (6,236)    EFX_ADD         0.025        6.898     fitting/private_arithmetic/add_97/i22|CI      
+  (6,236)    EFX_ADD         0.000        6.898     fitting/private_arithmetic/add_97/i22|CO      
+             net (fo=1)      0.000        6.898     fitting/private_arithmetic/add_97/n44         
+  (6,237)    EFX_ADD         0.025        6.923     fitting/private_arithmetic/add_97/i23|CI      
+  (6,237)    EFX_ADD         0.000        6.923     fitting/private_arithmetic/add_97/i23|CO      
+             net (fo=1)      0.000        6.923     fitting/private_arithmetic/add_97/n46         
+  (6,238)    EFX_ADD         0.025        6.948     fitting/private_arithmetic/add_97/i24|CI      
+  (6,238)    EFX_ADD         0.000        6.948     fitting/private_arithmetic/add_97/i24|CO      
+             net (fo=1)      0.000        6.948     fitting/private_arithmetic/add_97/n48         
+  (6,239)    EFX_ADD         0.025        6.973     fitting/private_arithmetic/add_97/i25|CI      
+  (6,239)    EFX_ADD         0.000        6.973     fitting/private_arithmetic/add_97/i25|CO      
+             net (fo=1)      0.000        6.973     fitting/private_arithmetic/add_97/n50         
+  (6,240)    EFX_ADD         0.025        6.998     fitting/private_arithmetic/add_97/i26|CI      
+  (6,240)    EFX_ADD         0.000        6.998     fitting/private_arithmetic/add_97/i26|CO      
+             net (fo=1)      0.000        6.998     fitting/private_arithmetic/add_97/n52         
+  (6,241)    EFX_ADD         0.025        7.023     fitting/private_arithmetic/add_97/i27|CI      
+  (6,241)    EFX_ADD         0.000        7.023     fitting/private_arithmetic/add_97/i27|CO      
+             net (fo=1)      0.000        7.023     fitting/private_arithmetic/add_97/n54         
+  (6,242)    EFX_ADD         0.025        7.048     fitting/private_arithmetic/add_97/i28|CI      
+  (6,242)    EFX_ADD         0.000        7.048     fitting/private_arithmetic/add_97/i28|CO      
+             net (fo=1)      0.000        7.048     fitting/private_arithmetic/add_97/n56         
+  (6,243)    EFX_ADD         0.025        7.073     fitting/private_arithmetic/add_97/i29|CI      
+  (6,243)    EFX_ADD         0.000        7.073     fitting/private_arithmetic/add_97/i29|CO      
+             net (fo=1)      0.000        7.073     fitting/private_arithmetic/add_97/n58         
+  (6,244)    EFX_ADD         0.097        7.170     fitting/private_arithmetic/add_97/i30|CI      
+  (6,244)    EFX_ADD         0.000        7.170     fitting/private_arithmetic/add_97/i30|O       
+             net (fo=1)      0.375        7.545     fitting/private_arithmetic/next_column_sum[29]
+  (5,252)    EFX_LUT4        0.061        7.606     LUT__73258|in[1]                              
+  (5,252)    EFX_LUT4        0.000        7.606     LUT__73258|out                                
+             net (fo=1)      0.000        7.606     fitting/private_arithmetic/n83688             
+  (5,252)    EFX_FF          0.000        7.606     fitting/private_arithmetic/column_sum[29]~FF|D
+
+Capture Clock Path
+  Location     Delay Type     Incr(ns)     Path(ns)                 Netlist Resource(s)
+======================================================================================================
+  (0,164)    input              0.000       0.000     clk_25m                                         
+  (0,164)    input              0.126       0.126     clk_25m                                         
+             net (fo=9826)      1.939       2.065     clk_25m                                         
+  (5,252)    EFX_FF             0.000       2.065     fitting/private_arithmetic/column_sum[29]~FF|CLK
+  (5,252)    EFX_FF (Setup)    -0.003       2.062     fitting/private_arithmetic/column_sum[29]~FF    
+
+++++ Path 2 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 32.304 ns (required time - arrival time)                       
+Path Start      : fitting/private_arithmetic/work_b[54]~FF|CLK                   
+Path End        : fitting/private_arithmetic/column_sum[34]~FF|D                 
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 7.567 ns                                                       
+Logic Levels    : 40                                                             
+
+Launch Clock Path Delay        : 2.065
++ Clock To Q + Data Path Delay : 7.567
+--------------------------------------
+End-of-path arrival time       : 9.632
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.003
+---------------------------------------
+End-of-path required time      : 41.936
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)               Netlist Resource(s)
+=================================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                                     
+  (0,164)    input            0.126        0.126     clk_25m                                     
+             net (fo=9826)    1.939        2.065     clk_25m                                     
+  (53,55)    EFX_FF           0.000        2.065     fitting/private_arithmetic/work_b[54]~FF|CLK
+
+Data Path
+  Location    Delay Type    Incr(ns)     Path(ns)                Netlist Resource(s)
+==================================================================================================
+  (53,55)    EFX_FF (Tco)    0.130        0.130     fitting/private_arithmetic/work_b[54]~FF|Q    
+             net (fo=9)      1.429        1.559     fitting/private_arithmetic/work_b[54]         
+  (23,38)    EFX_LUT4        0.061        1.620     LUT__60826|in[0]                              
+  (23,38)    EFX_LUT4        0.000        1.620     LUT__60826|out                                
+             net (fo=1)      1.063        2.683     n34113                                        
+  (17,120)   EFX_LUT4        0.061        2.744     LUT__60830|in[0]                              
+  (17,120)   EFX_LUT4        0.000        2.744     LUT__60830|out                                
+             net (fo=1)      0.589        3.333     n34117                                        
+  (16,168)   EFX_LUT4        0.061        3.394     LUT__60833|in[0]                              
+  (16,168)   EFX_LUT4        0.000        3.394     LUT__60833|out                                
+             net (fo=1)      0.663        4.057     fitting/private_arithmetic/n1188              
+  (24,202)   EFX_DSP48       1.317        5.374     fitting/private_arithmetic/mult_96|B[6]       
+  (24,202)   EFX_DSP48       0.000        5.374     fitting/private_arithmetic/mult_96|O[0]       
+             net (fo=1)      0.944        6.318     fitting/private_arithmetic/partial_product[0] 
+  (6,215)    EFX_ADD         0.055        6.373     fitting/private_arithmetic/add_97/i1|I1       
+  (6,215)    EFX_ADD         0.000        6.373     fitting/private_arithmetic/add_97/i1|CO       
+             net (fo=1)      0.000        6.373     fitting/private_arithmetic/add_97/n2          
+  (6,216)    EFX_ADD         0.025        6.398     fitting/private_arithmetic/add_97/i2|CI       
+  (6,216)    EFX_ADD         0.000        6.398     fitting/private_arithmetic/add_97/i2|CO       
+             net (fo=1)      0.000        6.398     fitting/private_arithmetic/add_97/n4          
+  (6,217)    EFX_ADD         0.025        6.423     fitting/private_arithmetic/add_97/i3|CI       
+  (6,217)    EFX_ADD         0.000        6.423     fitting/private_arithmetic/add_97/i3|CO       
+             net (fo=1)      0.000        6.423     fitting/private_arithmetic/add_97/n6          
+  (6,218)    EFX_ADD         0.025        6.448     fitting/private_arithmetic/add_97/i4|CI       
+  (6,218)    EFX_ADD         0.000        6.448     fitting/private_arithmetic/add_97/i4|CO       
+             net (fo=1)      0.000        6.448     fitting/private_arithmetic/add_97/n8          
+  (6,219)    EFX_ADD         0.025        6.473     fitting/private_arithmetic/add_97/i5|CI       
+  (6,219)    EFX_ADD         0.000        6.473     fitting/private_arithmetic/add_97/i5|CO       
+             net (fo=1)      0.000        6.473     fitting/private_arithmetic/add_97/n10         
+  (6,220)    EFX_ADD         0.025        6.498     fitting/private_arithmetic/add_97/i6|CI       
+  (6,220)    EFX_ADD         0.000        6.498     fitting/private_arithmetic/add_97/i6|CO       
+             net (fo=1)      0.000        6.498     fitting/private_arithmetic/add_97/n12         
+  (6,221)    EFX_ADD         0.025        6.523     fitting/private_arithmetic/add_97/i7|CI       
+  (6,221)    EFX_ADD         0.000        6.523     fitting/private_arithmetic/add_97/i7|CO       
+             net (fo=1)      0.000        6.523     fitting/private_arithmetic/add_97/n14         
+  (6,222)    EFX_ADD         0.025        6.548     fitting/private_arithmetic/add_97/i8|CI       
+  (6,222)    EFX_ADD         0.000        6.548     fitting/private_arithmetic/add_97/i8|CO       
+             net (fo=1)      0.000        6.548     fitting/private_arithmetic/add_97/n16         
+  (6,223)    EFX_ADD         0.025        6.573     fitting/private_arithmetic/add_97/i9|CI       
+  (6,223)    EFX_ADD         0.000        6.573     fitting/private_arithmetic/add_97/i9|CO       
+             net (fo=1)      0.000        6.573     fitting/private_arithmetic/add_97/n18         
+  (6,224)    EFX_ADD         0.025        6.598     fitting/private_arithmetic/add_97/i10|CI      
+  (6,224)    EFX_ADD         0.000        6.598     fitting/private_arithmetic/add_97/i10|CO      
+             net (fo=1)      0.000        6.598     fitting/private_arithmetic/add_97/n20         
+  (6,225)    EFX_ADD         0.025        6.623     fitting/private_arithmetic/add_97/i11|CI      
+  (6,225)    EFX_ADD         0.000        6.623     fitting/private_arithmetic/add_97/i11|CO      
+             net (fo=1)      0.000        6.623     fitting/private_arithmetic/add_97/n22         
+  (6,226)    EFX_ADD         0.025        6.648     fitting/private_arithmetic/add_97/i12|CI      
+  (6,226)    EFX_ADD         0.000        6.648     fitting/private_arithmetic/add_97/i12|CO      
+             net (fo=1)      0.000        6.648     fitting/private_arithmetic/add_97/n24         
+  (6,227)    EFX_ADD         0.025        6.673     fitting/private_arithmetic/add_97/i13|CI      
+  (6,227)    EFX_ADD         0.000        6.673     fitting/private_arithmetic/add_97/i13|CO      
+             net (fo=1)      0.000        6.673     fitting/private_arithmetic/add_97/n26         
+  (6,228)    EFX_ADD         0.025        6.698     fitting/private_arithmetic/add_97/i14|CI      
+  (6,228)    EFX_ADD         0.000        6.698     fitting/private_arithmetic/add_97/i14|CO      
+             net (fo=1)      0.000        6.698     fitting/private_arithmetic/add_97/n28         
+  (6,229)    EFX_ADD         0.025        6.723     fitting/private_arithmetic/add_97/i15|CI      
+  (6,229)    EFX_ADD         0.000        6.723     fitting/private_arithmetic/add_97/i15|CO      
+             net (fo=1)      0.000        6.723     fitting/private_arithmetic/add_97/n30         
+  (6,230)    EFX_ADD         0.025        6.748     fitting/private_arithmetic/add_97/i16|CI      
+  (6,230)    EFX_ADD         0.000        6.748     fitting/private_arithmetic/add_97/i16|CO      
+             net (fo=1)      0.000        6.748     fitting/private_arithmetic/add_97/n32         
+  (6,231)    EFX_ADD         0.025        6.773     fitting/private_arithmetic/add_97/i17|CI      
+  (6,231)    EFX_ADD         0.000        6.773     fitting/private_arithmetic/add_97/i17|CO      
+             net (fo=1)      0.000        6.773     fitting/private_arithmetic/add_97/n34         
+  (6,232)    EFX_ADD         0.025        6.798     fitting/private_arithmetic/add_97/i18|CI      
+  (6,232)    EFX_ADD         0.000        6.798     fitting/private_arithmetic/add_97/i18|CO      
+             net (fo=1)      0.000        6.798     fitting/private_arithmetic/add_97/n36         
+  (6,233)    EFX_ADD         0.025        6.823     fitting/private_arithmetic/add_97/i19|CI      
+  (6,233)    EFX_ADD         0.000        6.823     fitting/private_arithmetic/add_97/i19|CO      
+             net (fo=1)      0.000        6.823     fitting/private_arithmetic/add_97/n38         
+  (6,234)    EFX_ADD         0.025        6.848     fitting/private_arithmetic/add_97/i20|CI      
+  (6,234)    EFX_ADD         0.000        6.848     fitting/private_arithmetic/add_97/i20|CO      
+             net (fo=1)      0.000        6.848     fitting/private_arithmetic/add_97/n40         
+  (6,235)    EFX_ADD         0.025        6.873     fitting/private_arithmetic/add_97/i21|CI      
+  (6,235)    EFX_ADD         0.000        6.873     fitting/private_arithmetic/add_97/i21|CO      
+             net (fo=1)      0.000        6.873     fitting/private_arithmetic/add_97/n42         
+  (6,236)    EFX_ADD         0.025        6.898     fitting/private_arithmetic/add_97/i22|CI      
+  (6,236)    EFX_ADD         0.000        6.898     fitting/private_arithmetic/add_97/i22|CO      
+             net (fo=1)      0.000        6.898     fitting/private_arithmetic/add_97/n44         
+  (6,237)    EFX_ADD         0.025        6.923     fitting/private_arithmetic/add_97/i23|CI      
+  (6,237)    EFX_ADD         0.000        6.923     fitting/private_arithmetic/add_97/i23|CO      
+             net (fo=1)      0.000        6.923     fitting/private_arithmetic/add_97/n46         
+  (6,238)    EFX_ADD         0.025        6.948     fitting/private_arithmetic/add_97/i24|CI      
+  (6,238)    EFX_ADD         0.000        6.948     fitting/private_arithmetic/add_97/i24|CO      
+             net (fo=1)      0.000        6.948     fitting/private_arithmetic/add_97/n48         
+  (6,239)    EFX_ADD         0.025        6.973     fitting/private_arithmetic/add_97/i25|CI      
+  (6,239)    EFX_ADD         0.000        6.973     fitting/private_arithmetic/add_97/i25|CO      
+             net (fo=1)      0.000        6.973     fitting/private_arithmetic/add_97/n50         
+  (6,240)    EFX_ADD         0.025        6.998     fitting/private_arithmetic/add_97/i26|CI      
+  (6,240)    EFX_ADD         0.000        6.998     fitting/private_arithmetic/add_97/i26|CO      
+             net (fo=1)      0.000        6.998     fitting/private_arithmetic/add_97/n52         
+  (6,241)    EFX_ADD         0.025        7.023     fitting/private_arithmetic/add_97/i27|CI      
+  (6,241)    EFX_ADD         0.000        7.023     fitting/private_arithmetic/add_97/i27|CO      
+             net (fo=1)      0.000        7.023     fitting/private_arithmetic/add_97/n54         
+  (6,242)    EFX_ADD         0.025        7.048     fitting/private_arithmetic/add_97/i28|CI      
+  (6,242)    EFX_ADD         0.000        7.048     fitting/private_arithmetic/add_97/i28|CO      
+             net (fo=1)      0.000        7.048     fitting/private_arithmetic/add_97/n56         
+  (6,243)    EFX_ADD         0.025        7.073     fitting/private_arithmetic/add_97/i29|CI      
+  (6,243)    EFX_ADD         0.000        7.073     fitting/private_arithmetic/add_97/i29|CO      
+             net (fo=1)      0.000        7.073     fitting/private_arithmetic/add_97/n58         
+  (6,244)    EFX_ADD         0.025        7.098     fitting/private_arithmetic/add_97/i30|CI      
+  (6,244)    EFX_ADD         0.000        7.098     fitting/private_arithmetic/add_97/i30|CO      
+             net (fo=1)      0.000        7.098     fitting/private_arithmetic/add_97/n60         
+  (6,245)    EFX_ADD         0.025        7.123     fitting/private_arithmetic/add_97/i31|CI      
+  (6,245)    EFX_ADD         0.000        7.123     fitting/private_arithmetic/add_97/i31|CO      
+             net (fo=1)      0.000        7.123     fitting/private_arithmetic/add_97/n62         
+  (6,246)    EFX_ADD         0.025        7.148     fitting/private_arithmetic/add_97/i32|CI      
+  (6,246)    EFX_ADD         0.000        7.148     fitting/private_arithmetic/add_97/i32|CO      
+             net (fo=1)      0.000        7.148     fitting/private_arithmetic/add_97/n64         
+  (6,247)    EFX_ADD         0.025        7.173     fitting/private_arithmetic/add_97/i33|CI      
+  (6,247)    EFX_ADD         0.000        7.173     fitting/private_arithmetic/add_97/i33|CO      
+             net (fo=1)      0.000        7.173     fitting/private_arithmetic/add_97/n66         
+  (6,248)    EFX_ADD         0.025        7.198     fitting/private_arithmetic/add_97/i34|CI      
+  (6,248)    EFX_ADD         0.000        7.198     fitting/private_arithmetic/add_97/i34|CO      
+             net (fo=1)      0.000        7.198     fitting/private_arithmetic/add_97/n68         
+  (6,249)    EFX_ADD         0.097        7.295     fitting/private_arithmetic/add_97/i35|CI      
+  (6,249)    EFX_ADD         0.000        7.295     fitting/private_arithmetic/add_97/i35|O       
+             net (fo=1)      0.211        7.506     fitting/private_arithmetic/next_column_sum[34]
+  (7,249)    EFX_LUT4        0.061        7.567     LUT__73263|in[1]                              
+  (7,249)    EFX_LUT4        0.000        7.567     LUT__73263|out                                
+             net (fo=1)      0.000        7.567     fitting/private_arithmetic/n83723             
+  (7,249)    EFX_FF          0.000        7.567     fitting/private_arithmetic/column_sum[34]~FF|D
+
+Capture Clock Path
+  Location     Delay Type     Incr(ns)     Path(ns)                 Netlist Resource(s)
+======================================================================================================
+  (0,164)    input              0.000       0.000     clk_25m                                         
+  (0,164)    input              0.126       0.126     clk_25m                                         
+             net (fo=9826)      1.939       2.065     clk_25m                                         
+  (7,249)    EFX_FF             0.000       2.065     fitting/private_arithmetic/column_sum[34]~FF|CLK
+  (7,249)    EFX_FF (Setup)    -0.003       2.062     fitting/private_arithmetic/column_sum[34]~FF    
+
+++++ Path 3 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 32.321 ns (required time - arrival time)                       
+Path Start      : fitting/private_arithmetic/work_b[54]~FF|CLK                   
+Path End        : fitting/private_arithmetic/column_sum[33]~FF|D                 
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 7.550 ns                                                       
+Logic Levels    : 39                                                             
+
+Launch Clock Path Delay        : 2.065
++ Clock To Q + Data Path Delay : 7.550
+--------------------------------------
+End-of-path arrival time       : 9.615
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.003
+---------------------------------------
+End-of-path required time      : 41.936
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)               Netlist Resource(s)
+=================================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                                     
+  (0,164)    input            0.126        0.126     clk_25m                                     
+             net (fo=9826)    1.939        2.065     clk_25m                                     
+  (53,55)    EFX_FF           0.000        2.065     fitting/private_arithmetic/work_b[54]~FF|CLK
+
+Data Path
+  Location    Delay Type    Incr(ns)     Path(ns)                Netlist Resource(s)
+==================================================================================================
+  (53,55)    EFX_FF (Tco)    0.130        0.130     fitting/private_arithmetic/work_b[54]~FF|Q    
+             net (fo=9)      1.429        1.559     fitting/private_arithmetic/work_b[54]         
+  (23,38)    EFX_LUT4        0.061        1.620     LUT__60826|in[0]                              
+  (23,38)    EFX_LUT4        0.000        1.620     LUT__60826|out                                
+             net (fo=1)      1.063        2.683     n34113                                        
+  (17,120)   EFX_LUT4        0.061        2.744     LUT__60830|in[0]                              
+  (17,120)   EFX_LUT4        0.000        2.744     LUT__60830|out                                
+             net (fo=1)      0.589        3.333     n34117                                        
+  (16,168)   EFX_LUT4        0.061        3.394     LUT__60833|in[0]                              
+  (16,168)   EFX_LUT4        0.000        3.394     LUT__60833|out                                
+             net (fo=1)      0.663        4.057     fitting/private_arithmetic/n1188              
+  (24,202)   EFX_DSP48       1.317        5.374     fitting/private_arithmetic/mult_96|B[6]       
+  (24,202)   EFX_DSP48       0.000        5.374     fitting/private_arithmetic/mult_96|O[0]       
+             net (fo=1)      0.944        6.318     fitting/private_arithmetic/partial_product[0] 
+  (6,215)    EFX_ADD         0.055        6.373     fitting/private_arithmetic/add_97/i1|I1       
+  (6,215)    EFX_ADD         0.000        6.373     fitting/private_arithmetic/add_97/i1|CO       
+             net (fo=1)      0.000        6.373     fitting/private_arithmetic/add_97/n2          
+  (6,216)    EFX_ADD         0.025        6.398     fitting/private_arithmetic/add_97/i2|CI       
+  (6,216)    EFX_ADD         0.000        6.398     fitting/private_arithmetic/add_97/i2|CO       
+             net (fo=1)      0.000        6.398     fitting/private_arithmetic/add_97/n4          
+  (6,217)    EFX_ADD         0.025        6.423     fitting/private_arithmetic/add_97/i3|CI       
+  (6,217)    EFX_ADD         0.000        6.423     fitting/private_arithmetic/add_97/i3|CO       
+             net (fo=1)      0.000        6.423     fitting/private_arithmetic/add_97/n6          
+  (6,218)    EFX_ADD         0.025        6.448     fitting/private_arithmetic/add_97/i4|CI       
+  (6,218)    EFX_ADD         0.000        6.448     fitting/private_arithmetic/add_97/i4|CO       
+             net (fo=1)      0.000        6.448     fitting/private_arithmetic/add_97/n8          
+  (6,219)    EFX_ADD         0.025        6.473     fitting/private_arithmetic/add_97/i5|CI       
+  (6,219)    EFX_ADD         0.000        6.473     fitting/private_arithmetic/add_97/i5|CO       
+             net (fo=1)      0.000        6.473     fitting/private_arithmetic/add_97/n10         
+  (6,220)    EFX_ADD         0.025        6.498     fitting/private_arithmetic/add_97/i6|CI       
+  (6,220)    EFX_ADD         0.000        6.498     fitting/private_arithmetic/add_97/i6|CO       
+             net (fo=1)      0.000        6.498     fitting/private_arithmetic/add_97/n12         
+  (6,221)    EFX_ADD         0.025        6.523     fitting/private_arithmetic/add_97/i7|CI       
+  (6,221)    EFX_ADD         0.000        6.523     fitting/private_arithmetic/add_97/i7|CO       
+             net (fo=1)      0.000        6.523     fitting/private_arithmetic/add_97/n14         
+  (6,222)    EFX_ADD         0.025        6.548     fitting/private_arithmetic/add_97/i8|CI       
+  (6,222)    EFX_ADD         0.000        6.548     fitting/private_arithmetic/add_97/i8|CO       
+             net (fo=1)      0.000        6.548     fitting/private_arithmetic/add_97/n16         
+  (6,223)    EFX_ADD         0.025        6.573     fitting/private_arithmetic/add_97/i9|CI       
+  (6,223)    EFX_ADD         0.000        6.573     fitting/private_arithmetic/add_97/i9|CO       
+             net (fo=1)      0.000        6.573     fitting/private_arithmetic/add_97/n18         
+  (6,224)    EFX_ADD         0.025        6.598     fitting/private_arithmetic/add_97/i10|CI      
+  (6,224)    EFX_ADD         0.000        6.598     fitting/private_arithmetic/add_97/i10|CO      
+             net (fo=1)      0.000        6.598     fitting/private_arithmetic/add_97/n20         
+  (6,225)    EFX_ADD         0.025        6.623     fitting/private_arithmetic/add_97/i11|CI      
+  (6,225)    EFX_ADD         0.000        6.623     fitting/private_arithmetic/add_97/i11|CO      
+             net (fo=1)      0.000        6.623     fitting/private_arithmetic/add_97/n22         
+  (6,226)    EFX_ADD         0.025        6.648     fitting/private_arithmetic/add_97/i12|CI      
+  (6,226)    EFX_ADD         0.000        6.648     fitting/private_arithmetic/add_97/i12|CO      
+             net (fo=1)      0.000        6.648     fitting/private_arithmetic/add_97/n24         
+  (6,227)    EFX_ADD         0.025        6.673     fitting/private_arithmetic/add_97/i13|CI      
+  (6,227)    EFX_ADD         0.000        6.673     fitting/private_arithmetic/add_97/i13|CO      
+             net (fo=1)      0.000        6.673     fitting/private_arithmetic/add_97/n26         
+  (6,228)    EFX_ADD         0.025        6.698     fitting/private_arithmetic/add_97/i14|CI      
+  (6,228)    EFX_ADD         0.000        6.698     fitting/private_arithmetic/add_97/i14|CO      
+             net (fo=1)      0.000        6.698     fitting/private_arithmetic/add_97/n28         
+  (6,229)    EFX_ADD         0.025        6.723     fitting/private_arithmetic/add_97/i15|CI      
+  (6,229)    EFX_ADD         0.000        6.723     fitting/private_arithmetic/add_97/i15|CO      
+             net (fo=1)      0.000        6.723     fitting/private_arithmetic/add_97/n30         
+  (6,230)    EFX_ADD         0.025        6.748     fitting/private_arithmetic/add_97/i16|CI      
+  (6,230)    EFX_ADD         0.000        6.748     fitting/private_arithmetic/add_97/i16|CO      
+             net (fo=1)      0.000        6.748     fitting/private_arithmetic/add_97/n32         
+  (6,231)    EFX_ADD         0.025        6.773     fitting/private_arithmetic/add_97/i17|CI      
+  (6,231)    EFX_ADD         0.000        6.773     fitting/private_arithmetic/add_97/i17|CO      
+             net (fo=1)      0.000        6.773     fitting/private_arithmetic/add_97/n34         
+  (6,232)    EFX_ADD         0.025        6.798     fitting/private_arithmetic/add_97/i18|CI      
+  (6,232)    EFX_ADD         0.000        6.798     fitting/private_arithmetic/add_97/i18|CO      
+             net (fo=1)      0.000        6.798     fitting/private_arithmetic/add_97/n36         
+  (6,233)    EFX_ADD         0.025        6.823     fitting/private_arithmetic/add_97/i19|CI      
+  (6,233)    EFX_ADD         0.000        6.823     fitting/private_arithmetic/add_97/i19|CO      
+             net (fo=1)      0.000        6.823     fitting/private_arithmetic/add_97/n38         
+  (6,234)    EFX_ADD         0.025        6.848     fitting/private_arithmetic/add_97/i20|CI      
+  (6,234)    EFX_ADD         0.000        6.848     fitting/private_arithmetic/add_97/i20|CO      
+             net (fo=1)      0.000        6.848     fitting/private_arithmetic/add_97/n40         
+  (6,235)    EFX_ADD         0.025        6.873     fitting/private_arithmetic/add_97/i21|CI      
+  (6,235)    EFX_ADD         0.000        6.873     fitting/private_arithmetic/add_97/i21|CO      
+             net (fo=1)      0.000        6.873     fitting/private_arithmetic/add_97/n42         
+  (6,236)    EFX_ADD         0.025        6.898     fitting/private_arithmetic/add_97/i22|CI      
+  (6,236)    EFX_ADD         0.000        6.898     fitting/private_arithmetic/add_97/i22|CO      
+             net (fo=1)      0.000        6.898     fitting/private_arithmetic/add_97/n44         
+  (6,237)    EFX_ADD         0.025        6.923     fitting/private_arithmetic/add_97/i23|CI      
+  (6,237)    EFX_ADD         0.000        6.923     fitting/private_arithmetic/add_97/i23|CO      
+             net (fo=1)      0.000        6.923     fitting/private_arithmetic/add_97/n46         
+  (6,238)    EFX_ADD         0.025        6.948     fitting/private_arithmetic/add_97/i24|CI      
+  (6,238)    EFX_ADD         0.000        6.948     fitting/private_arithmetic/add_97/i24|CO      
+             net (fo=1)      0.000        6.948     fitting/private_arithmetic/add_97/n48         
+  (6,239)    EFX_ADD         0.025        6.973     fitting/private_arithmetic/add_97/i25|CI      
+  (6,239)    EFX_ADD         0.000        6.973     fitting/private_arithmetic/add_97/i25|CO      
+             net (fo=1)      0.000        6.973     fitting/private_arithmetic/add_97/n50         
+  (6,240)    EFX_ADD         0.025        6.998     fitting/private_arithmetic/add_97/i26|CI      
+  (6,240)    EFX_ADD         0.000        6.998     fitting/private_arithmetic/add_97/i26|CO      
+             net (fo=1)      0.000        6.998     fitting/private_arithmetic/add_97/n52         
+  (6,241)    EFX_ADD         0.025        7.023     fitting/private_arithmetic/add_97/i27|CI      
+  (6,241)    EFX_ADD         0.000        7.023     fitting/private_arithmetic/add_97/i27|CO      
+             net (fo=1)      0.000        7.023     fitting/private_arithmetic/add_97/n54         
+  (6,242)    EFX_ADD         0.025        7.048     fitting/private_arithmetic/add_97/i28|CI      
+  (6,242)    EFX_ADD         0.000        7.048     fitting/private_arithmetic/add_97/i28|CO      
+             net (fo=1)      0.000        7.048     fitting/private_arithmetic/add_97/n56         
+  (6,243)    EFX_ADD         0.025        7.073     fitting/private_arithmetic/add_97/i29|CI      
+  (6,243)    EFX_ADD         0.000        7.073     fitting/private_arithmetic/add_97/i29|CO      
+             net (fo=1)      0.000        7.073     fitting/private_arithmetic/add_97/n58         
+  (6,244)    EFX_ADD         0.025        7.098     fitting/private_arithmetic/add_97/i30|CI      
+  (6,244)    EFX_ADD         0.000        7.098     fitting/private_arithmetic/add_97/i30|CO      
+             net (fo=1)      0.000        7.098     fitting/private_arithmetic/add_97/n60         
+  (6,245)    EFX_ADD         0.025        7.123     fitting/private_arithmetic/add_97/i31|CI      
+  (6,245)    EFX_ADD         0.000        7.123     fitting/private_arithmetic/add_97/i31|CO      
+             net (fo=1)      0.000        7.123     fitting/private_arithmetic/add_97/n62         
+  (6,246)    EFX_ADD         0.025        7.148     fitting/private_arithmetic/add_97/i32|CI      
+  (6,246)    EFX_ADD         0.000        7.148     fitting/private_arithmetic/add_97/i32|CO      
+             net (fo=1)      0.000        7.148     fitting/private_arithmetic/add_97/n64         
+  (6,247)    EFX_ADD         0.025        7.173     fitting/private_arithmetic/add_97/i33|CI      
+  (6,247)    EFX_ADD         0.000        7.173     fitting/private_arithmetic/add_97/i33|CO      
+             net (fo=1)      0.000        7.173     fitting/private_arithmetic/add_97/n66         
+  (6,248)    EFX_ADD         0.097        7.270     fitting/private_arithmetic/add_97/i34|CI      
+  (6,248)    EFX_ADD         0.000        7.270     fitting/private_arithmetic/add_97/i34|O       
+             net (fo=1)      0.217        7.487     fitting/private_arithmetic/next_column_sum[33]
+  (3,248)    EFX_LUT4        0.063        7.550     LUT__73262|in[1]                              
+  (3,248)    EFX_LUT4        0.000        7.550     LUT__73262|out                                
+             net (fo=1)      0.000        7.550     fitting/private_arithmetic/n83716             
+  (3,248)    EFX_FF          0.000        7.550     fitting/private_arithmetic/column_sum[33]~FF|D
+
+Capture Clock Path
+  Location     Delay Type     Incr(ns)     Path(ns)                 Netlist Resource(s)
+======================================================================================================
+  (0,164)    input              0.000       0.000     clk_25m                                         
+  (0,164)    input              0.126       0.126     clk_25m                                         
+             net (fo=9826)      1.939       2.065     clk_25m                                         
+  (3,248)    EFX_FF             0.000       2.065     fitting/private_arithmetic/column_sum[33]~FF|CLK
+  (3,248)    EFX_FF (Setup)    -0.003       2.062     fitting/private_arithmetic/column_sum[33]~FF    
+
+++++ Path 4 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 32.356 ns (required time - arrival time)                       
+Path Start      : fitting/private_arithmetic/work_b[54]~FF|CLK                   
+Path End        : fitting/private_arithmetic/column_sum[30]~FF|D                 
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 7.515 ns                                                       
+Logic Levels    : 36                                                             
+
+Launch Clock Path Delay        : 2.065
++ Clock To Q + Data Path Delay : 7.515
+--------------------------------------
+End-of-path arrival time       : 9.580
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.003
+---------------------------------------
+End-of-path required time      : 41.936
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)               Netlist Resource(s)
+=================================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                                     
+  (0,164)    input            0.126        0.126     clk_25m                                     
+             net (fo=9826)    1.939        2.065     clk_25m                                     
+  (53,55)    EFX_FF           0.000        2.065     fitting/private_arithmetic/work_b[54]~FF|CLK
+
+Data Path
+  Location    Delay Type    Incr(ns)     Path(ns)                Netlist Resource(s)
+==================================================================================================
+  (53,55)    EFX_FF (Tco)    0.130        0.130     fitting/private_arithmetic/work_b[54]~FF|Q    
+             net (fo=9)      1.429        1.559     fitting/private_arithmetic/work_b[54]         
+  (23,38)    EFX_LUT4        0.061        1.620     LUT__60826|in[0]                              
+  (23,38)    EFX_LUT4        0.000        1.620     LUT__60826|out                                
+             net (fo=1)      1.063        2.683     n34113                                        
+  (17,120)   EFX_LUT4        0.061        2.744     LUT__60830|in[0]                              
+  (17,120)   EFX_LUT4        0.000        2.744     LUT__60830|out                                
+             net (fo=1)      0.589        3.333     n34117                                        
+  (16,168)   EFX_LUT4        0.061        3.394     LUT__60833|in[0]                              
+  (16,168)   EFX_LUT4        0.000        3.394     LUT__60833|out                                
+             net (fo=1)      0.663        4.057     fitting/private_arithmetic/n1188              
+  (24,202)   EFX_DSP48       1.317        5.374     fitting/private_arithmetic/mult_96|B[6]       
+  (24,202)   EFX_DSP48       0.000        5.374     fitting/private_arithmetic/mult_96|O[0]       
+             net (fo=1)      0.944        6.318     fitting/private_arithmetic/partial_product[0] 
+  (6,215)    EFX_ADD         0.055        6.373     fitting/private_arithmetic/add_97/i1|I1       
+  (6,215)    EFX_ADD         0.000        6.373     fitting/private_arithmetic/add_97/i1|CO       
+             net (fo=1)      0.000        6.373     fitting/private_arithmetic/add_97/n2          
+  (6,216)    EFX_ADD         0.025        6.398     fitting/private_arithmetic/add_97/i2|CI       
+  (6,216)    EFX_ADD         0.000        6.398     fitting/private_arithmetic/add_97/i2|CO       
+             net (fo=1)      0.000        6.398     fitting/private_arithmetic/add_97/n4          
+  (6,217)    EFX_ADD         0.025        6.423     fitting/private_arithmetic/add_97/i3|CI       
+  (6,217)    EFX_ADD         0.000        6.423     fitting/private_arithmetic/add_97/i3|CO       
+             net (fo=1)      0.000        6.423     fitting/private_arithmetic/add_97/n6          
+  (6,218)    EFX_ADD         0.025        6.448     fitting/private_arithmetic/add_97/i4|CI       
+  (6,218)    EFX_ADD         0.000        6.448     fitting/private_arithmetic/add_97/i4|CO       
+             net (fo=1)      0.000        6.448     fitting/private_arithmetic/add_97/n8          
+  (6,219)    EFX_ADD         0.025        6.473     fitting/private_arithmetic/add_97/i5|CI       
+  (6,219)    EFX_ADD         0.000        6.473     fitting/private_arithmetic/add_97/i5|CO       
+             net (fo=1)      0.000        6.473     fitting/private_arithmetic/add_97/n10         
+  (6,220)    EFX_ADD         0.025        6.498     fitting/private_arithmetic/add_97/i6|CI       
+  (6,220)    EFX_ADD         0.000        6.498     fitting/private_arithmetic/add_97/i6|CO       
+             net (fo=1)      0.000        6.498     fitting/private_arithmetic/add_97/n12         
+  (6,221)    EFX_ADD         0.025        6.523     fitting/private_arithmetic/add_97/i7|CI       
+  (6,221)    EFX_ADD         0.000        6.523     fitting/private_arithmetic/add_97/i7|CO       
+             net (fo=1)      0.000        6.523     fitting/private_arithmetic/add_97/n14         
+  (6,222)    EFX_ADD         0.025        6.548     fitting/private_arithmetic/add_97/i8|CI       
+  (6,222)    EFX_ADD         0.000        6.548     fitting/private_arithmetic/add_97/i8|CO       
+             net (fo=1)      0.000        6.548     fitting/private_arithmetic/add_97/n16         
+  (6,223)    EFX_ADD         0.025        6.573     fitting/private_arithmetic/add_97/i9|CI       
+  (6,223)    EFX_ADD         0.000        6.573     fitting/private_arithmetic/add_97/i9|CO       
+             net (fo=1)      0.000        6.573     fitting/private_arithmetic/add_97/n18         
+  (6,224)    EFX_ADD         0.025        6.598     fitting/private_arithmetic/add_97/i10|CI      
+  (6,224)    EFX_ADD         0.000        6.598     fitting/private_arithmetic/add_97/i10|CO      
+             net (fo=1)      0.000        6.598     fitting/private_arithmetic/add_97/n20         
+  (6,225)    EFX_ADD         0.025        6.623     fitting/private_arithmetic/add_97/i11|CI      
+  (6,225)    EFX_ADD         0.000        6.623     fitting/private_arithmetic/add_97/i11|CO      
+             net (fo=1)      0.000        6.623     fitting/private_arithmetic/add_97/n22         
+  (6,226)    EFX_ADD         0.025        6.648     fitting/private_arithmetic/add_97/i12|CI      
+  (6,226)    EFX_ADD         0.000        6.648     fitting/private_arithmetic/add_97/i12|CO      
+             net (fo=1)      0.000        6.648     fitting/private_arithmetic/add_97/n24         
+  (6,227)    EFX_ADD         0.025        6.673     fitting/private_arithmetic/add_97/i13|CI      
+  (6,227)    EFX_ADD         0.000        6.673     fitting/private_arithmetic/add_97/i13|CO      
+             net (fo=1)      0.000        6.673     fitting/private_arithmetic/add_97/n26         
+  (6,228)    EFX_ADD         0.025        6.698     fitting/private_arithmetic/add_97/i14|CI      
+  (6,228)    EFX_ADD         0.000        6.698     fitting/private_arithmetic/add_97/i14|CO      
+             net (fo=1)      0.000        6.698     fitting/private_arithmetic/add_97/n28         
+  (6,229)    EFX_ADD         0.025        6.723     fitting/private_arithmetic/add_97/i15|CI      
+  (6,229)    EFX_ADD         0.000        6.723     fitting/private_arithmetic/add_97/i15|CO      
+             net (fo=1)      0.000        6.723     fitting/private_arithmetic/add_97/n30         
+  (6,230)    EFX_ADD         0.025        6.748     fitting/private_arithmetic/add_97/i16|CI      
+  (6,230)    EFX_ADD         0.000        6.748     fitting/private_arithmetic/add_97/i16|CO      
+             net (fo=1)      0.000        6.748     fitting/private_arithmetic/add_97/n32         
+  (6,231)    EFX_ADD         0.025        6.773     fitting/private_arithmetic/add_97/i17|CI      
+  (6,231)    EFX_ADD         0.000        6.773     fitting/private_arithmetic/add_97/i17|CO      
+             net (fo=1)      0.000        6.773     fitting/private_arithmetic/add_97/n34         
+  (6,232)    EFX_ADD         0.025        6.798     fitting/private_arithmetic/add_97/i18|CI      
+  (6,232)    EFX_ADD         0.000        6.798     fitting/private_arithmetic/add_97/i18|CO      
+             net (fo=1)      0.000        6.798     fitting/private_arithmetic/add_97/n36         
+  (6,233)    EFX_ADD         0.025        6.823     fitting/private_arithmetic/add_97/i19|CI      
+  (6,233)    EFX_ADD         0.000        6.823     fitting/private_arithmetic/add_97/i19|CO      
+             net (fo=1)      0.000        6.823     fitting/private_arithmetic/add_97/n38         
+  (6,234)    EFX_ADD         0.025        6.848     fitting/private_arithmetic/add_97/i20|CI      
+  (6,234)    EFX_ADD         0.000        6.848     fitting/private_arithmetic/add_97/i20|CO      
+             net (fo=1)      0.000        6.848     fitting/private_arithmetic/add_97/n40         
+  (6,235)    EFX_ADD         0.025        6.873     fitting/private_arithmetic/add_97/i21|CI      
+  (6,235)    EFX_ADD         0.000        6.873     fitting/private_arithmetic/add_97/i21|CO      
+             net (fo=1)      0.000        6.873     fitting/private_arithmetic/add_97/n42         
+  (6,236)    EFX_ADD         0.025        6.898     fitting/private_arithmetic/add_97/i22|CI      
+  (6,236)    EFX_ADD         0.000        6.898     fitting/private_arithmetic/add_97/i22|CO      
+             net (fo=1)      0.000        6.898     fitting/private_arithmetic/add_97/n44         
+  (6,237)    EFX_ADD         0.025        6.923     fitting/private_arithmetic/add_97/i23|CI      
+  (6,237)    EFX_ADD         0.000        6.923     fitting/private_arithmetic/add_97/i23|CO      
+             net (fo=1)      0.000        6.923     fitting/private_arithmetic/add_97/n46         
+  (6,238)    EFX_ADD         0.025        6.948     fitting/private_arithmetic/add_97/i24|CI      
+  (6,238)    EFX_ADD         0.000        6.948     fitting/private_arithmetic/add_97/i24|CO      
+             net (fo=1)      0.000        6.948     fitting/private_arithmetic/add_97/n48         
+  (6,239)    EFX_ADD         0.025        6.973     fitting/private_arithmetic/add_97/i25|CI      
+  (6,239)    EFX_ADD         0.000        6.973     fitting/private_arithmetic/add_97/i25|CO      
+             net (fo=1)      0.000        6.973     fitting/private_arithmetic/add_97/n50         
+  (6,240)    EFX_ADD         0.025        6.998     fitting/private_arithmetic/add_97/i26|CI      
+  (6,240)    EFX_ADD         0.000        6.998     fitting/private_arithmetic/add_97/i26|CO      
+             net (fo=1)      0.000        6.998     fitting/private_arithmetic/add_97/n52         
+  (6,241)    EFX_ADD         0.025        7.023     fitting/private_arithmetic/add_97/i27|CI      
+  (6,241)    EFX_ADD         0.000        7.023     fitting/private_arithmetic/add_97/i27|CO      
+             net (fo=1)      0.000        7.023     fitting/private_arithmetic/add_97/n54         
+  (6,242)    EFX_ADD         0.025        7.048     fitting/private_arithmetic/add_97/i28|CI      
+  (6,242)    EFX_ADD         0.000        7.048     fitting/private_arithmetic/add_97/i28|CO      
+             net (fo=1)      0.000        7.048     fitting/private_arithmetic/add_97/n56         
+  (6,243)    EFX_ADD         0.025        7.073     fitting/private_arithmetic/add_97/i29|CI      
+  (6,243)    EFX_ADD         0.000        7.073     fitting/private_arithmetic/add_97/i29|CO      
+             net (fo=1)      0.000        7.073     fitting/private_arithmetic/add_97/n58         
+  (6,244)    EFX_ADD         0.025        7.098     fitting/private_arithmetic/add_97/i30|CI      
+  (6,244)    EFX_ADD         0.000        7.098     fitting/private_arithmetic/add_97/i30|CO      
+             net (fo=1)      0.000        7.098     fitting/private_arithmetic/add_97/n60         
+  (6,245)    EFX_ADD         0.097        7.195     fitting/private_arithmetic/add_97/i31|CI      
+  (6,245)    EFX_ADD         0.000        7.195     fitting/private_arithmetic/add_97/i31|O       
+             net (fo=1)      0.259        7.454     fitting/private_arithmetic/next_column_sum[30]
+  (2,249)    EFX_LUT4        0.061        7.515     LUT__73259|in[1]                              
+  (2,249)    EFX_LUT4        0.000        7.515     LUT__73259|out                                
+             net (fo=1)      0.000        7.515     fitting/private_arithmetic/n83695             
+  (2,249)    EFX_FF          0.000        7.515     fitting/private_arithmetic/column_sum[30]~FF|D
+
+Capture Clock Path
+  Location     Delay Type     Incr(ns)     Path(ns)                 Netlist Resource(s)
+======================================================================================================
+  (0,164)    input              0.000       0.000     clk_25m                                         
+  (0,164)    input              0.126       0.126     clk_25m                                         
+             net (fo=9826)      1.939       2.065     clk_25m                                         
+  (2,249)    EFX_FF             0.000       2.065     fitting/private_arithmetic/column_sum[30]~FF|CLK
+  (2,249)    EFX_FF (Setup)    -0.003       2.062     fitting/private_arithmetic/column_sum[30]~FF    
+
+++++ Path 5 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 32.358 ns (required time - arrival time)                       
+Path Start      : fitting/private_arithmetic/work_b[54]~FF|CLK                   
+Path End        : fitting/private_arithmetic/column_sum[36]~FF|D                 
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 7.513 ns                                                       
+Logic Levels    : 42                                                             
+
+Launch Clock Path Delay        : 2.065
++ Clock To Q + Data Path Delay : 7.513
+--------------------------------------
+End-of-path arrival time       : 9.578
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.003
+---------------------------------------
+End-of-path required time      : 41.936
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)               Netlist Resource(s)
+=================================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                                     
+  (0,164)    input            0.126        0.126     clk_25m                                     
+             net (fo=9826)    1.939        2.065     clk_25m                                     
+  (53,55)    EFX_FF           0.000        2.065     fitting/private_arithmetic/work_b[54]~FF|CLK
+
+Data Path
+  Location    Delay Type    Incr(ns)     Path(ns)                Netlist Resource(s)
+==================================================================================================
+  (53,55)    EFX_FF (Tco)    0.130        0.130     fitting/private_arithmetic/work_b[54]~FF|Q    
+             net (fo=9)      1.429        1.559     fitting/private_arithmetic/work_b[54]         
+  (23,38)    EFX_LUT4        0.061        1.620     LUT__60826|in[0]                              
+  (23,38)    EFX_LUT4        0.000        1.620     LUT__60826|out                                
+             net (fo=1)      1.063        2.683     n34113                                        
+  (17,120)   EFX_LUT4        0.061        2.744     LUT__60830|in[0]                              
+  (17,120)   EFX_LUT4        0.000        2.744     LUT__60830|out                                
+             net (fo=1)      0.589        3.333     n34117                                        
+  (16,168)   EFX_LUT4        0.061        3.394     LUT__60833|in[0]                              
+  (16,168)   EFX_LUT4        0.000        3.394     LUT__60833|out                                
+             net (fo=1)      0.663        4.057     fitting/private_arithmetic/n1188              
+  (24,202)   EFX_DSP48       1.317        5.374     fitting/private_arithmetic/mult_96|B[6]       
+  (24,202)   EFX_DSP48       0.000        5.374     fitting/private_arithmetic/mult_96|O[0]       
+             net (fo=1)      0.944        6.318     fitting/private_arithmetic/partial_product[0] 
+  (6,215)    EFX_ADD         0.055        6.373     fitting/private_arithmetic/add_97/i1|I1       
+  (6,215)    EFX_ADD         0.000        6.373     fitting/private_arithmetic/add_97/i1|CO       
+             net (fo=1)      0.000        6.373     fitting/private_arithmetic/add_97/n2          
+  (6,216)    EFX_ADD         0.025        6.398     fitting/private_arithmetic/add_97/i2|CI       
+  (6,216)    EFX_ADD         0.000        6.398     fitting/private_arithmetic/add_97/i2|CO       
+             net (fo=1)      0.000        6.398     fitting/private_arithmetic/add_97/n4          
+  (6,217)    EFX_ADD         0.025        6.423     fitting/private_arithmetic/add_97/i3|CI       
+  (6,217)    EFX_ADD         0.000        6.423     fitting/private_arithmetic/add_97/i3|CO       
+             net (fo=1)      0.000        6.423     fitting/private_arithmetic/add_97/n6          
+  (6,218)    EFX_ADD         0.025        6.448     fitting/private_arithmetic/add_97/i4|CI       
+  (6,218)    EFX_ADD         0.000        6.448     fitting/private_arithmetic/add_97/i4|CO       
+             net (fo=1)      0.000        6.448     fitting/private_arithmetic/add_97/n8          
+  (6,219)    EFX_ADD         0.025        6.473     fitting/private_arithmetic/add_97/i5|CI       
+  (6,219)    EFX_ADD         0.000        6.473     fitting/private_arithmetic/add_97/i5|CO       
+             net (fo=1)      0.000        6.473     fitting/private_arithmetic/add_97/n10         
+  (6,220)    EFX_ADD         0.025        6.498     fitting/private_arithmetic/add_97/i6|CI       
+  (6,220)    EFX_ADD         0.000        6.498     fitting/private_arithmetic/add_97/i6|CO       
+             net (fo=1)      0.000        6.498     fitting/private_arithmetic/add_97/n12         
+  (6,221)    EFX_ADD         0.025        6.523     fitting/private_arithmetic/add_97/i7|CI       
+  (6,221)    EFX_ADD         0.000        6.523     fitting/private_arithmetic/add_97/i7|CO       
+             net (fo=1)      0.000        6.523     fitting/private_arithmetic/add_97/n14         
+  (6,222)    EFX_ADD         0.025        6.548     fitting/private_arithmetic/add_97/i8|CI       
+  (6,222)    EFX_ADD         0.000        6.548     fitting/private_arithmetic/add_97/i8|CO       
+             net (fo=1)      0.000        6.548     fitting/private_arithmetic/add_97/n16         
+  (6,223)    EFX_ADD         0.025        6.573     fitting/private_arithmetic/add_97/i9|CI       
+  (6,223)    EFX_ADD         0.000        6.573     fitting/private_arithmetic/add_97/i9|CO       
+             net (fo=1)      0.000        6.573     fitting/private_arithmetic/add_97/n18         
+  (6,224)    EFX_ADD         0.025        6.598     fitting/private_arithmetic/add_97/i10|CI      
+  (6,224)    EFX_ADD         0.000        6.598     fitting/private_arithmetic/add_97/i10|CO      
+             net (fo=1)      0.000        6.598     fitting/private_arithmetic/add_97/n20         
+  (6,225)    EFX_ADD         0.025        6.623     fitting/private_arithmetic/add_97/i11|CI      
+  (6,225)    EFX_ADD         0.000        6.623     fitting/private_arithmetic/add_97/i11|CO      
+             net (fo=1)      0.000        6.623     fitting/private_arithmetic/add_97/n22         
+  (6,226)    EFX_ADD         0.025        6.648     fitting/private_arithmetic/add_97/i12|CI      
+  (6,226)    EFX_ADD         0.000        6.648     fitting/private_arithmetic/add_97/i12|CO      
+             net (fo=1)      0.000        6.648     fitting/private_arithmetic/add_97/n24         
+  (6,227)    EFX_ADD         0.025        6.673     fitting/private_arithmetic/add_97/i13|CI      
+  (6,227)    EFX_ADD         0.000        6.673     fitting/private_arithmetic/add_97/i13|CO      
+             net (fo=1)      0.000        6.673     fitting/private_arithmetic/add_97/n26         
+  (6,228)    EFX_ADD         0.025        6.698     fitting/private_arithmetic/add_97/i14|CI      
+  (6,228)    EFX_ADD         0.000        6.698     fitting/private_arithmetic/add_97/i14|CO      
+             net (fo=1)      0.000        6.698     fitting/private_arithmetic/add_97/n28         
+  (6,229)    EFX_ADD         0.025        6.723     fitting/private_arithmetic/add_97/i15|CI      
+  (6,229)    EFX_ADD         0.000        6.723     fitting/private_arithmetic/add_97/i15|CO      
+             net (fo=1)      0.000        6.723     fitting/private_arithmetic/add_97/n30         
+  (6,230)    EFX_ADD         0.025        6.748     fitting/private_arithmetic/add_97/i16|CI      
+  (6,230)    EFX_ADD         0.000        6.748     fitting/private_arithmetic/add_97/i16|CO      
+             net (fo=1)      0.000        6.748     fitting/private_arithmetic/add_97/n32         
+  (6,231)    EFX_ADD         0.025        6.773     fitting/private_arithmetic/add_97/i17|CI      
+  (6,231)    EFX_ADD         0.000        6.773     fitting/private_arithmetic/add_97/i17|CO      
+             net (fo=1)      0.000        6.773     fitting/private_arithmetic/add_97/n34         
+  (6,232)    EFX_ADD         0.025        6.798     fitting/private_arithmetic/add_97/i18|CI      
+  (6,232)    EFX_ADD         0.000        6.798     fitting/private_arithmetic/add_97/i18|CO      
+             net (fo=1)      0.000        6.798     fitting/private_arithmetic/add_97/n36         
+  (6,233)    EFX_ADD         0.025        6.823     fitting/private_arithmetic/add_97/i19|CI      
+  (6,233)    EFX_ADD         0.000        6.823     fitting/private_arithmetic/add_97/i19|CO      
+             net (fo=1)      0.000        6.823     fitting/private_arithmetic/add_97/n38         
+  (6,234)    EFX_ADD         0.025        6.848     fitting/private_arithmetic/add_97/i20|CI      
+  (6,234)    EFX_ADD         0.000        6.848     fitting/private_arithmetic/add_97/i20|CO      
+             net (fo=1)      0.000        6.848     fitting/private_arithmetic/add_97/n40         
+  (6,235)    EFX_ADD         0.025        6.873     fitting/private_arithmetic/add_97/i21|CI      
+  (6,235)    EFX_ADD         0.000        6.873     fitting/private_arithmetic/add_97/i21|CO      
+             net (fo=1)      0.000        6.873     fitting/private_arithmetic/add_97/n42         
+  (6,236)    EFX_ADD         0.025        6.898     fitting/private_arithmetic/add_97/i22|CI      
+  (6,236)    EFX_ADD         0.000        6.898     fitting/private_arithmetic/add_97/i22|CO      
+             net (fo=1)      0.000        6.898     fitting/private_arithmetic/add_97/n44         
+  (6,237)    EFX_ADD         0.025        6.923     fitting/private_arithmetic/add_97/i23|CI      
+  (6,237)    EFX_ADD         0.000        6.923     fitting/private_arithmetic/add_97/i23|CO      
+             net (fo=1)      0.000        6.923     fitting/private_arithmetic/add_97/n46         
+  (6,238)    EFX_ADD         0.025        6.948     fitting/private_arithmetic/add_97/i24|CI      
+  (6,238)    EFX_ADD         0.000        6.948     fitting/private_arithmetic/add_97/i24|CO      
+             net (fo=1)      0.000        6.948     fitting/private_arithmetic/add_97/n48         
+  (6,239)    EFX_ADD         0.025        6.973     fitting/private_arithmetic/add_97/i25|CI      
+  (6,239)    EFX_ADD         0.000        6.973     fitting/private_arithmetic/add_97/i25|CO      
+             net (fo=1)      0.000        6.973     fitting/private_arithmetic/add_97/n50         
+  (6,240)    EFX_ADD         0.025        6.998     fitting/private_arithmetic/add_97/i26|CI      
+  (6,240)    EFX_ADD         0.000        6.998     fitting/private_arithmetic/add_97/i26|CO      
+             net (fo=1)      0.000        6.998     fitting/private_arithmetic/add_97/n52         
+  (6,241)    EFX_ADD         0.025        7.023     fitting/private_arithmetic/add_97/i27|CI      
+  (6,241)    EFX_ADD         0.000        7.023     fitting/private_arithmetic/add_97/i27|CO      
+             net (fo=1)      0.000        7.023     fitting/private_arithmetic/add_97/n54         
+  (6,242)    EFX_ADD         0.025        7.048     fitting/private_arithmetic/add_97/i28|CI      
+  (6,242)    EFX_ADD         0.000        7.048     fitting/private_arithmetic/add_97/i28|CO      
+             net (fo=1)      0.000        7.048     fitting/private_arithmetic/add_97/n56         
+  (6,243)    EFX_ADD         0.025        7.073     fitting/private_arithmetic/add_97/i29|CI      
+  (6,243)    EFX_ADD         0.000        7.073     fitting/private_arithmetic/add_97/i29|CO      
+             net (fo=1)      0.000        7.073     fitting/private_arithmetic/add_97/n58         
+  (6,244)    EFX_ADD         0.025        7.098     fitting/private_arithmetic/add_97/i30|CI      
+  (6,244)    EFX_ADD         0.000        7.098     fitting/private_arithmetic/add_97/i30|CO      
+             net (fo=1)      0.000        7.098     fitting/private_arithmetic/add_97/n60         
+  (6,245)    EFX_ADD         0.025        7.123     fitting/private_arithmetic/add_97/i31|CI      
+  (6,245)    EFX_ADD         0.000        7.123     fitting/private_arithmetic/add_97/i31|CO      
+             net (fo=1)      0.000        7.123     fitting/private_arithmetic/add_97/n62         
+  (6,246)    EFX_ADD         0.025        7.148     fitting/private_arithmetic/add_97/i32|CI      
+  (6,246)    EFX_ADD         0.000        7.148     fitting/private_arithmetic/add_97/i32|CO      
+             net (fo=1)      0.000        7.148     fitting/private_arithmetic/add_97/n64         
+  (6,247)    EFX_ADD         0.025        7.173     fitting/private_arithmetic/add_97/i33|CI      
+  (6,247)    EFX_ADD         0.000        7.173     fitting/private_arithmetic/add_97/i33|CO      
+             net (fo=1)      0.000        7.173     fitting/private_arithmetic/add_97/n66         
+  (6,248)    EFX_ADD         0.025        7.198     fitting/private_arithmetic/add_97/i34|CI      
+  (6,248)    EFX_ADD         0.000        7.198     fitting/private_arithmetic/add_97/i34|CO      
+             net (fo=1)      0.000        7.198     fitting/private_arithmetic/add_97/n68         
+  (6,249)    EFX_ADD         0.025        7.223     fitting/private_arithmetic/add_97/i35|CI      
+  (6,249)    EFX_ADD         0.000        7.223     fitting/private_arithmetic/add_97/i35|CO      
+             net (fo=1)      0.000        7.223     fitting/private_arithmetic/add_97/n70         
+  (6,250)    EFX_ADD         0.025        7.248     fitting/private_arithmetic/add_97/i36|CI      
+  (6,250)    EFX_ADD         0.000        7.248     fitting/private_arithmetic/add_97/i36|CO      
+             net (fo=1)      0.000        7.248     fitting/private_arithmetic/add_97/n72         
+  (6,251)    EFX_ADD         0.097        7.345     fitting/private_arithmetic/add_97/i37|CI      
+  (6,251)    EFX_ADD         0.000        7.345     fitting/private_arithmetic/add_97/i37|O       
+             net (fo=1)      0.107        7.452     fitting/private_arithmetic/next_column_sum[36]
+  (5,251)    EFX_LUT4        0.061        7.513     LUT__73265|in[1]                              
+  (5,251)    EFX_LUT4        0.000        7.513     LUT__73265|out                                
+             net (fo=1)      0.000        7.513     fitting/private_arithmetic/n83737             
+  (5,251)    EFX_FF          0.000        7.513     fitting/private_arithmetic/column_sum[36]~FF|D
+
+Capture Clock Path
+  Location     Delay Type     Incr(ns)     Path(ns)                 Netlist Resource(s)
+======================================================================================================
+  (0,164)    input              0.000       0.000     clk_25m                                         
+  (0,164)    input              0.126       0.126     clk_25m                                         
+             net (fo=9826)      1.939       2.065     clk_25m                                         
+  (5,251)    EFX_FF             0.000       2.065     fitting/private_arithmetic/column_sum[36]~FF|CLK
+  (5,251)    EFX_FF (Setup)    -0.003       2.062     fitting/private_arithmetic/column_sum[36]~FF    
+
+++++ Path 6 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 32.383 ns (required time - arrival time)                       
+Path Start      : fitting/private_arithmetic/work_b[54]~FF|CLK                   
+Path End        : fitting/private_arithmetic/column_sum[35]~FF|D                 
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 7.488 ns                                                       
+Logic Levels    : 41                                                             
+
+Launch Clock Path Delay        : 2.065
++ Clock To Q + Data Path Delay : 7.488
+--------------------------------------
+End-of-path arrival time       : 9.553
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.003
+---------------------------------------
+End-of-path required time      : 41.936
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)               Netlist Resource(s)
+=================================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                                     
+  (0,164)    input            0.126        0.126     clk_25m                                     
+             net (fo=9826)    1.939        2.065     clk_25m                                     
+  (53,55)    EFX_FF           0.000        2.065     fitting/private_arithmetic/work_b[54]~FF|CLK
+
+Data Path
+  Location    Delay Type    Incr(ns)     Path(ns)                Netlist Resource(s)
+==================================================================================================
+  (53,55)    EFX_FF (Tco)    0.130        0.130     fitting/private_arithmetic/work_b[54]~FF|Q    
+             net (fo=9)      1.429        1.559     fitting/private_arithmetic/work_b[54]         
+  (23,38)    EFX_LUT4        0.061        1.620     LUT__60826|in[0]                              
+  (23,38)    EFX_LUT4        0.000        1.620     LUT__60826|out                                
+             net (fo=1)      1.063        2.683     n34113                                        
+  (17,120)   EFX_LUT4        0.061        2.744     LUT__60830|in[0]                              
+  (17,120)   EFX_LUT4        0.000        2.744     LUT__60830|out                                
+             net (fo=1)      0.589        3.333     n34117                                        
+  (16,168)   EFX_LUT4        0.061        3.394     LUT__60833|in[0]                              
+  (16,168)   EFX_LUT4        0.000        3.394     LUT__60833|out                                
+             net (fo=1)      0.663        4.057     fitting/private_arithmetic/n1188              
+  (24,202)   EFX_DSP48       1.317        5.374     fitting/private_arithmetic/mult_96|B[6]       
+  (24,202)   EFX_DSP48       0.000        5.374     fitting/private_arithmetic/mult_96|O[0]       
+             net (fo=1)      0.944        6.318     fitting/private_arithmetic/partial_product[0] 
+  (6,215)    EFX_ADD         0.055        6.373     fitting/private_arithmetic/add_97/i1|I1       
+  (6,215)    EFX_ADD         0.000        6.373     fitting/private_arithmetic/add_97/i1|CO       
+             net (fo=1)      0.000        6.373     fitting/private_arithmetic/add_97/n2          
+  (6,216)    EFX_ADD         0.025        6.398     fitting/private_arithmetic/add_97/i2|CI       
+  (6,216)    EFX_ADD         0.000        6.398     fitting/private_arithmetic/add_97/i2|CO       
+             net (fo=1)      0.000        6.398     fitting/private_arithmetic/add_97/n4          
+  (6,217)    EFX_ADD         0.025        6.423     fitting/private_arithmetic/add_97/i3|CI       
+  (6,217)    EFX_ADD         0.000        6.423     fitting/private_arithmetic/add_97/i3|CO       
+             net (fo=1)      0.000        6.423     fitting/private_arithmetic/add_97/n6          
+  (6,218)    EFX_ADD         0.025        6.448     fitting/private_arithmetic/add_97/i4|CI       
+  (6,218)    EFX_ADD         0.000        6.448     fitting/private_arithmetic/add_97/i4|CO       
+             net (fo=1)      0.000        6.448     fitting/private_arithmetic/add_97/n8          
+  (6,219)    EFX_ADD         0.025        6.473     fitting/private_arithmetic/add_97/i5|CI       
+  (6,219)    EFX_ADD         0.000        6.473     fitting/private_arithmetic/add_97/i5|CO       
+             net (fo=1)      0.000        6.473     fitting/private_arithmetic/add_97/n10         
+  (6,220)    EFX_ADD         0.025        6.498     fitting/private_arithmetic/add_97/i6|CI       
+  (6,220)    EFX_ADD         0.000        6.498     fitting/private_arithmetic/add_97/i6|CO       
+             net (fo=1)      0.000        6.498     fitting/private_arithmetic/add_97/n12         
+  (6,221)    EFX_ADD         0.025        6.523     fitting/private_arithmetic/add_97/i7|CI       
+  (6,221)    EFX_ADD         0.000        6.523     fitting/private_arithmetic/add_97/i7|CO       
+             net (fo=1)      0.000        6.523     fitting/private_arithmetic/add_97/n14         
+  (6,222)    EFX_ADD         0.025        6.548     fitting/private_arithmetic/add_97/i8|CI       
+  (6,222)    EFX_ADD         0.000        6.548     fitting/private_arithmetic/add_97/i8|CO       
+             net (fo=1)      0.000        6.548     fitting/private_arithmetic/add_97/n16         
+  (6,223)    EFX_ADD         0.025        6.573     fitting/private_arithmetic/add_97/i9|CI       
+  (6,223)    EFX_ADD         0.000        6.573     fitting/private_arithmetic/add_97/i9|CO       
+             net (fo=1)      0.000        6.573     fitting/private_arithmetic/add_97/n18         
+  (6,224)    EFX_ADD         0.025        6.598     fitting/private_arithmetic/add_97/i10|CI      
+  (6,224)    EFX_ADD         0.000        6.598     fitting/private_arithmetic/add_97/i10|CO      
+             net (fo=1)      0.000        6.598     fitting/private_arithmetic/add_97/n20         
+  (6,225)    EFX_ADD         0.025        6.623     fitting/private_arithmetic/add_97/i11|CI      
+  (6,225)    EFX_ADD         0.000        6.623     fitting/private_arithmetic/add_97/i11|CO      
+             net (fo=1)      0.000        6.623     fitting/private_arithmetic/add_97/n22         
+  (6,226)    EFX_ADD         0.025        6.648     fitting/private_arithmetic/add_97/i12|CI      
+  (6,226)    EFX_ADD         0.000        6.648     fitting/private_arithmetic/add_97/i12|CO      
+             net (fo=1)      0.000        6.648     fitting/private_arithmetic/add_97/n24         
+  (6,227)    EFX_ADD         0.025        6.673     fitting/private_arithmetic/add_97/i13|CI      
+  (6,227)    EFX_ADD         0.000        6.673     fitting/private_arithmetic/add_97/i13|CO      
+             net (fo=1)      0.000        6.673     fitting/private_arithmetic/add_97/n26         
+  (6,228)    EFX_ADD         0.025        6.698     fitting/private_arithmetic/add_97/i14|CI      
+  (6,228)    EFX_ADD         0.000        6.698     fitting/private_arithmetic/add_97/i14|CO      
+             net (fo=1)      0.000        6.698     fitting/private_arithmetic/add_97/n28         
+  (6,229)    EFX_ADD         0.025        6.723     fitting/private_arithmetic/add_97/i15|CI      
+  (6,229)    EFX_ADD         0.000        6.723     fitting/private_arithmetic/add_97/i15|CO      
+             net (fo=1)      0.000        6.723     fitting/private_arithmetic/add_97/n30         
+  (6,230)    EFX_ADD         0.025        6.748     fitting/private_arithmetic/add_97/i16|CI      
+  (6,230)    EFX_ADD         0.000        6.748     fitting/private_arithmetic/add_97/i16|CO      
+             net (fo=1)      0.000        6.748     fitting/private_arithmetic/add_97/n32         
+  (6,231)    EFX_ADD         0.025        6.773     fitting/private_arithmetic/add_97/i17|CI      
+  (6,231)    EFX_ADD         0.000        6.773     fitting/private_arithmetic/add_97/i17|CO      
+             net (fo=1)      0.000        6.773     fitting/private_arithmetic/add_97/n34         
+  (6,232)    EFX_ADD         0.025        6.798     fitting/private_arithmetic/add_97/i18|CI      
+  (6,232)    EFX_ADD         0.000        6.798     fitting/private_arithmetic/add_97/i18|CO      
+             net (fo=1)      0.000        6.798     fitting/private_arithmetic/add_97/n36         
+  (6,233)    EFX_ADD         0.025        6.823     fitting/private_arithmetic/add_97/i19|CI      
+  (6,233)    EFX_ADD         0.000        6.823     fitting/private_arithmetic/add_97/i19|CO      
+             net (fo=1)      0.000        6.823     fitting/private_arithmetic/add_97/n38         
+  (6,234)    EFX_ADD         0.025        6.848     fitting/private_arithmetic/add_97/i20|CI      
+  (6,234)    EFX_ADD         0.000        6.848     fitting/private_arithmetic/add_97/i20|CO      
+             net (fo=1)      0.000        6.848     fitting/private_arithmetic/add_97/n40         
+  (6,235)    EFX_ADD         0.025        6.873     fitting/private_arithmetic/add_97/i21|CI      
+  (6,235)    EFX_ADD         0.000        6.873     fitting/private_arithmetic/add_97/i21|CO      
+             net (fo=1)      0.000        6.873     fitting/private_arithmetic/add_97/n42         
+  (6,236)    EFX_ADD         0.025        6.898     fitting/private_arithmetic/add_97/i22|CI      
+  (6,236)    EFX_ADD         0.000        6.898     fitting/private_arithmetic/add_97/i22|CO      
+             net (fo=1)      0.000        6.898     fitting/private_arithmetic/add_97/n44         
+  (6,237)    EFX_ADD         0.025        6.923     fitting/private_arithmetic/add_97/i23|CI      
+  (6,237)    EFX_ADD         0.000        6.923     fitting/private_arithmetic/add_97/i23|CO      
+             net (fo=1)      0.000        6.923     fitting/private_arithmetic/add_97/n46         
+  (6,238)    EFX_ADD         0.025        6.948     fitting/private_arithmetic/add_97/i24|CI      
+  (6,238)    EFX_ADD         0.000        6.948     fitting/private_arithmetic/add_97/i24|CO      
+             net (fo=1)      0.000        6.948     fitting/private_arithmetic/add_97/n48         
+  (6,239)    EFX_ADD         0.025        6.973     fitting/private_arithmetic/add_97/i25|CI      
+  (6,239)    EFX_ADD         0.000        6.973     fitting/private_arithmetic/add_97/i25|CO      
+             net (fo=1)      0.000        6.973     fitting/private_arithmetic/add_97/n50         
+  (6,240)    EFX_ADD         0.025        6.998     fitting/private_arithmetic/add_97/i26|CI      
+  (6,240)    EFX_ADD         0.000        6.998     fitting/private_arithmetic/add_97/i26|CO      
+             net (fo=1)      0.000        6.998     fitting/private_arithmetic/add_97/n52         
+  (6,241)    EFX_ADD         0.025        7.023     fitting/private_arithmetic/add_97/i27|CI      
+  (6,241)    EFX_ADD         0.000        7.023     fitting/private_arithmetic/add_97/i27|CO      
+             net (fo=1)      0.000        7.023     fitting/private_arithmetic/add_97/n54         
+  (6,242)    EFX_ADD         0.025        7.048     fitting/private_arithmetic/add_97/i28|CI      
+  (6,242)    EFX_ADD         0.000        7.048     fitting/private_arithmetic/add_97/i28|CO      
+             net (fo=1)      0.000        7.048     fitting/private_arithmetic/add_97/n56         
+  (6,243)    EFX_ADD         0.025        7.073     fitting/private_arithmetic/add_97/i29|CI      
+  (6,243)    EFX_ADD         0.000        7.073     fitting/private_arithmetic/add_97/i29|CO      
+             net (fo=1)      0.000        7.073     fitting/private_arithmetic/add_97/n58         
+  (6,244)    EFX_ADD         0.025        7.098     fitting/private_arithmetic/add_97/i30|CI      
+  (6,244)    EFX_ADD         0.000        7.098     fitting/private_arithmetic/add_97/i30|CO      
+             net (fo=1)      0.000        7.098     fitting/private_arithmetic/add_97/n60         
+  (6,245)    EFX_ADD         0.025        7.123     fitting/private_arithmetic/add_97/i31|CI      
+  (6,245)    EFX_ADD         0.000        7.123     fitting/private_arithmetic/add_97/i31|CO      
+             net (fo=1)      0.000        7.123     fitting/private_arithmetic/add_97/n62         
+  (6,246)    EFX_ADD         0.025        7.148     fitting/private_arithmetic/add_97/i32|CI      
+  (6,246)    EFX_ADD         0.000        7.148     fitting/private_arithmetic/add_97/i32|CO      
+             net (fo=1)      0.000        7.148     fitting/private_arithmetic/add_97/n64         
+  (6,247)    EFX_ADD         0.025        7.173     fitting/private_arithmetic/add_97/i33|CI      
+  (6,247)    EFX_ADD         0.000        7.173     fitting/private_arithmetic/add_97/i33|CO      
+             net (fo=1)      0.000        7.173     fitting/private_arithmetic/add_97/n66         
+  (6,248)    EFX_ADD         0.025        7.198     fitting/private_arithmetic/add_97/i34|CI      
+  (6,248)    EFX_ADD         0.000        7.198     fitting/private_arithmetic/add_97/i34|CO      
+             net (fo=1)      0.000        7.198     fitting/private_arithmetic/add_97/n68         
+  (6,249)    EFX_ADD         0.025        7.223     fitting/private_arithmetic/add_97/i35|CI      
+  (6,249)    EFX_ADD         0.000        7.223     fitting/private_arithmetic/add_97/i35|CO      
+             net (fo=1)      0.000        7.223     fitting/private_arithmetic/add_97/n70         
+  (6,250)    EFX_ADD         0.097        7.320     fitting/private_arithmetic/add_97/i36|CI      
+  (6,250)    EFX_ADD         0.000        7.320     fitting/private_arithmetic/add_97/i36|O       
+             net (fo=1)      0.107        7.427     fitting/private_arithmetic/next_column_sum[35]
+  (5,250)    EFX_LUT4        0.061        7.488     LUT__73264|in[1]                              
+  (5,250)    EFX_LUT4        0.000        7.488     LUT__73264|out                                
+             net (fo=1)      0.000        7.488     fitting/private_arithmetic/n83730             
+  (5,250)    EFX_FF          0.000        7.488     fitting/private_arithmetic/column_sum[35]~FF|D
+
+Capture Clock Path
+  Location     Delay Type     Incr(ns)     Path(ns)                 Netlist Resource(s)
+======================================================================================================
+  (0,164)    input              0.000       0.000     clk_25m                                         
+  (0,164)    input              0.126       0.126     clk_25m                                         
+             net (fo=9826)      1.939       2.065     clk_25m                                         
+  (5,250)    EFX_FF             0.000       2.065     fitting/private_arithmetic/column_sum[35]~FF|CLK
+  (5,250)    EFX_FF (Setup)    -0.003       2.062     fitting/private_arithmetic/column_sum[35]~FF    
+
+++++ Path 7 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 32.456 ns (required time - arrival time)                       
+Path Start      : fitting/private_arithmetic/work_b[54]~FF|CLK                   
+Path End        : fitting/private_arithmetic/column_sum[31]~FF|D                 
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 7.415 ns                                                       
+Logic Levels    : 37                                                             
+
+Launch Clock Path Delay        : 2.065
++ Clock To Q + Data Path Delay : 7.415
+--------------------------------------
+End-of-path arrival time       : 9.480
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.003
+---------------------------------------
+End-of-path required time      : 41.936
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)               Netlist Resource(s)
+=================================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                                     
+  (0,164)    input            0.126        0.126     clk_25m                                     
+             net (fo=9826)    1.939        2.065     clk_25m                                     
+  (53,55)    EFX_FF           0.000        2.065     fitting/private_arithmetic/work_b[54]~FF|CLK
+
+Data Path
+  Location    Delay Type    Incr(ns)     Path(ns)                Netlist Resource(s)
+==================================================================================================
+  (53,55)    EFX_FF (Tco)    0.130        0.130     fitting/private_arithmetic/work_b[54]~FF|Q    
+             net (fo=9)      1.429        1.559     fitting/private_arithmetic/work_b[54]         
+  (23,38)    EFX_LUT4        0.061        1.620     LUT__60826|in[0]                              
+  (23,38)    EFX_LUT4        0.000        1.620     LUT__60826|out                                
+             net (fo=1)      1.063        2.683     n34113                                        
+  (17,120)   EFX_LUT4        0.061        2.744     LUT__60830|in[0]                              
+  (17,120)   EFX_LUT4        0.000        2.744     LUT__60830|out                                
+             net (fo=1)      0.589        3.333     n34117                                        
+  (16,168)   EFX_LUT4        0.061        3.394     LUT__60833|in[0]                              
+  (16,168)   EFX_LUT4        0.000        3.394     LUT__60833|out                                
+             net (fo=1)      0.663        4.057     fitting/private_arithmetic/n1188              
+  (24,202)   EFX_DSP48       1.317        5.374     fitting/private_arithmetic/mult_96|B[6]       
+  (24,202)   EFX_DSP48       0.000        5.374     fitting/private_arithmetic/mult_96|O[0]       
+             net (fo=1)      0.944        6.318     fitting/private_arithmetic/partial_product[0] 
+  (6,215)    EFX_ADD         0.055        6.373     fitting/private_arithmetic/add_97/i1|I1       
+  (6,215)    EFX_ADD         0.000        6.373     fitting/private_arithmetic/add_97/i1|CO       
+             net (fo=1)      0.000        6.373     fitting/private_arithmetic/add_97/n2          
+  (6,216)    EFX_ADD         0.025        6.398     fitting/private_arithmetic/add_97/i2|CI       
+  (6,216)    EFX_ADD         0.000        6.398     fitting/private_arithmetic/add_97/i2|CO       
+             net (fo=1)      0.000        6.398     fitting/private_arithmetic/add_97/n4          
+  (6,217)    EFX_ADD         0.025        6.423     fitting/private_arithmetic/add_97/i3|CI       
+  (6,217)    EFX_ADD         0.000        6.423     fitting/private_arithmetic/add_97/i3|CO       
+             net (fo=1)      0.000        6.423     fitting/private_arithmetic/add_97/n6          
+  (6,218)    EFX_ADD         0.025        6.448     fitting/private_arithmetic/add_97/i4|CI       
+  (6,218)    EFX_ADD         0.000        6.448     fitting/private_arithmetic/add_97/i4|CO       
+             net (fo=1)      0.000        6.448     fitting/private_arithmetic/add_97/n8          
+  (6,219)    EFX_ADD         0.025        6.473     fitting/private_arithmetic/add_97/i5|CI       
+  (6,219)    EFX_ADD         0.000        6.473     fitting/private_arithmetic/add_97/i5|CO       
+             net (fo=1)      0.000        6.473     fitting/private_arithmetic/add_97/n10         
+  (6,220)    EFX_ADD         0.025        6.498     fitting/private_arithmetic/add_97/i6|CI       
+  (6,220)    EFX_ADD         0.000        6.498     fitting/private_arithmetic/add_97/i6|CO       
+             net (fo=1)      0.000        6.498     fitting/private_arithmetic/add_97/n12         
+  (6,221)    EFX_ADD         0.025        6.523     fitting/private_arithmetic/add_97/i7|CI       
+  (6,221)    EFX_ADD         0.000        6.523     fitting/private_arithmetic/add_97/i7|CO       
+             net (fo=1)      0.000        6.523     fitting/private_arithmetic/add_97/n14         
+  (6,222)    EFX_ADD         0.025        6.548     fitting/private_arithmetic/add_97/i8|CI       
+  (6,222)    EFX_ADD         0.000        6.548     fitting/private_arithmetic/add_97/i8|CO       
+             net (fo=1)      0.000        6.548     fitting/private_arithmetic/add_97/n16         
+  (6,223)    EFX_ADD         0.025        6.573     fitting/private_arithmetic/add_97/i9|CI       
+  (6,223)    EFX_ADD         0.000        6.573     fitting/private_arithmetic/add_97/i9|CO       
+             net (fo=1)      0.000        6.573     fitting/private_arithmetic/add_97/n18         
+  (6,224)    EFX_ADD         0.025        6.598     fitting/private_arithmetic/add_97/i10|CI      
+  (6,224)    EFX_ADD         0.000        6.598     fitting/private_arithmetic/add_97/i10|CO      
+             net (fo=1)      0.000        6.598     fitting/private_arithmetic/add_97/n20         
+  (6,225)    EFX_ADD         0.025        6.623     fitting/private_arithmetic/add_97/i11|CI      
+  (6,225)    EFX_ADD         0.000        6.623     fitting/private_arithmetic/add_97/i11|CO      
+             net (fo=1)      0.000        6.623     fitting/private_arithmetic/add_97/n22         
+  (6,226)    EFX_ADD         0.025        6.648     fitting/private_arithmetic/add_97/i12|CI      
+  (6,226)    EFX_ADD         0.000        6.648     fitting/private_arithmetic/add_97/i12|CO      
+             net (fo=1)      0.000        6.648     fitting/private_arithmetic/add_97/n24         
+  (6,227)    EFX_ADD         0.025        6.673     fitting/private_arithmetic/add_97/i13|CI      
+  (6,227)    EFX_ADD         0.000        6.673     fitting/private_arithmetic/add_97/i13|CO      
+             net (fo=1)      0.000        6.673     fitting/private_arithmetic/add_97/n26         
+  (6,228)    EFX_ADD         0.025        6.698     fitting/private_arithmetic/add_97/i14|CI      
+  (6,228)    EFX_ADD         0.000        6.698     fitting/private_arithmetic/add_97/i14|CO      
+             net (fo=1)      0.000        6.698     fitting/private_arithmetic/add_97/n28         
+  (6,229)    EFX_ADD         0.025        6.723     fitting/private_arithmetic/add_97/i15|CI      
+  (6,229)    EFX_ADD         0.000        6.723     fitting/private_arithmetic/add_97/i15|CO      
+             net (fo=1)      0.000        6.723     fitting/private_arithmetic/add_97/n30         
+  (6,230)    EFX_ADD         0.025        6.748     fitting/private_arithmetic/add_97/i16|CI      
+  (6,230)    EFX_ADD         0.000        6.748     fitting/private_arithmetic/add_97/i16|CO      
+             net (fo=1)      0.000        6.748     fitting/private_arithmetic/add_97/n32         
+  (6,231)    EFX_ADD         0.025        6.773     fitting/private_arithmetic/add_97/i17|CI      
+  (6,231)    EFX_ADD         0.000        6.773     fitting/private_arithmetic/add_97/i17|CO      
+             net (fo=1)      0.000        6.773     fitting/private_arithmetic/add_97/n34         
+  (6,232)    EFX_ADD         0.025        6.798     fitting/private_arithmetic/add_97/i18|CI      
+  (6,232)    EFX_ADD         0.000        6.798     fitting/private_arithmetic/add_97/i18|CO      
+             net (fo=1)      0.000        6.798     fitting/private_arithmetic/add_97/n36         
+  (6,233)    EFX_ADD         0.025        6.823     fitting/private_arithmetic/add_97/i19|CI      
+  (6,233)    EFX_ADD         0.000        6.823     fitting/private_arithmetic/add_97/i19|CO      
+             net (fo=1)      0.000        6.823     fitting/private_arithmetic/add_97/n38         
+  (6,234)    EFX_ADD         0.025        6.848     fitting/private_arithmetic/add_97/i20|CI      
+  (6,234)    EFX_ADD         0.000        6.848     fitting/private_arithmetic/add_97/i20|CO      
+             net (fo=1)      0.000        6.848     fitting/private_arithmetic/add_97/n40         
+  (6,235)    EFX_ADD         0.025        6.873     fitting/private_arithmetic/add_97/i21|CI      
+  (6,235)    EFX_ADD         0.000        6.873     fitting/private_arithmetic/add_97/i21|CO      
+             net (fo=1)      0.000        6.873     fitting/private_arithmetic/add_97/n42         
+  (6,236)    EFX_ADD         0.025        6.898     fitting/private_arithmetic/add_97/i22|CI      
+  (6,236)    EFX_ADD         0.000        6.898     fitting/private_arithmetic/add_97/i22|CO      
+             net (fo=1)      0.000        6.898     fitting/private_arithmetic/add_97/n44         
+  (6,237)    EFX_ADD         0.025        6.923     fitting/private_arithmetic/add_97/i23|CI      
+  (6,237)    EFX_ADD         0.000        6.923     fitting/private_arithmetic/add_97/i23|CO      
+             net (fo=1)      0.000        6.923     fitting/private_arithmetic/add_97/n46         
+  (6,238)    EFX_ADD         0.025        6.948     fitting/private_arithmetic/add_97/i24|CI      
+  (6,238)    EFX_ADD         0.000        6.948     fitting/private_arithmetic/add_97/i24|CO      
+             net (fo=1)      0.000        6.948     fitting/private_arithmetic/add_97/n48         
+  (6,239)    EFX_ADD         0.025        6.973     fitting/private_arithmetic/add_97/i25|CI      
+  (6,239)    EFX_ADD         0.000        6.973     fitting/private_arithmetic/add_97/i25|CO      
+             net (fo=1)      0.000        6.973     fitting/private_arithmetic/add_97/n50         
+  (6,240)    EFX_ADD         0.025        6.998     fitting/private_arithmetic/add_97/i26|CI      
+  (6,240)    EFX_ADD         0.000        6.998     fitting/private_arithmetic/add_97/i26|CO      
+             net (fo=1)      0.000        6.998     fitting/private_arithmetic/add_97/n52         
+  (6,241)    EFX_ADD         0.025        7.023     fitting/private_arithmetic/add_97/i27|CI      
+  (6,241)    EFX_ADD         0.000        7.023     fitting/private_arithmetic/add_97/i27|CO      
+             net (fo=1)      0.000        7.023     fitting/private_arithmetic/add_97/n54         
+  (6,242)    EFX_ADD         0.025        7.048     fitting/private_arithmetic/add_97/i28|CI      
+  (6,242)    EFX_ADD         0.000        7.048     fitting/private_arithmetic/add_97/i28|CO      
+             net (fo=1)      0.000        7.048     fitting/private_arithmetic/add_97/n56         
+  (6,243)    EFX_ADD         0.025        7.073     fitting/private_arithmetic/add_97/i29|CI      
+  (6,243)    EFX_ADD         0.000        7.073     fitting/private_arithmetic/add_97/i29|CO      
+             net (fo=1)      0.000        7.073     fitting/private_arithmetic/add_97/n58         
+  (6,244)    EFX_ADD         0.025        7.098     fitting/private_arithmetic/add_97/i30|CI      
+  (6,244)    EFX_ADD         0.000        7.098     fitting/private_arithmetic/add_97/i30|CO      
+             net (fo=1)      0.000        7.098     fitting/private_arithmetic/add_97/n60         
+  (6,245)    EFX_ADD         0.025        7.123     fitting/private_arithmetic/add_97/i31|CI      
+  (6,245)    EFX_ADD         0.000        7.123     fitting/private_arithmetic/add_97/i31|CO      
+             net (fo=1)      0.000        7.123     fitting/private_arithmetic/add_97/n62         
+  (6,246)    EFX_ADD         0.097        7.220     fitting/private_arithmetic/add_97/i32|CI      
+  (6,246)    EFX_ADD         0.000        7.220     fitting/private_arithmetic/add_97/i32|O       
+             net (fo=1)      0.134        7.354     fitting/private_arithmetic/next_column_sum[31]
+  (2,246)    EFX_LUT4        0.061        7.415     LUT__73260|in[1]                              
+  (2,246)    EFX_LUT4        0.000        7.415     LUT__73260|out                                
+             net (fo=1)      0.000        7.415     fitting/private_arithmetic/n83702             
+  (2,246)    EFX_FF          0.000        7.415     fitting/private_arithmetic/column_sum[31]~FF|D
+
+Capture Clock Path
+  Location     Delay Type     Incr(ns)     Path(ns)                 Netlist Resource(s)
+======================================================================================================
+  (0,164)    input              0.000       0.000     clk_25m                                         
+  (0,164)    input              0.126       0.126     clk_25m                                         
+             net (fo=9826)      1.939       2.065     clk_25m                                         
+  (2,246)    EFX_FF             0.000       2.065     fitting/private_arithmetic/column_sum[31]~FF|CLK
+  (2,246)    EFX_FF (Setup)    -0.003       2.062     fitting/private_arithmetic/column_sum[31]~FF    
+
+++++ Path 8 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 32.458 ns (required time - arrival time)                       
+Path Start      : fitting/private_arithmetic/work_b[54]~FF|CLK                   
+Path End        : fitting/private_arithmetic/column_sum[32]~FF|D                 
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 7.413 ns                                                       
+Logic Levels    : 38                                                             
+
+Launch Clock Path Delay        : 2.065
++ Clock To Q + Data Path Delay : 7.413
+--------------------------------------
+End-of-path arrival time       : 9.478
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.003
+---------------------------------------
+End-of-path required time      : 41.936
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)               Netlist Resource(s)
+=================================================================================================
+  (0,164)    input            0.000        0.000     clk_25m                                     
+  (0,164)    input            0.126        0.126     clk_25m                                     
+             net (fo=9826)    1.939        2.065     clk_25m                                     
+  (53,55)    EFX_FF           0.000        2.065     fitting/private_arithmetic/work_b[54]~FF|CLK
+
+Data Path
+  Location    Delay Type    Incr(ns)     Path(ns)                Netlist Resource(s)
+==================================================================================================
+  (53,55)    EFX_FF (Tco)    0.130        0.130     fitting/private_arithmetic/work_b[54]~FF|Q    
+             net (fo=9)      1.429        1.559     fitting/private_arithmetic/work_b[54]         
+  (23,38)    EFX_LUT4        0.061        1.620     LUT__60826|in[0]                              
+  (23,38)    EFX_LUT4        0.000        1.620     LUT__60826|out                                
+             net (fo=1)      1.063        2.683     n34113                                        
+  (17,120)   EFX_LUT4        0.061        2.744     LUT__60830|in[0]                              
+  (17,120)   EFX_LUT4        0.000        2.744     LUT__60830|out                                
+             net (fo=1)      0.589        3.333     n34117                                        
+  (16,168)   EFX_LUT4        0.061        3.394     LUT__60833|in[0]                              
+  (16,168)   EFX_LUT4        0.000        3.394     LUT__60833|out                                
+             net (fo=1)      0.663        4.057     fitting/private_arithmetic/n1188              
+  (24,202)   EFX_DSP48       1.317        5.374     fitting/private_arithmetic/mult_96|B[6]       
+  (24,202)   EFX_DSP48       0.000        5.374     fitting/private_arithmetic/mult_96|O[0]       
+             net (fo=1)      0.944        6.318     fitting/private_arithmetic/partial_product[0] 
+  (6,215)    EFX_ADD         0.055        6.373     fitting/private_arithmetic/add_97/i1|I1       
+  (6,215)    EFX_ADD         0.000        6.373     fitting/private_arithmetic/add_97/i1|CO       
+             net (fo=1)      0.000        6.373     fitting/private_arithmetic/add_97/n2          
+  (6,216)    EFX_ADD         0.025        6.398     fitting/private_arithmetic/add_97/i2|CI       
+  (6,216)    EFX_ADD         0.000        6.398     fitting/private_arithmetic/add_97/i2|CO       
+             net (fo=1)      0.000        6.398     fitting/private_arithmetic/add_97/n4          
+  (6,217)    EFX_ADD         0.025        6.423     fitting/private_arithmetic/add_97/i3|CI       
+  (6,217)    EFX_ADD         0.000        6.423     fitting/private_arithmetic/add_97/i3|CO       
+             net (fo=1)      0.000        6.423     fitting/private_arithmetic/add_97/n6          
+  (6,218)    EFX_ADD         0.025        6.448     fitting/private_arithmetic/add_97/i4|CI       
+  (6,218)    EFX_ADD         0.000        6.448     fitting/private_arithmetic/add_97/i4|CO       
+             net (fo=1)      0.000        6.448     fitting/private_arithmetic/add_97/n8          
+  (6,219)    EFX_ADD         0.025        6.473     fitting/private_arithmetic/add_97/i5|CI       
+  (6,219)    EFX_ADD         0.000        6.473     fitting/private_arithmetic/add_97/i5|CO       
+             net (fo=1)      0.000        6.473     fitting/private_arithmetic/add_97/n10         
+  (6,220)    EFX_ADD         0.025        6.498     fitting/private_arithmetic/add_97/i6|CI       
+  (6,220)    EFX_ADD         0.000        6.498     fitting/private_arithmetic/add_97/i6|CO       
+             net (fo=1)      0.000        6.498     fitting/private_arithmetic/add_97/n12         
+  (6,221)    EFX_ADD         0.025        6.523     fitting/private_arithmetic/add_97/i7|CI       
+  (6,221)    EFX_ADD         0.000        6.523     fitting/private_arithmetic/add_97/i7|CO       
+             net (fo=1)      0.000        6.523     fitting/private_arithmetic/add_97/n14         
+  (6,222)    EFX_ADD         0.025        6.548     fitting/private_arithmetic/add_97/i8|CI       
+  (6,222)    EFX_ADD         0.000        6.548     fitting/private_arithmetic/add_97/i8|CO       
+             net (fo=1)      0.000        6.548     fitting/private_arithmetic/add_97/n16         
+  (6,223)    EFX_ADD         0.025        6.573     fitting/private_arithmetic/add_97/i9|CI       
+  (6,223)    EFX_ADD         0.000        6.573     fitting/private_arithmetic/add_97/i9|CO       
+             net (fo=1)      0.000        6.573     fitting/private_arithmetic/add_97/n18         
+  (6,224)    EFX_ADD         0.025        6.598     fitting/private_arithmetic/add_97/i10|CI      
+  (6,224)    EFX_ADD         0.000        6.598     fitting/private_arithmetic/add_97/i10|CO      
+             net (fo=1)      0.000        6.598     fitting/private_arithmetic/add_97/n20         
+  (6,225)    EFX_ADD         0.025        6.623     fitting/private_arithmetic/add_97/i11|CI      
+  (6,225)    EFX_ADD         0.000        6.623     fitting/private_arithmetic/add_97/i11|CO      
+             net (fo=1)      0.000        6.623     fitting/private_arithmetic/add_97/n22         
+  (6,226)    EFX_ADD         0.025        6.648     fitting/private_arithmetic/add_97/i12|CI      
+  (6,226)    EFX_ADD         0.000        6.648     fitting/private_arithmetic/add_97/i12|CO      
+             net (fo=1)      0.000        6.648     fitting/private_arithmetic/add_97/n24         
+  (6,227)    EFX_ADD         0.025        6.673     fitting/private_arithmetic/add_97/i13|CI      
+  (6,227)    EFX_ADD         0.000        6.673     fitting/private_arithmetic/add_97/i13|CO      
+             net (fo=1)      0.000        6.673     fitting/private_arithmetic/add_97/n26         
+  (6,228)    EFX_ADD         0.025        6.698     fitting/private_arithmetic/add_97/i14|CI      
+  (6,228)    EFX_ADD         0.000        6.698     fitting/private_arithmetic/add_97/i14|CO      
+             net (fo=1)      0.000        6.698     fitting/private_arithmetic/add_97/n28         
+  (6,229)    EFX_ADD         0.025        6.723     fitting/private_arithmetic/add_97/i15|CI      
+  (6,229)    EFX_ADD         0.000        6.723     fitting/private_arithmetic/add_97/i15|CO      
+             net (fo=1)      0.000        6.723     fitting/private_arithmetic/add_97/n30         
+  (6,230)    EFX_ADD         0.025        6.748     fitting/private_arithmetic/add_97/i16|CI      
+  (6,230)    EFX_ADD         0.000        6.748     fitting/private_arithmetic/add_97/i16|CO      
+             net (fo=1)      0.000        6.748     fitting/private_arithmetic/add_97/n32         
+  (6,231)    EFX_ADD         0.025        6.773     fitting/private_arithmetic/add_97/i17|CI      
+  (6,231)    EFX_ADD         0.000        6.773     fitting/private_arithmetic/add_97/i17|CO      
+             net (fo=1)      0.000        6.773     fitting/private_arithmetic/add_97/n34         
+  (6,232)    EFX_ADD         0.025        6.798     fitting/private_arithmetic/add_97/i18|CI      
+  (6,232)    EFX_ADD         0.000        6.798     fitting/private_arithmetic/add_97/i18|CO      
+             net (fo=1)      0.000        6.798     fitting/private_arithmetic/add_97/n36         
+  (6,233)    EFX_ADD         0.025        6.823     fitting/private_arithmetic/add_97/i19|CI      
+  (6,233)    EFX_ADD         0.000        6.823     fitting/private_arithmetic/add_97/i19|CO      
+             net (fo=1)      0.000        6.823     fitting/private_arithmetic/add_97/n38         
+  (6,234)    EFX_ADD         0.025        6.848     fitting/private_arithmetic/add_97/i20|CI      
+  (6,234)    EFX_ADD         0.000        6.848     fitting/private_arithmetic/add_97/i20|CO      
+             net (fo=1)      0.000        6.848     fitting/private_arithmetic/add_97/n40         
+  (6,235)    EFX_ADD         0.025        6.873     fitting/private_arithmetic/add_97/i21|CI      
+  (6,235)    EFX_ADD         0.000        6.873     fitting/private_arithmetic/add_97/i21|CO      
+             net (fo=1)      0.000        6.873     fitting/private_arithmetic/add_97/n42         
+  (6,236)    EFX_ADD         0.025        6.898     fitting/private_arithmetic/add_97/i22|CI      
+  (6,236)    EFX_ADD         0.000        6.898     fitting/private_arithmetic/add_97/i22|CO      
+             net (fo=1)      0.000        6.898     fitting/private_arithmetic/add_97/n44         
+  (6,237)    EFX_ADD         0.025        6.923     fitting/private_arithmetic/add_97/i23|CI      
+  (6,237)    EFX_ADD         0.000        6.923     fitting/private_arithmetic/add_97/i23|CO      
+             net (fo=1)      0.000        6.923     fitting/private_arithmetic/add_97/n46         
+  (6,238)    EFX_ADD         0.025        6.948     fitting/private_arithmetic/add_97/i24|CI      
+  (6,238)    EFX_ADD         0.000        6.948     fitting/private_arithmetic/add_97/i24|CO      
+             net (fo=1)      0.000        6.948     fitting/private_arithmetic/add_97/n48         
+  (6,239)    EFX_ADD         0.025        6.973     fitting/private_arithmetic/add_97/i25|CI      
+  (6,239)    EFX_ADD         0.000        6.973     fitting/private_arithmetic/add_97/i25|CO      
+             net (fo=1)      0.000        6.973     fitting/private_arithmetic/add_97/n50         
+  (6,240)    EFX_ADD         0.025        6.998     fitting/private_arithmetic/add_97/i26|CI      
+  (6,240)    EFX_ADD         0.000        6.998     fitting/private_arithmetic/add_97/i26|CO      
+             net (fo=1)      0.000        6.998     fitting/private_arithmetic/add_97/n52         
+  (6,241)    EFX_ADD         0.025        7.023     fitting/private_arithmetic/add_97/i27|CI      
+  (6,241)    EFX_ADD         0.000        7.023     fitting/private_arithmetic/add_97/i27|CO      
+             net (fo=1)      0.000        7.023     fitting/private_arithmetic/add_97/n54         
+  (6,242)    EFX_ADD         0.025        7.048     fitting/private_arithmetic/add_97/i28|CI      
+  (6,242)    EFX_ADD         0.000        7.048     fitting/private_arithmetic/add_97/i28|CO      
+             net (fo=1)      0.000        7.048     fitting/private_arithmetic/add_97/n56         
+  (6,243)    EFX_ADD         0.025        7.073     fitting/private_arithmetic/add_97/i29|CI      
+  (6,243)    EFX_ADD         0.000        7.073     fitting/private_arithmetic/add_97/i29|CO      
+             net (fo=1)      0.000        7.073     fitting/private_arithmetic/add_97/n58         
+  (6,244)    EFX_ADD         0.025        7.098     fitting/private_arithmetic/add_97/i30|CI      
+  (6,244)    EFX_ADD         0.000        7.098     fitting/private_arithmetic/add_97/i30|CO      
+             net (fo=1)      0.000        7.098     fitting/private_arithmetic/add_97/n60         
+  (6,245)    EFX_ADD         0.025        7.123     fitting/private_arithmetic/add_97/i31|CI      
+  (6,245)    EFX_ADD         0.000        7.123     fitting/private_arithmetic/add_97/i31|CO      
+             net (fo=1)      0.000        7.123     fitting/private_arithmetic/add_97/n62         
+  (6,246)    EFX_ADD         0.025        7.148     fitting/private_arithmetic/add_97/i32|CI      
+  (6,246)    EFX_ADD         0.000        7.148     fitting/private_arithmetic/add_97/i32|CO      
+             net (fo=1)      0.000        7.148     fitting/private_arithmetic/add_97/n64         
+  (6,247)    EFX_ADD         0.097        7.245     fitting/private_arithmetic/add_97/i33|CI      
+  (6,247)    EFX_ADD         0.000        7.245     fitting/private_arithmetic/add_97/i33|O       
+             net (fo=1)      0.107        7.352     fitting/private_arithmetic/next_column_sum[32]
+  (5,247)    EFX_LUT4        0.061        7.413     LUT__73261|in[1]                              
+  (5,247)    EFX_LUT4        0.000        7.413     LUT__73261|out                                
+             net (fo=1)      0.000        7.413     fitting/private_arithmetic/n83709             
+  (5,247)    EFX_FF          0.000        7.413     fitting/private_arithmetic/column_sum[32]~FF|D
+
+Capture Clock Path
+  Location     Delay Type     Incr(ns)     Path(ns)                 Netlist Resource(s)
+======================================================================================================
+  (0,164)    input              0.000       0.000     clk_25m                                         
+  (0,164)    input              0.126       0.126     clk_25m                                         
+             net (fo=9826)      1.939       2.065     clk_25m                                         
+  (5,247)    EFX_FF             0.000       2.065     fitting/private_arithmetic/column_sum[32]~FF|CLK
+  (5,247)    EFX_FF (Setup)    -0.003       2.062     fitting/private_arithmetic/column_sum[32]~FF    
+

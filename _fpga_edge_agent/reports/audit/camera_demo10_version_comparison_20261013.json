@@ -1,0 +1,19 @@
+{
+  "timestamp": "2026-10-13T21:48:40.0892551+08:00",
+  "event": "OFFICIAL_DEMO10_VERSION_COMPARISON",
+  "reviewer": "/root/isp_variant_readonly",
+  "user_v1_bit": "Ti60F225_DemoBoard_v4完整资料包-0927更新/Ti60F225_DemoBoard_v4完整资料包-0927更新/10_Ti60f225_sc431hai2hdmi_demo/Ti60f225_sc431hai2hdmi_v1/outflow/ti60f225_oob.bit",
+  "user_v1_sha256": "8E2399D808AD0C027B85ED8BEE97BA98604CEC0C8CF43C71E00E8C42128A4ABA",
+  "previously_downloaded_v7_sha256": "1D5FF29001DA2064A9A3C5EF7044933B5A01EFECF77D92707A3B1679ACEBEF6A",
+  "v7_matches_official_archive": true,
+  "user_observation": "v1 black screen; v7 flower/noise screen",
+  "facts": [
+    "v1 frame_buffer/frame_buffer.v:294-324 gates data_tx frame_en from input frame_stable; data_tx.v:394-419 holds HS/VS zero until frame_ena",
+    "v1 top:770-809 requires panel_config w_confdone to release video reset; v7 top:844-845 assigns w_confdone=1",
+    "v7 uses frame_buffer_V4 and independent cvo_axi_v2",
+    "v1 and v7 differ in scan timing, HS/VS wiring, video PLL frequency; camera I2C and RST pin configuration matches",
+    "Camera address and external reset polarity same in v1/v7; table-length/exposure additions do not establish an address-ACK fix"
+  ],
+  "interpretation": "Different startup/video gates can produce black versus noise without valid sensor input; exact v1 blocked state not measured; neither is a camera-pass result",
+  "formal_state_changed": false
+}

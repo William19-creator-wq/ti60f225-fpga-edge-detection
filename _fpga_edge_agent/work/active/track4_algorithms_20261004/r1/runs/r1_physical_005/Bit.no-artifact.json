@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "run_id": "r1_physical_005",
+  "observed_utc": "2026-10-04T16:52:42.6315165Z",
+  "status": "FAIL_NO_ARTIFACT",
+  "tool_exit_code": 0,
+  "artifact_count": 0,
+  "actual_tool_message": "Flow skipped: Bitgen was not executed!",
+  "missing_paths": [
+    "flow/outflow/r1_algorithm.bit",
+    "flow/outflow/r1_algorithm.hex"
+  ],
+  "cause": "Runner assigned fresh empty flow/work_pgm; installed efx_run_pgm.py looks for .lbf in supplied work_dir and otherwise skips conversion with exit 0.",
+  "physical_input_lbf": {
+    "bytes": 480729,
+    "sha256": "22DE3B96DDAD6C2A3C6FDA82F418A83AE1F00E1A520E729161004F69DF134428",
+    "path": "flow/work_pnr/r1_algorithm.lbf"
+  },
+  "proofs": [
+    {
+      "path": "Bit.start.json",
+      "bytes": 1360,
+      "sha256": "7F4B111F366F58482882942581B721413B28FE52262AA373E1497B7199CE18CF"
+    },
+    {
+      "path": "Bit.result.json",
+      "bytes": 994,
+      "sha256": "C7AEA86C3D3D3732AFDA9BE8A10FAC8C1A0DDC883573CB94DD7E2C3F61EA058F"
+    },
+    {
+      "path": "Bit.stdout.log",
+      "bytes": 794,
+      "sha256": "6C639D122BF1F8EA15B26C26BDE042F39DF792C041DEE2588F1E06EF27A34AEA"
+    },
+    {
+      "path": "Bit.stderr.log",
+      "bytes": 0,
+      "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+    },
+    {
+      "path": "flow/outflow/r1_algorithm.log",
+      "bytes": 412,
+      "sha256": "08279F80BEEB57F9F6183F1969FD9510871914AB208F3EFEF2FCBFB1D262D3E0"
+    }
+  ],
+  "phase_replaced_tool_log": {
+    "original_physical_audit_entry": {
+      "path": "runs/r1_physical_005/flow/outflow/r1_algorithm.log",
+      "bytes": 21466,
+      "sha256": "114DACE0D9F25B260B5F9985BA1EB6058E06984B426756DDE5A8D1537F5DCD54"
+    },
+    "note": "Official pgm overwrote main flow log; physical-audit is the pre-Bit snapshot and remains immutable. The isolated copy retains original full PNR log.",
+    "preserved_same_hash_path": "diagnostics/postroute_audit_001/outflow/r1_algorithm.log"
+  },
+  "correction_plan": "Use an independent same-run Bit attempt with explicit source from verified work_pnr .lbf; keep first attempt logs and gate untouched, require nonempty .bit/.hex and hash each. No hardware programming.",
+  "hardware_program_performed": false
+}

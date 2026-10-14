@@ -1,0 +1,170 @@
+// ST02/03/06/07：四级点贡献流水线，t0接点、t4原子提交五项与n。
+module stats_core(
+    input logic clk,rst,
+    input logic token_valid,input logic [261:0] token_body,output logic token_ready,
+    output logic stat_valid,output logic [631:0] stat_body,input logic stat_ready,
+    output logic fault_active,output logic [7:0] fault_reason,output logic quiet
+);
+    import stats_protocol_pkg::*;
+    typedef enum logic [2:0] {IDLE,CHECK,RUN,DRAIN,PACK,HELD,PROTOCOL_STUCK} state_t;
+    state_t state;
+    logic [175:0] context_id;
+    logic [83:0] header;
+    logic [21:0] raw_seen;
+    logic [20:0] included_count;
+    logic signed [55:0] accumulator[0:4];
+    logic [10:0] previous_x,previous_y;
+    logic previous_valid,closing_abort;
+    logic [7:0] first_reason;
+    logic [3:0] pipeline_valid;
+    logic signed [11:0] s0_a,s0_b,s0_x,s0_y,s0_x2,s0_y2;
+    logic signed [23:0] s1_p0,s1_p1,s1_p2,s1_ax,s1_by;
+    logic signed [11:0] s1_a,s1_b,s1_x2,s1_y2;
+    logic signed [23:0] s2_p0,s2_p1,s2_p2;
+    logic signed [24:0] s2_d;
+    logic signed [11:0] s2_a,s2_b,s2_x2,s2_y2;
+    logic signed [23:0] s3_p0,s3_p1,s3_p2;
+    logic signed [36:0] s3_ad,s3_bd;
+    logic signed [11:0] s3_x2,s3_y2;
+    wire [10:0] width=header[0+:11],height=header[11+:11];
+    wire tls=header[22+:5]==12 || header[22+:5]==18;
+    wire [83:0] data=token_body[261:178];
+    wire [1:0] op=token_body[177:176];
+    wire token_fire=token_valid && token_ready;
+    wire same_id=token_body[175:0]==context_id;
+    wire legal_abort=state==RUN && token_fire && same_id && op==ABORT_SCAN && data==0;
+    wire [22:0] incremented_raw={1'b0,raw_seen}+23'd1;
+    wire [21:0] incremented_n={1'b0,included_count}+22'd1;
+    wire [21:0] pixel_limit={11'd0,width}*{11'd0,height};
+    wire [10:0] point_x=data[22+:11],point_y=data[33+:11];
+    wire signed [10:0] point_gx=data[44+:11],point_gy=data[55+:11];
+    logic [7:0] token_reason,commit_reason;
+    logic point_format_ok,dispatch_point,can_commit;
+    logic signed [56:0] contribution[0:4],sum_candidate[0:4];
+    logic signed [12:0] centered_x,centered_y;
+    logic signed [11:0] mul_left0,mul_right0,mul_left1,mul_right1,mul_left2,mul_right2;
+    integer i;
+
+    assign token_ready=!rst && (state==IDLE || state==RUN);
+    assign stat_valid=!rst && state==HELD;
+    assign quiet=!rst && state==IDLE && pipeline_valid==0;
+    assign fault_active=!rst && first_reason!=0;
+    assign fault_reason=first_reason;
+    // DRAIN已排空贡献流水；HELD期间上下文与五个累加器均保持，无需再复制632位正文。
+    assign stat_body={first_reason,(first_reason!=0?fit_protocol_pkg::FRAME_FAIL:
+        (closing_abort?fit_protocol_pkg::CANCEL_DROP:fit_protocol_pkg::VALUE)),
+        pack_numeric(context_id,header,included_count,accumulator[0],accumulator[1],
+            accumulator[2],accumulator[3],accumulator[4],first_reason==0&&!closing_abort)};
+
+    always_comb begin
+        token_reason=0;
+        if(state==RUN && token_fire) begin
+            if(!same_id) token_reason=fit_protocol_pkg::INTERNAL;
+            else case(op)
+                POINT:begin
+                    if({1'b0,data[0+:21]}!=raw_seen || raw_seen>={1'b0,header[51+:21]}) token_reason=fit_protocol_pkg::COUNT;
+                    else if(point_x>=width || point_y>=height) token_reason=fit_protocol_pkg::COORD;
+                    else if(point_gx < -11'sd1020 || point_gx>11'sd1020 ||
+                            point_gy < -11'sd1020 || point_gy>11'sd1020) token_reason=fit_protocol_pkg::INTERNAL;
+                    else if(data[83:66]!=0 || (previous_valid &&
+                            (point_y<previous_y || (point_y==previous_y && point_x<=previous_x)))) token_reason=fit_protocol_pkg::FORMAT;
+                end
+                END_SCAN:if(data[83:22]!=0) token_reason=fit_protocol_pkg::FORMAT;
+                    else if(data[21:0]!=raw_seen || raw_seen!={1'b0,header[51+:21]}) token_reason=fit_protocol_pkg::COUNT;
+                ABORT_SCAN:if(data!=0) token_reason=fit_protocol_pkg::FORMAT;
+                default:token_reason=fit_protocol_pkg::FORMAT;
+            endcase
+        end
+        point_format_ok=state==RUN && token_fire && op==POINT && token_reason==0;
+        can_commit=pipeline_valid[3] && first_reason==0 && !closing_abort && !legal_abort && state!=PROTOCOL_STUCK;
+        if(tls) begin
+            contribution[0]={{45{s3_x2[11]}},s3_x2}; contribution[1]={{45{s3_y2[11]}},s3_y2};
+            contribution[2]={{33{s3_p0[23]}},s3_p0}; contribution[3]={{33{s3_p2[23]}},s3_p2};
+            contribution[4]={{33{s3_p1[23]}},s3_p1};
+        end else begin
+            contribution[0]={{33{s3_p0[23]}},s3_p0}; contribution[1]={{33{s3_p1[23]}},s3_p1};
+            contribution[2]={{33{s3_p2[23]}},s3_p2}; contribution[3]={{20{s3_ad[36]}},s3_ad};
+            contribution[4]={{20{s3_bd[36]}},s3_bd};
+        end
+        for(integer slot=0;slot<5;slot=slot+1) begin
+            sum_candidate[slot]=$signed({accumulator[slot][55],accumulator[slot]})+contribution[slot];
+        end
+        commit_reason=can_commit?qualify_commit(incremented_n,pixel_limit,tls,sum_candidate[0],sum_candidate[1],
+            sum_candidate[2],sum_candidate[3],sum_candidate[4]):8'd0;
+        dispatch_point=point_format_ok && data[21] && first_reason==0 && commit_reason==0 && !closing_abort;
+        // 在s13中先形成完整中心坐标，再由已验证图域收s12。
+        centered_x=($signed({2'd0,point_x})<<<1)-($signed({2'd0,width})-13'sd1);
+        centered_y=($signed({2'd0,point_y})<<<1)-($signed({2'd0,height})-13'sd1);
+        mul_left0=tls?s0_x2:s0_a; mul_right0=mul_left0;
+        mul_left1=tls?s0_x2:s0_a; mul_right1=tls?s0_y2:s0_b;
+        mul_left2=tls?s0_y2:s0_b; mul_right2=mul_left2;
+    end
+
+    always_ff @(posedge clk) begin
+        if(rst) begin
+            state<=IDLE; context_id<=0; header<=0; raw_seen<=0; included_count<=0;
+            previous_valid<=0; closing_abort<=0; first_reason<=0; pipeline_valid<=0;
+            for(i=0;i<5;i=i+1) accumulator[i]<=0;
+        end else begin
+            pipeline_valid<={pipeline_valid[2:0],dispatch_point};
+            if(dispatch_point) begin
+                s0_a<=$signed({point_gy[10],point_gy}); s0_b<=-$signed({point_gx[10],point_gx});
+                s0_x<=$signed({1'b0,point_x}); s0_y<=$signed({1'b0,point_y});
+                s0_x2<=centered_x[11:0]; s0_y2<=centered_y[11:0];
+            end
+            if(pipeline_valid[0]) begin
+                s1_p0<=mul_left0*mul_right0; s1_p1<=mul_left1*mul_right1; s1_p2<=mul_left2*mul_right2;
+                s1_ax<=s0_a*s0_x; s1_by<=s0_b*s0_y;
+                s1_a<=s0_a; s1_b<=s0_b; s1_x2<=s0_x2; s1_y2<=s0_y2;
+            end
+            if(pipeline_valid[1]) begin
+                s2_p0<=s1_p0; s2_p1<=s1_p1; s2_p2<=s1_p2;
+                s2_d<=$signed({s1_ax[23],s1_ax})+$signed({s1_by[23],s1_by});
+                s2_a<=s1_a; s2_b<=s1_b; s2_x2<=s1_x2; s2_y2<=s1_y2;
+            end
+            if(pipeline_valid[2]) begin
+                s3_p0<=s2_p0; s3_p1<=s2_p1; s3_p2<=s2_p2;
+                s3_ad<=s2_a*s2_d; s3_bd<=s2_b*s2_d; s3_x2<=s2_x2; s3_y2<=s2_y2;
+            end
+            if(can_commit && commit_reason==0) begin
+                for(i=0;i<5;i=i+1) accumulator[i]<=sum_candidate[i][55:0];
+                included_count<=incremented_n[20:0];
+            end
+            // 旧提交错误比本沿新token错误早；只有首因为空才写。
+            if(first_reason==0 && !legal_abort) begin
+                if(commit_reason!=0) first_reason<=commit_reason;
+                else if(token_reason!=0) first_reason<=token_reason;
+            end
+            case(state)
+                IDLE:if(token_fire) begin
+                    context_id<=token_body[175:0]; header<=op==START?data:84'd0;
+                    raw_seen<=0; included_count<=0; previous_valid<=0; closing_abort<=0;
+                    for(i=0;i<5;i=i+1) accumulator[i]<=0;
+                    if(op==START) begin first_reason<=0; state<=CHECK; end
+                    else begin first_reason<=fit_protocol_pkg::FORMAT; state<=PACK; end
+                end
+                CHECK:begin first_reason<=check_start(context_id,header); state<=RUN; end
+                RUN:if(token_fire) begin
+                    if(op==POINT) begin
+                        if(fits_raw_count(incremented_raw)) raw_seen<=incremented_raw[21:0];
+                        else begin
+                            state<=PROTOCOL_STUCK;
+                            if(first_reason==0 && commit_reason==0) first_reason<=fit_protocol_pkg::COUNT;
+                        end
+                        if(point_format_ok) begin previous_x<=point_x; previous_y<=point_y; previous_valid<=1; end
+                    end
+                    if(same_id && (op==END_SCAN || op==ABORT_SCAN)) begin
+                        closing_abort<=legal_abort; state<=DRAIN;
+                    end
+                end
+                DRAIN:if(pipeline_valid==0) state<=PACK;
+                PACK:begin
+                    state<=HELD;
+                end
+                HELD:if(stat_ready) begin state<=IDLE; first_reason<=0; end
+                PROTOCOL_STUCK:state<=PROTOCOL_STUCK;
+                default:begin state<=PROTOCOL_STUCK; first_reason<=fit_protocol_pkg::INTERNAL; end
+            endcase
+        end
+    end
+endmodule

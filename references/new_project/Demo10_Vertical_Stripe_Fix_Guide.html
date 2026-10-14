@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="author" content="LeoXuanyi">
+  <title>Demo10 竖条纹与线条断续问题修复指南</title>
+  <style>
+    :root {
+      --bg: #f4f6f8;
+      --panel: #ffffff;
+      --text: #1f2937;
+      --muted: #5b6472;
+      --primary: #195fb5;
+      --primary-soft: #eaf3ff;
+      --warning: #9a5b00;
+      --warning-bg: #fff7e6;
+      --success: #176b3a;
+      --success-bg: #eaf8ef;
+      --border: #d8dee8;
+      --code-bg: #101722;
+      --code-text: #e6edf3;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      color: var(--text);
+      background: var(--bg);
+      font-family: "Microsoft YaHei", "Noto Sans SC", Arial, sans-serif;
+      line-height: 1.75;
+    }
+
+    .page {
+      width: min(1120px, calc(100% - 32px));
+      margin: 32px auto 64px;
+    }
+
+    header,
+    main,
+    footer {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: 0 8px 24px rgba(31, 41, 55, 0.06);
+    }
+
+    header {
+      padding: 32px 38px;
+      border-top: 5px solid var(--primary);
+    }
+
+    header h1 {
+      margin: 0 0 10px;
+      color: #123e70;
+      font-size: 30px;
+      line-height: 1.35;
+    }
+
+    header p { margin: 6px 0; color: var(--muted); }
+
+    main { margin-top: 20px; padding: 32px 38px; }
+    footer { margin-top: 20px; padding: 18px 38px; color: var(--muted); }
+
+    h2 {
+      margin: 40px 0 14px;
+      padding-bottom: 8px;
+      color: #174d84;
+      border-bottom: 2px solid #dbe9f8;
+      font-size: 23px;
+    }
+
+    h2:first-child { margin-top: 0; }
+    h3 { margin: 28px 0 10px; color: #214f77; font-size: 18px; }
+    p { margin: 10px 0; }
+    ul, ol { padding-left: 26px; }
+    li { margin: 7px 0; }
+
+    code {
+      font-family: Consolas, "Cascadia Mono", monospace;
+      font-size: 0.94em;
+    }
+
+    p code,
+    li code,
+    td code {
+      padding: 2px 6px;
+      color: #8a2c0d;
+      background: #fff0e9;
+      border-radius: 4px;
+    }
+
+    pre {
+      overflow-x: auto;
+      margin: 14px 0 20px;
+      padding: 18px 20px;
+      color: var(--code-text);
+      background: var(--code-bg);
+      border-radius: 8px;
+      line-height: 1.55;
+      tab-size: 4;
+    }
+
+    pre code { color: inherit; background: none; padding: 0; }
+
+    .summary,
+    .note,
+    .warning,
+    .success {
+      margin: 18px 0;
+      padding: 15px 18px;
+      border-left: 5px solid;
+      border-radius: 6px;
+    }
+
+    .summary,
+    .note {
+      border-color: var(--primary);
+      background: var(--primary-soft);
+    }
+
+    .warning {
+      color: #704200;
+      border-color: #d58917;
+      background: var(--warning-bg);
+    }
+
+    .success {
+      color: var(--success);
+      border-color: #27935a;
+      background: var(--success-bg);
+    }
+
+    .path {
+      overflow-wrap: anywhere;
+      padding: 10px 12px;
+      color: #334155;
+      background: #eef2f6;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      font-family: Consolas, "Cascadia Mono", monospace;
+      font-size: 14px;
+    }
+
+    table {
+      width: 100%;
+      margin: 16px 0 22px;
+      border-collapse: collapse;
+    }
+
+    th, td {
+      padding: 10px 12px;
+      text-align: left;
+      vertical-align: top;
+      border: 1px solid var(--border);
+    }
+
+    th { background: #edf4fb; color: #174d84; }
+
+    .priority {
+      display: inline-block;
+      min-width: 28px;
+      padding: 1px 8px;
+      color: #fff;
+      background: var(--primary);
+      border-radius: 10px;
+      text-align: center;
+      font-size: 13px;
+    }
+
+    @media print {
+      body { background: #fff; }
+      .page { width: 100%; margin: 0; }
+      header, main, footer { box-shadow: none; border-color: #bbb; }
+      pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header>
+      <h1>Demo10 竖条纹与线条断续问题修复指南</h1>
+      <p>适用工程：Ti60F225 DemoBoard v4 / SC431HAI to HDMI Demo</p>
+      <p>作者：LeoXuanyi</p>
+    </header>
+
+    <main>
+      <h2>1. 问题判断</h2>
+
+      <div class="summary">
+        从图像特征和工程代码判断，主要问题是 CSI-2 输出的四个 RAW10 像素被以相反顺序送入 DDR 帧缓存。这样会导致每四个像素内部左右翻转，连续斜线呈现规律性的锯齿、短竖条或虚线。
+      </div>
+
+      <p>照片中还可能包含手机拍摄显示器产生的细密摩尔纹。判断时应以肉眼观察或 HDMI 采集卡抓取的原始帧为准。</p>
+
+      <p>主要修改文件：</p>
+
+      <div class="path">E:\Efinix_FPGA\boards\Ti60F225_DemoBoard_v4\10_Ti60f225_sc431hai2hdmi_demo\Ti60f225_sc431hai2hdmi_v1\rtl\ti60f225_oob_top.v</div>
+
+      <h2>2. 修正 RAW10 四像素顺序</h2>
+
+      <p>在 <code>frame_buffer</code> 实例附近找到当前代码：</p>
+
+      <pre><code>.vin ({
+    w_mipi_rx_data[39:32],
+    w_mipi_rx_data[29:22],
+    w_mipi_rx_data[19:12],
+    w_mipi_rx_data[9:2]
+}),</code></pre>
+
+      <p>替换为：</p>
+
+      <pre><code>.vin ({
+    w_mipi_rx_data[9:2],
+    w_mipi_rx_data[19:12],
+    w_mipi_rx_data[29:22],
+    w_mipi_rx_data[39:32]
+}),</code></pre>
+
+      <p>CSI RX 的 RAW10 像素排列为：</p>
+
+      <table>
+        <thead>
+          <tr><th>像素</th><th>数据位</th><th>取8位后的数据位</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Pixel 1</td><td><code>pixel_data[9:0]</code></td><td><code>[9:2]</code></td></tr>
+          <tr><td>Pixel 2</td><td><code>pixel_data[19:10]</code></td><td><code>[19:12]</code></td></tr>
+          <tr><td>Pixel 3</td><td><code>pixel_data[29:20]</code></td><td><code>[29:22]</code></td></tr>
+          <tr><td>Pixel 4</td><td><code>pixel_data[39:30]</code></td><td><code>[39:32]</code></td></tr>
+        </tbody>
+      </table>
+
+      <p>工程中的 DDR 写入和读出逻辑按高位数据先输出。原代码实际产生以下顺序：</p>
+
+      <pre><code>正常：1 2 3 4 | 5 6 7 8
+原来：4 3 2 1 | 8 7 6 5</code></pre>
+
+      <p>因此水平线不一定明显异常，但斜线会按四像素周期出现锯齿。这是本次问题的最高优先级修正项。</p>
+
+      <h2>3. 修正标准1080P时序</h2>
+
+      <p>找到图像分辨率和消隐参数，将其改为标准 1920×1080@60Hz：</p>
+
+      <pre><code>localparam MAX_HRES = 12'd1920;
+localparam MAX_VRES = 12'd1080;
+
+localparam HSP      = 8'd44;
+localparam HBP      = 8'd148;
+localparam HFP      = 8'd88;
+
+localparam VSP      = 8'd5;
+localparam VBP      = 8'd36;
+localparam VFP      = 8'd4;</code></pre>
+
+      <p>标准总时序为：</p>
+
+      <pre><code>水平：1920 + 88 + 44 + 148 = 2200
+垂直：1080 + 4 + 5 + 36 = 1125</code></pre>
+
+      <h2>4. 修正帧缓存水平同步宽度</h2>
+
+      <p>帧缓存输出端每个时钟处理两个像素，因此所有水平参数都应除以2。找到：</p>
+
+      <pre><code>.H_FRONT_PORCH (HFP/2),
+.H_SYNC        (HSP),
+.H_VALID       (MAX_HRES/2),
+.H_BACK_PORCH  (HBP/2),
+
+.V_FRONT_PORCH (VFP),
+.V_SYNC        (VSP),
+.V_VALID       (MAX_VRES),
+.V_BACK_PORCH  (VBP),</code></pre>
+
+      <p>将 <code>H_SYNC</code> 修改为 <code>HSP/2</code>：</p>
+
+      <pre><code>.H_FRONT_PORCH (HFP/2),
+.H_SYNC        (HSP/2),
+.H_VALID       (MAX_HRES/2),
+.H_BACK_PORCH  (HBP/2),
+
+.V_FRONT_PORCH (VFP),
+.V_SYNC        (VSP),
+.V_VALID       (MAX_VRES),
+.V_BACK_PORCH  (VBP),</code></pre>
+
+      <p>修改后的双像素时钟域水平参数为：</p>
+
+      <pre><code>有效区：960
+前肩：44
+同步：22
+后肩：74
+总计：1100个双像素时钟</code></pre>
+
+      <h2>5. 修正2像素转1像素的行首相位</h2>
+
+      <p>原来的 <code>vid_cnt</code> 自由翻转，没有在复位或每行消隐期间重新对齐。将原有的像素拆分逻辑整体替换为：</p>
+
+      <pre><code>reg vid_cnt;
+
+reg [7:0] hdmi_tx_rdata;
+reg [7:0] hdmi_tx_gdata;
+reg [7:0] hdmi_tx_bdata;
+
+reg hdmi_tx_vs;
+reg hdmi_tx_hs;
+reg hdmi_tx_de;
+
+always @(posedge hdmi_tx_slow_clk or negedge vid_rst_n)
+begin
+    if (!vid_rst_n)
+    begin
+        vid_cnt       &lt;= 1'b0;
+
+        hdmi_tx_rdata &lt;= 8'd0;
+        hdmi_tx_gdata &lt;= 8'd0;
+        hdmi_tx_bdata &lt;= 8'd0;
+
+        hdmi_tx_vs    &lt;= 1'b0;
+        hdmi_tx_hs    &lt;= 1'b0;
+        hdmi_tx_de    &lt;= 1'b0;
+    end
+    else
+    begin
+        hdmi_tx_vs &lt;= rgb_vs;
+        hdmi_tx_hs &lt;= rgb_hs;
+        hdmi_tx_de &lt;= rgb_de;
+
+        // 在每行消隐期间重新对齐到第一个像素
+        if (!rgb_de)
+        begin
+            vid_cnt       &lt;= 1'b0;
+            hdmi_tx_rdata &lt;= 8'd0;
+            hdmi_tx_gdata &lt;= 8'd0;
+            hdmi_tx_bdata &lt;= 8'd0;
+        end
+        else
+        begin
+            if (!vid_cnt)
+            begin
+                // 第一个像素
+                {
+                    hdmi_tx_rdata,
+                    hdmi_tx_gdata,
+                    hdmi_tx_bdata
+                } &lt;= rgb_datax2[47:24];
+            end
+            else
+            begin
+                // 第二个像素
+                {
+                    hdmi_tx_rdata,
+                    hdmi_tx_gdata,
+                    hdmi_tx_bdata
+                } &lt;= rgb_datax2[23:0];
+            end
+
+            vid_cnt &lt;= ~vid_cnt;
+        end
+    end
+end</code></pre>
+
+      <p>这样每行有效视频开始时都固定从 <code>rgb_datax2[47:24]</code> 开始，避免奇偶像素相位随消隐长度或复位时刻发生变化。</p>
+
+      <h2>6. 检查 DVI Encoder 信号连接</h2>
+
+      <p>当前代码对 R/B 和 HS/VS 进行了交换：</p>
+
+      <pre><code>.i_bdata (hdmi_tx_rdata),
+.i_gdata (hdmi_tx_gdata),
+.i_rdata (hdmi_tx_bdata),
+
+.i_hs    (hdmi_tx_vs),
+.i_vs    (hdmi_tx_hs),
+.i_de    (hdmi_tx_de),</code></pre>
+
+      <p>建议按正常对应关系修改：</p>
+
+      <pre><code>.i_bdata (hdmi_tx_bdata),
+.i_gdata (hdmi_tx_gdata),
+.i_rdata (hdmi_tx_rdata),
+
+.i_hs    (hdmi_tx_hs),
+.i_vs    (hdmi_tx_vs),
+.i_de    (hdmi_tx_de),</code></pre>
+
+      <div class="warning">
+        如果修改本项后显示器完全无法锁定，而修改前能够稳定显示，应暂时恢复这一项。加密的 DVI Encoder 或原工程信号命名可能存在特殊约定。RAW10 像素顺序、1080P时序和行首相位修正仍应保留。
+      </div>
+
+      <h2>7. 增加 CSI 输入诊断信号</h2>
+
+      <p>在 CSI RX 实例前增加：</p>
+
+      <pre><code>wire [15:0] mipi_word_count;
+wire [5:0]  mipi_datatype;
+wire [3:0]  mipi_pixel_per_clk;</code></pre>
+
+      <p>把原来悬空的端口：</p>
+
+      <pre><code>.word_count     (),
+.datatype       (),
+.pixel_per_clk  (),</code></pre>
+
+      <p>改为：</p>
+
+      <pre><code>.word_count      (mipi_word_count),
+.datatype        (mipi_datatype),
+.pixel_per_clk   (mipi_pixel_per_clk),
+.pixel_data      (w_mipi_rx_data),
+.pixel_data_valid(w_mipi_rx_de),</code></pre>
+
+      <p>使用 Efinity Debugger 观察时，1920像素 RAW10 的正常结果应接近：</p>
+
+      <table>
+        <thead><tr><th>信号</th><th>预期值</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td><code>mipi_datatype</code></td><td><code>6'h2B</code></td><td>CSI-2 RAW10 数据类型</td></tr>
+          <tr><td><code>mipi_pixel_per_clk</code></td><td><code>4</code></td><td>每时钟4个像素</td></tr>
+          <tr><td><code>mipi_word_count</code></td><td><code>2400</code></td><td>1920 × 10 ÷ 8</td></tr>
+        </tbody>
+      </table>
+
+      <h2>8. 临时绕过 Debayer</h2>
+
+      <p>如果完成前述修改后仍有周期性条纹，可暂时绕过 Debayer，将两个 RAW 像素直接显示为灰度图。</p>
+
+      <p>在 <code>rgb_datax2</code> 声明附近加入：</p>
+
+      <pre><code>localparam DEBUG_BYPASS_DEBAYER = 1'b0;
+
+wire [47:0] raw_gray_datax2;
+
+assign raw_gray_datax2 = {
+    ch0_g, ch0_g, ch0_g,
+    ch0_b, ch0_b, ch0_b
+};
+
+wire [47:0] display_datax2;
+
+assign display_datax2 =
+    DEBUG_BYPASS_DEBAYER ? raw_gray_datax2 : rgb_datax2;</code></pre>
+
+      <p>在2像素转1像素代码中，将：</p>
+
+      <pre><code>rgb_datax2[47:24]
+rgb_datax2[23:0]</code></pre>
+
+      <p>改为：</p>
+
+      <pre><code>display_datax2[47:24]
+display_datax2[23:0]</code></pre>
+
+      <p>需要进行灰度旁路测试时设为：</p>
+
+      <pre><code>localparam DEBUG_BYPASS_DEBAYER = 1'b1;</code></pre>
+
+      <table>
+        <thead><tr><th>测试结果</th><th>判断</th></tr></thead>
+        <tbody>
+          <tr><td>灰度图仍有周期性断线</td><td>重点检查 CSI 像素顺序、DDR打包和2转1串行化。</td></tr>
+          <tr><td>灰度图连续，Debayer彩色图断续</td><td>检查 Bayer 阵列格式、裁剪起点和镜像/翻转设置。</td></tr>
+          <tr><td>灰度图和彩色图都连续</td><td>RAW10 四像素顺序修正已经解决主要问题。</td></tr>
+        </tbody>
+      </table>
+
+      <p>测试结束后恢复：</p>
+
+      <pre><code>localparam DEBUG_BYPASS_DEBAYER = 1'b0;</code></pre>
+
+      <h2>9. 第一轮不要修改的文件</h2>
+
+      <ul>
+        <li><code>rtl/debayer/debayer_top_2to1.v</code></li>
+        <li><code>rtl/debayer/raw_to_rgb.v</code></li>
+        <li>生成的 <code>csi_rx_controller.sv</code></li>
+        <li>DDR控制器生成文件和加密IP源码</li>
+      </ul>
+
+      <p>先确认像素顺序、1080P时序和2转1相位。只有灰度旁路正常而 Debayer 输出异常时，才需要进一步调整 Bayer 相位。</p>
+
+      <h2>10. 推荐实施顺序</h2>
+
+      <ol>
+        <li><span class="priority">1</span> 修正 RAW10 四像素顺序。</li>
+        <li><span class="priority">2</span> 重新编译并下载位流，观察斜线是否恢复连续。</li>
+        <li><span class="priority">3</span> 修改标准1080P时序以及 <code>HSP/2</code>。</li>
+        <li><span class="priority">4</span> 修改 <code>vid_cnt</code> 行首对齐逻辑。</li>
+        <li><span class="priority">5</span> 检查 DVI Encoder 的 RGB 和 HS/VS 对应关系。</li>
+        <li><span class="priority">6</span> 若仍异常，再启用 Debayer 灰度旁路。</li>
+      </ol>
+
+      <div class="success">
+        最关键的修正是将 <code>.vin</code> 的像素排列改为 Pixel1、Pixel2、Pixel3、Pixel4。RTL修改后只需要重新编译并下载新的 <code>.bit</code> 位流，不需要重新生成 ELF。
+      </div>
+
+      <h2>11. Git管理建议</h2>
+
+      <p>不要复制整个工程作为备份。每完成一个可独立验证的步骤，就提交一次对应文件：</p>
+
+      <pre><code>cd E:\Efinix_FPGA
+
+git add -f -- "boards/Ti60F225_DemoBoard_v4/10_Ti60f225_sc431hai2hdmi_demo/Ti60f225_sc431hai2hdmi_v1/rtl/ti60f225_oob_top.v"
+
+git commit -m "fix: correct Demo10 RAW10 pixel order and HDMI timing"</code></pre>
+
+      <p>如果后续测试发现某一步引入问题，可以使用 Git 对比或恢复对应提交，而不需要维护多份工程目录。</p>
+    </main>
+
+    <footer>
+      <p>Document author: LeoXuanyi</p>
+      <p>Project root: E:\Efinix_FPGA</p>
+    </footer>
+  </div>
+</body>
+</html>

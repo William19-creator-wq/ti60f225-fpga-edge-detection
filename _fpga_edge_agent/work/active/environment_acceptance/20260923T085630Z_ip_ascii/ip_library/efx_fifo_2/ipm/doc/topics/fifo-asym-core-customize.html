@@ -1,0 +1,365 @@
+<!DOCTYPE html
+  SYSTEM "about:legacy-compat">
+<html lang="en"><head><meta charset="UTF-8"><meta name="generator" content="DITA-OT"><meta name="description" content=""><meta name="prodname" content="Efinity"><meta name="version" content="UG-CORE-FIFO2-v2.9"><meta name="rights" content="© 2026 Efinix, Inc."><title>Customizing the FIFO</title>
+	
+	<script src="../../../../../../doc/js/jquery-3.4.1.min.js"></script>
+	
+	<!-- Bootstrap 5 -->
+	<link href="../../../../../../doc/css/bootstrap5.css" rel="stylesheet">
+	<script src="../../../../../../doc/js/bootstrap.bundle.min.js"></script>
+	
+	<!-- special styles for doc output -->
+	<link href="../../../../../../doc/css/efx-styles.css" rel="stylesheet">
+	<link href="../../../../../../doc/css/glyphicons.css" rel="stylesheet" type="text/css">	
+	
+</head><body id="fifo-asym-core-customize"><header role="banner"><div>
+  <script>
+    function store_nav_state(clicked_id) {
+    var id = $(clicked_id).attr("id");
+    var div_id = id.replace(/^btn-/, 'drop-');
+    // alert(id);
+    
+    //		if ( $('#'+div_id).hasClass( "show" ) ) {	
+    if ( $('#'+id).hasClass( "collapsed" ) ) {		
+    // trigger is opposite of what you would think
+    // alert("hide");
+    localStorage.removeItem(div_id);
+    $('#'+id).children('span').addClass("glyphicon-plus-sign");
+    $('#'+id).children('span').removeClass("glyphicon-minus-sign");
+    
+    $('#'+id).children('span').addClass("black");
+    $('#'+id).children('span').removeClass("blue");
+    }
+    else {
+    // alert("show");
+    localStorage.setItem(div_id, "in");
+    $('#'+id).children('span').addClass("glyphicon-minus-sign");
+    $('#'+id).children('span').removeClass("glyphicon-plus-sign");
+    
+    $('#'+id).children('span').addClass("blue");
+    $('#'+id).children('span').removeClass("black");
+    }
+    }
+    
+    $(function(){
+    $( "div[id^=drop-]" ).each(function( index ) {
+    var drop_id = $(this).attr("id");	
+    var btn_id = drop_id.replace(/^drop-/, 'btn-');
+    // console.log( index + ": " + drop_id);	
+    
+    var nav_stored = localStorage.getItem(drop_id);
+    if (nav_stored == "in") {
+    // console.log( index + ": " + drop_id);
+    // $( '#'+drop_id ).last().addClass( "collapse" );
+    $( '#'+drop_id ).collapse("show");
+    // alert(nav_stored);
+    // $( '#'+btn_id ).toggle();
+    
+    $('#'+btn_id).children('span').addClass("glyphicon-minus-sign");
+    $('#'+btn_id).children('span').removeClass("glyphicon-plus-sign");
+    
+    $('#'+btn_id).children('span').addClass("blue");
+    }
+    });
+    });
+    
+    // row hack
+    $(function(){
+    $( "tr[class=row]" ).each(function( index ) {
+    $('tr[class=row]').removeClass("row");
+    });
+    }); 
+  </script>
+  
+  
+  
+  <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-blue">
+    <div class="container-fluid"> 
+      <!-- Brand and toggle get grouped for better mobile display -->
+      <div class="navbar-header">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#defaultNavbar1" aria-controls="main-nav-items" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button> 
+        <a class="navbar-brand" href="../../../../../../doc/topics/efnug-intro.html"><img src="../../../../../../doc/logo/efinity-help.png" alt="Efinix, Inc."></a>
+      </div>
+      
+      <!-- Collect the nav links, forms, and other content for toggling -->
+      <div class="collapse navbar-collapse" id="defaultNavbar1">
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="/#" id="help" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Efinity Help<span class="caret"></span></a>
+            
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/efnug-intro.html">Overview</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/efnug-new.html">New in This Release</a></li> 
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/efn-quickstart.html">Quick Start</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/efn-hwsw-req.html">Hardware and Software Requirements</a></li>
+              
+              <li><hr class="dropdown-divider"></li>
+              
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/efn-proj-prefs.html">Projects and Preferences</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/efn-running-tool-flow.html">Running the Flow</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/ip-packager-intro.html">IP Packager</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/ipmgr.html">IP Manager</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/syn-intro.html">Synthesis</a></li>
+              <li><a class="dropdown-item" href="../../../../../../pt/doc/topics/hlp-id-intro.html">Interface Designer</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/tim-intro.html">Timing</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/efn-simulating.html">Simulation</a></li>
+              <li><a class="dropdown-item" href="../../../../../../pgm/doc/topics/hlp-pg-intro.html">Programmer</a></li>
+              <li><a class="dropdown-item" href="../../../../../../debugger/doc/topics/hlp-dbg-intro.html">Debugger</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/efinity-files.html">Efinity Project Files</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/efn-messages.html">Efinity Messages</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/cli-intro.html">Command-Line Interface</a></li>
+            </ul>
+          </li>
+          
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="/#" id="tut" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Tutorials<span class="caret"></span></a>
+            
+            <ul class="dropdown-menu">
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/efn-tut-intro.html">Efinity Tutorial</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/efn-unified-intro.html">Unified Design Tutorial</a></li>
+              <li><a class="dropdown-item" href="../../../../../../debugger/doc/topics/tut-debug-intro.html">Debugger Tutorial</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/efinity-trans-debug-intro.html">Transceiver Debugger Tutorial</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/efx-bram-tutorial.html">BRAM Initial Content Editor Tutorial</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/topics/internal-reconfig-tutorial.html">Internal Reconfiguration Tutorial</a></li>
+            </ul>
+          </li>
+          
+          <li class="nav-item">
+            <a class="nav-link" href="../../../../../../doc/topics/ipmgr-supported-ip-byfamily.html">IP Help</a>
+          </li> 
+          
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="/#" id="pdf" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              PDFs<span class="caret"></span></a>
+            
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="../../../../../../doc/pdf/efinity-ug.pdf" target="_blank">Efinity Software User Guide</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/pdf/efinity-installation.pdf" target="_blank">Efinity Installation User Guide</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/pdf/efinity-quantum-ti-primitives-ug.pdf" target="_blank">Quantum Titanium Primitives User Guide</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/pdf/efinity-quantum-tz-primitives-ug.pdf" target="_blank">Quantum Topaz Primitives User Guide</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/pdf/efinity-quantum-primitives-ug.pdf" target="_blank">Quantum Trion Primitives User Guide</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/pdf/efinity-synthesis.pdf" target="_blank">Efinity Synthesis User Guide</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/pdf/efinity-timing-closure.pdf" target="_blank">Efinity Timing Closure User Guide</a></li>
+              <li><a class="dropdown-item" href="../../../../../../doc/pdf/efinity-python-api.pdf" target="_blank">Efinity Python API</a></li>
+            </ul>
+          </li>
+          
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="/#" id="support" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              Support<span class="caret"></span></a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="https://www.efinixinc.com/support/index.php">Support Center</a></li>
+              <li><a class="dropdown-item" href="https://www.efinixinc.com/products-efinity-training.html">Training Videos</a></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <!-- /.navbar-collapse --> 
+    </div>
+  </nav>  
+  
+	
+</div></header><div class="efx-nav col-xs-12 col-md-4 col-xl-3"><nav class="toc" role="navigation"><ul id="toc"><li class="nav-item"><a href="../topics/hlp-fifo.html">FIFO Core User Guide</a><button class="btn btn-light btn-sm btn-leftnav" data-bs-toggle="collapse" aria-expanded="false" onClick="store_nav_state(this)" data-bs-target="#drop-fifo" id="btn-fifo"><span class="glyphicon glyphicon-plus-sign"></span></button><div class="collapse" id="drop-fifo"><ul><li class="nav-item"><a href="../topics/fifo-asym-core-features.html">Features</a></li><li class="nav-item"><a href="../topics/fifo-asym-core-f.html">Functional Description</a></li><li class="nav-item"><a href="../topics/ipm-main-fifo.html">IP Manager</a></li><li class="active"><a href="../topics/fifo-asym-core-customize.html">Customizing the FIFO</a></li></ul></div></li></ul></nav></div><div class="efx-block col-xs-12 col-md-8 col-xl-9"><main role="main"><article role="article" aria-labelledby="ariaid-title1">
+    <h1 class="title topictitle1" id="ariaid-title1">Customizing the <span class="keyword">FIFO</span></h1>
+    
+    <div class="body conbody"><p class="shortdesc"></p>
+        <section class="section" id="fifo-asym-core-customize__section_ftt_fl4_snb">
+            
+            <p class="p" id="fifo-asym-core-customize__customizing-help">The core has parameters so you can customize its function. You
+                set the parameters in the <span class="ph uicontrol">General</span> tab of the core's IP
+                Configuration window. </p>
+        </section>
+        <section class="section" id="fifo-asym-core-customize__section_fp2_gf1_2qb">
+            <table class="table frame-all" id="fifo-asym-core-customize__table_w3m_3f1_2qb"><caption><span class="table--title-label">Table 1. </span><span class="title"><span class="keyword">FIFO</span> Core Parameter</span></caption><colgroup><col style="width:25.71428571428571%"><col style="width:17.142857142857142%"><col style="width:57.14285714285714%"></colgroup><thead class="thead">
+                        <tr class="row">
+                            <th class="entry colsep-1 rowsep-1" id="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__1">Parameter</th>
+                            <th class="entry align-center colsep-1 rowsep-1" id="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__2">Options</th>
+                            <th class="entry colsep-1 rowsep-1" id="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__3">Description</th>
+                        </tr>
+                    </thead><tbody class="tbody">
+                        <tr class="row">
+                            <td class="entry colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__1">Clock Mode</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__2">Asynchronous, Synchronous</td>
+                            <td class="entry colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__3">Defines whether the FIFO read and write domain is synchronous or
+                                asynchronous. <div class="div">Default: Asynchronous</div></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__1">FIFO Depth</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__2">16 – 131072 </td>
+                            <td class="entry colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__3">Defines the FIFO depth, which determines the maximum number of
+                                words the FIFO can store before it is full. The depth must be a
+                                power of 2 from 16 – 2<sup class="ph sup">17</sup>.<div class="div">Default: 512</div></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__1">Data Bus Width</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__2">1 – 512</td>
+                            <td class="entry colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__3">Defines the FIFO's read and write data bus widths.<div class="div">Default:
+                                    16</div></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__1">FIFO Mode</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__2">STANDARD, FWFT</td>
+                            <td class="entry colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__3">Defines the FIFO's read mode as standard or FWFT.<div class="div">Default:
+                                    STANDARD</div></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__1">Output Register</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__2">Enable, Disable</td>
+                            <td class="entry colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__3">Adds one pipeline stage to rdata and rd_valid_o to improve timing
+                                delay out from efx_ram.<div class="div">Default: 0 (Disable)</div></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__1">Programmable Full Assert Value</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__2">4 - (FIFO Depth - 2)</td>
+                            <td class="entry colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__3">Threshold value when prog_full_o is enabled. When Enable
+                                Programmable Full Option is: <div class="div">STATIC_SINGLE: Single threshold
+                                    value for assertion and deassertion of
+                                    prog_full_o.</div><div class="div">STATIC_DUAL: Upper threshold value for
+                                    assertion of prog_full_o.</div><div class="div">Default: 128</div></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__1">Enable Programmable Full Option</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__2">NONE, STATIC_SINGLE, STATIC_DUAL</td>
+                            <td class="entry colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__3">Controls the prog_full_o signal: <div class="div">NONE:
+                                    Disabled.</div><div class="div">STATIC_SINGLE: Enabled, asserts and
+                                    deasserts at a single threshold value.
+                                    (default)</div><div class="div">STATIC_DUAL: Enabled, asserts or deasserts
+                                    at different threshold values.</div></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__1">Programmable Full Negate Value</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__2">3 - (FIFO Depth - 3)</td>
+                            <td class="entry colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__3">Use when PROGRAMMABLE_FULL is set to STATIC_DUAL. Sets the lower
+                                threshold value for prog_full_o during deassertion.<div class="div">Default:
+                                    127</div></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__1">Programmable Empty Assert Value</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__2">0 - (FIFO Read Depth - 1)</td>
+                            <td class="entry colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__3">Threshold value when prog_empty_o is enabled. When Enable
+                                Programmable Empty Option is: <div class="div">STATIC_SINGLE: Single threshold
+                                    value for assertion and deassertion of
+                                    prog_empty_o.</div><div class="div">STATIC_DUAL: Lower threshold value for
+                                    assertion of prog_empty_o.</div><div class="div">Default: 0</div></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__1">Programmable Empty Negate Value</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__2">0 - (FIFO Read Depth - 1)</td>
+                            <td class="entry colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__3">Use when PROGRAMMABLE_EMPTY is set to STATIC_DUAL. Sets the upper
+                                threshold value for prog_empty_o during deassertion.<div class="div">Default:
+                                    0</div></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__1">Enable Programmable Empty Option</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__2">NONE, STATIC_SINGLE, STATIC_DUAL</td>
+                            <td class="entry colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__3">Controls the prog_empty_o signal: <div class="div">NONE: Disabled
+                                    (default).</div><div class="div">STATIC_SINGLE: Enabled, asserts and
+                                    deasserts at a single threshold value. </div><div class="div">STATIC_DUAL:
+                                    Enabled, asserts or deasserts at different threshold
+                                    values.</div></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__1">Optional Signals</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__2">Enable, Disable</td>
+                            <td class="entry colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__3">Enables the optional signals: overflow_o, underflow_o,wr_ack_o,
+                                almost_full_o, , rd_valid_o, and almost_empty_o. You can enable this
+                                feature with some trade-offs in timing performance. However, this
+                                feature must be enabled when generating the Example Designs or
+                                    Testbench.<div class="div">Default: Disable</div></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__1">Pipeline Register</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__2">Enable, Disable</td>
+                            <td class="entry colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__3">Applicable to asynchronous FIFO mode only. Adds one latency of
+                                the opposing clock domain to all applicable output signals when
+                                wr_en_i or rd_en_i signal is asserted. Enable this feature to
+                                improve the macro timing. <span class="keyword">Efinix</span> recommends that
+                                you enable this parameter in asynchronous FIFO mode.<div class="div">Default:
+                                    Enable</div></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__1">Synchronization Stages</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__2">2 – 8</td>
+                            <td class="entry colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__3">Configures the number of synchronization stages for the cross
+                                clock domain signals in asynchronous mode. This increases the
+                                latency of opposing clock domain status flag signals.<div class="div">Default:
+                                    2</div></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__1">Asymmetric Width Ratio</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__2">16:1, 8:1, 4:1, 2:1, 1:1, 1:2, 1:4, 1:8, 1:16</td>
+                            <td class="entry colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__3">Selects asymmetrical width ratios. 1:1 is symmetric width
+                                    ratio.<div class="div">Default: 1:2</div></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__1">Reset Synchronizer</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__2">Enable, Disable</td>
+                            <td class="entry colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__3">Disable if you do not want the reset signal to be synchronized to
+                                the respective clock domain during asynchronous mode. Ensure that
+                                the supplied reset signal is synchronized to the respective FIFO
+                                clock domain in design upper level order for the FIFO reset to
+                                operate correctly.<div class="div">Default: Enable</div></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__1">Endianness</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__2">BIG_ENDIAN, LITTLE_ENDIAN</td>
+                            <td class="entry colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__3">Select the order in which the bytes are stored and read out
+                                    first.<div class="div">Write width &gt; Read width:</div><div class="div">
+                                    <ul class="ul" id="fifo-asym-core-customize__ul_ikr_r2n_d1c">
+                                        <li class="li">BIG_ENDIAN: The <strong class="ph b">most</strong> significant portion of the
+                                                <em class="ph i">wdata</em> is stored into the FIFO first and being
+                                            read out first.</li>
+                                        <li class="li">LITTLE_ENDIAN: The <strong class="ph b">least</strong> significant byte of the
+                                                <em class="ph i">wdata</em> is stored into the FIFO first and being
+                                            read out first.</li>
+                                    </ul>
+                                    <div class="div">Read width &gt; Write width:</div>
+                                    <div class="div">
+                                        <ul class="ul" id="fifo-asym-core-customize__ul_hpy_nfn_d1c">
+                                            <li class="li">BIG_ENDIAN: <strong class="ph b">Least</strong> significant portion of the
+                                                  <em class="ph i">rdata</em> contains the newer data.</li>
+                                            <li class="li">LITTLE_ENDIAN: <strong class="ph b">Most</strong> significant portion of
+                                                the <em class="ph i">rdata</em> contains the newer data.</li>
+                                        </ul>
+                                    </div>
+                                </div><div class="div">Default: BIG_ENDIAN</div></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__1">Overflow Protection </td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__2">Enable, Disable</td>
+                            <td class="entry colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__3">The overflow protection disables the <code class="ph codeph">wr_en_i</code>
+                                port when the FIFO is full. If enabled, overflowing the FIFO is not
+                                destructive to the contents of the FIFO. The
+                                    <code class="ph codeph">overflow_o</code> port is exposed when this feature is
+                                enabled. You can choose to disable this feature to achieve better
+                                timing performance. <div class="div">Default: Enable</div></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__1">Underflow Protection</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__2">Enable, Disable</td>
+                            <td class="entry colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__3">The underflow protection disables the <code class="ph codeph">rd_en_i</code>
+                                port when the FIFO is empty. If enabled, underflowing the FIFO is
+                                not destructive to the contents of the FIFO. The
+                                    <code class="ph codeph">underflow_o</code> port is exposed when this feature
+                                is enabled. You can choose to disable this feature to achieve better
+                                timing performance.<div class="div">Default: Enable</div></td>
+                        </tr>
+                        <tr class="row">
+                            <td class="entry colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__1">FIFO Implementation</td>
+                            <td class="entry align-center colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__2">Block RAM, LUT Register</td>
+                            <td class="entry colsep-1 rowsep-1" headers="fifo-asym-core-customize__table_w3m_3f1_2qb__entry__3">Defines the FIFO RAM implementation as Block RAM or LUT Register.
+                                This is only available for FIFO Depth = 16 <div class="div">Default: Block
+                                    RAM</div></td>
+                        </tr>
+                    </tbody></table>
+        </section>
+    </div>
+<nav role="navigation" class="related-links"><div class="familylinks"><div class="parentlink"><strong>Parent topic:</strong> <a class="link" href="../topics/hlp-fifo.html">FIFO Core User Guide</a></div></div></nav></article></main></div><footer role="contentinfo"><div class="navbar fixed-bottom" id="help-botbar">
+    <p id="copyright">Copyright (c) 2026 | All Rights Reserved</p>
+</div></footer></body></html>

@@ -1,0 +1,213 @@
+
+Efinix Static Timing Analysis Report
+Version: 2026.1.132
+Date: Thu Oct  8 19:05:02 2026
+
+Copyright (C) 2013 - 2026 Efinix, Inc. All rights reserved.
+
+Top-level Entity Name: angle_probe
+
+SDC Filename: angle_probe.sdc
+
+Timing Model: I3
+	process : typical
+	temperature : -40C to 100C
+	voltage : 0.95 +/-30mV
+	speedgrade : 3
+	technology : t16ff
+	status : final
+
+---------- Table of Contents (begin) ----------
+   1. Clock Frequency Summary
+   2. Clock Relationship Summary
+   3. Path Details for Max Critical Paths
+   4. Path Details for Min Critical Paths
+---------- Table of Contents (end) ------------
+
+---------- 1. Clock Frequency Summary (begin) ----------
+
+User target constrained clocks
+ Clock Name  Period (ns)  Frequency (MHz)    Waveform      Targets
+  core_25m      40.000        25.000      {0.000 20.000}  {clk_25m}
+
+Maximum possible analyzed clocks frequency
+ Clock Name  Period (ns)  Frequency (MHz)     Edge
+  core_25m      5.790        172.712         (R-R)
+
+Geomean max period: 5.790
+
+---------- Clock Frequency Summary (end) ---------------
+
+---------- 2. Clock Relationship Summary (begin) ----------
+
+Setup (Max) Clock Relationship
+  Launch Clock    Capture Clock   Constraint (ns)     Slack (ns)          Edge
+    core_25m         core_25m          40.000           34.210           (R-R)
+
+Hold (Min) Clock Relationship
+  Launch Clock    Capture Clock   Constraint (ns)     Slack (ns)          Edge
+    core_25m         core_25m          0.000            0.035            (R-R)
+
+NOTE: Values are in nanoseconds.
+
+---------- Clock Relationship Summary (end) ---------------
+
+---------- 3. Path Details for Max Critical Paths (begin) ----------
+
+################################################################################
+Path Detail Report (core_25m vs core_25m)
+################################################################################
+
+
+++++ Path 1 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Path Begin    : arithmetic/constants/coefficient|RCLK
+Path End      : arithmetic/result_reason[0]~FF|CE    
+Launch Clock  : core_25m (RISE)                      
+Capture Clock : core_25m (RISE)                      
+Slack         : 34.210 (required time - arrival time)
+Delay         : 4.199                                
+
+Logic Level             : 7
+Non-global nets on path : 8
+Global nets on path     : 0
+
+Launch Clock Path Delay        : 2.065
++ Clock To Q + Data Path Delay : 5.664
+--------------------------------------
+End-of-path arrival time       : 7.729
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+---------------------------------------
+End-of-path required time      : 41.939
+
+Launch Clock Path
+                name                   model name   delay (ns)  cumulative delay (ns) pins on net    location
+===============================================================================================================
+clk_25m                                input          0.000             0.000                0      (0,164)  
+clk_25m                                input          0.126             0.126             1722      (0,164)  
+clk_25m                                net            1.939             2.065             1722      (0,164)  
+   Routing elements:
+      Manhattan distance of X:171, Y:62
+arithmetic/constants/coefficient|RCLK  EFX_RAM10      0.000             2.065             1722      (171,102)
+
+Data Path
+                   name                      model name   delay (ns)  cumulative delay (ns) pins on net    location
+=====================================================================================================================
+arithmetic/constants/coefficient|RDATA[10]   EFX_RAM10      1.361             1.361              2        (171,102)
+arithmetic/constants/coefficient_output[10]  net            0.571             1.932              2        (171,102)
+   Routing elements:
+      Manhattan distance of X:1, Y:22
+LUT__6475|in[0]                              EFX_LUT4       0.061             1.993              2        (172,80) 
+LUT__6475|out                                EFX_LUT4       0.000             1.993              7        (172,80) 
+arithmetic/rom_data[10]                      net            0.699             2.692              7        (172,80) 
+   Routing elements:
+      Manhattan distance of X:13, Y:2
+LUT__6506|in[0]                              EFX_LUT4       0.063             2.755              7        (159,82) 
+LUT__6506|out                                EFX_LUT4       0.000             2.755              2        (159,82) 
+n3415                                        net            0.295             3.050              2        (159,82) 
+   Routing elements:
+      Manhattan distance of X:0, Y:7
+LUT__6514|in[1]                              EFX_LUT4       0.063             3.113              2        (159,89) 
+LUT__6514|out                                EFX_LUT4       0.000             3.113              2        (159,89) 
+n3423                                        net            0.305             3.418              2        (159,89) 
+   Routing elements:
+      Manhattan distance of X:2, Y:5
+LUT__6515|in[3]                              EFX_LUT4       0.061             3.479              2        (157,94) 
+LUT__6515|out                                EFX_LUT4       0.000             3.479              2        (157,94) 
+n3424                                        net            0.419             3.898              2        (157,94) 
+   Routing elements:
+      Manhattan distance of X:0, Y:1
+LUT__6516|in[3]                              EFX_LUT4       0.061             3.959              2        (157,95) 
+LUT__6516|out                                EFX_LUT4       0.000             3.959              6        (157,95) 
+n3425                                        net            0.632             4.591              6        (157,95) 
+   Routing elements:
+      Manhattan distance of X:4, Y:15
+LUT__6735|in[0]                              EFX_LUT4       0.063             4.654              6        (153,110)
+LUT__6735|out                                EFX_LUT4       0.000             4.654              3        (153,110)
+n3632                                        net            0.178             4.832              3        (153,110)
+   Routing elements:
+      Manhattan distance of X:0, Y:2
+LUT__6882|in[1]                              EFX_LUT4       0.063             4.895              3        (153,112)
+LUT__6882|out                                EFX_LUT4       0.000             4.895              5        (153,112)
+ceg_net927                                   net            0.665             5.560              5        (153,112)
+   Routing elements:
+      Manhattan distance of X:5, Y:1
+arithmetic/result_reason[0]~FF|CE            EFX_FF         0.104             5.664              5        (148,113)
+
+Capture Clock Path
+               name                 model name   delay (ns)  cumulative delay (ns) pins on net    location
+============================================================================================================
+clk_25m                               input        0.000             0.000                0      (0,164)  
+clk_25m                               input        0.126             0.126             1722      (0,164)  
+clk_25m                               net          1.939             2.065             1722      (0,164)  
+   Routing elements:
+      Manhattan distance of X:148, Y:51
+arithmetic/result_reason[0]~FF|CLK    EFX_FF       0.000             2.065             1722      (148,113)
+
+---------- Path Details for Max Critical Paths (end) ---------------
+
+---------- 4. Path Details for Min Critical Paths (begin) ----------
+
+################################################################################
+Path Detail Report (core_25m vs core_25m)
+################################################################################
+
+
+++++ Path 1 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Path Begin    : dff_587/i102_2|CLK                  
+Path End      : dff_587/i110_2|D                    
+Launch Clock  : core_25m (RISE)                     
+Capture Clock : core_25m (RISE)                     
+Slack         : 0.035 (arrival time - required time)
+Delay         : 0.033                               
+
+Logic Level             : 0
+Non-global nets on path : 1
+Global nets on path     : 0
+
+Launch Clock Path Delay        : 1.167
++ Clock To Q + Data Path Delay : 0.105
+--------------------------------------
+End-of-path arrival time       : 1.272
+
+Constraint                     : 0.000
++ Capture Clock Path Delay     : 1.167
++ Clock Uncertainty            : 0.070
+--------------------------------------
+End-of-path required time      : 1.237
+
+Launch Clock Path
+       name         model name   delay (ns)  cumulative delay (ns) pins on net    location
+============================================================================================
+clk_25m              input         0.000             0.000                0      (0,164)  
+clk_25m              input         0.070             0.070             1722      (0,164)  
+clk_25m              net           1.097             1.167             1722      (0,164)  
+   Routing elements:
+      Manhattan distance of X:159, Y:15
+dff_587/i102_2|CLK   EFX_SRL8      0.000             1.167             1722      (159,149)
+
+Data Path
+      name         model name   delay (ns)  cumulative delay (ns) pins on net    location
+===========================================================================================
+dff_587/i102_2|Q7   EFX_SRL8      0.072             0.072              2        (159,149)
+source_lfsr[101]    net           0.033             0.105              2        (159,149)
+   Routing elements:
+      Manhattan distance of X:0, Y:1
+dff_587/i110_2|D    EFX_SRL8      0.000             0.105              2        (159,150)
+
+Capture Clock Path
+       name         model name   delay (ns)  cumulative delay (ns) pins on net    location
+============================================================================================
+clk_25m              input         0.000             0.000                0      (0,164)  
+clk_25m              input         0.070             0.070             1722      (0,164)  
+clk_25m              net           1.097             1.167             1722      (0,164)  
+   Routing elements:
+      Manhattan distance of X:159, Y:14
+dff_587/i110_2|CLK   EFX_SRL8      0.000             1.167             1722      (159,150)
+
+---------- Path Details for Min Critical Paths (end) ---------------
+

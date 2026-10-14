@@ -1,0 +1,30 @@
+{
+  "observation_id": "OBS-REFINE001-B01-20261013-164307",
+  "recorded_at": "2026-10-13T16:43:07+08:00",
+  "node": "H1_DISPLAY_BASELINE",
+  "task_id": "TRACK4-031-REFINE-001",
+  "artifact_id": "TRACK4-031-REFINE-001-B01",
+  "bit_sha256": "1e3fe7f954d8b26c49ed44e304818a56f60748a16d4550e913c1c4c577dcc6c8",
+  "raw_record": "observations/incoming/REFINE001-B01-20261013-164307.txt",
+  "user_observations": {
+    "display": "黑屏，无分辨率提示，无待机/无信号提示",
+    "programmer_log": null,
+    "D0_D1": null,
+    "keys_pressed": null
+  },
+  "related_evidence": [
+    "observations/structured/H1_DISPLAY_BASELINE-20261013-154958.json (031: 先识别分辨率，后无信号/待机，全程无画面；官方 HDMI 彩条正常)",
+    "observations/structured/H2-CAMERA-V7-20261013-160722.json (官方 v7: led[0] 在 GPIOR_27/P13，用户见 D0 持续闪烁；画面为彩色噪点、对镜头遮挡无反应)"
+  ],
+  "analysis": {
+    "build_difference_031_vs_refine": "peri.cdo 逐字节相同，接口/引脚/PLL 报告仅日期不同；HDMI 相关硬件配置一致，差别只在内部逻辑 C1-C5",
+    "pin_evidence": "v7 只驱动 led[0]=GPIOR_27=cal_done?cnt[24]:0，用户见 D0 闪烁 => P13 物理连接 D0 指示灯（说明书表格一派正确，与原理图 Sheet 6 文字层相反）",
+    "leading_hypothesis": "031/REFINE 的 i_arstn 在 P13（D0 三极管基极网络，仅靠内部弱上拉），电平处于阈值附近；四个 PLL 复位都接 i_arstn，读成 0 或抖动时 HDMI 时钟消失。可解释 031 先识别后失锁、REFINE 始终无信号。",
+    "hypothesis_status": "推断，未经修正版实物验证",
+    "secondary_issue": "官方 v7 摄像头取景也失败，摄像头链路独立待查；修正引脚后本设计可能仍为黑屏（有同步、无帧）"
+  },
+  "hardware_status": "REWORK_REQUIRED",
+  "display_acceptance": "NOT_PASSED",
+  "formal_database_updated": false,
+  "formal_project_state_updated": false
+}

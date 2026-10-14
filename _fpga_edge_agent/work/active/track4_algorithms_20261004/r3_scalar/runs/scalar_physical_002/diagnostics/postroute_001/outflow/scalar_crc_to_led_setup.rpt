@@ -1,0 +1,82 @@
+
+Efinix report_timing Report
+Version: 2026.1.132
+Date: Tue Oct  6 12:22:58 2026
+
+Copyright (C) 2013 - 2026 Efinix, Inc. All rights reserved.
+
+User command: foreach transition $transitions {
+ set name [lindex $transition 0]
+ set starts [get_pins -regexp [lindex $transition 1]]
+ set ends [get_pins -regexp [lindex $transition 2]]
+ puts "DATA_${name}_SOURCE_COUNT=[llength $starts]"
+ puts "DATA_${name}_DEST_COUNT=[llength $ends]"
+ if {[llength $starts]==0 || [llength $ends]==0} {error "Data endpoint collection empty"}
+ report_timing -setup -from $starts -to $ends -npaths 8 -nworst 1 -file scalar_${name}_setup.rpt
+ report_timing -hold -from $starts -to $ends -npaths 8 -nworst 1 -file scalar_${name}_hold.rpt
+}
+
+Timing Model: I3
+	process : typical
+	temperature : -40C to 100C
+	voltage : 0.95 +/-30mV
+	speedgrade : 3
+	technology : t16ff
+	status : final
+
+Summary:
+
+ Path #  | Slack(ns) |       Start Pin        |  End Pin  |  Launch Clock   |  Capture Clock
+=============================================================================================
+ 1       |  39.456   | rolling_crc[31]~FF|CLK | led1~FF|D | core_25m (RISE) | core_25m (RISE)
+
+++++ Path 1 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 39.456 ns (required time - arrival time)                       
+Path Start      : rolling_crc[31]~FF|CLK                                         
+Path End        : led1~FF|D                                                      
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 0.415 ns                                                       
+Logic Levels    : 1                                                              
+
+Launch Clock Path Delay        : 2.065
++ Clock To Q + Data Path Delay : 0.415
+--------------------------------------
+End-of-path arrival time       : 2.480
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.003
+---------------------------------------
+End-of-path required time      : 41.936
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)    Netlist Resource(s)
+===========================================================================
+  (0,164)    input            0.000        0.000     clk_25m               
+  (0,164)    input            0.126        0.126     clk_25m               
+             net (fo=3733)    1.939        2.065     clk_25m               
+  (194,6)    EFX_FF           0.000        2.065     rolling_crc[31]~FF|CLK
+
+Data Path
+  Location    Delay Type    Incr(ns)     Path(ns)   Netlist Resource(s)
+========================================================================
+  (194,6)    EFX_FF (Tco)    0.130        0.130     rolling_crc[31]~FF|Q
+             net (fo=1)      0.224        0.354     rolling_crc[31]     
+  (194,17)   EFX_LUT4        0.061        0.415     LUT__23658|in[1]    
+  (194,17)   EFX_LUT4        0.000        0.415     LUT__23658|out      
+             net (fo=14)     0.000        0.415     n816                
+  (194,17)   EFX_FF          0.000        0.415     led1~FF|D           
+
+Capture Clock Path
+  Location     Delay Type     Incr(ns)     Path(ns)   Netlist Resource(s)
+=========================================================================
+  (0,164)    input              0.000       0.000         clk_25m    
+  (0,164)    input              0.126       0.126         clk_25m    
+             net (fo=3733)      1.939       2.065         clk_25m    
+  (194,17)   EFX_FF             0.000       2.065         led1~FF|CLK
+  (194,17)   EFX_FF (Setup)    -0.003       2.062         led1~FF    
+

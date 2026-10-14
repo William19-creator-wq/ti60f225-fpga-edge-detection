@@ -1,0 +1,37 @@
+version: "1.0"
+capabilities:
+  - id: CAP-LOCAL-READ
+    name: workspace_read
+    type: local_read
+    status: active
+    side_effect_level: none
+    requires_approval: false
+  - id: CAP-LOCAL-CONTROL-PLANE-WRITE
+    name: control_plane_write
+    type: local_write
+    status: active
+    scope: _fpga_edge_agent
+    requires_approval: false
+  - id: CAP-EFINITY-BUILD
+    name: efinity_build
+    type: local_command
+    status: approval_required
+    requires_approval: true
+    side_effect_level: build_output
+    fallback: stop_and_report
+  - id: CAP-POSTGRES
+    name: postgresql_runtime
+    type: database
+    status: unavailable_until_configured
+    connection_env: FPGA_AGENT_DATABASE_URL
+    requires_approval: true
+  - id: CAP-HARDWARE-PROGRAM
+    name: hardware_programming
+    type: device_write
+    status: forbidden_to_agent
+    requires_approval: true
+  - id: CAP-EXTERNAL-TOOL
+    name: external_tool_installation
+    type: install_or_download
+    status: forbidden_until_approved
+    requires_approval: true

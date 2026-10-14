@@ -1,0 +1,209 @@
+// SC01…05：真实8块同步RAM、4way/32set；已提出64B RPC直到真实排空才能终结。
+module canny_state_cache #(
+    parameter integer unsigned WIDTH=1920,HEIGHT=1080
+)(
+    input logic clk,rst,
+    input logic cfg_valid,output wire cfg_ready,input logic [31:0] cfg_base,input logic [63:0] cfg_job_id,
+    output wire cfg_rsp_valid,input logic cfg_rsp_ready,output logic cfg_rsp_error,
+    input logic abort_private_valid,input logic [63:0] abort_job_id,
+    input logic req_valid,output wire req_ready,input logic [1:0] req_op,input logic [20:0] req_index,
+    output wire rsp_valid,input logic rsp_ready,output logic [1:0] rsp_old,output logic rsp_claimed,rsp_error,rsp_aborted,
+    output wire claim_valid,input logic claim_ready,output wire [20:0] claim_index,
+    output wire line_req_valid,input logic line_req_ready,
+    output logic line_write,output logic [31:0] line_addr,output wire [511:0] line_wdata,
+    input logic line_rsp_valid,output wire line_rsp_ready,input logic [511:0] line_rdata,
+    input logic line_error,line_drained,output wire quarantined,
+    output wire [63:0] active_job_id
+);
+    localparam integer unsigned N=WIDTH*HEIGHT;
+    localparam logic [32:0] ALLOCATION=33'(((N+255)/256)*64);
+    typedef enum logic [3:0] {
+        IDLE,CFG_REPLY,LOOKUP,WORD_READ,WORD_CAPTURE,CHECK,CLAIM,REPLY,
+        WB_READ,WB_CAPTURE,MEM_REQUEST,MEM_WAIT,FILL_INSTALL,FLUSH_SCAN,QUARANTINE
+    } state_t;
+    state_t state;
+    logic configured,faulted,abort_sticky;
+    logic [31:0] base;
+    logic [63:0] job_id;
+    logic [7:0] tags[0:3][0:31];
+    logic valid[0:3][0:31],dirty[0:3][0:31];
+    logic [2:0] plru[0:31];
+    logic [1:0] operation,selected_way;
+    logic [20:0] index;
+    logic [4:0] selected_set,transfer_word;
+    logic [7:0] requested_tag;
+    logic [15:0] old_word;
+    logic [511:0] line_buffer;
+    logic flush_mode;
+    logic [6:0] flush_position;
+    logic [15:0] ram_q[0:3][0:1];
+    logic ram_re[0:3][0:1],ram_we[0:3][0:1];
+    logic [8:0] ram_address;
+    logic [15:0] ram_data;
+    logic [2:0] hit_count;
+    logic [1:0] hit_way,victim_way;
+    logic invalid_found;
+    wire [1:0] old_state=old_word[{index[2:0],1'b0}+:2];
+    logic [15:0] claimed_word;
+    wire [32:0] cfg_end={1'b0,cfg_base}+ALLOCATION;
+    wire cfg_legal=cfg_base[5:0]==0 && cfg_end<=33'h100000000;
+    wire matching_abort=abort_private_valid && configured && abort_job_id==job_id;
+    wire abort_requested=abort_sticky || matching_abort;
+    assign cfg_ready=!rst && state==IDLE && !configured;
+    assign cfg_rsp_valid=!rst && state==CFG_REPLY;
+    assign req_ready=!rst && state==IDLE && configured;
+    assign rsp_valid=!rst && state==REPLY;
+    assign claim_valid=!rst && state==CLAIM;
+    assign claim_index=index;
+    assign line_req_valid=!rst && state==MEM_REQUEST;
+    assign line_rsp_ready=!rst && state==MEM_WAIT;
+    assign line_wdata=line_buffer;
+    assign quarantined=state==QUARANTINE;
+    assign active_job_id=job_id;
+    initial if(WIDTH<6 || WIDTH>1920 || WIDTH%2!=0 || HEIGHT<5 || HEIGHT>1080)
+        $fatal(1,"Unsupported state cache geometry");
+
+    for(genvar w=0;w<4;w++)begin:way
+        for(genvar b=0;b<2;b++)begin:bank
+            state_cache_ram16 storage(.clk(clk),.re(ram_re[w][b]),.we(ram_we[w][b]),
+                .address(ram_address),.data(ram_data),.q(ram_q[w][b]));
+        end
+    end
+    always_comb begin
+        hit_count=0;hit_way=0;invalid_found=0;
+        victim_way=plru[index[12:8]][0] ? {1'b1,plru[index[12:8]][2]} : {1'b0,plru[index[12:8]][1]};
+        for(integer w=0;w<4;w++)begin
+            if(valid[w][index[12:8]] && tags[w][index[12:8]]==index[20:13])begin
+                hit_count=hit_count+3'd1;hit_way=2'(w);
+            end
+            if(!valid[w][index[12:8]] && !invalid_found)begin victim_way=2'(w);invalid_found=1;end
+        end
+        claimed_word=old_word;claimed_word[{index[2:0],1'b0}+:2]=2'b11;
+        for(integer w=0;w<4;w++)for(integer b=0;b<2;b++)begin ram_re[w][b]=0;ram_we[w][b]=0;end
+        ram_address={selected_set[3:0],index[7:3]};ram_data=claimed_word;
+        if(!rst)case(state)
+            WORD_READ:if(!abort_requested)ram_re[selected_way][selected_set[4]]=1;
+            WB_READ:begin ram_address={selected_set[3:0],transfer_word};if(!abort_requested)ram_re[selected_way][selected_set[4]]=1;end
+            FILL_INSTALL:begin
+                ram_address={selected_set[3:0],transfer_word};ram_data=line_buffer[transfer_word*16+:16];
+                if(!abort_requested)ram_we[selected_way][selected_set[4]]=1;
+            end
+            CLAIM:if(claim_ready)ram_we[selected_way][selected_set[4]]=1;
+            default:begin end
+        endcase
+    end
+    task automatic touch(input logic [4:0] set_number,input logic [1:0] way_number);
+        begin
+            plru[set_number][0]<=!way_number[1];
+            if(way_number[1])plru[set_number][2]<=!way_number[0];else plru[set_number][1]<=!way_number[0];
+        end
+    endtask
+    task automatic reply(input logic [1:0] old_value,input logic did_claim,input logic error_value);
+        begin rsp_old<=old_value;rsp_claimed<=did_claim;rsp_error<=error_value;rsp_aborted<=0;state<=REPLY;end
+    endtask
+    task automatic start_line(input logic writing,input logic [12:0] line_number);
+        logic [32:0] address;
+        begin
+            address={1'b0,base}+({20'd0,line_number}<<6);
+            if(address+33'd64>{1'b0,base}+ALLOCATION || address[32])begin faulted<=1;reply(0,0,1);end
+            else begin line_write<=writing;line_addr<=address[31:0];state<=MEM_REQUEST;end
+        end
+    endtask
+    task automatic finish_flush;
+        begin
+            for(integer w=0;w<4;w++)for(integer s=0;s<32;s++)begin valid[w][s]<=0;dirty[w][s]<=0;end
+            configured<=0;reply(0,0,faulted);
+        end
+    endtask
+    task automatic next_flush;
+        begin
+            if(flush_position==127)finish_flush();
+            else begin flush_position<=flush_position+7'd1;state<=FLUSH_SCAN;end
+        end
+    endtask
+    always_ff @(posedge clk)begin
+        if(rst)begin
+            state<=IDLE;configured<=0;faulted<=0;abort_sticky<=0;base<=0;job_id<=0;cfg_rsp_error<=0;
+            rsp_old<=0;rsp_claimed<=0;rsp_error<=0;rsp_aborted<=0;line_write<=0;line_addr<=0;flush_mode<=0;
+            index<=0;selected_way<=0;selected_set<=0;
+            for(integer w=0;w<4;w++)for(integer s=0;s<32;s++)begin tags[w][s]<=0;valid[w][s]<=0;dirty[w][s]<=0;end
+            for(integer s=0;s<32;s++)plru[s]<=0;
+        end else begin
+            if(matching_abort)abort_sticky<=1;
+            // 公开RPC不撤销；RAM旧预约capture后才终结；held回复也不重写。
+            if(abort_requested && state!=IDLE && state!=CFG_REPLY && state!=REPLY && state!=QUARANTINE &&
+               state!=MEM_REQUEST && state!=MEM_WAIT && state!=WORD_CAPTURE && state!=WB_CAPTURE &&
+               !(state==CLAIM && claim_ready))begin faulted<=1;reply(0,0,1);rsp_aborted<=1;end
+            else case(state)
+            IDLE:begin
+                if(cfg_valid && cfg_ready)begin
+                    base<=cfg_base;job_id<=cfg_job_id;cfg_rsp_error<=!cfg_legal;
+                    configured<=cfg_legal;faulted<=0;abort_sticky<=0;
+                    for(integer w=0;w<4;w++)for(integer s=0;s<32;s++)begin valid[w][s]<=0;dirty[w][s]<=0;end
+                    for(integer s=0;s<32;s++)plru[s]<=0;
+                    state<=CFG_REPLY;
+                end else if(req_valid && req_ready)begin
+                    operation<=req_op;index<=req_index;flush_mode<=req_op==3;
+                    if(req_op==3)begin
+                        if(req_index!=0)reply(0,0,1);
+                        else if(faulted || abort_requested)begin
+                            configured<=0;
+                            for(integer w=0;w<4;w++)for(integer s=0;s<32;s++)begin valid[w][s]<=0;dirty[w][s]<=0;end
+                            reply(0,0,1);rsp_aborted<=abort_requested;
+                        end
+                        else begin flush_position<=0;state<=FLUSH_SCAN;end
+                    end else if(req_index>=21'(N) || faulted || abort_requested)begin reply(0,0,1);rsp_aborted<=abort_requested;end
+                    else state<=LOOKUP;
+                end
+            end
+            CFG_REPLY:if(cfg_rsp_ready)state<=IDLE;
+            LOOKUP:begin
+                selected_set<=index[12:8];requested_tag<=index[20:13];
+                if(hit_count>1)begin faulted<=1;reply(0,0,1);end
+                else if(hit_count==1)begin selected_way<=hit_way;touch(index[12:8],hit_way);state<=WORD_READ;end
+                else begin
+                    selected_way<=victim_way;
+                    if(valid[victim_way][index[12:8]] && dirty[victim_way][index[12:8]])begin transfer_word<=0;state<=WB_READ;end
+                    else begin valid[victim_way][index[12:8]]<=0;start_line(0,index[20:8]);end
+                end
+            end
+            WORD_READ:state<=WORD_CAPTURE;
+            WORD_CAPTURE:begin old_word<=ram_q[selected_way][selected_set[4]];state<=CHECK;end
+            CHECK:if((operation==1 && old_state==2) || (operation==2 && old_state==1))state<=CLAIM;
+                else reply(old_state,0,0);
+            CLAIM:if(claim_ready)begin dirty[selected_way][selected_set]<=1;reply(old_state,1,0);end
+            REPLY:if(rsp_ready)state<=IDLE;
+            WB_READ:state<=WB_CAPTURE;
+            WB_CAPTURE:begin
+                line_buffer[transfer_word*16+:16]<=ram_q[selected_way][selected_set[4]];
+                if(abort_requested)begin faulted<=1;reply(0,0,1);rsp_aborted<=1;end
+                else if(transfer_word==31)start_line(1,{tags[selected_way][selected_set],selected_set});
+                else begin transfer_word<=transfer_word+5'd1;state<=WB_READ;end
+            end
+            MEM_REQUEST:if(line_req_ready)state<=MEM_WAIT;
+            MEM_WAIT:if(line_rsp_valid && line_rsp_ready)begin
+                if(!line_drained)state<=QUARANTINE;
+                else if(line_error)begin faulted<=1;reply(0,0,1);end
+                else if(abort_requested)begin faulted<=1;reply(0,0,1);rsp_aborted<=1;end
+                else if(line_write)begin
+                    dirty[selected_way][selected_set]<=0;
+                    if(flush_mode)next_flush();
+                    else begin valid[selected_way][selected_set]<=0;start_line(0,{requested_tag,selected_set});end
+                end else begin line_buffer<=line_rdata;transfer_word<=0;state<=FILL_INSTALL;end
+            end
+            FILL_INSTALL:if(transfer_word==31)begin
+                tags[selected_way][selected_set]<=requested_tag;valid[selected_way][selected_set]<=1;
+                dirty[selected_way][selected_set]<=0;touch(selected_set,selected_way);state<=WORD_READ;
+            end else transfer_word<=transfer_word+5'd1;
+            FLUSH_SCAN:begin
+                selected_set<=flush_position[6:2];selected_way<=flush_position[1:0];
+                if(valid[flush_position[1:0]][flush_position[6:2]] && dirty[flush_position[1:0]][flush_position[6:2]])begin
+                    transfer_word<=0;state<=WB_READ;
+                end else next_flush();
+            end
+            QUARANTINE:begin end // 保留旧上下文；只有外部证明安全的共同rst允许恢复。
+            default:begin faulted<=1;reply(0,0,1);end
+            endcase
+        end
+    end
+endmodule

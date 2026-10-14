@@ -1,0 +1,1660 @@
+
+Efinix report_timing Report
+Version: 2026.1.132
+Date: Tue Oct  6 02:43:15 2026
+
+Copyright (C) 2013 - 2026 Efinix, Inc. All rights reserved.
+
+User command: report_timing -setup -from $q2 -to $core_ff -npaths 12 -nworst 1 -file r2_q2_to_core_setup.rpt
+
+Timing Model: I3
+	process : typical
+	temperature : -40C to 100C
+	voltage : 0.95 +/-30mV
+	speedgrade : 3
+	technology : t16ff
+	status : final
+
+Summary:
+
+ Path #  | Slack(ns) |                 Start Pin                 |                  End Pin                   |  Launch Clock   |  Capture Clock
+=================================================================================================================================================
+  1      |  30.637   | reset_adapter/reset_release_stage2~FF|CLK | stream/controller/first_location[11]~FF|D  | core_25m (RISE) | core_25m (RISE)
+  2      |  30.675   | reset_adapter/reset_release_stage2~FF|CLK | stream/controller/first_location[3]~FF|D   | core_25m (RISE) | core_25m (RISE)
+  3      |  30.736   | reset_adapter/reset_release_stage2~FF|CLK | stream/controller/first_location[19]~FF|D  | core_25m (RISE) | core_25m (RISE)
+  4      |  30.786   | reset_adapter/reset_release_stage2~FF|CLK | stream/controller/first_location[22]~FF|D  | core_25m (RISE) | core_25m (RISE)
+  5      |  30.841   | reset_adapter/reset_release_stage2~FF|CLK | stream/controller/first_location[7]~FF|D   | core_25m (RISE) | core_25m (RISE)
+  6      |  30.847   | reset_adapter/reset_release_stage2~FF|CLK | stream/controller/first_location[18]~FF|CE | core_25m (RISE) | core_25m (RISE)
+  7      |  30.863   | reset_adapter/reset_release_stage2~FF|CLK | stream/controller/first_location[16]~FF|D  | core_25m (RISE) | core_25m (RISE)
+  8      |  30.864   | reset_adapter/reset_release_stage2~FF|CLK | stream/controller/first_location[8]~FF|D   | core_25m (RISE) | core_25m (RISE)
+  9      |  30.869   | reset_adapter/reset_release_stage2~FF|CLK | stream/controller/first_location[9]~FF|D   | core_25m (RISE) | core_25m (RISE)
+ 10      |  30.873   | reset_adapter/reset_release_stage2~FF|CLK | stream/controller/first_location[18]~FF|D  | core_25m (RISE) | core_25m (RISE)
+ 11      |  30.898   | reset_adapter/reset_release_stage2~FF|CLK | stream/controller/first_location[21]~FF|D  | core_25m (RISE) | core_25m (RISE)
+ 12      |  30.912   | reset_adapter/reset_release_stage2~FF|CLK | stream/controller/first_location[17]~FF|D  | core_25m (RISE) | core_25m (RISE)
+
+++++ Path 1 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 30.637 ns (required time - arrival time)                       
+Path Start      : reset_adapter/reset_release_stage2~FF|CLK                      
+Path End        : stream/controller/first_location[11]~FF|D                      
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 9.234 ns                                                       
+Logic Levels    : 33                                                             
+
+Launch Clock Path Delay        :  2.065
++ Clock To Q + Data Path Delay :  9.234
+---------------------------------------
+End-of-path arrival time       : 11.299
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.003
+---------------------------------------
+End-of-path required time      : 41.936
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)              Netlist Resource(s)
+==============================================================================================
+ (0,164)     input            0.000        0.000     clk_25m                                  
+ (0,164)     input            0.126        0.126     clk_25m                                  
+             net (fo=5956)    1.939        2.065     clk_25m                                  
+ (154,111)   EFX_FF           0.000        2.065     reset_adapter/reset_release_stage2~FF|CLK
+
+Data Path
+  Location    Delay Type     Incr(ns)     Path(ns)              Netlist Resource(s)
+===============================================================================================
+ (154,111)   EFX_FF (Tco)     0.130        0.130     reset_adapter/reset_release_stage2~FF|Q   
+             net (fo=1335)    0.483        0.613     reset_adapter/reset_release_stage2        
+ (114,107)   EFX_LUT4         0.063        0.676     LUT__25653|in[3]                          
+ (114,107)   EFX_LUT4         0.000        0.676     LUT__25653|out                            
+             net (fo=5)       0.629        1.305     n11541                                    
+ (119,162)   EFX_LUT4         0.061        1.366     LUT__25655|in[0]                          
+ (119,162)   EFX_LUT4         0.000        1.366     LUT__25655|out                            
+             net (fo=4)       0.061        1.427     n11543                                    
+ (119,161)   EFX_LUT4         0.061        1.488     LUT__25657|in[1]                          
+ (119,161)   EFX_LUT4         0.000        1.488     LUT__25657|out                            
+             net (fo=3)       0.413        1.901     n11545                                    
+ (120,164)   EFX_LUT4         0.063        1.964     LUT__25661|in[1]                          
+ (120,164)   EFX_LUT4         0.000        1.964     LUT__25661|out                            
+             net (fo=8)       0.061        2.025     n11549                                    
+ (120,163)   EFX_LUT4         0.063        2.088     LUT__25677|in[0]                          
+ (120,163)   EFX_LUT4         0.000        2.088     LUT__25677|out                            
+             net (fo=7)       0.537        2.625     n11555                                    
+ (76,118)    EFX_LUT4         0.061        2.686     LUT__25694|in[0]                          
+ (76,118)    EFX_LUT4         0.000        2.686     LUT__25694|out                            
+             net (fo=130)     0.061        2.747     stream/gaussian/advance                   
+ (76,117)    EFX_LUT4         0.061        2.808     LUT__25696|in[0]                          
+ (76,117)    EFX_LUT4         0.000        2.808     LUT__25696|out                            
+             net (fo=68)      0.455        3.263     stream/frontend/output_fire               
+ (106,91)    EFX_LUT4         0.061        3.324     LUT__25698|in[0]                          
+ (106,91)    EFX_LUT4         0.000        3.324     LUT__25698|out                            
+             net (fo=23)      0.159        3.483     stream/controller/n19762                  
+ (111,91)    EFX_ADD          0.055        3.538     stream/controller/add_64/i1|I1            
+ (111,91)    EFX_ADD          0.000        3.538     stream/controller/add_64/i1|CO            
+             net (fo=1)       0.000        3.538     stream/controller/add_64/n2               
+ (111,92)    EFX_ADD          0.025        3.563     stream/controller/add_64/i2|CI            
+ (111,92)    EFX_ADD          0.000        3.563     stream/controller/add_64/i2|CO            
+             net (fo=1)       0.000        3.563     stream/controller/add_64/n4               
+ (111,93)    EFX_ADD          0.025        3.588     stream/controller/add_64/i3|CI            
+ (111,93)    EFX_ADD          0.000        3.588     stream/controller/add_64/i3|CO            
+             net (fo=1)       0.000        3.588     stream/controller/add_64/n6               
+ (111,94)    EFX_ADD          0.025        3.613     stream/controller/add_64/i4|CI            
+ (111,94)    EFX_ADD          0.000        3.613     stream/controller/add_64/i4|CO            
+             net (fo=1)       0.000        3.613     stream/controller/add_64/n8               
+ (111,95)    EFX_ADD          0.025        3.638     stream/controller/add_64/i5|CI            
+ (111,95)    EFX_ADD          0.000        3.638     stream/controller/add_64/i5|CO            
+             net (fo=1)       0.000        3.638     stream/controller/add_64/n10              
+ (111,96)    EFX_ADD          0.025        3.663     stream/controller/add_64/i6|CI            
+ (111,96)    EFX_ADD          0.000        3.663     stream/controller/add_64/i6|CO            
+             net (fo=1)       0.000        3.663     stream/controller/add_64/n12              
+ (111,97)    EFX_ADD          0.025        3.688     stream/controller/add_64/i7|CI            
+ (111,97)    EFX_ADD          0.000        3.688     stream/controller/add_64/i7|CO            
+             net (fo=1)       0.000        3.688     stream/controller/add_64/n14              
+ (111,98)    EFX_ADD          0.025        3.713     stream/controller/add_64/i8|CI            
+ (111,98)    EFX_ADD          0.000        3.713     stream/controller/add_64/i8|CO            
+             net (fo=1)       0.000        3.713     stream/controller/add_64/n16              
+ (111,99)    EFX_ADD          0.025        3.738     stream/controller/add_64/i9|CI            
+ (111,99)    EFX_ADD          0.000        3.738     stream/controller/add_64/i9|CO            
+             net (fo=1)       0.000        3.738     stream/controller/add_64/n18              
+ (111,100)   EFX_ADD          0.025        3.763     stream/controller/add_64/i10|CI           
+ (111,100)   EFX_ADD          0.000        3.763     stream/controller/add_64/i10|CO           
+             net (fo=1)       0.000        3.763     stream/controller/add_64/n20              
+ (111,101)   EFX_ADD          0.025        3.788     stream/controller/add_64/i11|CI           
+ (111,101)   EFX_ADD          0.000        3.788     stream/controller/add_64/i11|CO           
+             net (fo=1)       0.000        3.788     stream/controller/add_64/n22              
+ (111,102)   EFX_ADD          0.025        3.813     stream/controller/add_64/i12|CI           
+ (111,102)   EFX_ADD          0.000        3.813     stream/controller/add_64/i12|CO           
+             net (fo=1)       0.000        3.813     stream/controller/add_64/n24              
+ (111,103)   EFX_ADD          0.025        3.838     stream/controller/add_64/i13|CI           
+ (111,103)   EFX_ADD          0.000        3.838     stream/controller/add_64/i13|CO           
+             net (fo=1)       0.000        3.838     stream/controller/add_64/n26              
+ (111,104)   EFX_ADD          0.025        3.863     stream/controller/add_64/i14|CI           
+ (111,104)   EFX_ADD          0.000        3.863     stream/controller/add_64/i14|CO           
+             net (fo=1)       0.000        3.863     stream/controller/add_64/n28              
+ (111,105)   EFX_ADD          0.097        3.960     stream/controller/add_64/i15|CI           
+ (111,105)   EFX_ADD          0.000        3.960     stream/controller/add_64/i15|O            
+             net (fo=3)       0.381        4.341     stream/controller/counts_after_fire[1][14]
+ (112,110)   EFX_LUT4         0.061        4.402     LUT__25864|in[3]                          
+ (112,110)   EFX_LUT4         0.000        4.402     LUT__25864|out                            
+             net (fo=1)       0.333        4.735     n11722                                    
+ (112,113)   EFX_LUT4         0.061        4.796     LUT__25867|in[1]                          
+ (112,113)   EFX_LUT4         0.000        4.796     LUT__25867|out                            
+             net (fo=1)       0.405        5.201     n11725                                    
+ (107,115)   EFX_LUT4         0.061        5.262     LUT__25868|in[3]                          
+ (107,115)   EFX_LUT4         0.000        5.262     LUT__25868|out                            
+             net (fo=1)       0.271        5.533     n11726                                    
+ (99,115)    EFX_LUT4         0.063        5.596     LUT__25876|in[0]                          
+ (99,115)    EFX_LUT4         0.000        5.596     LUT__25876|out                            
+             net (fo=1)       0.061        5.657     n11734                                    
+ (99,114)    EFX_LUT4         0.063        5.720     LUT__25880|in[0]                          
+ (99,114)    EFX_LUT4         0.000        5.720     LUT__25880|out                            
+             net (fo=7)       0.243        5.963     n11737                                    
+ (94,110)    EFX_LUT4         0.061        6.024     LUT__26319|in[0]                          
+ (94,110)    EFX_LUT4         0.000        6.024     LUT__26319|out                            
+             net (fo=2)       0.373        6.397     n12174                                    
+ (90,105)    EFX_LUT4         0.063        6.460     LUT__26320|in[3]                          
+ (90,105)    EFX_LUT4         0.000        6.460     LUT__26320|out                            
+             net (fo=38)      1.010        7.470     stream/controller/n13050                  
+ (86,116)    EFX_LUT4         0.061        7.531     LUT__26347|in[1]                          
+ (86,116)    EFX_LUT4         0.000        7.531     LUT__26347|out                            
+             net (fo=23)      1.274        8.805     n12194                                    
+ (83,146)    EFX_LUT4         0.061        8.866     LUT__26655|in[0]                          
+ (83,146)    EFX_LUT4         0.000        8.866     LUT__26655|out                            
+             net (fo=1)       0.305        9.171     n12423                                    
+ (84,141)    EFX_LUT4         0.063        9.234     LUT__26656|in[3]                          
+ (84,141)    EFX_LUT4         0.000        9.234     LUT__26656|out                            
+             net (fo=1)       0.000        9.234     stream/controller/chosen_location[11]     
+ (84,141)    EFX_FF           0.000        9.234     stream/controller/first_location[11]~FF|D 
+
+Capture Clock Path
+  Location     Delay Type     Incr(ns)     Path(ns)               Netlist Resource(s)
+=================================================================================================
+  (0,164)    input              0.000       0.000     clk_25m                                    
+  (0,164)    input              0.126       0.126     clk_25m                                    
+             net (fo=5956)      1.939       2.065     clk_25m                                    
+  (84,141)   EFX_FF             0.000       2.065     stream/controller/first_location[11]~FF|CLK
+  (84,141)   EFX_FF (Setup)    -0.003       2.062     stream/controller/first_location[11]~FF    
+
+++++ Path 2 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 30.675 ns (required time - arrival time)                       
+Path Start      : reset_adapter/reset_release_stage2~FF|CLK                      
+Path End        : stream/controller/first_location[3]~FF|D                       
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 9.196 ns                                                       
+Logic Levels    : 24                                                             
+
+Launch Clock Path Delay        :  2.065
++ Clock To Q + Data Path Delay :  9.196
+---------------------------------------
+End-of-path arrival time       : 11.261
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.003
+---------------------------------------
+End-of-path required time      : 41.936
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)              Netlist Resource(s)
+==============================================================================================
+ (0,164)     input            0.000        0.000     clk_25m                                  
+ (0,164)     input            0.126        0.126     clk_25m                                  
+             net (fo=5956)    1.939        2.065     clk_25m                                  
+ (154,111)   EFX_FF           0.000        2.065     reset_adapter/reset_release_stage2~FF|CLK
+
+Data Path
+  Location    Delay Type     Incr(ns)     Path(ns)              Netlist Resource(s)
+==============================================================================================
+ (154,111)   EFX_FF (Tco)     0.130        0.130     reset_adapter/reset_release_stage2~FF|Q  
+             net (fo=1335)    0.483        0.613     reset_adapter/reset_release_stage2       
+ (114,107)   EFX_LUT4         0.063        0.676     LUT__25653|in[3]                         
+ (114,107)   EFX_LUT4         0.000        0.676     LUT__25653|out                           
+             net (fo=5)       0.642        1.318     n11541                                   
+ (119,166)   EFX_LUT4         0.061        1.379     LUT__25659|in[0]                         
+ (119,166)   EFX_LUT4         0.000        1.379     LUT__25659|out                           
+             net (fo=2)       0.334        1.713     n11547                                   
+ (121,171)   EFX_LUT4         0.061        1.774     LUT__25710|in[0]                         
+ (121,171)   EFX_LUT4         0.000        1.774     LUT__25710|out                           
+             net (fo=2)       0.061        1.835     n11573                                   
+ (121,170)   EFX_LUT4         0.061        1.896     LUT__25711|in[1]                         
+ (121,170)   EFX_LUT4         0.000        1.896     LUT__25711|out                           
+             net (fo=15)      0.951        2.847     stream/event_fire[7]                     
+ (141,99)    EFX_LUT4         0.063        2.910     LUT__25712|in[0]                         
+ (141,99)    EFX_LUT4         0.000        2.910     LUT__25712|out                           
+             net (fo=24)      0.724        3.634     stream/controller/n28720                 
+ (141,73)    EFX_ADD          0.055        3.689     stream/controller/add_82/i1|I1           
+ (141,73)    EFX_ADD          0.000        3.689     stream/controller/add_82/i1|CO           
+             net (fo=1)       0.000        3.689     stream/controller/add_82/n2              
+ (141,74)    EFX_ADD          0.025        3.714     stream/controller/add_82/i2|CI           
+ (141,74)    EFX_ADD          0.000        3.714     stream/controller/add_82/i2|CO           
+             net (fo=1)       0.000        3.714     stream/controller/add_82/n4              
+ (141,75)    EFX_ADD          0.025        3.739     stream/controller/add_82/i3|CI           
+ (141,75)    EFX_ADD          0.000        3.739     stream/controller/add_82/i3|CO           
+             net (fo=1)       0.000        3.739     stream/controller/add_82/n6              
+ (141,76)    EFX_ADD          0.025        3.764     stream/controller/add_82/i4|CI           
+ (141,76)    EFX_ADD          0.000        3.764     stream/controller/add_82/i4|CO           
+             net (fo=1)       0.000        3.764     stream/controller/add_82/n8              
+ (141,77)    EFX_ADD          0.025        3.789     stream/controller/add_82/i5|CI           
+ (141,77)    EFX_ADD          0.000        3.789     stream/controller/add_82/i5|CO           
+             net (fo=1)       0.000        3.789     stream/controller/add_82/n10             
+ (141,78)    EFX_ADD          0.097        3.886     stream/controller/add_82/i6|CI           
+ (141,78)    EFX_ADD          0.000        3.886     stream/controller/add_82/i6|O            
+             net (fo=2)       0.487        4.373     stream/controller/counts_after_fire[7][5]
+ (136,94)    EFX_LUT4         0.061        4.434     LUT__25944|in[1]                         
+ (136,94)    EFX_LUT4         0.000        4.434     LUT__25944|out                           
+             net (fo=1)       0.211        4.645     n11801                                   
+ (137,94)    EFX_LUT4         0.061        4.706     LUT__25945|in[3]                         
+ (137,94)    EFX_LUT4         0.000        4.706     LUT__25945|out                           
+             net (fo=1)       0.061        4.767     n11802                                   
+ (137,93)    EFX_LUT4         0.061        4.828     LUT__25946|in[0]                         
+ (137,93)    EFX_LUT4         0.000        4.828     LUT__25946|out                           
+             net (fo=1)       0.061        4.889     n11803                                   
+ (137,92)    EFX_LUT4         0.061        4.950     LUT__25949|in[0]                         
+ (137,92)    EFX_LUT4         0.000        4.950     LUT__25949|out                           
+             net (fo=1)       0.061        5.011     n11806                                   
+ (137,91)    EFX_LUT4         0.061        5.072     LUT__25950|in[0]                         
+ (137,91)    EFX_LUT4         0.000        5.072     LUT__25950|out                           
+             net (fo=2)       0.579        5.651     n11807                                   
+ (85,101)    EFX_LUT4         0.061        5.712     LUT__25959|in[0]                         
+ (85,101)    EFX_LUT4         0.000        5.712     LUT__25959|out                           
+             net (fo=3)       0.095        5.807     n11816                                   
+ (85,104)    EFX_LUT4         0.061        5.868     LUT__25960|in[3]                         
+ (85,104)    EFX_LUT4         0.000        5.868     LUT__25960|out                           
+             net (fo=3)       0.385        6.253     n11817                                   
+ (85,119)    EFX_LUT4         0.061        6.314     LUT__26333|in[0]                         
+ (85,119)    EFX_LUT4         0.000        6.314     LUT__26333|out                           
+             net (fo=3)       0.061        6.375     n12181                                   
+ (85,118)    EFX_LUT4         0.061        6.436     LUT__26338|in[2]                         
+ (85,118)    EFX_LUT4         0.000        6.436     LUT__26338|out                           
+             net (fo=1)       0.110        6.546     n12186                                   
+ (86,118)    EFX_LUT4         0.061        6.607     LUT__26341|in[1]                         
+ (86,118)    EFX_LUT4         0.000        6.607     LUT__26341|out                           
+             net (fo=13)      0.592        7.199     n12189                                   
+ (86,114)    EFX_LUT4         0.061        7.260     LUT__26352|in[2]                         
+ (86,114)    EFX_LUT4         0.000        7.260     LUT__26352|out                           
+             net (fo=10)      0.061        7.321     n12198                                   
+ (86,113)    EFX_LUT4         0.061        7.382     LUT__26353|in[1]                         
+ (86,113)    EFX_LUT4         0.000        7.382     LUT__26353|out                           
+             net (fo=15)      1.753        9.135     n12199                                   
+ (85,120)    EFX_LUT4         0.061        9.196     LUT__26511|in[2]                         
+ (85,120)    EFX_LUT4         0.000        9.196     LUT__26511|out                           
+             net (fo=1)       0.000        9.196     stream/controller/chosen_location[3]     
+ (85,120)    EFX_FF           0.000        9.196     stream/controller/first_location[3]~FF|D 
+
+Capture Clock Path
+  Location     Delay Type     Incr(ns)     Path(ns)              Netlist Resource(s)
+================================================================================================
+  (0,164)    input              0.000       0.000     clk_25m                                   
+  (0,164)    input              0.126       0.126     clk_25m                                   
+             net (fo=5956)      1.939       2.065     clk_25m                                   
+  (85,120)   EFX_FF             0.000       2.065     stream/controller/first_location[3]~FF|CLK
+  (85,120)   EFX_FF (Setup)    -0.003       2.062     stream/controller/first_location[3]~FF    
+
+++++ Path 3 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 30.736 ns (required time - arrival time)                       
+Path Start      : reset_adapter/reset_release_stage2~FF|CLK                      
+Path End        : stream/controller/first_location[19]~FF|D                      
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 9.135 ns                                                       
+Logic Levels    : 34                                                             
+
+Launch Clock Path Delay        :  2.065
++ Clock To Q + Data Path Delay :  9.135
+---------------------------------------
+End-of-path arrival time       : 11.200
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.003
+---------------------------------------
+End-of-path required time      : 41.936
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)              Netlist Resource(s)
+==============================================================================================
+ (0,164)     input            0.000        0.000     clk_25m                                  
+ (0,164)     input            0.126        0.126     clk_25m                                  
+             net (fo=5956)    1.939        2.065     clk_25m                                  
+ (154,111)   EFX_FF           0.000        2.065     reset_adapter/reset_release_stage2~FF|CLK
+
+Data Path
+  Location    Delay Type     Incr(ns)     Path(ns)              Netlist Resource(s)
+===============================================================================================
+ (154,111)   EFX_FF (Tco)     0.130        0.130     reset_adapter/reset_release_stage2~FF|Q   
+             net (fo=1335)    0.483        0.613     reset_adapter/reset_release_stage2        
+ (114,107)   EFX_LUT4         0.063        0.676     LUT__25653|in[3]                          
+ (114,107)   EFX_LUT4         0.000        0.676     LUT__25653|out                            
+             net (fo=5)       0.629        1.305     n11541                                    
+ (119,162)   EFX_LUT4         0.061        1.366     LUT__25655|in[0]                          
+ (119,162)   EFX_LUT4         0.000        1.366     LUT__25655|out                            
+             net (fo=4)       0.061        1.427     n11543                                    
+ (119,161)   EFX_LUT4         0.061        1.488     LUT__25657|in[1]                          
+ (119,161)   EFX_LUT4         0.000        1.488     LUT__25657|out                            
+             net (fo=3)       0.413        1.901     n11545                                    
+ (120,164)   EFX_LUT4         0.063        1.964     LUT__25661|in[1]                          
+ (120,164)   EFX_LUT4         0.000        1.964     LUT__25661|out                            
+             net (fo=8)       0.061        2.025     n11549                                    
+ (120,163)   EFX_LUT4         0.063        2.088     LUT__25677|in[0]                          
+ (120,163)   EFX_LUT4         0.000        2.088     LUT__25677|out                            
+             net (fo=7)       0.537        2.625     n11555                                    
+ (76,118)    EFX_LUT4         0.061        2.686     LUT__25694|in[0]                          
+ (76,118)    EFX_LUT4         0.000        2.686     LUT__25694|out                            
+             net (fo=130)     0.061        2.747     stream/gaussian/advance                   
+ (76,117)    EFX_LUT4         0.061        2.808     LUT__25696|in[0]                          
+ (76,117)    EFX_LUT4         0.000        2.808     LUT__25696|out                            
+             net (fo=68)      0.455        3.263     stream/frontend/output_fire               
+ (106,91)    EFX_LUT4         0.061        3.324     LUT__25698|in[0]                          
+ (106,91)    EFX_LUT4         0.000        3.324     LUT__25698|out                            
+             net (fo=23)      0.159        3.483     stream/controller/n19762                  
+ (111,91)    EFX_ADD          0.055        3.538     stream/controller/add_64/i1|I1            
+ (111,91)    EFX_ADD          0.000        3.538     stream/controller/add_64/i1|CO            
+             net (fo=1)       0.000        3.538     stream/controller/add_64/n2               
+ (111,92)    EFX_ADD          0.025        3.563     stream/controller/add_64/i2|CI            
+ (111,92)    EFX_ADD          0.000        3.563     stream/controller/add_64/i2|CO            
+             net (fo=1)       0.000        3.563     stream/controller/add_64/n4               
+ (111,93)    EFX_ADD          0.025        3.588     stream/controller/add_64/i3|CI            
+ (111,93)    EFX_ADD          0.000        3.588     stream/controller/add_64/i3|CO            
+             net (fo=1)       0.000        3.588     stream/controller/add_64/n6               
+ (111,94)    EFX_ADD          0.025        3.613     stream/controller/add_64/i4|CI            
+ (111,94)    EFX_ADD          0.000        3.613     stream/controller/add_64/i4|CO            
+             net (fo=1)       0.000        3.613     stream/controller/add_64/n8               
+ (111,95)    EFX_ADD          0.025        3.638     stream/controller/add_64/i5|CI            
+ (111,95)    EFX_ADD          0.000        3.638     stream/controller/add_64/i5|CO            
+             net (fo=1)       0.000        3.638     stream/controller/add_64/n10              
+ (111,96)    EFX_ADD          0.025        3.663     stream/controller/add_64/i6|CI            
+ (111,96)    EFX_ADD          0.000        3.663     stream/controller/add_64/i6|CO            
+             net (fo=1)       0.000        3.663     stream/controller/add_64/n12              
+ (111,97)    EFX_ADD          0.025        3.688     stream/controller/add_64/i7|CI            
+ (111,97)    EFX_ADD          0.000        3.688     stream/controller/add_64/i7|CO            
+             net (fo=1)       0.000        3.688     stream/controller/add_64/n14              
+ (111,98)    EFX_ADD          0.025        3.713     stream/controller/add_64/i8|CI            
+ (111,98)    EFX_ADD          0.000        3.713     stream/controller/add_64/i8|CO            
+             net (fo=1)       0.000        3.713     stream/controller/add_64/n16              
+ (111,99)    EFX_ADD          0.025        3.738     stream/controller/add_64/i9|CI            
+ (111,99)    EFX_ADD          0.000        3.738     stream/controller/add_64/i9|CO            
+             net (fo=1)       0.000        3.738     stream/controller/add_64/n18              
+ (111,100)   EFX_ADD          0.025        3.763     stream/controller/add_64/i10|CI           
+ (111,100)   EFX_ADD          0.000        3.763     stream/controller/add_64/i10|CO           
+             net (fo=1)       0.000        3.763     stream/controller/add_64/n20              
+ (111,101)   EFX_ADD          0.025        3.788     stream/controller/add_64/i11|CI           
+ (111,101)   EFX_ADD          0.000        3.788     stream/controller/add_64/i11|CO           
+             net (fo=1)       0.000        3.788     stream/controller/add_64/n22              
+ (111,102)   EFX_ADD          0.025        3.813     stream/controller/add_64/i12|CI           
+ (111,102)   EFX_ADD          0.000        3.813     stream/controller/add_64/i12|CO           
+             net (fo=1)       0.000        3.813     stream/controller/add_64/n24              
+ (111,103)   EFX_ADD          0.025        3.838     stream/controller/add_64/i13|CI           
+ (111,103)   EFX_ADD          0.000        3.838     stream/controller/add_64/i13|CO           
+             net (fo=1)       0.000        3.838     stream/controller/add_64/n26              
+ (111,104)   EFX_ADD          0.025        3.863     stream/controller/add_64/i14|CI           
+ (111,104)   EFX_ADD          0.000        3.863     stream/controller/add_64/i14|CO           
+             net (fo=1)       0.000        3.863     stream/controller/add_64/n28              
+ (111,105)   EFX_ADD          0.097        3.960     stream/controller/add_64/i15|CI           
+ (111,105)   EFX_ADD          0.000        3.960     stream/controller/add_64/i15|O            
+             net (fo=3)       0.381        4.341     stream/controller/counts_after_fire[1][14]
+ (112,110)   EFX_LUT4         0.061        4.402     LUT__25864|in[3]                          
+ (112,110)   EFX_LUT4         0.000        4.402     LUT__25864|out                            
+             net (fo=1)       0.333        4.735     n11722                                    
+ (112,113)   EFX_LUT4         0.061        4.796     LUT__25867|in[1]                          
+ (112,113)   EFX_LUT4         0.000        4.796     LUT__25867|out                            
+             net (fo=1)       0.405        5.201     n11725                                    
+ (107,115)   EFX_LUT4         0.061        5.262     LUT__25868|in[3]                          
+ (107,115)   EFX_LUT4         0.000        5.262     LUT__25868|out                            
+             net (fo=1)       0.271        5.533     n11726                                    
+ (99,115)    EFX_LUT4         0.063        5.596     LUT__25876|in[0]                          
+ (99,115)    EFX_LUT4         0.000        5.596     LUT__25876|out                            
+             net (fo=1)       0.061        5.657     n11734                                    
+ (99,114)    EFX_LUT4         0.063        5.720     LUT__25880|in[0]                          
+ (99,114)    EFX_LUT4         0.000        5.720     LUT__25880|out                            
+             net (fo=7)       0.243        5.963     n11737                                    
+ (94,110)    EFX_LUT4         0.061        6.024     LUT__26319|in[0]                          
+ (94,110)    EFX_LUT4         0.000        6.024     LUT__26319|out                            
+             net (fo=2)       0.373        6.397     n12174                                    
+ (90,105)    EFX_LUT4         0.063        6.460     LUT__26320|in[3]                          
+ (90,105)    EFX_LUT4         0.000        6.460     LUT__26320|out                            
+             net (fo=38)      1.083        7.543     stream/controller/n13050                  
+ (83,121)    EFX_LUT4         0.061        7.604     LUT__26354|in[0]                          
+ (83,121)    EFX_LUT4         0.000        7.604     LUT__26354|out                            
+             net (fo=16)      1.105        8.709     n12200                                    
+ (68,120)    EFX_LUT4         0.061        8.770     LUT__26829|in[3]                          
+ (68,120)    EFX_LUT4         0.000        8.770     LUT__26829|out                            
+             net (fo=1)       0.178        8.948     n12589                                    
+ (66,119)    EFX_LUT4         0.063        9.011     LUT__26830|in[3]                          
+ (66,119)    EFX_LUT4         0.000        9.011     LUT__26830|out                            
+             net (fo=1)       0.061        9.072     n12590                                    
+ (66,118)    EFX_LUT4         0.063        9.135     LUT__26833|in[1]                          
+ (66,118)    EFX_LUT4         0.000        9.135     LUT__26833|out                            
+             net (fo=1)       0.000        9.135     stream/controller/chosen_location[19]     
+ (66,118)    EFX_FF           0.000        9.135     stream/controller/first_location[19]~FF|D 
+
+Capture Clock Path
+  Location     Delay Type     Incr(ns)     Path(ns)               Netlist Resource(s)
+=================================================================================================
+  (0,164)    input              0.000       0.000     clk_25m                                    
+  (0,164)    input              0.126       0.126     clk_25m                                    
+             net (fo=5956)      1.939       2.065     clk_25m                                    
+  (66,118)   EFX_FF             0.000       2.065     stream/controller/first_location[19]~FF|CLK
+  (66,118)   EFX_FF (Setup)    -0.003       2.062     stream/controller/first_location[19]~FF    
+
+++++ Path 4 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 30.786 ns (required time - arrival time)                       
+Path Start      : reset_adapter/reset_release_stage2~FF|CLK                      
+Path End        : stream/controller/first_location[22]~FF|D                      
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 9.085 ns                                                       
+Logic Levels    : 33                                                             
+
+Launch Clock Path Delay        :  2.065
++ Clock To Q + Data Path Delay :  9.085
+---------------------------------------
+End-of-path arrival time       : 11.150
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.003
+---------------------------------------
+End-of-path required time      : 41.936
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)              Netlist Resource(s)
+==============================================================================================
+ (0,164)     input            0.000        0.000     clk_25m                                  
+ (0,164)     input            0.126        0.126     clk_25m                                  
+             net (fo=5956)    1.939        2.065     clk_25m                                  
+ (154,111)   EFX_FF           0.000        2.065     reset_adapter/reset_release_stage2~FF|CLK
+
+Data Path
+  Location    Delay Type     Incr(ns)     Path(ns)              Netlist Resource(s)
+===============================================================================================
+ (154,111)   EFX_FF (Tco)     0.130        0.130     reset_adapter/reset_release_stage2~FF|Q   
+             net (fo=1335)    0.483        0.613     reset_adapter/reset_release_stage2        
+ (114,107)   EFX_LUT4         0.063        0.676     LUT__25653|in[3]                          
+ (114,107)   EFX_LUT4         0.000        0.676     LUT__25653|out                            
+             net (fo=5)       0.629        1.305     n11541                                    
+ (119,162)   EFX_LUT4         0.061        1.366     LUT__25655|in[0]                          
+ (119,162)   EFX_LUT4         0.000        1.366     LUT__25655|out                            
+             net (fo=4)       0.061        1.427     n11543                                    
+ (119,161)   EFX_LUT4         0.061        1.488     LUT__25657|in[1]                          
+ (119,161)   EFX_LUT4         0.000        1.488     LUT__25657|out                            
+             net (fo=3)       0.413        1.901     n11545                                    
+ (120,164)   EFX_LUT4         0.063        1.964     LUT__25661|in[1]                          
+ (120,164)   EFX_LUT4         0.000        1.964     LUT__25661|out                            
+             net (fo=8)       0.061        2.025     n11549                                    
+ (120,163)   EFX_LUT4         0.063        2.088     LUT__25677|in[0]                          
+ (120,163)   EFX_LUT4         0.000        2.088     LUT__25677|out                            
+             net (fo=7)       0.537        2.625     n11555                                    
+ (76,118)    EFX_LUT4         0.061        2.686     LUT__25694|in[0]                          
+ (76,118)    EFX_LUT4         0.000        2.686     LUT__25694|out                            
+             net (fo=130)     0.061        2.747     stream/gaussian/advance                   
+ (76,117)    EFX_LUT4         0.061        2.808     LUT__25696|in[0]                          
+ (76,117)    EFX_LUT4         0.000        2.808     LUT__25696|out                            
+             net (fo=68)      0.455        3.263     stream/frontend/output_fire               
+ (106,91)    EFX_LUT4         0.061        3.324     LUT__25698|in[0]                          
+ (106,91)    EFX_LUT4         0.000        3.324     LUT__25698|out                            
+             net (fo=23)      0.159        3.483     stream/controller/n19762                  
+ (111,91)    EFX_ADD          0.055        3.538     stream/controller/add_64/i1|I1            
+ (111,91)    EFX_ADD          0.000        3.538     stream/controller/add_64/i1|CO            
+             net (fo=1)       0.000        3.538     stream/controller/add_64/n2               
+ (111,92)    EFX_ADD          0.025        3.563     stream/controller/add_64/i2|CI            
+ (111,92)    EFX_ADD          0.000        3.563     stream/controller/add_64/i2|CO            
+             net (fo=1)       0.000        3.563     stream/controller/add_64/n4               
+ (111,93)    EFX_ADD          0.025        3.588     stream/controller/add_64/i3|CI            
+ (111,93)    EFX_ADD          0.000        3.588     stream/controller/add_64/i3|CO            
+             net (fo=1)       0.000        3.588     stream/controller/add_64/n6               
+ (111,94)    EFX_ADD          0.025        3.613     stream/controller/add_64/i4|CI            
+ (111,94)    EFX_ADD          0.000        3.613     stream/controller/add_64/i4|CO            
+             net (fo=1)       0.000        3.613     stream/controller/add_64/n8               
+ (111,95)    EFX_ADD          0.025        3.638     stream/controller/add_64/i5|CI            
+ (111,95)    EFX_ADD          0.000        3.638     stream/controller/add_64/i5|CO            
+             net (fo=1)       0.000        3.638     stream/controller/add_64/n10              
+ (111,96)    EFX_ADD          0.025        3.663     stream/controller/add_64/i6|CI            
+ (111,96)    EFX_ADD          0.000        3.663     stream/controller/add_64/i6|CO            
+             net (fo=1)       0.000        3.663     stream/controller/add_64/n12              
+ (111,97)    EFX_ADD          0.025        3.688     stream/controller/add_64/i7|CI            
+ (111,97)    EFX_ADD          0.000        3.688     stream/controller/add_64/i7|CO            
+             net (fo=1)       0.000        3.688     stream/controller/add_64/n14              
+ (111,98)    EFX_ADD          0.025        3.713     stream/controller/add_64/i8|CI            
+ (111,98)    EFX_ADD          0.000        3.713     stream/controller/add_64/i8|CO            
+             net (fo=1)       0.000        3.713     stream/controller/add_64/n16              
+ (111,99)    EFX_ADD          0.025        3.738     stream/controller/add_64/i9|CI            
+ (111,99)    EFX_ADD          0.000        3.738     stream/controller/add_64/i9|CO            
+             net (fo=1)       0.000        3.738     stream/controller/add_64/n18              
+ (111,100)   EFX_ADD          0.025        3.763     stream/controller/add_64/i10|CI           
+ (111,100)   EFX_ADD          0.000        3.763     stream/controller/add_64/i10|CO           
+             net (fo=1)       0.000        3.763     stream/controller/add_64/n20              
+ (111,101)   EFX_ADD          0.025        3.788     stream/controller/add_64/i11|CI           
+ (111,101)   EFX_ADD          0.000        3.788     stream/controller/add_64/i11|CO           
+             net (fo=1)       0.000        3.788     stream/controller/add_64/n22              
+ (111,102)   EFX_ADD          0.025        3.813     stream/controller/add_64/i12|CI           
+ (111,102)   EFX_ADD          0.000        3.813     stream/controller/add_64/i12|CO           
+             net (fo=1)       0.000        3.813     stream/controller/add_64/n24              
+ (111,103)   EFX_ADD          0.025        3.838     stream/controller/add_64/i13|CI           
+ (111,103)   EFX_ADD          0.000        3.838     stream/controller/add_64/i13|CO           
+             net (fo=1)       0.000        3.838     stream/controller/add_64/n26              
+ (111,104)   EFX_ADD          0.025        3.863     stream/controller/add_64/i14|CI           
+ (111,104)   EFX_ADD          0.000        3.863     stream/controller/add_64/i14|CO           
+             net (fo=1)       0.000        3.863     stream/controller/add_64/n28              
+ (111,105)   EFX_ADD          0.097        3.960     stream/controller/add_64/i15|CI           
+ (111,105)   EFX_ADD          0.000        3.960     stream/controller/add_64/i15|O            
+             net (fo=3)       0.381        4.341     stream/controller/counts_after_fire[1][14]
+ (112,110)   EFX_LUT4         0.061        4.402     LUT__25864|in[3]                          
+ (112,110)   EFX_LUT4         0.000        4.402     LUT__25864|out                            
+             net (fo=1)       0.333        4.735     n11722                                    
+ (112,113)   EFX_LUT4         0.061        4.796     LUT__25867|in[1]                          
+ (112,113)   EFX_LUT4         0.000        4.796     LUT__25867|out                            
+             net (fo=1)       0.405        5.201     n11725                                    
+ (107,115)   EFX_LUT4         0.061        5.262     LUT__25868|in[3]                          
+ (107,115)   EFX_LUT4         0.000        5.262     LUT__25868|out                            
+             net (fo=1)       0.271        5.533     n11726                                    
+ (99,115)    EFX_LUT4         0.063        5.596     LUT__25876|in[0]                          
+ (99,115)    EFX_LUT4         0.000        5.596     LUT__25876|out                            
+             net (fo=1)       0.061        5.657     n11734                                    
+ (99,114)    EFX_LUT4         0.063        5.720     LUT__25880|in[0]                          
+ (99,114)    EFX_LUT4         0.000        5.720     LUT__25880|out                            
+             net (fo=7)       0.243        5.963     n11737                                    
+ (94,110)    EFX_LUT4         0.061        6.024     LUT__26319|in[0]                          
+ (94,110)    EFX_LUT4         0.000        6.024     LUT__26319|out                            
+             net (fo=2)       0.373        6.397     n12174                                    
+ (90,105)    EFX_LUT4         0.063        6.460     LUT__26320|in[3]                          
+ (90,105)    EFX_LUT4         0.000        6.460     LUT__26320|out                            
+             net (fo=38)      1.010        7.470     stream/controller/n13050                  
+ (86,116)    EFX_LUT4         0.061        7.531     LUT__26347|in[1]                          
+ (86,116)    EFX_LUT4         0.000        7.531     LUT__26347|out                            
+             net (fo=23)      1.078        8.609     n12194                                    
+ (86,142)    EFX_LUT4         0.061        8.670     LUT__26895|in[0]                          
+ (86,142)    EFX_LUT4         0.000        8.670     LUT__26895|out                            
+             net (fo=1)       0.354        9.024     n12652                                    
+ (82,139)    EFX_LUT4         0.061        9.085     LUT__26896|in[3]                          
+ (82,139)    EFX_LUT4         0.000        9.085     LUT__26896|out                            
+             net (fo=1)       0.000        9.085     stream/controller/chosen_location[22]     
+ (82,139)    EFX_FF           0.000        9.085     stream/controller/first_location[22]~FF|D 
+
+Capture Clock Path
+  Location     Delay Type     Incr(ns)     Path(ns)               Netlist Resource(s)
+=================================================================================================
+  (0,164)    input              0.000       0.000     clk_25m                                    
+  (0,164)    input              0.126       0.126     clk_25m                                    
+             net (fo=5956)      1.939       2.065     clk_25m                                    
+  (82,139)   EFX_FF             0.000       2.065     stream/controller/first_location[22]~FF|CLK
+  (82,139)   EFX_FF (Setup)    -0.003       2.062     stream/controller/first_location[22]~FF    
+
+++++ Path 5 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 30.841 ns (required time - arrival time)                       
+Path Start      : reset_adapter/reset_release_stage2~FF|CLK                      
+Path End        : stream/controller/first_location[7]~FF|D                       
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 9.030 ns                                                       
+Logic Levels    : 25                                                             
+
+Launch Clock Path Delay        :  2.065
++ Clock To Q + Data Path Delay :  9.030
+---------------------------------------
+End-of-path arrival time       : 11.095
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.003
+---------------------------------------
+End-of-path required time      : 41.936
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)              Netlist Resource(s)
+==============================================================================================
+ (0,164)     input            0.000        0.000     clk_25m                                  
+ (0,164)     input            0.126        0.126     clk_25m                                  
+             net (fo=5956)    1.939        2.065     clk_25m                                  
+ (154,111)   EFX_FF           0.000        2.065     reset_adapter/reset_release_stage2~FF|CLK
+
+Data Path
+  Location    Delay Type     Incr(ns)     Path(ns)              Netlist Resource(s)
+==============================================================================================
+ (154,111)   EFX_FF (Tco)     0.130        0.130     reset_adapter/reset_release_stage2~FF|Q  
+             net (fo=1335)    0.483        0.613     reset_adapter/reset_release_stage2       
+ (114,107)   EFX_LUT4         0.063        0.676     LUT__25653|in[3]                         
+ (114,107)   EFX_LUT4         0.000        0.676     LUT__25653|out                           
+             net (fo=5)       0.642        1.318     n11541                                   
+ (119,166)   EFX_LUT4         0.061        1.379     LUT__25659|in[0]                         
+ (119,166)   EFX_LUT4         0.000        1.379     LUT__25659|out                           
+             net (fo=2)       0.334        1.713     n11547                                   
+ (121,171)   EFX_LUT4         0.061        1.774     LUT__25710|in[0]                         
+ (121,171)   EFX_LUT4         0.000        1.774     LUT__25710|out                           
+             net (fo=2)       0.061        1.835     n11573                                   
+ (121,170)   EFX_LUT4         0.061        1.896     LUT__25711|in[1]                         
+ (121,170)   EFX_LUT4         0.000        1.896     LUT__25711|out                           
+             net (fo=15)      0.951        2.847     stream/event_fire[7]                     
+ (141,99)    EFX_LUT4         0.063        2.910     LUT__25712|in[0]                         
+ (141,99)    EFX_LUT4         0.000        2.910     LUT__25712|out                           
+             net (fo=24)      0.724        3.634     stream/controller/n28720                 
+ (141,73)    EFX_ADD          0.055        3.689     stream/controller/add_82/i1|I1           
+ (141,73)    EFX_ADD          0.000        3.689     stream/controller/add_82/i1|CO           
+             net (fo=1)       0.000        3.689     stream/controller/add_82/n2              
+ (141,74)    EFX_ADD          0.025        3.714     stream/controller/add_82/i2|CI           
+ (141,74)    EFX_ADD          0.000        3.714     stream/controller/add_82/i2|CO           
+             net (fo=1)       0.000        3.714     stream/controller/add_82/n4              
+ (141,75)    EFX_ADD          0.025        3.739     stream/controller/add_82/i3|CI           
+ (141,75)    EFX_ADD          0.000        3.739     stream/controller/add_82/i3|CO           
+             net (fo=1)       0.000        3.739     stream/controller/add_82/n6              
+ (141,76)    EFX_ADD          0.025        3.764     stream/controller/add_82/i4|CI           
+ (141,76)    EFX_ADD          0.000        3.764     stream/controller/add_82/i4|CO           
+             net (fo=1)       0.000        3.764     stream/controller/add_82/n8              
+ (141,77)    EFX_ADD          0.025        3.789     stream/controller/add_82/i5|CI           
+ (141,77)    EFX_ADD          0.000        3.789     stream/controller/add_82/i5|CO           
+             net (fo=1)       0.000        3.789     stream/controller/add_82/n10             
+ (141,78)    EFX_ADD          0.097        3.886     stream/controller/add_82/i6|CI           
+ (141,78)    EFX_ADD          0.000        3.886     stream/controller/add_82/i6|O            
+             net (fo=2)       0.487        4.373     stream/controller/counts_after_fire[7][5]
+ (136,94)    EFX_LUT4         0.061        4.434     LUT__25944|in[1]                         
+ (136,94)    EFX_LUT4         0.000        4.434     LUT__25944|out                           
+             net (fo=1)       0.211        4.645     n11801                                   
+ (137,94)    EFX_LUT4         0.061        4.706     LUT__25945|in[3]                         
+ (137,94)    EFX_LUT4         0.000        4.706     LUT__25945|out                           
+             net (fo=1)       0.061        4.767     n11802                                   
+ (137,93)    EFX_LUT4         0.061        4.828     LUT__25946|in[0]                         
+ (137,93)    EFX_LUT4         0.000        4.828     LUT__25946|out                           
+             net (fo=1)       0.061        4.889     n11803                                   
+ (137,92)    EFX_LUT4         0.061        4.950     LUT__25949|in[0]                         
+ (137,92)    EFX_LUT4         0.000        4.950     LUT__25949|out                           
+             net (fo=1)       0.061        5.011     n11806                                   
+ (137,91)    EFX_LUT4         0.061        5.072     LUT__25950|in[0]                         
+ (137,91)    EFX_LUT4         0.000        5.072     LUT__25950|out                           
+             net (fo=2)       0.579        5.651     n11807                                   
+ (85,101)    EFX_LUT4         0.061        5.712     LUT__25959|in[0]                         
+ (85,101)    EFX_LUT4         0.000        5.712     LUT__25959|out                           
+             net (fo=3)       0.095        5.807     n11816                                   
+ (85,104)    EFX_LUT4         0.061        5.868     LUT__25960|in[3]                         
+ (85,104)    EFX_LUT4         0.000        5.868     LUT__25960|out                           
+             net (fo=3)       0.385        6.253     n11817                                   
+ (85,119)    EFX_LUT4         0.061        6.314     LUT__26333|in[0]                         
+ (85,119)    EFX_LUT4         0.000        6.314     LUT__26333|out                           
+             net (fo=3)       0.061        6.375     n12181                                   
+ (85,118)    EFX_LUT4         0.061        6.436     LUT__26338|in[2]                         
+ (85,118)    EFX_LUT4         0.000        6.436     LUT__26338|out                           
+             net (fo=1)       0.110        6.546     n12186                                   
+ (86,118)    EFX_LUT4         0.061        6.607     LUT__26341|in[1]                         
+ (86,118)    EFX_LUT4         0.000        6.607     LUT__26341|out                           
+             net (fo=13)      0.592        7.199     n12189                                   
+ (86,114)    EFX_LUT4         0.061        7.260     LUT__26352|in[2]                         
+ (86,114)    EFX_LUT4         0.000        7.260     LUT__26352|out                           
+             net (fo=10)      0.061        7.321     n12198                                   
+ (86,113)    EFX_LUT4         0.061        7.382     LUT__26353|in[1]                         
+ (86,113)    EFX_LUT4         0.000        7.382     LUT__26353|out                           
+             net (fo=15)      1.294        8.676     n12199                                   
+ (62,113)    EFX_LUT4         0.061        8.737     LUT__26539|in[0]                         
+ (62,113)    EFX_LUT4         0.000        8.737     LUT__26539|out                           
+             net (fo=1)       0.230        8.967     n12311                                   
+ (57,120)    EFX_LUT4         0.063        9.030     LUT__26570|in[2]                         
+ (57,120)    EFX_LUT4         0.000        9.030     LUT__26570|out                           
+             net (fo=1)       0.000        9.030     stream/controller/chosen_location[7]     
+ (57,120)    EFX_FF           0.000        9.030     stream/controller/first_location[7]~FF|D 
+
+Capture Clock Path
+  Location     Delay Type     Incr(ns)     Path(ns)              Netlist Resource(s)
+================================================================================================
+  (0,164)    input              0.000       0.000     clk_25m                                   
+  (0,164)    input              0.126       0.126     clk_25m                                   
+             net (fo=5956)      1.939       2.065     clk_25m                                   
+  (57,120)   EFX_FF             0.000       2.065     stream/controller/first_location[7]~FF|CLK
+  (57,120)   EFX_FF (Setup)    -0.003       2.062     stream/controller/first_location[7]~FF    
+
+++++ Path 6 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 30.847 ns (required time - arrival time)                       
+Path Start      : reset_adapter/reset_release_stage2~FF|CLK                      
+Path End        : stream/controller/first_location[18]~FF|CE                     
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 8.923 ns                                                       
+Logic Levels    : 32                                                             
+
+Launch Clock Path Delay        :  2.065
++ Clock To Q + Data Path Delay :  8.923
+---------------------------------------
+End-of-path arrival time       : 10.988
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.104
+---------------------------------------
+End-of-path required time      : 41.835
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)              Netlist Resource(s)
+==============================================================================================
+ (0,164)     input            0.000        0.000     clk_25m                                  
+ (0,164)     input            0.126        0.126     clk_25m                                  
+             net (fo=5956)    1.939        2.065     clk_25m                                  
+ (154,111)   EFX_FF           0.000        2.065     reset_adapter/reset_release_stage2~FF|CLK
+
+Data Path
+  Location    Delay Type     Incr(ns)     Path(ns)              Netlist Resource(s)
+===============================================================================================
+ (154,111)   EFX_FF (Tco)     0.130        0.130     reset_adapter/reset_release_stage2~FF|Q   
+             net (fo=1335)    0.483        0.613     reset_adapter/reset_release_stage2        
+ (114,107)   EFX_LUT4         0.063        0.676     LUT__25653|in[3]                          
+ (114,107)   EFX_LUT4         0.000        0.676     LUT__25653|out                            
+             net (fo=5)       0.629        1.305     n11541                                    
+ (119,162)   EFX_LUT4         0.061        1.366     LUT__25655|in[0]                          
+ (119,162)   EFX_LUT4         0.000        1.366     LUT__25655|out                            
+             net (fo=4)       0.061        1.427     n11543                                    
+ (119,161)   EFX_LUT4         0.061        1.488     LUT__25657|in[1]                          
+ (119,161)   EFX_LUT4         0.000        1.488     LUT__25657|out                            
+             net (fo=3)       0.413        1.901     n11545                                    
+ (120,164)   EFX_LUT4         0.063        1.964     LUT__25661|in[1]                          
+ (120,164)   EFX_LUT4         0.000        1.964     LUT__25661|out                            
+             net (fo=8)       0.061        2.025     n11549                                    
+ (120,163)   EFX_LUT4         0.063        2.088     LUT__25677|in[0]                          
+ (120,163)   EFX_LUT4         0.000        2.088     LUT__25677|out                            
+             net (fo=7)       0.537        2.625     n11555                                    
+ (76,118)    EFX_LUT4         0.061        2.686     LUT__25694|in[0]                          
+ (76,118)    EFX_LUT4         0.000        2.686     LUT__25694|out                            
+             net (fo=130)     0.061        2.747     stream/gaussian/advance                   
+ (76,117)    EFX_LUT4         0.061        2.808     LUT__25696|in[0]                          
+ (76,117)    EFX_LUT4         0.000        2.808     LUT__25696|out                            
+             net (fo=68)      0.455        3.263     stream/frontend/output_fire               
+ (106,91)    EFX_LUT4         0.061        3.324     LUT__25698|in[0]                          
+ (106,91)    EFX_LUT4         0.000        3.324     LUT__25698|out                            
+             net (fo=23)      0.159        3.483     stream/controller/n19762                  
+ (111,91)    EFX_ADD          0.055        3.538     stream/controller/add_64/i1|I1            
+ (111,91)    EFX_ADD          0.000        3.538     stream/controller/add_64/i1|CO            
+             net (fo=1)       0.000        3.538     stream/controller/add_64/n2               
+ (111,92)    EFX_ADD          0.025        3.563     stream/controller/add_64/i2|CI            
+ (111,92)    EFX_ADD          0.000        3.563     stream/controller/add_64/i2|CO            
+             net (fo=1)       0.000        3.563     stream/controller/add_64/n4               
+ (111,93)    EFX_ADD          0.025        3.588     stream/controller/add_64/i3|CI            
+ (111,93)    EFX_ADD          0.000        3.588     stream/controller/add_64/i3|CO            
+             net (fo=1)       0.000        3.588     stream/controller/add_64/n6               
+ (111,94)    EFX_ADD          0.025        3.613     stream/controller/add_64/i4|CI            
+ (111,94)    EFX_ADD          0.000        3.613     stream/controller/add_64/i4|CO            
+             net (fo=1)       0.000        3.613     stream/controller/add_64/n8               
+ (111,95)    EFX_ADD          0.025        3.638     stream/controller/add_64/i5|CI            
+ (111,95)    EFX_ADD          0.000        3.638     stream/controller/add_64/i5|CO            
+             net (fo=1)       0.000        3.638     stream/controller/add_64/n10              
+ (111,96)    EFX_ADD          0.025        3.663     stream/controller/add_64/i6|CI            
+ (111,96)    EFX_ADD          0.000        3.663     stream/controller/add_64/i6|CO            
+             net (fo=1)       0.000        3.663     stream/controller/add_64/n12              
+ (111,97)    EFX_ADD          0.025        3.688     stream/controller/add_64/i7|CI            
+ (111,97)    EFX_ADD          0.000        3.688     stream/controller/add_64/i7|CO            
+             net (fo=1)       0.000        3.688     stream/controller/add_64/n14              
+ (111,98)    EFX_ADD          0.025        3.713     stream/controller/add_64/i8|CI            
+ (111,98)    EFX_ADD          0.000        3.713     stream/controller/add_64/i8|CO            
+             net (fo=1)       0.000        3.713     stream/controller/add_64/n16              
+ (111,99)    EFX_ADD          0.025        3.738     stream/controller/add_64/i9|CI            
+ (111,99)    EFX_ADD          0.000        3.738     stream/controller/add_64/i9|CO            
+             net (fo=1)       0.000        3.738     stream/controller/add_64/n18              
+ (111,100)   EFX_ADD          0.025        3.763     stream/controller/add_64/i10|CI           
+ (111,100)   EFX_ADD          0.000        3.763     stream/controller/add_64/i10|CO           
+             net (fo=1)       0.000        3.763     stream/controller/add_64/n20              
+ (111,101)   EFX_ADD          0.025        3.788     stream/controller/add_64/i11|CI           
+ (111,101)   EFX_ADD          0.000        3.788     stream/controller/add_64/i11|CO           
+             net (fo=1)       0.000        3.788     stream/controller/add_64/n22              
+ (111,102)   EFX_ADD          0.025        3.813     stream/controller/add_64/i12|CI           
+ (111,102)   EFX_ADD          0.000        3.813     stream/controller/add_64/i12|CO           
+             net (fo=1)       0.000        3.813     stream/controller/add_64/n24              
+ (111,103)   EFX_ADD          0.025        3.838     stream/controller/add_64/i13|CI           
+ (111,103)   EFX_ADD          0.000        3.838     stream/controller/add_64/i13|CO           
+             net (fo=1)       0.000        3.838     stream/controller/add_64/n26              
+ (111,104)   EFX_ADD          0.025        3.863     stream/controller/add_64/i14|CI           
+ (111,104)   EFX_ADD          0.000        3.863     stream/controller/add_64/i14|CO           
+             net (fo=1)       0.000        3.863     stream/controller/add_64/n28              
+ (111,105)   EFX_ADD          0.097        3.960     stream/controller/add_64/i15|CI           
+ (111,105)   EFX_ADD          0.000        3.960     stream/controller/add_64/i15|O            
+             net (fo=3)       0.381        4.341     stream/controller/counts_after_fire[1][14]
+ (112,110)   EFX_LUT4         0.061        4.402     LUT__25864|in[3]                          
+ (112,110)   EFX_LUT4         0.000        4.402     LUT__25864|out                            
+             net (fo=1)       0.333        4.735     n11722                                    
+ (112,113)   EFX_LUT4         0.061        4.796     LUT__25867|in[1]                          
+ (112,113)   EFX_LUT4         0.000        4.796     LUT__25867|out                            
+             net (fo=1)       0.405        5.201     n11725                                    
+ (107,115)   EFX_LUT4         0.061        5.262     LUT__25868|in[3]                          
+ (107,115)   EFX_LUT4         0.000        5.262     LUT__25868|out                            
+             net (fo=1)       0.271        5.533     n11726                                    
+ (99,115)    EFX_LUT4         0.063        5.596     LUT__25876|in[0]                          
+ (99,115)    EFX_LUT4         0.000        5.596     LUT__25876|out                            
+             net (fo=1)       0.061        5.657     n11734                                    
+ (99,114)    EFX_LUT4         0.063        5.720     LUT__25880|in[0]                          
+ (99,114)    EFX_LUT4         0.000        5.720     LUT__25880|out                            
+             net (fo=7)       0.243        5.963     n11737                                    
+ (94,110)    EFX_LUT4         0.061        6.024     LUT__26319|in[0]                          
+ (94,110)    EFX_LUT4         0.000        6.024     LUT__26319|out                            
+             net (fo=2)       0.373        6.397     n12174                                    
+ (90,105)    EFX_LUT4         0.063        6.460     LUT__26320|in[3]                          
+ (90,105)    EFX_LUT4         0.000        6.460     LUT__26320|out                            
+             net (fo=38)      0.393        6.853     stream/controller/n13050                  
+ (93,110)    EFX_LUT4         0.063        6.916     LUT__26325|in[2]                          
+ (93,110)    EFX_LUT4         0.000        6.916     LUT__26325|out                            
+             net (fo=6)       0.108        7.024     n12178                                    
+ (92,110)    EFX_LUT4         0.061        7.085     LUT__26327|in[0]                          
+ (92,110)    EFX_LUT4         0.000        7.085     LUT__26327|out                            
+             net (fo=31)      1.838        8.923     stream/controller/n17842                  
+ (67,125)    EFX_FF           0.000        8.923     stream/controller/first_location[18]~FF|CE
+
+Capture Clock Path
+  Location     Delay Type     Incr(ns)     Path(ns)               Netlist Resource(s)
+=================================================================================================
+  (0,164)    input              0.000       0.000     clk_25m                                    
+  (0,164)    input              0.126       0.126     clk_25m                                    
+             net (fo=5956)      1.939       2.065     clk_25m                                    
+  (67,125)   EFX_FF             0.000       2.065     stream/controller/first_location[18]~FF|CLK
+  (67,125)   EFX_FF (Setup)    -0.104       1.961     stream/controller/first_location[18]~FF    
+
+++++ Path 7 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 30.863 ns (required time - arrival time)                       
+Path Start      : reset_adapter/reset_release_stage2~FF|CLK                      
+Path End        : stream/controller/first_location[16]~FF|D                      
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 9.008 ns                                                       
+Logic Levels    : 33                                                             
+
+Launch Clock Path Delay        :  2.065
++ Clock To Q + Data Path Delay :  9.008
+---------------------------------------
+End-of-path arrival time       : 11.073
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.003
+---------------------------------------
+End-of-path required time      : 41.936
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)              Netlist Resource(s)
+==============================================================================================
+ (0,164)     input            0.000        0.000     clk_25m                                  
+ (0,164)     input            0.126        0.126     clk_25m                                  
+             net (fo=5956)    1.939        2.065     clk_25m                                  
+ (154,111)   EFX_FF           0.000        2.065     reset_adapter/reset_release_stage2~FF|CLK
+
+Data Path
+  Location    Delay Type     Incr(ns)     Path(ns)              Netlist Resource(s)
+===============================================================================================
+ (154,111)   EFX_FF (Tco)     0.130        0.130     reset_adapter/reset_release_stage2~FF|Q   
+             net (fo=1335)    0.483        0.613     reset_adapter/reset_release_stage2        
+ (114,107)   EFX_LUT4         0.063        0.676     LUT__25653|in[3]                          
+ (114,107)   EFX_LUT4         0.000        0.676     LUT__25653|out                            
+             net (fo=5)       0.629        1.305     n11541                                    
+ (119,162)   EFX_LUT4         0.061        1.366     LUT__25655|in[0]                          
+ (119,162)   EFX_LUT4         0.000        1.366     LUT__25655|out                            
+             net (fo=4)       0.061        1.427     n11543                                    
+ (119,161)   EFX_LUT4         0.061        1.488     LUT__25657|in[1]                          
+ (119,161)   EFX_LUT4         0.000        1.488     LUT__25657|out                            
+             net (fo=3)       0.413        1.901     n11545                                    
+ (120,164)   EFX_LUT4         0.063        1.964     LUT__25661|in[1]                          
+ (120,164)   EFX_LUT4         0.000        1.964     LUT__25661|out                            
+             net (fo=8)       0.061        2.025     n11549                                    
+ (120,163)   EFX_LUT4         0.063        2.088     LUT__25677|in[0]                          
+ (120,163)   EFX_LUT4         0.000        2.088     LUT__25677|out                            
+             net (fo=7)       0.537        2.625     n11555                                    
+ (76,118)    EFX_LUT4         0.061        2.686     LUT__25694|in[0]                          
+ (76,118)    EFX_LUT4         0.000        2.686     LUT__25694|out                            
+             net (fo=130)     0.061        2.747     stream/gaussian/advance                   
+ (76,117)    EFX_LUT4         0.061        2.808     LUT__25696|in[0]                          
+ (76,117)    EFX_LUT4         0.000        2.808     LUT__25696|out                            
+             net (fo=68)      0.455        3.263     stream/frontend/output_fire               
+ (106,91)    EFX_LUT4         0.061        3.324     LUT__25698|in[0]                          
+ (106,91)    EFX_LUT4         0.000        3.324     LUT__25698|out                            
+             net (fo=23)      0.159        3.483     stream/controller/n19762                  
+ (111,91)    EFX_ADD          0.055        3.538     stream/controller/add_64/i1|I1            
+ (111,91)    EFX_ADD          0.000        3.538     stream/controller/add_64/i1|CO            
+             net (fo=1)       0.000        3.538     stream/controller/add_64/n2               
+ (111,92)    EFX_ADD          0.025        3.563     stream/controller/add_64/i2|CI            
+ (111,92)    EFX_ADD          0.000        3.563     stream/controller/add_64/i2|CO            
+             net (fo=1)       0.000        3.563     stream/controller/add_64/n4               
+ (111,93)    EFX_ADD          0.025        3.588     stream/controller/add_64/i3|CI            
+ (111,93)    EFX_ADD          0.000        3.588     stream/controller/add_64/i3|CO            
+             net (fo=1)       0.000        3.588     stream/controller/add_64/n6               
+ (111,94)    EFX_ADD          0.025        3.613     stream/controller/add_64/i4|CI            
+ (111,94)    EFX_ADD          0.000        3.613     stream/controller/add_64/i4|CO            
+             net (fo=1)       0.000        3.613     stream/controller/add_64/n8               
+ (111,95)    EFX_ADD          0.025        3.638     stream/controller/add_64/i5|CI            
+ (111,95)    EFX_ADD          0.000        3.638     stream/controller/add_64/i5|CO            
+             net (fo=1)       0.000        3.638     stream/controller/add_64/n10              
+ (111,96)    EFX_ADD          0.025        3.663     stream/controller/add_64/i6|CI            
+ (111,96)    EFX_ADD          0.000        3.663     stream/controller/add_64/i6|CO            
+             net (fo=1)       0.000        3.663     stream/controller/add_64/n12              
+ (111,97)    EFX_ADD          0.025        3.688     stream/controller/add_64/i7|CI            
+ (111,97)    EFX_ADD          0.000        3.688     stream/controller/add_64/i7|CO            
+             net (fo=1)       0.000        3.688     stream/controller/add_64/n14              
+ (111,98)    EFX_ADD          0.025        3.713     stream/controller/add_64/i8|CI            
+ (111,98)    EFX_ADD          0.000        3.713     stream/controller/add_64/i8|CO            
+             net (fo=1)       0.000        3.713     stream/controller/add_64/n16              
+ (111,99)    EFX_ADD          0.025        3.738     stream/controller/add_64/i9|CI            
+ (111,99)    EFX_ADD          0.000        3.738     stream/controller/add_64/i9|CO            
+             net (fo=1)       0.000        3.738     stream/controller/add_64/n18              
+ (111,100)   EFX_ADD          0.025        3.763     stream/controller/add_64/i10|CI           
+ (111,100)   EFX_ADD          0.000        3.763     stream/controller/add_64/i10|CO           
+             net (fo=1)       0.000        3.763     stream/controller/add_64/n20              
+ (111,101)   EFX_ADD          0.025        3.788     stream/controller/add_64/i11|CI           
+ (111,101)   EFX_ADD          0.000        3.788     stream/controller/add_64/i11|CO           
+             net (fo=1)       0.000        3.788     stream/controller/add_64/n22              
+ (111,102)   EFX_ADD          0.025        3.813     stream/controller/add_64/i12|CI           
+ (111,102)   EFX_ADD          0.000        3.813     stream/controller/add_64/i12|CO           
+             net (fo=1)       0.000        3.813     stream/controller/add_64/n24              
+ (111,103)   EFX_ADD          0.025        3.838     stream/controller/add_64/i13|CI           
+ (111,103)   EFX_ADD          0.000        3.838     stream/controller/add_64/i13|CO           
+             net (fo=1)       0.000        3.838     stream/controller/add_64/n26              
+ (111,104)   EFX_ADD          0.025        3.863     stream/controller/add_64/i14|CI           
+ (111,104)   EFX_ADD          0.000        3.863     stream/controller/add_64/i14|CO           
+             net (fo=1)       0.000        3.863     stream/controller/add_64/n28              
+ (111,105)   EFX_ADD          0.097        3.960     stream/controller/add_64/i15|CI           
+ (111,105)   EFX_ADD          0.000        3.960     stream/controller/add_64/i15|O            
+             net (fo=3)       0.381        4.341     stream/controller/counts_after_fire[1][14]
+ (112,110)   EFX_LUT4         0.061        4.402     LUT__25864|in[3]                          
+ (112,110)   EFX_LUT4         0.000        4.402     LUT__25864|out                            
+             net (fo=1)       0.333        4.735     n11722                                    
+ (112,113)   EFX_LUT4         0.061        4.796     LUT__25867|in[1]                          
+ (112,113)   EFX_LUT4         0.000        4.796     LUT__25867|out                            
+             net (fo=1)       0.405        5.201     n11725                                    
+ (107,115)   EFX_LUT4         0.061        5.262     LUT__25868|in[3]                          
+ (107,115)   EFX_LUT4         0.000        5.262     LUT__25868|out                            
+             net (fo=1)       0.271        5.533     n11726                                    
+ (99,115)    EFX_LUT4         0.063        5.596     LUT__25876|in[0]                          
+ (99,115)    EFX_LUT4         0.000        5.596     LUT__25876|out                            
+             net (fo=1)       0.061        5.657     n11734                                    
+ (99,114)    EFX_LUT4         0.063        5.720     LUT__25880|in[0]                          
+ (99,114)    EFX_LUT4         0.000        5.720     LUT__25880|out                            
+             net (fo=7)       0.243        5.963     n11737                                    
+ (94,110)    EFX_LUT4         0.061        6.024     LUT__26319|in[0]                          
+ (94,110)    EFX_LUT4         0.000        6.024     LUT__26319|out                            
+             net (fo=2)       0.373        6.397     n12174                                    
+ (90,105)    EFX_LUT4         0.063        6.460     LUT__26320|in[3]                          
+ (90,105)    EFX_LUT4         0.000        6.460     LUT__26320|out                            
+             net (fo=38)      1.010        7.470     stream/controller/n13050                  
+ (86,116)    EFX_LUT4         0.061        7.531     LUT__26347|in[1]                          
+ (86,116)    EFX_LUT4         0.000        7.531     LUT__26347|out                            
+             net (fo=23)      1.246        8.777     n12194                                    
+ (91,139)    EFX_LUT4         0.061        8.838     LUT__26770|in[0]                          
+ (91,139)    EFX_LUT4         0.000        8.838     LUT__26770|out                            
+             net (fo=1)       0.109        8.947     n12533                                    
+ (92,139)    EFX_LUT4         0.061        9.008     LUT__26771|in[2]                          
+ (92,139)    EFX_LUT4         0.000        9.008     LUT__26771|out                            
+             net (fo=1)       0.000        9.008     stream/controller/chosen_location[16]     
+ (92,139)    EFX_FF           0.000        9.008     stream/controller/first_location[16]~FF|D 
+
+Capture Clock Path
+  Location     Delay Type     Incr(ns)     Path(ns)               Netlist Resource(s)
+=================================================================================================
+  (0,164)    input              0.000       0.000     clk_25m                                    
+  (0,164)    input              0.126       0.126     clk_25m                                    
+             net (fo=5956)      1.939       2.065     clk_25m                                    
+  (92,139)   EFX_FF             0.000       2.065     stream/controller/first_location[16]~FF|CLK
+  (92,139)   EFX_FF (Setup)    -0.003       2.062     stream/controller/first_location[16]~FF    
+
+++++ Path 8 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 30.864 ns (required time - arrival time)                       
+Path Start      : reset_adapter/reset_release_stage2~FF|CLK                      
+Path End        : stream/controller/first_location[8]~FF|D                       
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 9.007 ns                                                       
+Logic Levels    : 33                                                             
+
+Launch Clock Path Delay        :  2.065
++ Clock To Q + Data Path Delay :  9.007
+---------------------------------------
+End-of-path arrival time       : 11.072
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.003
+---------------------------------------
+End-of-path required time      : 41.936
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)              Netlist Resource(s)
+==============================================================================================
+ (0,164)     input            0.000        0.000     clk_25m                                  
+ (0,164)     input            0.126        0.126     clk_25m                                  
+             net (fo=5956)    1.939        2.065     clk_25m                                  
+ (154,111)   EFX_FF           0.000        2.065     reset_adapter/reset_release_stage2~FF|CLK
+
+Data Path
+  Location    Delay Type     Incr(ns)     Path(ns)              Netlist Resource(s)
+===============================================================================================
+ (154,111)   EFX_FF (Tco)     0.130        0.130     reset_adapter/reset_release_stage2~FF|Q   
+             net (fo=1335)    0.483        0.613     reset_adapter/reset_release_stage2        
+ (114,107)   EFX_LUT4         0.063        0.676     LUT__25653|in[3]                          
+ (114,107)   EFX_LUT4         0.000        0.676     LUT__25653|out                            
+             net (fo=5)       0.629        1.305     n11541                                    
+ (119,162)   EFX_LUT4         0.061        1.366     LUT__25655|in[0]                          
+ (119,162)   EFX_LUT4         0.000        1.366     LUT__25655|out                            
+             net (fo=4)       0.061        1.427     n11543                                    
+ (119,161)   EFX_LUT4         0.061        1.488     LUT__25657|in[1]                          
+ (119,161)   EFX_LUT4         0.000        1.488     LUT__25657|out                            
+             net (fo=3)       0.413        1.901     n11545                                    
+ (120,164)   EFX_LUT4         0.063        1.964     LUT__25661|in[1]                          
+ (120,164)   EFX_LUT4         0.000        1.964     LUT__25661|out                            
+             net (fo=8)       0.061        2.025     n11549                                    
+ (120,163)   EFX_LUT4         0.063        2.088     LUT__25677|in[0]                          
+ (120,163)   EFX_LUT4         0.000        2.088     LUT__25677|out                            
+             net (fo=7)       0.537        2.625     n11555                                    
+ (76,118)    EFX_LUT4         0.061        2.686     LUT__25694|in[0]                          
+ (76,118)    EFX_LUT4         0.000        2.686     LUT__25694|out                            
+             net (fo=130)     0.061        2.747     stream/gaussian/advance                   
+ (76,117)    EFX_LUT4         0.061        2.808     LUT__25696|in[0]                          
+ (76,117)    EFX_LUT4         0.000        2.808     LUT__25696|out                            
+             net (fo=68)      0.455        3.263     stream/frontend/output_fire               
+ (106,91)    EFX_LUT4         0.061        3.324     LUT__25698|in[0]                          
+ (106,91)    EFX_LUT4         0.000        3.324     LUT__25698|out                            
+             net (fo=23)      0.159        3.483     stream/controller/n19762                  
+ (111,91)    EFX_ADD          0.055        3.538     stream/controller/add_64/i1|I1            
+ (111,91)    EFX_ADD          0.000        3.538     stream/controller/add_64/i1|CO            
+             net (fo=1)       0.000        3.538     stream/controller/add_64/n2               
+ (111,92)    EFX_ADD          0.025        3.563     stream/controller/add_64/i2|CI            
+ (111,92)    EFX_ADD          0.000        3.563     stream/controller/add_64/i2|CO            
+             net (fo=1)       0.000        3.563     stream/controller/add_64/n4               
+ (111,93)    EFX_ADD          0.025        3.588     stream/controller/add_64/i3|CI            
+ (111,93)    EFX_ADD          0.000        3.588     stream/controller/add_64/i3|CO            
+             net (fo=1)       0.000        3.588     stream/controller/add_64/n6               
+ (111,94)    EFX_ADD          0.025        3.613     stream/controller/add_64/i4|CI            
+ (111,94)    EFX_ADD          0.000        3.613     stream/controller/add_64/i4|CO            
+             net (fo=1)       0.000        3.613     stream/controller/add_64/n8               
+ (111,95)    EFX_ADD          0.025        3.638     stream/controller/add_64/i5|CI            
+ (111,95)    EFX_ADD          0.000        3.638     stream/controller/add_64/i5|CO            
+             net (fo=1)       0.000        3.638     stream/controller/add_64/n10              
+ (111,96)    EFX_ADD          0.025        3.663     stream/controller/add_64/i6|CI            
+ (111,96)    EFX_ADD          0.000        3.663     stream/controller/add_64/i6|CO            
+             net (fo=1)       0.000        3.663     stream/controller/add_64/n12              
+ (111,97)    EFX_ADD          0.025        3.688     stream/controller/add_64/i7|CI            
+ (111,97)    EFX_ADD          0.000        3.688     stream/controller/add_64/i7|CO            
+             net (fo=1)       0.000        3.688     stream/controller/add_64/n14              
+ (111,98)    EFX_ADD          0.025        3.713     stream/controller/add_64/i8|CI            
+ (111,98)    EFX_ADD          0.000        3.713     stream/controller/add_64/i8|CO            
+             net (fo=1)       0.000        3.713     stream/controller/add_64/n16              
+ (111,99)    EFX_ADD          0.025        3.738     stream/controller/add_64/i9|CI            
+ (111,99)    EFX_ADD          0.000        3.738     stream/controller/add_64/i9|CO            
+             net (fo=1)       0.000        3.738     stream/controller/add_64/n18              
+ (111,100)   EFX_ADD          0.025        3.763     stream/controller/add_64/i10|CI           
+ (111,100)   EFX_ADD          0.000        3.763     stream/controller/add_64/i10|CO           
+             net (fo=1)       0.000        3.763     stream/controller/add_64/n20              
+ (111,101)   EFX_ADD          0.025        3.788     stream/controller/add_64/i11|CI           
+ (111,101)   EFX_ADD          0.000        3.788     stream/controller/add_64/i11|CO           
+             net (fo=1)       0.000        3.788     stream/controller/add_64/n22              
+ (111,102)   EFX_ADD          0.025        3.813     stream/controller/add_64/i12|CI           
+ (111,102)   EFX_ADD          0.000        3.813     stream/controller/add_64/i12|CO           
+             net (fo=1)       0.000        3.813     stream/controller/add_64/n24              
+ (111,103)   EFX_ADD          0.025        3.838     stream/controller/add_64/i13|CI           
+ (111,103)   EFX_ADD          0.000        3.838     stream/controller/add_64/i13|CO           
+             net (fo=1)       0.000        3.838     stream/controller/add_64/n26              
+ (111,104)   EFX_ADD          0.025        3.863     stream/controller/add_64/i14|CI           
+ (111,104)   EFX_ADD          0.000        3.863     stream/controller/add_64/i14|CO           
+             net (fo=1)       0.000        3.863     stream/controller/add_64/n28              
+ (111,105)   EFX_ADD          0.097        3.960     stream/controller/add_64/i15|CI           
+ (111,105)   EFX_ADD          0.000        3.960     stream/controller/add_64/i15|O            
+             net (fo=3)       0.381        4.341     stream/controller/counts_after_fire[1][14]
+ (112,110)   EFX_LUT4         0.061        4.402     LUT__25864|in[3]                          
+ (112,110)   EFX_LUT4         0.000        4.402     LUT__25864|out                            
+             net (fo=1)       0.333        4.735     n11722                                    
+ (112,113)   EFX_LUT4         0.061        4.796     LUT__25867|in[1]                          
+ (112,113)   EFX_LUT4         0.000        4.796     LUT__25867|out                            
+             net (fo=1)       0.405        5.201     n11725                                    
+ (107,115)   EFX_LUT4         0.061        5.262     LUT__25868|in[3]                          
+ (107,115)   EFX_LUT4         0.000        5.262     LUT__25868|out                            
+             net (fo=1)       0.271        5.533     n11726                                    
+ (99,115)    EFX_LUT4         0.063        5.596     LUT__25876|in[0]                          
+ (99,115)    EFX_LUT4         0.000        5.596     LUT__25876|out                            
+             net (fo=1)       0.061        5.657     n11734                                    
+ (99,114)    EFX_LUT4         0.063        5.720     LUT__25880|in[0]                          
+ (99,114)    EFX_LUT4         0.000        5.720     LUT__25880|out                            
+             net (fo=7)       0.243        5.963     n11737                                    
+ (94,110)    EFX_LUT4         0.061        6.024     LUT__26319|in[0]                          
+ (94,110)    EFX_LUT4         0.000        6.024     LUT__26319|out                            
+             net (fo=2)       0.373        6.397     n12174                                    
+ (90,105)    EFX_LUT4         0.063        6.460     LUT__26320|in[3]                          
+ (90,105)    EFX_LUT4         0.000        6.460     LUT__26320|out                            
+             net (fo=38)      1.083        7.543     stream/controller/n13050                  
+ (83,121)    EFX_LUT4         0.061        7.604     LUT__26354|in[0]                          
+ (83,121)    EFX_LUT4         0.000        7.604     LUT__26354|out                            
+             net (fo=16)      1.172        8.776     n12200                                    
+ (65,121)    EFX_LUT4         0.061        8.837     LUT__26575|in[3]                          
+ (65,121)    EFX_LUT4         0.000        8.837     LUT__26575|out                            
+             net (fo=1)       0.109        8.946     n12346                                    
+ (64,121)    EFX_LUT4         0.061        9.007     LUT__26591|in[1]                          
+ (64,121)    EFX_LUT4         0.000        9.007     LUT__26591|out                            
+             net (fo=1)       0.000        9.007     stream/controller/chosen_location[8]      
+ (64,121)    EFX_FF           0.000        9.007     stream/controller/first_location[8]~FF|D  
+
+Capture Clock Path
+  Location     Delay Type     Incr(ns)     Path(ns)              Netlist Resource(s)
+================================================================================================
+  (0,164)    input              0.000       0.000     clk_25m                                   
+  (0,164)    input              0.126       0.126     clk_25m                                   
+             net (fo=5956)      1.939       2.065     clk_25m                                   
+  (64,121)   EFX_FF             0.000       2.065     stream/controller/first_location[8]~FF|CLK
+  (64,121)   EFX_FF (Setup)    -0.003       2.062     stream/controller/first_location[8]~FF    
+
+++++ Path 9 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 30.869 ns (required time - arrival time)                       
+Path Start      : reset_adapter/reset_release_stage2~FF|CLK                      
+Path End        : stream/controller/first_location[9]~FF|D                       
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 9.002 ns                                                       
+Logic Levels    : 25                                                             
+
+Launch Clock Path Delay        :  2.065
++ Clock To Q + Data Path Delay :  9.002
+---------------------------------------
+End-of-path arrival time       : 11.067
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.003
+---------------------------------------
+End-of-path required time      : 41.936
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)              Netlist Resource(s)
+==============================================================================================
+ (0,164)     input            0.000        0.000     clk_25m                                  
+ (0,164)     input            0.126        0.126     clk_25m                                  
+             net (fo=5956)    1.939        2.065     clk_25m                                  
+ (154,111)   EFX_FF           0.000        2.065     reset_adapter/reset_release_stage2~FF|CLK
+
+Data Path
+  Location    Delay Type     Incr(ns)     Path(ns)              Netlist Resource(s)
+==============================================================================================
+ (154,111)   EFX_FF (Tco)     0.130        0.130     reset_adapter/reset_release_stage2~FF|Q  
+             net (fo=1335)    0.483        0.613     reset_adapter/reset_release_stage2       
+ (114,107)   EFX_LUT4         0.063        0.676     LUT__25653|in[3]                         
+ (114,107)   EFX_LUT4         0.000        0.676     LUT__25653|out                           
+             net (fo=5)       0.642        1.318     n11541                                   
+ (119,166)   EFX_LUT4         0.061        1.379     LUT__25659|in[0]                         
+ (119,166)   EFX_LUT4         0.000        1.379     LUT__25659|out                           
+             net (fo=2)       0.334        1.713     n11547                                   
+ (121,171)   EFX_LUT4         0.061        1.774     LUT__25710|in[0]                         
+ (121,171)   EFX_LUT4         0.000        1.774     LUT__25710|out                           
+             net (fo=2)       0.061        1.835     n11573                                   
+ (121,170)   EFX_LUT4         0.061        1.896     LUT__25711|in[1]                         
+ (121,170)   EFX_LUT4         0.000        1.896     LUT__25711|out                           
+             net (fo=15)      0.951        2.847     stream/event_fire[7]                     
+ (141,99)    EFX_LUT4         0.063        2.910     LUT__25712|in[0]                         
+ (141,99)    EFX_LUT4         0.000        2.910     LUT__25712|out                           
+             net (fo=24)      0.724        3.634     stream/controller/n28720                 
+ (141,73)    EFX_ADD          0.055        3.689     stream/controller/add_82/i1|I1           
+ (141,73)    EFX_ADD          0.000        3.689     stream/controller/add_82/i1|CO           
+             net (fo=1)       0.000        3.689     stream/controller/add_82/n2              
+ (141,74)    EFX_ADD          0.025        3.714     stream/controller/add_82/i2|CI           
+ (141,74)    EFX_ADD          0.000        3.714     stream/controller/add_82/i2|CO           
+             net (fo=1)       0.000        3.714     stream/controller/add_82/n4              
+ (141,75)    EFX_ADD          0.025        3.739     stream/controller/add_82/i3|CI           
+ (141,75)    EFX_ADD          0.000        3.739     stream/controller/add_82/i3|CO           
+             net (fo=1)       0.000        3.739     stream/controller/add_82/n6              
+ (141,76)    EFX_ADD          0.025        3.764     stream/controller/add_82/i4|CI           
+ (141,76)    EFX_ADD          0.000        3.764     stream/controller/add_82/i4|CO           
+             net (fo=1)       0.000        3.764     stream/controller/add_82/n8              
+ (141,77)    EFX_ADD          0.025        3.789     stream/controller/add_82/i5|CI           
+ (141,77)    EFX_ADD          0.000        3.789     stream/controller/add_82/i5|CO           
+             net (fo=1)       0.000        3.789     stream/controller/add_82/n10             
+ (141,78)    EFX_ADD          0.097        3.886     stream/controller/add_82/i6|CI           
+ (141,78)    EFX_ADD          0.000        3.886     stream/controller/add_82/i6|O            
+             net (fo=2)       0.487        4.373     stream/controller/counts_after_fire[7][5]
+ (136,94)    EFX_LUT4         0.061        4.434     LUT__25944|in[1]                         
+ (136,94)    EFX_LUT4         0.000        4.434     LUT__25944|out                           
+             net (fo=1)       0.211        4.645     n11801                                   
+ (137,94)    EFX_LUT4         0.061        4.706     LUT__25945|in[3]                         
+ (137,94)    EFX_LUT4         0.000        4.706     LUT__25945|out                           
+             net (fo=1)       0.061        4.767     n11802                                   
+ (137,93)    EFX_LUT4         0.061        4.828     LUT__25946|in[0]                         
+ (137,93)    EFX_LUT4         0.000        4.828     LUT__25946|out                           
+             net (fo=1)       0.061        4.889     n11803                                   
+ (137,92)    EFX_LUT4         0.061        4.950     LUT__25949|in[0]                         
+ (137,92)    EFX_LUT4         0.000        4.950     LUT__25949|out                           
+             net (fo=1)       0.061        5.011     n11806                                   
+ (137,91)    EFX_LUT4         0.061        5.072     LUT__25950|in[0]                         
+ (137,91)    EFX_LUT4         0.000        5.072     LUT__25950|out                           
+             net (fo=2)       0.579        5.651     n11807                                   
+ (85,101)    EFX_LUT4         0.061        5.712     LUT__25959|in[0]                         
+ (85,101)    EFX_LUT4         0.000        5.712     LUT__25959|out                           
+             net (fo=3)       0.095        5.807     n11816                                   
+ (85,104)    EFX_LUT4         0.061        5.868     LUT__25960|in[3]                         
+ (85,104)    EFX_LUT4         0.000        5.868     LUT__25960|out                           
+             net (fo=3)       0.385        6.253     n11817                                   
+ (85,119)    EFX_LUT4         0.061        6.314     LUT__26333|in[0]                         
+ (85,119)    EFX_LUT4         0.000        6.314     LUT__26333|out                           
+             net (fo=3)       0.061        6.375     n12181                                   
+ (85,118)    EFX_LUT4         0.061        6.436     LUT__26338|in[2]                         
+ (85,118)    EFX_LUT4         0.000        6.436     LUT__26338|out                           
+             net (fo=1)       0.110        6.546     n12186                                   
+ (86,118)    EFX_LUT4         0.061        6.607     LUT__26341|in[1]                         
+ (86,118)    EFX_LUT4         0.000        6.607     LUT__26341|out                           
+             net (fo=13)      0.592        7.199     n12189                                   
+ (86,114)    EFX_LUT4         0.061        7.260     LUT__26352|in[2]                         
+ (86,114)    EFX_LUT4         0.000        7.260     LUT__26352|out                           
+             net (fo=10)      0.061        7.321     n12198                                   
+ (86,113)    EFX_LUT4         0.061        7.382     LUT__26353|in[1]                         
+ (86,113)    EFX_LUT4         0.000        7.382     LUT__26353|out                           
+             net (fo=15)      1.345        8.727     n12199                                   
+ (80,129)    EFX_LUT4         0.061        8.788     LUT__26608|in[0]                         
+ (80,129)    EFX_LUT4         0.000        8.788     LUT__26608|out                           
+             net (fo=1)       0.153        8.941     n12378                                   
+ (77,129)    EFX_LUT4         0.061        9.002     LUT__26611|in[2]                         
+ (77,129)    EFX_LUT4         0.000        9.002     LUT__26611|out                           
+             net (fo=1)       0.000        9.002     stream/controller/chosen_location[9]     
+ (77,129)    EFX_FF           0.000        9.002     stream/controller/first_location[9]~FF|D 
+
+Capture Clock Path
+  Location     Delay Type     Incr(ns)     Path(ns)              Netlist Resource(s)
+================================================================================================
+  (0,164)    input              0.000       0.000     clk_25m                                   
+  (0,164)    input              0.126       0.126     clk_25m                                   
+             net (fo=5956)      1.939       2.065     clk_25m                                   
+  (77,129)   EFX_FF             0.000       2.065     stream/controller/first_location[9]~FF|CLK
+  (77,129)   EFX_FF (Setup)    -0.003       2.062     stream/controller/first_location[9]~FF    
+
+++++ Path 10 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 30.873 ns (required time - arrival time)                       
+Path Start      : reset_adapter/reset_release_stage2~FF|CLK                      
+Path End        : stream/controller/first_location[18]~FF|D                      
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 8.998 ns                                                       
+Logic Levels    : 25                                                             
+
+Launch Clock Path Delay        :  2.065
++ Clock To Q + Data Path Delay :  8.998
+---------------------------------------
+End-of-path arrival time       : 11.063
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.003
+---------------------------------------
+End-of-path required time      : 41.936
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)              Netlist Resource(s)
+==============================================================================================
+ (0,164)     input            0.000        0.000     clk_25m                                  
+ (0,164)     input            0.126        0.126     clk_25m                                  
+             net (fo=5956)    1.939        2.065     clk_25m                                  
+ (154,111)   EFX_FF           0.000        2.065     reset_adapter/reset_release_stage2~FF|CLK
+
+Data Path
+  Location    Delay Type     Incr(ns)     Path(ns)              Netlist Resource(s)
+==============================================================================================
+ (154,111)   EFX_FF (Tco)     0.130        0.130     reset_adapter/reset_release_stage2~FF|Q  
+             net (fo=1335)    0.483        0.613     reset_adapter/reset_release_stage2       
+ (114,107)   EFX_LUT4         0.063        0.676     LUT__25653|in[3]                         
+ (114,107)   EFX_LUT4         0.000        0.676     LUT__25653|out                           
+             net (fo=5)       0.642        1.318     n11541                                   
+ (119,166)   EFX_LUT4         0.061        1.379     LUT__25659|in[0]                         
+ (119,166)   EFX_LUT4         0.000        1.379     LUT__25659|out                           
+             net (fo=2)       0.334        1.713     n11547                                   
+ (121,171)   EFX_LUT4         0.061        1.774     LUT__25710|in[0]                         
+ (121,171)   EFX_LUT4         0.000        1.774     LUT__25710|out                           
+             net (fo=2)       0.061        1.835     n11573                                   
+ (121,170)   EFX_LUT4         0.061        1.896     LUT__25711|in[1]                         
+ (121,170)   EFX_LUT4         0.000        1.896     LUT__25711|out                           
+             net (fo=15)      0.951        2.847     stream/event_fire[7]                     
+ (141,99)    EFX_LUT4         0.063        2.910     LUT__25712|in[0]                         
+ (141,99)    EFX_LUT4         0.000        2.910     LUT__25712|out                           
+             net (fo=24)      0.724        3.634     stream/controller/n28720                 
+ (141,73)    EFX_ADD          0.055        3.689     stream/controller/add_82/i1|I1           
+ (141,73)    EFX_ADD          0.000        3.689     stream/controller/add_82/i1|CO           
+             net (fo=1)       0.000        3.689     stream/controller/add_82/n2              
+ (141,74)    EFX_ADD          0.025        3.714     stream/controller/add_82/i2|CI           
+ (141,74)    EFX_ADD          0.000        3.714     stream/controller/add_82/i2|CO           
+             net (fo=1)       0.000        3.714     stream/controller/add_82/n4              
+ (141,75)    EFX_ADD          0.025        3.739     stream/controller/add_82/i3|CI           
+ (141,75)    EFX_ADD          0.000        3.739     stream/controller/add_82/i3|CO           
+             net (fo=1)       0.000        3.739     stream/controller/add_82/n6              
+ (141,76)    EFX_ADD          0.025        3.764     stream/controller/add_82/i4|CI           
+ (141,76)    EFX_ADD          0.000        3.764     stream/controller/add_82/i4|CO           
+             net (fo=1)       0.000        3.764     stream/controller/add_82/n8              
+ (141,77)    EFX_ADD          0.025        3.789     stream/controller/add_82/i5|CI           
+ (141,77)    EFX_ADD          0.000        3.789     stream/controller/add_82/i5|CO           
+             net (fo=1)       0.000        3.789     stream/controller/add_82/n10             
+ (141,78)    EFX_ADD          0.097        3.886     stream/controller/add_82/i6|CI           
+ (141,78)    EFX_ADD          0.000        3.886     stream/controller/add_82/i6|O            
+             net (fo=2)       0.487        4.373     stream/controller/counts_after_fire[7][5]
+ (136,94)    EFX_LUT4         0.061        4.434     LUT__25944|in[1]                         
+ (136,94)    EFX_LUT4         0.000        4.434     LUT__25944|out                           
+             net (fo=1)       0.211        4.645     n11801                                   
+ (137,94)    EFX_LUT4         0.061        4.706     LUT__25945|in[3]                         
+ (137,94)    EFX_LUT4         0.000        4.706     LUT__25945|out                           
+             net (fo=1)       0.061        4.767     n11802                                   
+ (137,93)    EFX_LUT4         0.061        4.828     LUT__25946|in[0]                         
+ (137,93)    EFX_LUT4         0.000        4.828     LUT__25946|out                           
+             net (fo=1)       0.061        4.889     n11803                                   
+ (137,92)    EFX_LUT4         0.061        4.950     LUT__25949|in[0]                         
+ (137,92)    EFX_LUT4         0.000        4.950     LUT__25949|out                           
+             net (fo=1)       0.061        5.011     n11806                                   
+ (137,91)    EFX_LUT4         0.061        5.072     LUT__25950|in[0]                         
+ (137,91)    EFX_LUT4         0.000        5.072     LUT__25950|out                           
+             net (fo=2)       0.579        5.651     n11807                                   
+ (85,101)    EFX_LUT4         0.061        5.712     LUT__25959|in[0]                         
+ (85,101)    EFX_LUT4         0.000        5.712     LUT__25959|out                           
+             net (fo=3)       0.095        5.807     n11816                                   
+ (85,104)    EFX_LUT4         0.061        5.868     LUT__25960|in[3]                         
+ (85,104)    EFX_LUT4         0.000        5.868     LUT__25960|out                           
+             net (fo=3)       0.061        5.929     n11817                                   
+ (85,103)    EFX_LUT4         0.061        5.990     LUT__26241|in[0]                         
+ (85,103)    EFX_LUT4         0.000        5.990     LUT__26241|out                           
+             net (fo=2)       0.061        6.051     n12098                                   
+ (85,102)    EFX_LUT4         0.061        6.112     LUT__26246|in[0]                         
+ (85,102)    EFX_LUT4         0.000        6.112     LUT__26246|out                           
+             net (fo=4)       0.741        6.853     n12103                                   
+ (85,117)    EFX_LUT4         0.061        6.914     LUT__26343|in[0]                         
+ (85,117)    EFX_LUT4         0.000        6.914     LUT__26343|out                           
+             net (fo=8)       0.581        7.495     n12191                                   
+ (80,119)    EFX_LUT4         0.061        7.556     LUT__26534|in[2]                         
+ (80,119)    EFX_LUT4         0.000        7.556     LUT__26534|out                           
+             net (fo=11)      0.769        8.325     n12306                                   
+ (65,126)    EFX_LUT4         0.061        8.386     LUT__26804|in[2]                         
+ (65,126)    EFX_LUT4         0.000        8.386     LUT__26804|out                           
+             net (fo=1)       0.429        8.815     n12565                                   
+ (67,126)    EFX_LUT4         0.061        8.876     LUT__26809|in[2]                         
+ (67,126)    EFX_LUT4         0.000        8.876     LUT__26809|out                           
+             net (fo=1)       0.061        8.937     n12570                                   
+ (67,125)    EFX_LUT4         0.061        8.998     LUT__26812|in[1]                         
+ (67,125)    EFX_LUT4         0.000        8.998     LUT__26812|out                           
+             net (fo=1)       0.000        8.998     stream/controller/chosen_location[18]    
+ (67,125)    EFX_FF           0.000        8.998     stream/controller/first_location[18]~FF|D
+
+Capture Clock Path
+  Location     Delay Type     Incr(ns)     Path(ns)               Netlist Resource(s)
+=================================================================================================
+  (0,164)    input              0.000       0.000     clk_25m                                    
+  (0,164)    input              0.126       0.126     clk_25m                                    
+             net (fo=5956)      1.939       2.065     clk_25m                                    
+  (67,125)   EFX_FF             0.000       2.065     stream/controller/first_location[18]~FF|CLK
+  (67,125)   EFX_FF (Setup)    -0.003       2.062     stream/controller/first_location[18]~FF    
+
+++++ Path 11 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 30.898 ns (required time - arrival time)                       
+Path Start      : reset_adapter/reset_release_stage2~FF|CLK                      
+Path End        : stream/controller/first_location[21]~FF|D                      
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 8.973 ns                                                       
+Logic Levels    : 33                                                             
+
+Launch Clock Path Delay        :  2.065
++ Clock To Q + Data Path Delay :  8.973
+---------------------------------------
+End-of-path arrival time       : 11.038
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.003
+---------------------------------------
+End-of-path required time      : 41.936
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)              Netlist Resource(s)
+==============================================================================================
+ (0,164)     input            0.000        0.000     clk_25m                                  
+ (0,164)     input            0.126        0.126     clk_25m                                  
+             net (fo=5956)    1.939        2.065     clk_25m                                  
+ (154,111)   EFX_FF           0.000        2.065     reset_adapter/reset_release_stage2~FF|CLK
+
+Data Path
+  Location    Delay Type     Incr(ns)     Path(ns)              Netlist Resource(s)
+===============================================================================================
+ (154,111)   EFX_FF (Tco)     0.130        0.130     reset_adapter/reset_release_stage2~FF|Q   
+             net (fo=1335)    0.483        0.613     reset_adapter/reset_release_stage2        
+ (114,107)   EFX_LUT4         0.063        0.676     LUT__25653|in[3]                          
+ (114,107)   EFX_LUT4         0.000        0.676     LUT__25653|out                            
+             net (fo=5)       0.629        1.305     n11541                                    
+ (119,162)   EFX_LUT4         0.061        1.366     LUT__25655|in[0]                          
+ (119,162)   EFX_LUT4         0.000        1.366     LUT__25655|out                            
+             net (fo=4)       0.061        1.427     n11543                                    
+ (119,161)   EFX_LUT4         0.061        1.488     LUT__25657|in[1]                          
+ (119,161)   EFX_LUT4         0.000        1.488     LUT__25657|out                            
+             net (fo=3)       0.413        1.901     n11545                                    
+ (120,164)   EFX_LUT4         0.063        1.964     LUT__25661|in[1]                          
+ (120,164)   EFX_LUT4         0.000        1.964     LUT__25661|out                            
+             net (fo=8)       0.061        2.025     n11549                                    
+ (120,163)   EFX_LUT4         0.063        2.088     LUT__25677|in[0]                          
+ (120,163)   EFX_LUT4         0.000        2.088     LUT__25677|out                            
+             net (fo=7)       0.537        2.625     n11555                                    
+ (76,118)    EFX_LUT4         0.061        2.686     LUT__25694|in[0]                          
+ (76,118)    EFX_LUT4         0.000        2.686     LUT__25694|out                            
+             net (fo=130)     0.061        2.747     stream/gaussian/advance                   
+ (76,117)    EFX_LUT4         0.061        2.808     LUT__25696|in[0]                          
+ (76,117)    EFX_LUT4         0.000        2.808     LUT__25696|out                            
+             net (fo=68)      0.455        3.263     stream/frontend/output_fire               
+ (106,91)    EFX_LUT4         0.061        3.324     LUT__25698|in[0]                          
+ (106,91)    EFX_LUT4         0.000        3.324     LUT__25698|out                            
+             net (fo=23)      0.159        3.483     stream/controller/n19762                  
+ (111,91)    EFX_ADD          0.055        3.538     stream/controller/add_64/i1|I1            
+ (111,91)    EFX_ADD          0.000        3.538     stream/controller/add_64/i1|CO            
+             net (fo=1)       0.000        3.538     stream/controller/add_64/n2               
+ (111,92)    EFX_ADD          0.025        3.563     stream/controller/add_64/i2|CI            
+ (111,92)    EFX_ADD          0.000        3.563     stream/controller/add_64/i2|CO            
+             net (fo=1)       0.000        3.563     stream/controller/add_64/n4               
+ (111,93)    EFX_ADD          0.025        3.588     stream/controller/add_64/i3|CI            
+ (111,93)    EFX_ADD          0.000        3.588     stream/controller/add_64/i3|CO            
+             net (fo=1)       0.000        3.588     stream/controller/add_64/n6               
+ (111,94)    EFX_ADD          0.025        3.613     stream/controller/add_64/i4|CI            
+ (111,94)    EFX_ADD          0.000        3.613     stream/controller/add_64/i4|CO            
+             net (fo=1)       0.000        3.613     stream/controller/add_64/n8               
+ (111,95)    EFX_ADD          0.025        3.638     stream/controller/add_64/i5|CI            
+ (111,95)    EFX_ADD          0.000        3.638     stream/controller/add_64/i5|CO            
+             net (fo=1)       0.000        3.638     stream/controller/add_64/n10              
+ (111,96)    EFX_ADD          0.025        3.663     stream/controller/add_64/i6|CI            
+ (111,96)    EFX_ADD          0.000        3.663     stream/controller/add_64/i6|CO            
+             net (fo=1)       0.000        3.663     stream/controller/add_64/n12              
+ (111,97)    EFX_ADD          0.025        3.688     stream/controller/add_64/i7|CI            
+ (111,97)    EFX_ADD          0.000        3.688     stream/controller/add_64/i7|CO            
+             net (fo=1)       0.000        3.688     stream/controller/add_64/n14              
+ (111,98)    EFX_ADD          0.025        3.713     stream/controller/add_64/i8|CI            
+ (111,98)    EFX_ADD          0.000        3.713     stream/controller/add_64/i8|CO            
+             net (fo=1)       0.000        3.713     stream/controller/add_64/n16              
+ (111,99)    EFX_ADD          0.025        3.738     stream/controller/add_64/i9|CI            
+ (111,99)    EFX_ADD          0.000        3.738     stream/controller/add_64/i9|CO            
+             net (fo=1)       0.000        3.738     stream/controller/add_64/n18              
+ (111,100)   EFX_ADD          0.025        3.763     stream/controller/add_64/i10|CI           
+ (111,100)   EFX_ADD          0.000        3.763     stream/controller/add_64/i10|CO           
+             net (fo=1)       0.000        3.763     stream/controller/add_64/n20              
+ (111,101)   EFX_ADD          0.025        3.788     stream/controller/add_64/i11|CI           
+ (111,101)   EFX_ADD          0.000        3.788     stream/controller/add_64/i11|CO           
+             net (fo=1)       0.000        3.788     stream/controller/add_64/n22              
+ (111,102)   EFX_ADD          0.025        3.813     stream/controller/add_64/i12|CI           
+ (111,102)   EFX_ADD          0.000        3.813     stream/controller/add_64/i12|CO           
+             net (fo=1)       0.000        3.813     stream/controller/add_64/n24              
+ (111,103)   EFX_ADD          0.025        3.838     stream/controller/add_64/i13|CI           
+ (111,103)   EFX_ADD          0.000        3.838     stream/controller/add_64/i13|CO           
+             net (fo=1)       0.000        3.838     stream/controller/add_64/n26              
+ (111,104)   EFX_ADD          0.025        3.863     stream/controller/add_64/i14|CI           
+ (111,104)   EFX_ADD          0.000        3.863     stream/controller/add_64/i14|CO           
+             net (fo=1)       0.000        3.863     stream/controller/add_64/n28              
+ (111,105)   EFX_ADD          0.097        3.960     stream/controller/add_64/i15|CI           
+ (111,105)   EFX_ADD          0.000        3.960     stream/controller/add_64/i15|O            
+             net (fo=3)       0.381        4.341     stream/controller/counts_after_fire[1][14]
+ (112,110)   EFX_LUT4         0.061        4.402     LUT__25864|in[3]                          
+ (112,110)   EFX_LUT4         0.000        4.402     LUT__25864|out                            
+             net (fo=1)       0.333        4.735     n11722                                    
+ (112,113)   EFX_LUT4         0.061        4.796     LUT__25867|in[1]                          
+ (112,113)   EFX_LUT4         0.000        4.796     LUT__25867|out                            
+             net (fo=1)       0.405        5.201     n11725                                    
+ (107,115)   EFX_LUT4         0.061        5.262     LUT__25868|in[3]                          
+ (107,115)   EFX_LUT4         0.000        5.262     LUT__25868|out                            
+             net (fo=1)       0.271        5.533     n11726                                    
+ (99,115)    EFX_LUT4         0.063        5.596     LUT__25876|in[0]                          
+ (99,115)    EFX_LUT4         0.000        5.596     LUT__25876|out                            
+             net (fo=1)       0.061        5.657     n11734                                    
+ (99,114)    EFX_LUT4         0.063        5.720     LUT__25880|in[0]                          
+ (99,114)    EFX_LUT4         0.000        5.720     LUT__25880|out                            
+             net (fo=7)       0.243        5.963     n11737                                    
+ (94,110)    EFX_LUT4         0.061        6.024     LUT__26319|in[0]                          
+ (94,110)    EFX_LUT4         0.000        6.024     LUT__26319|out                            
+             net (fo=2)       0.373        6.397     n12174                                    
+ (90,105)    EFX_LUT4         0.063        6.460     LUT__26320|in[3]                          
+ (90,105)    EFX_LUT4         0.000        6.460     LUT__26320|out                            
+             net (fo=38)      1.083        7.543     stream/controller/n13050                  
+ (83,121)    EFX_LUT4         0.061        7.604     LUT__26354|in[0]                          
+ (83,121)    EFX_LUT4         0.000        7.604     LUT__26354|out                            
+             net (fo=16)      1.025        8.629     n12200                                    
+ (57,111)    EFX_LUT4         0.063        8.692     LUT__26860|in[3]                          
+ (57,111)    EFX_LUT4         0.000        8.692     LUT__26860|out                            
+             net (fo=1)       0.218        8.910     n12618                                    
+ (60,111)    EFX_LUT4         0.063        8.973     LUT__26876|in[1]                          
+ (60,111)    EFX_LUT4         0.000        8.973     LUT__26876|out                            
+             net (fo=1)       0.000        8.973     stream/controller/chosen_location[21]     
+ (60,111)    EFX_FF           0.000        8.973     stream/controller/first_location[21]~FF|D 
+
+Capture Clock Path
+  Location     Delay Type     Incr(ns)     Path(ns)               Netlist Resource(s)
+=================================================================================================
+  (0,164)    input              0.000       0.000     clk_25m                                    
+  (0,164)    input              0.126       0.126     clk_25m                                    
+             net (fo=5956)      1.939       2.065     clk_25m                                    
+  (60,111)   EFX_FF             0.000       2.065     stream/controller/first_location[21]~FF|CLK
+  (60,111)   EFX_FF (Setup)    -0.003       2.062     stream/controller/first_location[21]~FF    
+
+++++ Path 12 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+Slack           : 30.912 ns (required time - arrival time)                       
+Path Start      : reset_adapter/reset_release_stage2~FF|CLK                      
+Path End        : stream/controller/first_location[17]~FF|D                      
+Launch Clock    : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Capture Clock   : core_25m {rise@0.000 ns fall@20.000 ns period=40.000 ns} (RISE)
+Path Type       : Max at Slow Process Corner                                     
+Data Path Delay : 8.959 ns                                                       
+Logic Levels    : 24                                                             
+
+Launch Clock Path Delay        :  2.065
++ Clock To Q + Data Path Delay :  8.959
+---------------------------------------
+End-of-path arrival time       : 11.024
+
+Constraint                     : 40.000
++ Capture Clock Path Delay     :  2.065
+- Clock Uncertainty            :  0.126
+- Setup                        :  0.003
+---------------------------------------
+End-of-path required time      : 41.936
+
+Launch Clock Path
+  Location    Delay Type     Incr(ns)     Path(ns)              Netlist Resource(s)
+==============================================================================================
+ (0,164)     input            0.000        0.000     clk_25m                                  
+ (0,164)     input            0.126        0.126     clk_25m                                  
+             net (fo=5956)    1.939        2.065     clk_25m                                  
+ (154,111)   EFX_FF           0.000        2.065     reset_adapter/reset_release_stage2~FF|CLK
+
+Data Path
+  Location    Delay Type     Incr(ns)     Path(ns)              Netlist Resource(s)
+==============================================================================================
+ (154,111)   EFX_FF (Tco)     0.130        0.130     reset_adapter/reset_release_stage2~FF|Q  
+             net (fo=1335)    0.483        0.613     reset_adapter/reset_release_stage2       
+ (114,107)   EFX_LUT4         0.063        0.676     LUT__25653|in[3]                         
+ (114,107)   EFX_LUT4         0.000        0.676     LUT__25653|out                           
+             net (fo=5)       0.642        1.318     n11541                                   
+ (119,166)   EFX_LUT4         0.061        1.379     LUT__25659|in[0]                         
+ (119,166)   EFX_LUT4         0.000        1.379     LUT__25659|out                           
+             net (fo=2)       0.334        1.713     n11547                                   
+ (121,171)   EFX_LUT4         0.061        1.774     LUT__25710|in[0]                         
+ (121,171)   EFX_LUT4         0.000        1.774     LUT__25710|out                           
+             net (fo=2)       0.061        1.835     n11573                                   
+ (121,170)   EFX_LUT4         0.061        1.896     LUT__25711|in[1]                         
+ (121,170)   EFX_LUT4         0.000        1.896     LUT__25711|out                           
+             net (fo=15)      0.951        2.847     stream/event_fire[7]                     
+ (141,99)    EFX_LUT4         0.063        2.910     LUT__25712|in[0]                         
+ (141,99)    EFX_LUT4         0.000        2.910     LUT__25712|out                           
+             net (fo=24)      0.724        3.634     stream/controller/n28720                 
+ (141,73)    EFX_ADD          0.055        3.689     stream/controller/add_82/i1|I1           
+ (141,73)    EFX_ADD          0.000        3.689     stream/controller/add_82/i1|CO           
+             net (fo=1)       0.000        3.689     stream/controller/add_82/n2              
+ (141,74)    EFX_ADD          0.025        3.714     stream/controller/add_82/i2|CI           
+ (141,74)    EFX_ADD          0.000        3.714     stream/controller/add_82/i2|CO           
+             net (fo=1)       0.000        3.714     stream/controller/add_82/n4              
+ (141,75)    EFX_ADD          0.025        3.739     stream/controller/add_82/i3|CI           
+ (141,75)    EFX_ADD          0.000        3.739     stream/controller/add_82/i3|CO           
+             net (fo=1)       0.000        3.739     stream/controller/add_82/n6              
+ (141,76)    EFX_ADD          0.025        3.764     stream/controller/add_82/i4|CI           
+ (141,76)    EFX_ADD          0.000        3.764     stream/controller/add_82/i4|CO           
+             net (fo=1)       0.000        3.764     stream/controller/add_82/n8              
+ (141,77)    EFX_ADD          0.025        3.789     stream/controller/add_82/i5|CI           
+ (141,77)    EFX_ADD          0.000        3.789     stream/controller/add_82/i5|CO           
+             net (fo=1)       0.000        3.789     stream/controller/add_82/n10             
+ (141,78)    EFX_ADD          0.097        3.886     stream/controller/add_82/i6|CI           
+ (141,78)    EFX_ADD          0.000        3.886     stream/controller/add_82/i6|O            
+             net (fo=2)       0.487        4.373     stream/controller/counts_after_fire[7][5]
+ (136,94)    EFX_LUT4         0.061        4.434     LUT__25944|in[1]                         
+ (136,94)    EFX_LUT4         0.000        4.434     LUT__25944|out                           
+             net (fo=1)       0.211        4.645     n11801                                   
+ (137,94)    EFX_LUT4         0.061        4.706     LUT__25945|in[3]                         
+ (137,94)    EFX_LUT4         0.000        4.706     LUT__25945|out                           
+             net (fo=1)       0.061        4.767     n11802                                   
+ (137,93)    EFX_LUT4         0.061        4.828     LUT__25946|in[0]                         
+ (137,93)    EFX_LUT4         0.000        4.828     LUT__25946|out                           
+             net (fo=1)       0.061        4.889     n11803                                   
+ (137,92)    EFX_LUT4         0.061        4.950     LUT__25949|in[0]                         
+ (137,92)    EFX_LUT4         0.000        4.950     LUT__25949|out                           
+             net (fo=1)       0.061        5.011     n11806                                   
+ (137,91)    EFX_LUT4         0.061        5.072     LUT__25950|in[0]                         
+ (137,91)    EFX_LUT4         0.000        5.072     LUT__25950|out                           
+             net (fo=2)       0.579        5.651     n11807                                   
+ (85,101)    EFX_LUT4         0.061        5.712     LUT__25959|in[0]                         
+ (85,101)    EFX_LUT4         0.000        5.712     LUT__25959|out                           
+             net (fo=3)       0.095        5.807     n11816                                   
+ (85,104)    EFX_LUT4         0.061        5.868     LUT__25960|in[3]                         
+ (85,104)    EFX_LUT4         0.000        5.868     LUT__25960|out                           
+             net (fo=3)       0.061        5.929     n11817                                   
+ (85,103)    EFX_LUT4         0.061        5.990     LUT__26241|in[0]                         
+ (85,103)    EFX_LUT4         0.000        5.990     LUT__26241|out                           
+             net (fo=2)       0.061        6.051     n12098                                   
+ (85,102)    EFX_LUT4         0.061        6.112     LUT__26246|in[0]                         
+ (85,102)    EFX_LUT4         0.000        6.112     LUT__26246|out                           
+             net (fo=4)       0.741        6.853     n12103                                   
+ (85,117)    EFX_LUT4         0.061        6.914     LUT__26343|in[0]                         
+ (85,117)    EFX_LUT4         0.000        6.914     LUT__26343|out                           
+             net (fo=8)       0.215        7.129     n12191                                   
+ (86,112)    EFX_LUT4         0.061        7.190     LUT__26344|in[2]                         
+ (86,112)    EFX_LUT4         0.000        7.190     LUT__26344|out                           
+             net (fo=15)      1.582        8.772     n12192                                   
+ (90,141)    EFX_LUT4         0.063        8.835     LUT__26780|in[3]                         
+ (90,141)    EFX_LUT4         0.000        8.835     LUT__26780|out                           
+             net (fo=1)       0.061        8.896     n12542                                   
+ (90,140)    EFX_LUT4         0.063        8.959     LUT__26791|in[0]                         
+ (90,140)    EFX_LUT4         0.000        8.959     LUT__26791|out                           
+             net (fo=1)       0.000        8.959     stream/controller/chosen_location[17]    
+ (90,140)    EFX_FF           0.000        8.959     stream/controller/first_location[17]~FF|D
+
+Capture Clock Path
+  Location     Delay Type     Incr(ns)     Path(ns)               Netlist Resource(s)
+=================================================================================================
+  (0,164)    input              0.000       0.000     clk_25m                                    
+  (0,164)    input              0.126       0.126     clk_25m                                    
+             net (fo=5956)      1.939       2.065     clk_25m                                    
+  (90,140)   EFX_FF             0.000       2.065     stream/controller/first_location[17]~FF|CLK
+  (90,140)   EFX_FF (Setup)    -0.003       2.062     stream/controller/first_location[17]~FF    
+

@@ -1,0 +1,75 @@
+{
+  "task_id": "TRACK4-NUM-INPUT-WORD-001",
+  "version": "v1",
+  "created_at_utc": "2026-10-11T22:13:54.953529+08:00",
+  "design_path": "planning/design-TRACK4-NUM-INPUT-WORD-001.md",
+  "design_sha256": "948627403CC2B538AF7ED06B0F27482D5A1BFF4434DFF691F10902DCB2E952AE",
+  "authority": "ROOT read/presented short card and authorized isolated two-file implementation under continuing user autonomy and waived new independent TB",
+  "status": "ADOPTED_ACTIVE_WORK_057_SYNTHESIS_PASS_CAPACITY_FAIL",
+  "main_changed": true,
+  "files": [
+    {
+      "path": "board/recognition_numeric/scalar_core_words.sv",
+      "before_path": "before/board/recognition_numeric/scalar_core_words.sv",
+      "baseline_sha256": "1568D08773306D8F56C35E77E399502D4BEADA46D15234D537DFF30BBA7DA4E4",
+      "before_sha256": "1568D08773306D8F56C35E77E399502D4BEADA46D15234D537DFF30BBA7DA4E4",
+      "candidate_sha256": "73F230DFB7B2D2F12A3220C8EE4FC4FF4B8C90E18AD916E3E05D24C084BA31F0",
+      "main_sha256_after": "73F230DFB7B2D2F12A3220C8EE4FC4FF4B8C90E18AD916E3E05D24C084BA31F0"
+    },
+    {
+      "path": "board/rtl/board_algorithm_rpc.sv",
+      "before_path": "before/board/rtl/board_algorithm_rpc.sv",
+      "baseline_sha256": "14E8BAC5A362AE37D6091516569AAFB841AE5B1613C46340D0EBD6D6CDAE2E88",
+      "before_sha256": "14E8BAC5A362AE37D6091516569AAFB841AE5B1613C46340D0EBD6D6CDAE2E88",
+      "candidate_sha256": "E692D5D88836034A6825B82D0778524CDC5A6F6531A662E66ACD0FEBBEF3161D",
+      "main_sha256_after": "E692D5D88836034A6825B82D0778524CDC5A6F6531A662E66ACD0FEBBEF3161D"
+    }
+  ],
+  "parameter_contract": "BORROW_INITIALIZER_WORDS default0; effective only BORROW_INITIALIZER_WORDS&&BORROW_PAYLOAD&&AREA_RAM_WORDS",
+  "word_contract": "RPC48 fixed slices from two owned original requests; A/B192 intact; word0..11 exact16bits, invalid12..15 zero; scalar uses sideband only original address0..11 and16..27 windows",
+  "borrow_contract": "Word and fullB192zero from same seed_started owner as original req622; no req_valid gate; keep accepted body until original reply consume+quiet",
+  "format_contract": "CompleteB192 ==0 before owner selection for unary format and DIV_ZERO; original padding16/sign/header/error priority retained",
+  "retained_root_path": "Original ROOT_SHIFT original_a 2-bit dynamic input remains unchanged; A192 owner mux not claimed eliminated",
+  "structural_change": "Combinational wire/case and parameter only; no new FF/RAM/DSP/body snapshots/clocks; original FSM/WE/address/256 cycles retained",
+  "static_review_status": "COMPLETED_DIRECTED_DIFF_AND_CONTRACT_REVIEW_NOT_EDA",
+  "not_run": [
+    "Simulation",
+    "New testbench",
+    "Hardware actions"
+  ],
+  "limitations": [
+    "Actual resource/routing benefit unmeasured; no guarantee save397",
+    "No geometry/callback/HIST changes",
+    "Candidate only, not full A6 or hardware success"
+  ],
+  "static_review": [
+    "Actual two-file git diff read back; only parameters/wires/ports, CHECK predicates, INITIALIZE data selection and new RPC combinational fixed case changed; no original sequential/FSM/WE/address/cycle modifications",
+    "Effective three-condition guard retains original slices/B checks when parameter0 or BORROW_PAYLOAD/AREA_RAM_WORDS condition absent; unconnected new input signals not selected by defaults",
+    "48 fixed case keys0..11/16..27/32..43/48..59 cover both owners and A/B192 via exact fixed slices222..413 and414..605; invalid word index12..15 default zero; word0 is real data",
+    "Scalar selects external data only original initialization windows0..11 and16..27; address12..15 and28..255 remain original default zero writes; all256 addresses and WE reset/cancel/HELD guards unchanged",
+    "CompleteB192zero computed separately per source before owner selection; unary combines original high16 padding and Bzero, DIV_ZERO uses Bzero; FORMAT/DIV/sign error order retained",
+    "Original A/B sign, header, ROOT_SHIFT original A2-bit read, nonAREA ADD/COMPARE, full385 qualifications and return-word sharing retained",
+    "Input sidebands use same seed_started-owned body and are not req_valid gated; accepted body stable through actual reply consumption and quiet",
+    "New ternary expressions include separating whitespace; source changes include no new state registers/memories/DSP instances or CDC"
+  ],
+  "root_static_review": "PASS: actual complete two-file diff and baseline hashes;full192B zero/48 fixed input words/default/borrow/originalFSM+WE+ROOT preserved",
+  "independent_static_review": "PASS: independent actual two-file source/diff/field/default/borrow/lexical review;no tests or EDA",
+  "adopted_at_utc": "2026-10-11T14:20:01.3440924Z",
+  "intended_compile_run": "board_compile_057",
+  "measured_build_result": {
+    "ended_at_utc": "2026-10-11T14:31:00.1265231Z",
+    "bit_generated": false,
+    "final_timing_passed": null,
+    "run": "board_compile_057",
+    "ff": 20098,
+    "lut4": 44137,
+    "synthesis_passed": true,
+    "packed_xlr": 57887,
+    "capacity": 60800,
+    "capacity_passed": false,
+    "dsp48": 154,
+    "routing_xlr": 3314,
+    "ram10": 225,
+    "physical_xlr": 61201
+  }
+}

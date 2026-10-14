@@ -1,0 +1,16 @@
+# 圆父接入与059局部合并：稀疏overlay候选
+
+2026-10-11，circle_parent_integration_059_merge_v1。ROOT先读回三卡、授权相应候选，再基于用户持续自主、本地审计、免额外长草图/TB授权指定本次两处局部合并；不冒称用户另按新版号批准。原circle_parent_integration_v1及其before、卡、main、058/059冻结输入、原HDK、正式状态和硬件均未修改。本目录仍九RTL+原XML的稀疏overlay，不是可单独打开/编译工程。
+
+| 本次实际一行修改 | before SHA256 | after SHA256 |
+|---|---|---|
+| board/rtl/board_algorithm_rpc.sv：唯一shared_recognition_arithmetic追加ROOT_NARROW_WORDS=1 | F5B45139CE67742E627C14204A6AFE13C7DBCBFDD29B913E622FD3F01E1D88BB | BE9B714C4E65F56F2E3C416331A3A91916DBF077D84841F4585441B637F2C723 |
+| board/rtl/board_frame_system.sv：唯一display追加FIXED_APPEND=1 | 94A47F0A88250E682EDB422CE5C9F6626AD07BAAC38D39CEE1A9650C1A3EE0CB | 2E8E6E5F6F2A1A717D5919C94A041594EAEB667D20076664452580065AD38094 |
+
+before保留原圆overlay这两份原文；review两份实际no-index diff已读回，各只一行参数变化。其余七RTL及XML逐项hash与原圆overlay一致：POINT22A5F166…89E5、actorsA05FFA17…FF5、STATS14228BE6…A22、HIST3A8F9A32…9A50、PMCC4BF36A…4C05、CR9785CCF9…7D03、CF0AC56269…7EA4、XML2AFD2A4D…528B；完整值在input-map，不以缩写替代实际资格核对。没有开启FAST PM、修改board使能/默认0路径、NUM/ANGLE/FIT/DDR协议或圆业务代码。
+
+依赖来自真实runs/board_compile_059/flow，不另复制：scalar_core_words.sv SHA256 0865F6A62D4E06453DEE8BD478FEFA18EE75C55D26C882686E86B965F74FF991，含ROOT_NARROW_WORDS默认0；board_frame_display.sv SHA256 16F0C65555A1D51832642FAD13EF47D6E46C98D9DE5357A0AFCE8D9FC1430F93，含FIXED_APPEND默认0。input-map.json SHA256 7A27E67A344F2CF54885AF1D4BBC6C8CC1E14CA32F32C4F984CB82E690574CF2，131个唯一design_file=9候选源+122个059冻结flow源；对原映射按logical_name比较，仅上述两份overlay及core/display依赖共四个hash变化。XML与原候选字节一致，仍131项，须父overlay到完整目录后用build_board冻结真实全部输入。
+
+设计卡原文未改：TRACK4-CIRCLE-PARENT-INTEGRATION-001 E6B359013F827A2273EE2426E4427AB54607F3F44020B1C924D956EA4524B863；TRACK4-SCALAR-ROOT-NARROW-001 DA649F2052AC8FBEC46812ADD4AB2945239227C6A16FCED35611F8BF8B52D08F；TRACK4-DISPLAY-APPEND-001 F45FCD49AAD85B7D9124D8F52602DB4845E40B5190AF279327399A0037F2C907。
+
+作者在本轮只读逐段检查原RPC全部756行，并对照STATS/private FIT/scalar_bridge的BORROW_RESULT关闭：未发现新接线问题；实际owner/return正文保持、已知fault+drained闭合、UNKNOWN挡提交、CF独占DDR/PACK及scope借用均保持。本轮检查只属源码静态检查，不记整包ROOT PASS；新两处合并仍供父实际读回后采纳。未运行TB、仿真、EDA、STA、bit或硬件操作；059自身构建结果不是本圆增量证明。完整A6仍欠矩形、最终分类/ANN/标签与新CIRC到显示消费，容量、速度和实物效果仍未知。

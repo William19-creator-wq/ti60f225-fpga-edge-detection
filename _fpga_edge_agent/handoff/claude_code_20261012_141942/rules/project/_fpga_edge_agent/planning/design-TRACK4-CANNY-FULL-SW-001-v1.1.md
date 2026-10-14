@@ -1,0 +1,9 @@
+# TRACK4-CANNY-FULL-SW-001 v1.1：失败输出的旧pixel交付
+
+沿用v1及用户持续授权。生成top前检查局部交接：memory_top的HY保持已经公开的pixel到真实消费；edge writer一旦安全终结为取消/失败，已经不再接新pixel。若只等待writer ready，HY的旧held pixel将永远无法返回CANCEL，造成组合死锁。
+
+中文草图：正常时h_pixel_ready=edge_writer.in_ready。共同失败/取消时，仍先等待edge writer的旧RPC真实drain并形成done；在edge_done_valid或其已消费的done_seen以后，top提供一个明确的丢弃接收出口，接受HY旧held pixel。这个pixel不写到结果帧，单独属于失败私有输出的discard事件；HY见实际fire后按sticky cancel终结。失败结果从未发布，外层output_pixels采用writer实际接受count，不把discard算成已写结果。正常数学/所有N像素保存不变。
+
+反向错误：HY先失败而writer仍等待下一pixel时，top粘住失败并取消writer；writer私有槽可丢弃，公开RPC必须先终结。两个done独立保存并都消费后才能FINAL。unknown drain没有任何discard排空证明，仍隔离。
+
+验证在FC-T03/05加入：结果writer安全write error/取消且HY已有held pixel、HY先error后writer关闭、最后写回与HY done不同先后、actual writer count与discard分离。设计读回READY后在现有持续授权内实现，不增加硬件范围。

@@ -15,6 +15,8 @@
 | RST高电平限时对照 | `_fpga_edge_agent/work/active/track4_camera_rst_compare_001_20261013/ti60f225_oob.xml` |
 | Claude持续RST高低对照 | `_fpga_edge_agent/work/active/track4_cam_rst_static_001_20261014/ti60f225_oob.xml` |
 | 原厂v7独立副本 | `_fpga_edge_agent/work/active/camera_official_diag_20261013_v7/Ti60f225_sc431hai2hdmi_v7/ti60f225_oob.xml` |
+| 自研视频恢复 v1（彩条实物可见） | `_fpga_edge_agent/work/active/track4_video_restore_001_20261015/track4_board.xml` |
+| 最新 DDR 阶段诊断 v1（原始 0x1F） | `_fpga_edge_agent/work/active/track4_ddr_cal_diag_001_20261015/track4_board.xml`；D0–D7 专用灯义见[接手文档](HANDOFF_2026-10-15.md) |
 | 灰度/中值/Sobel独立实验 | `_fpga_edge_agent/work/active/track4_algorithms_20261004/r1/project/r1_algorithm.xml`；实验probe引脚不能当成生产板接口 |
 
 布局布线与综合的缓存、波形及大型中间网表未放入Git。现有XML直接引用的必要源文件另行补入，未改写源码。对54份工程XML的design_file引用检查见[源码引用检查](export/project-source-reference-check.json)：主要工程的引用存在，开发目录中旧的 `track4_board_first_20261011/ti60f225_oob.xml` 缺 `debug_top.v`，需要按debug profile由Efinity生成；该旧XML不是当前 `track4_board.xml`。原构建方式见对应脚本和日志。克隆后未在另一台机器重新验证全部工程，因此保留工具路径和依赖检查为使用前步骤。
@@ -40,4 +42,4 @@ Interface0/SPI缺驱动提示不等于当前JTAG B不能下载。本项目近期
 
 从Release按 [索引](export/bitstream-paths.csv) 解压相应blob，恢复原文件名并核SHA256，再在Programmer选择它。日志必须明确出现对应路径、`Device is in user mode!` 和 `Programming operation completed.`；不同bit的灯义不同。
 
-当前相机仍无ACK，不能期待任意整机bit下载后立即得到正确摄像头画面。显示器识别1080p/60Hz说明显示扫描信息，不表示算法每秒处理60帧。
+旧摄像头模组已由用户更换，官方演示工程可出图；自研恢复/诊断版仍仅见彩条，优先按[接手文档](HANDOFF_2026-10-15.md)排查 DDR/帧发布。显示器识别1080p/60Hz说明显示扫描信息，不表示算法每秒处理60帧。

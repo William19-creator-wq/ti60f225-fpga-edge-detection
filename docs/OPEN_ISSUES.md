@@ -1,8 +1,10 @@
 # 未解决问题与验收条件
 
-GitHub跟踪入口：[相机无ACK](https://github.com/William19-creator-wq/ti60f225-fpga-edge-detection/issues/1)、[复杂识别与资源](https://github.com/William19-creator-wq/ti60f225-fpga-edge-detection/issues/2)、[整机实物与性能](https://github.com/William19-creator-wq/ti60f225-fpga-edge-detection/issues/3)。这些问题当前均未关闭。
+GitHub跟踪入口：[旧模组相机无ACK](https://github.com/William19-creator-wq/ti60f225-fpga-edge-detection/issues/1)、[复杂识别与资源](https://github.com/William19-creator-wq/ti60f225-fpga-edge-detection/issues/2)、[整机实物与性能](https://github.com/William19-creator-wq/ti60f225-fpga-edge-detection/issues/3)。状态以 GitHub 页面为准；旧模组故障已由更换模组解决，后两项仍待验收。
 
-## 相机无地址应答
+**2026-10-15 更新：** 旧模组无 ACK 问题经更换摄像头后，用户确认官方 v6/v7 能出真实画面；旧记录保留作故障追溯。当前自研版的开放问题是 DDR 原始阶段码 `0x1F`、`cal_done`/帧发布未确认，屏幕持续彩条。见[接手文档](HANDOFF_2026-10-15.md)。
+
+## 相机无地址应答（旧故障模组历史记录）
 
 现象：0x30/0x32身份探测首地址NACK；换排线、外部RST高低均没有恢复。官方v7遮镜头或拔下相机仍有花屏。主板SCL/SDA慢速拉低、释放及回读通过；模组电源测点有电压。
 

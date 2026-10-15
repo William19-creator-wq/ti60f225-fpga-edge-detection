@@ -1,6 +1,6 @@
 # 未解决问题与验收条件
 
-GitHub跟踪入口：[旧模组相机无ACK](https://github.com/William19-creator-wq/ti60f225-fpga-edge-detection/issues/1)、[复杂识别与资源](https://github.com/William19-creator-wq/ti60f225-fpga-edge-detection/issues/2)、[整机实物与性能](https://github.com/William19-creator-wq/ti60f225-fpga-edge-detection/issues/3)。状态以 GitHub 页面为准；旧模组故障已由更换模组解决，后两项仍待验收。
+GitHub跟踪入口：[旧模组相机无ACK](https://github.com/William19-creator-wq/ti60f225-fpga-edge-detection/issues/1)、[复杂识别与资源](https://github.com/William19-creator-wq/ti60f225-fpga-edge-detection/issues/2)、[整机实物与性能](https://github.com/William19-creator-wq/ti60f225-fpga-edge-detection/issues/3)、[DDR 状态 0x1F 与彩条无帧](https://github.com/William19-creator-wq/ti60f225-fpga-edge-detection/issues/4)。状态以 GitHub 页面为准；旧模组故障已由更换模组解决，后面三项仍待验收。
 
 **2026-10-15 更新：** 旧模组无 ACK 问题经更换摄像头后，用户确认官方 v6/v7 能出真实画面；旧记录保留作故障追溯。当前自研版的开放问题是 DDR 原始阶段码 `0x1F`、`cal_done`/帧发布未确认，屏幕持续彩条。见[接手文档](HANDOFF_2026-10-15.md)。
 

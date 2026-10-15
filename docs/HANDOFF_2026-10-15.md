@@ -25,6 +25,8 @@
 
 ## 下一步建议
 
+GitHub 上已开设聚焦追踪项：[定位自研整机 DDR 原始状态 0x1F 与彩条无帧](https://github.com/William19-creator-wq/ti60f225-fpga-edge-detection/issues/4)，供下一位接手者续办。
+
 1. 先只读查 DDR IP 公开文档、受保护状态输出周边连线及 `cal_done` 生成/复位条件，确认 `0x1F` 能否可靠对应某个阶段。把“观察一次”与“持续稳定”分开。用户之前测到官方 demo 可出图，尽量在同一板、同一模组、同一连接条件下对照。
 2. 若阶段语义仍不可得，设计并获批**最小诊断**：同时把 `cal_done`、相关锁定/复位和必要校准握手以可辨方式引出；有明确预期再构建与人工下载。不要仅凭 `0x1F` 盲改 `tFAW`、DDR 引脚或摄像头参数。
 3. DDR 就绪后核对 `board_frame_system.sv` 的 `cal_ready → capture_start → frame publish → has_frame`，随后检查 CSI 帧/行/像素、RAW10 与 Bayer 相位。当前 PnR 仍有 `mipi_dp_data0_LP_P_IN/N_IN` 未布警告，须在实物画面恢复链路中核对其影响。

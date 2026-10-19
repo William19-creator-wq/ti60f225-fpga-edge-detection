@@ -1,3 +1,15 @@
+# 当前待办更新（2026-10-19）
+
+1. 确认从失败半尺寸版回退五分区版后的现场状态；[失败说明](DISPLAY_HALF_FAILURE_2026-10-19.md)。
+2. 验收按键／阈值／七模式候选，当前只有仿真与构建通过。
+3. 将完整 Canny、冻结和形状识别分段接入工作基线，复测 FPS、长时稳定性、错误计数和数值一致性。
+4. 原 031/refine DDR0x1F/无相机图根因仍未闭环；v7 衍生版本成功不关闭该历史问题。
+5. 清晰度、不同照明下白平衡和正确缩小显示仍可改进；先保持标准 1080p 输出与可用链路。
+
+现有 GitHub 问题编号保留，没有因为这次归档自动关闭。以下为 10 月 15 日以前的历史描述，当前版本请以[最新状态](CURRENT_STATUS.md)为准。
+
+---
+
 # 未解决问题与验收条件
 
 GitHub跟踪入口：[旧模组相机无ACK](https://github.com/William19-creator-wq/ti60f225-fpga-edge-detection/issues/1)、[复杂识别与资源](https://github.com/William19-creator-wq/ti60f225-fpga-edge-detection/issues/2)、[整机实物与性能](https://github.com/William19-creator-wq/ti60f225-fpga-edge-detection/issues/3)、[DDR 状态 0x1F 与彩条无帧](https://github.com/William19-creator-wq/ti60f225-fpga-edge-detection/issues/4)。状态以 GitHub 页面为准；旧模组故障已由更换模组解决，后面三项仍待验收。

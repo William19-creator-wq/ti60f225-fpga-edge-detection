@@ -1,0 +1,40 @@
+--- RGB/rtl/ti60f225_oob_top.v
++++ CARD/rtl/ti60f225_oob_top.v
+@@ -775,9 +775,10 @@
+ localparam BAYER_RB_SWAP = 1'b0;
+ // 人工RAW只覆盖中部色卡；相机其余数据及原同步逐位保留。
+ wire [15:0] diagnostic_raw;
++wire diagnostic_raw_y_odd;
+ rawcard_overlay rawcard_inst (
+     .clk(vid_clk_dvi2), .rst_n(vid_rst_n), .vs(ch0_vs), .de(ch0_de),
+-    .camera_raw({ch0_b,ch0_g}), .out_raw(diagnostic_raw)
++    .camera_raw({ch0_b,ch0_g}), .out_raw(diagnostic_raw), .raw_y_odd(diagnostic_raw_y_odd)
+ );
+ debayer_top_2to1 #(.Y_PHASE_XOR(BAYER_Y_PHASE_XOR), .RB_SWAP(BAYER_RB_SWAP)) debayer_top
+ (
+@@ -1072,7 +1073,7 @@
+     .la0_ch0_g          ( ch0_g               ),
+     .la0_ch0_b          ( ch0_b               ),
+     .la0_ch0_de         ( ch0_de              ),
+-    .la0_cal_done       ( cal_done            )
++    .la0_cal_done       ( diagnostic_raw_y_odd ) // RAWTAG ONLY: legacy probe name now carries RAW row parity, NOT DDR cal_done
+ );
+ 
+ endmodule
+--- RGB/rtl/rawcard_overlay.v
++++ CARD/rtl/rawcard_overlay.v
+@@ -4,11 +4,13 @@
+ module rawcard_overlay (
+     input wire clk, rst_n, vs, de,
+     input wire [15:0] camera_raw,
+-    output reg [15:0] out_raw
++    output reg [15:0] out_raw,
++    output wire raw_y_odd // 与当前输入RAW字同拍；VS下降沿归零，DE下降沿翻行
+ );
+     reg vs_q, de_q;
+     reg [9:0] word_x;
+     reg [10:0] line_y;
++    assign raw_y_odd = line_y[0];
+     reg [23:0] rgb;
+     reg [7:0] gray;
+     integer k;

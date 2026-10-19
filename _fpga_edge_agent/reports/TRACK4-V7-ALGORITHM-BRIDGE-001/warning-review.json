@@ -1,0 +1,40 @@
+{
+  "reviewed_added": [
+    "[EFX-0657 WARNING] Mapping into logic memory block 'red_term_s1' (algorithm/frontend/rgb_to_y_pair.sv:LINE) because size is too small (<=64)",
+    "[EFX-0657 WARNING] Mapping into logic memory block 'green_term_s1' (algorithm/frontend/rgb_to_y_pair.sv:LINE) because size is too small (<=64)",
+    "[EFX-0657 WARNING] Mapping into logic memory block 'blue_term_s1' (algorithm/frontend/rgb_to_y_pair.sv:LINE) because size is too small (<=64)",
+    "[EFX-0657 WARNING] Mapping into logic memory block 'red_green_s2' (algorithm/frontend/rgb_to_y_pair.sv:LINE) because size is too small (<=64)",
+    "[EFX-0657 WARNING] Mapping into logic memory block 'blue_round_s2' (algorithm/frontend/rgb_to_y_pair.sv:LINE) because size is too small (<=64)",
+    "[EFX-0657 WARNING] Mapping into logic memory block 'candidates_s5' (algorithm/frontend/median9_pair.sv:LINE) because size is too small (<=64)",
+    "[EFX-0657 WARNING] Mapping into logic memory block 'median_candidates' (algorithm/frontend/median9_pair.sv:LINE) because size is too small (<=64)",
+    "[EFX-0657 WARNING] Mapping into logic memory block 'candidates_s7' (algorithm/frontend/median9_pair.sv:LINE) because size is too small (<=64)",
+    "[EFX-0657 WARNING] Mapping into logic memory block 'candidates_s8' (algorithm/frontend/median9_pair.sv:LINE) because size is too small (<=64)",
+    "[EFX-0657 WARNING] Mapping into logic memory block 'signed_gradient_x' (algorithm/frontend/sobel_pair.sv:LINE) because size is too small (<=64)",
+    "[EFX-0657 WARNING] Mapping into logic memory block 'signed_gradient_y' (algorithm/frontend/sobel_pair.sv:LINE) because size is too small (<=64)",
+    "[EFX-0657 WARNING] Mapping into logic memory block 'absolute_x_s4' (algorithm/frontend/sobel_pair.sv:LINE) because size is too small (<=64)",
+    "[EFX-0657 WARNING] Mapping into logic memory block 'absolute_y_s4' (algorithm/frontend/sobel_pair.sv:LINE) because size is too small (<=64)",
+    "[EFX-0657 WARNING] Mapping into logic memory block 'algorithm_bridge/row_frame__D$12' (rtl/v7_algorithm_video_pair.sv:LINE) because write and read address port is not compatible for dual-ported ram.",
+    "[EFX-0657 WARNING] Mapping into logic memory block 'algorithm_bridge/row_number' (rtl/v7_algorithm_video_pair.sv:LINE) because write ports > 2.",
+    "[EFX-0657 WARNING] Mapping into logic memory block 'algorithm_bridge/row_frame__D$b2' (rtl/v7_algorithm_video_pair.sv:LINE) because write and read address port is not compatible for dual-ported ram.",
+    "[EFX-0657 WARNING] Mapping into logic memory block 'algorithm_bridge/row_frame__D$21' (rtl/v7_algorithm_video_pair.sv:LINE) because write and read address port is not compatible for dual-ported ram.",
+    "[EFX-0657 WARNING] Mapping into logic memory block 'algorithm_bridge/algorithms/median/candidates_s4' (algorithm/frontend/median9_pair.sv:LINE) because it has all constant reader/writer.",
+    "[EFX-0657 WARNING] Mapping into logic memory block 'algorithm_bridge/algorithms/median/row_order' (algorithm/frontend/median9_pair.sv:LINE) because it has all constant reader/writer.",
+    "[EFX-0657 WARNING] Mapping into logic memory block 'algorithm_bridge/algorithms/median/row_second_s2' (algorithm/frontend/median9_pair.sv:LINE) because it has all constant reader/writer.",
+    "[EFX-0657 WARNING] Mapping into logic memory block 'algorithm_bridge/algorithms/median/row_first_s1' (algorithm/frontend/median9_pair.sv:LINE) because it has all constant reader/writer.",
+    "[EFX-0657 WARNING] Mapping into logic memory block 'algorithm_bridge/algorithms/sobel/corner_sums_s1' (algorithm/frontend/sobel_pair.sv:LINE) because it has all constant reader/writer.",
+    "[EFX-0657 WARNING] Mapping into logic memory block 'algorithm_bridge/algorithms/sobel/middle_twice_s1' (algorithm/frontend/sobel_pair.sv:LINE) because it has all constant reader/writer.",
+    "[EFX-0657 WARNING] Mapping into logic memory block 'algorithm_bridge/algorithms/sobel/side_sums' (algorithm/frontend/sobel_pair.sv:LINE) because it has all constant reader/writer.",
+    "[EFX-0657 WARNING] Mapping into logic memory block 'algorithm_bridge/algorithms/sobel/gradient_delay_x' (algorithm/frontend/sobel_pair.sv:LINE) because it has all constant reader/writer.",
+    "[EFX-0657 WARNING] Mapping into logic memory block 'algorithm_bridge/algorithms/sobel/gradient_delay_y' (algorithm/frontend/sobel_pair.sv:LINE) because it has all constant reader/writer."
+  ],
+  "unreviewed": [],
+  "flow_logs_reviewed": true,
+  "review_notes": [
+    "13 small arithmetic pipeline arrays and 9 constant-index median/Sobel register arrays are implemented as logic, as intended; not frame or line storage.",
+    "4 row-tag array warnings select flip-flop/mux implementations because tags are asynchronously read/resettable. Only 8 tags, no large frame memory mapped to logic.",
+    "Original scan and result pixel arrays are block RAM; map resource totals 165 RAM10 + 4 DPRAM10, and 8 explicit algorithm line RAM10 instances are present.",
+    "Detailed PNR warning counts/messages match baseline after SDC path normalization, generated synchronizer-driver IDs, and loop-cell source/LUT/pin-graph normalization. Every loop maps to a byte-identical inherited RTL file; complete named synchronizer heads are preserved.",
+    "Driver map/interface/pnr logs retain inherited non-ASCII resolved-path and correct-IV warnings. Stages returned PASS; source hashes, geometry simulation and 18 setup/hold relationships checked.",
+    "No newly added latch, undriven signal, combinational-loop or unconstrained-clock warning was accepted."
+  ]
+}

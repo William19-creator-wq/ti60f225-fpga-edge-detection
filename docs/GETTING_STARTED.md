@@ -1,45 +1,27 @@
-# 打开代码与使用 Efinity
+# 打开、构建与上板
 
-先阅读[当前成果](CURRENT_STATUS.md)。仓库保留原工程结构；导出过程没有重新编译或修改RTL和约束。历史脚本与日志含原机器路径，运行脚本前需检查自己的Efinity/Questa路径、ASCII别名和工作目录。
+当前推荐基线为 [`_fpga_edge_agent/work/active/track4_v7_algorithm_bridge_001_20261018/ti60f225_oob.xml`](../_fpga_edge_agent/work/active/track4_v7_algorithm_bridge_001_20261018/ti60f225_oob.xml)。不要从 DISPLAY-HALF 开始，也不要把历史 031 工程的 bit 与这里的源码混用。
 
-## 工程入口
+## 先复现实机基线
 
-在Efinity主窗口选择 Open Project 打开XML。Programmer用于加载bit，不能把它当作源码工程编辑器。
+1. 从 [handoff-2026-10-19 Release](https://github.com/William19-creator-wq/ti60f225-fpga-edge-detection/releases/tag/handoff-2026-10-19) 下载 `v7_algorithm_bridge_001_v1_20261018.bit` 和 `SHA256SUMS.txt`，用 PowerShell `Get-FileHash -Algorithm SHA256 <bit文件>` 核对。
+2. 硬件匹配 Ti60F225 DemoBoard V4、SC431HAI 接 J4、HDMI 输出。保持已工作的电源与连接；若需改接相机排线，先断电。
+3. 断开 Debugger 的 JTAG 会话，打开 Efinity Programmer。选择 `Quad RS232-HS`、JTAG、设备 `1 - 0x10660a79`，加载推荐 bit。沿用先前成功的 6MHz JTAG 设置。
+4. 点击下载，等日志 `Programming operation completed` 后观察画面。该流程是 JTAG 临时配置，不是 Flash 固化。五分区应按颜色／灰度／中值／Sobel／红边叠加显示；遮挡或移动镜头时各区都应实时。
+5. 记录实际文件哈希、下载结果、画面与边缘对齐。若 USB/JTAG 报错或画面停帧，先停止重复采样、断开调试会话；会话历史中有仅断开不足以恢复、重新下载后恢复的情况。
 
-| 目的 | XML位置及状态 |
-|---|---|
-| 精简后的整机修订版B02 | `_fpga_edge_agent/work/active/track4_board_refine_from031_20261013/track4_board.xml`；软件构建通过，实际效果未验收 |
-| 历史031整机源码 | `_fpga_edge_agent/work/active/track4_board_debug_031_20261011/track4_board.xml`；保留原引脚和缺陷用于追溯，见下节 |
-| 主板I²C电平检查 | `_fpga_edge_agent/work/active/track4_camera_bus_level_001_20261013/ti60f225_oob.xml`；本次已完成主板侧实测 |
-| 原相机身份探测 | `_fpga_edge_agent/work/active/track4_camera_id_001_20261013/ti60f225_oob.xml` |
-| RST高电平限时对照 | `_fpga_edge_agent/work/active/track4_camera_rst_compare_001_20261013/ti60f225_oob.xml` |
-| Claude持续RST高低对照 | `_fpga_edge_agent/work/active/track4_cam_rst_static_001_20261014/ti60f225_oob.xml` |
-| 原厂v7独立副本 | `_fpga_edge_agent/work/active/camera_official_diag_20261013_v7/Ti60f225_sc431hai2hdmi_v7/ti60f225_oob.xml` |
-| 自研视频恢复 v1（彩条实物可见） | `_fpga_edge_agent/work/active/track4_video_restore_001_20261015/track4_board.xml` |
-| 最新 DDR 阶段诊断 v1（原始 0x1F） | `_fpga_edge_agent/work/active/track4_ddr_cal_diag_001_20261015/track4_board.xml`；D0–D7 专用灯义见[接手文档](HANDOFF_2026-10-15.md) |
-| 灰度/中值/Sobel独立实验 | `_fpga_edge_agent/work/active/track4_algorithms_20261004/r1/project/r1_algorithm.xml`；实验probe引脚不能当成生产板接口 |
+## 构建与仿真
 
-布局布线与综合的缓存、波形及大型中间网表未放入Git。现有XML直接引用的必要源文件另行补入，未改写源码。对54份工程XML的design_file引用检查见[源码引用检查](export/project-source-reference-check.json)：主要工程的引用存在，开发目录中旧的 `track4_board_first_20261011/ti60f225_oob.xml` 缺 `debug_top.v`，需要按debug profile由Efinity生成；该旧XML不是当前 `track4_board.xml`。原构建方式见对应脚本和日志。克隆后未在另一台机器重新验证全部工程，因此保留工具路径和依赖检查为使用前步骤。
+使用 Efinity 2026.1.132，Ti60F225、I3。在完整源码目录打开 XML，保留 `ip/`、`rtl/`、`algorithm/`、顶层 `debug_top.v`、寄存器 `.mem`、约束 `.sdc` 与 `.peri.xml` 的相对位置。新克隆机器的工具生成接口/缓存需由工具重新生成；本次只核对项目引用和源文件哈希，未在新机器重建。
 
-## 已知031引脚问题
+已有脚本在推荐工程 `tests/`：
 
-031曾将KEY1/KEY2与D0/D1的P13/N13/P14/N14对应关系混淆。原README没有被改写，不能据其旧按键说明操作新板。B02已在peri中修订：KEY1/SW1复位为P14，KEY2/SW2为N14，D0为P13，D1为N13。官方v7及相机诊断的逻辑复位通常用SW0/C4，具体以各工程peri和设计为准。
+- `run_sim.py`：Python/NumPy 参考与 Questa，支持 small/fault/reset/full；依赖 Efinity `efx_ram10.v` 模型，并抽取实际顶层串行化逻辑。
+- `run_build.py`：依次调用 Efinity map、interface、pnr、pgm；这里 pgm 是生成 bit 的工具流程，不会执行板卡烧录。
+- `check_build.py`、`review_warnings.py`、`register.py`：构建核查与既有登记流程。
 
-KEY3对应板上SW3、A3；CRESET_N是配置复位，不是普通用户按键。独立四引脚算法probe的实验分配与生产整机不同。
+这些历史脚本含 `C:/Users/34528/FPGAEdgeLinks/…` 与 `D:/大三/FPGA_verilog/…` 绝对路径，接手者必须先在工作副本中调整工具路径、报告输出路径和父基线引用。不要直接运行 `prepare.py`/`integrate.py` 覆盖当前已验证快照；它们是当时生成工程的历史步骤。Windows 原厂工具流程会移除 `PYTHONUTF8`，以使用系统编码解码子进程输出，相关失败与重跑日志保留在 reports。
 
-## Programmer设置
+构建后检查 setup/hold、警告变化、完整测试结果，再关联新 bit 的 SHA256；不能把原 bit 的成功报告套用于修改后的工程。项目规则入口仍为根目录 `AGENTS.md` 和 `_fpga_edge_agent/AGENTS.md`。原厂加密 IP 与工具许可由使用者本机环境提供。
 
-这套已实测下载器使用：
-
-- Board Profile：Generic Board Profile Using FT4232H。
-- USB Target：local Quad RS232-HS，VID0403/PID6011。
-- 驱动：已授权安装的JTAG B／Interface1 libusbK。
-- Programming Mode：JTAG。
-- Device Select：1／0x10660A79。
-- JTAG Clock：6MHz；Shared未勾选。
-
-Interface0/SPI缺驱动提示不等于当前JTAG B不能下载。本项目近期只临时JTAG下载；断电后程序不保留，没有确认烧入Flash。
-
-从Release按 [索引](export/bitstream-paths.csv) 解压相应blob，恢复原文件名并核SHA256，再在Programmer选择它。日志必须明确出现对应路径、`Device is in user mode!` 和 `Programming operation completed.`；不同bit的灯义不同。
-
-旧摄像头模组已由用户更换，官方演示工程可出图；自研恢复/诊断版仍仅见彩条，优先按[接手文档](HANDOFF_2026-10-15.md)排查 DDR/帧发布。显示器识别1080p/60Hz说明显示扫描信息，不表示算法每秒处理60帧。
+历史 10 月 15 日恢复/DDR 诊断路线见 [旧交接](HANDOFF_2026-10-15.md)，只用于复盘旧自研版本的无图问题。

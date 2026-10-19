@@ -1,0 +1,84 @@
+--- RGB/rtl/ti60f225_oob_top.v
++++ CARD/rtl/ti60f225_oob_top.v
+@@ -1004,13 +1004,22 @@
+   .o_vs     (gamma_vs       )
+ );
+ 
++// 已知数字色卡直达编码器；下方相机路径及所有同步信号保持原样。
++wire [7:0] card_r, card_g, card_b;
++colorcard_overlay colorcard_inst (
++    .clk(hdmi_tx_slow_clk), .rst_n(vid_rst_n),
++    .vs(hdmi_tx_vs), .de(hdmi_tx_de),
++    .camera_r(hdmi_tx_bdata), .camera_g(hdmi_tx_gdata), .camera_b(hdmi_tx_rdata),
++    .out_r(card_r), .out_g(card_g), .out_b(card_b)
++);
++
+ dvi_encoder dvi_encoder_m0
+ (
+ 	.pixelclk      		(hdmi_tx_slow_clk          ),// system clock
+ 	.rst_p         		(~vid_rst_n      ),// reset
+-	.i_bdata      		(gamma_sel ? gamma_bdata	: hdmi_tx_rdata 	),//(hdmi_tx_rdata ),//(video_b            ),//(bdata_in	),   //
+-	.i_gdata     		  (gamma_sel ? gamma_gdata	: hdmi_tx_gdata   ),//(hdmi_tx_gdata ),//(video_g            ),//(gdata_in	),   //   
+-	.i_rdata       		(gamma_sel ? gamma_rdata	: hdmi_tx_bdata 	),//(hdmi_tx_bdata ),//(video_r            ),//(rdata_in	),   //   
++	.i_bdata      		(card_b),//(hdmi_tx_rdata ),//(video_b            ),//(bdata_in	),   //
++	.i_gdata     		  (card_g),//(hdmi_tx_gdata ),//(video_g            ),//(gdata_in	),   //   
++	.i_rdata       		(card_r),//(hdmi_tx_bdata ),//(video_r            ),//(rdata_in	),   //   
+   .i_de            	(gamma_sel ? gamma_valid	: hdmi_tx_de      ),//(hdmi_tx_de    ),//(video_de           ),//(rx_de		  ),   //
+ 	.i_hs         		(gamma_sel ? gamma_hs	    : hdmi_tx_hs    ),//(video_hs           ),//(rx_hsync	),   //   
+ 	.i_vs         		(gamma_sel ? gamma_vs	    : hdmi_tx_vs    ),//(video_vs           ),//(rx_vsync	),   //  
+--- RGB/ti60f225_oob.xml
++++ CARD/ti60f225_oob.xml
+@@ -7,6 +7,7 @@
+     <efx:design_info def_veri_version="sv_09" def_vhdl_version="vhdl_2008" unified_flow="false" partition_interface_allowed_off_perimeter="true">
+         <efx:top_module name="ti60f225_oob_top" />
+         <efx:design_file name="rtl/ti60f225_oob_top.v" version="default" library="default" />
++        <efx:design_file name="rtl/colorcard_overlay.v" version="default" library="default" />
+         <efx:design_file name="rtl/user_dual_port_ram.v" version="default" library="default" />
+         <efx:design_file name="rtl/dual_clock_fifo.v" version="default" library="default" />
+         <efx:design_file name="rtl/true_dual_port_ram.v" version="default" library="default" />
+--- RGB/rtl/colorcard_overlay.v
++++ CARD/rtl/colorcard_overlay.v
+@@ -0,0 +1,43 @@
++// 1920 宽诊断色卡：前96行是白黄青绿紫红蓝黑，随后96行是16级灰阶。
++// 单像素时钟域；DE/VS原样旁路，不增加延迟；其余行逐位保留相机RGB。
++module colorcard_overlay (
++    input wire clk, rst_n, vs, de,
++    input wire [7:0] camera_r, camera_g, camera_b,
++    output reg [7:0] out_r, out_g, out_b
++);
++    reg vs_q, de_q;
++    reg [11:0] x;
++    reg [10:0] y;
++    reg [23:0] color;
++    reg [7:0] gray;
++    integer k;
++    // x表示当前即将被编码器采样的像素；行号只在整段DE结束后推进。
++    always @(posedge clk) begin
++        if (!rst_n) begin
++            vs_q <= 1'b0; de_q <= 1'b0; x <= 12'd0; y <= 11'd0;
++        end else begin
++            vs_q <= vs; de_q <= de;
++            if (vs && !vs_q) begin x <= 12'd0; y <= 11'd0; end
++            else begin
++                if (de) x <= x + 12'd1; else x <= 12'd0;
++                if (!de && de_q && y != 11'h7ff) y <= y + 11'd1;
++            end
++        end
++    end
++    always @* begin
++        if      (x < 12'd240)  color = 24'hffffff;
++        else if (x < 12'd480)  color = 24'hffff00;
++        else if (x < 12'd720)  color = 24'h00ffff;
++        else if (x < 12'd960)  color = 24'h00ff00;
++        else if (x < 12'd1200) color = 24'hff00ff;
++        else if (x < 12'd1440) color = 24'hff0000;
++        else if (x < 12'd1680) color = 24'h0000ff;
++        else                  color = 24'h000000;
++        gray = 8'd0;
++        for (k=1; k<16; k=k+1)
++            if (x >= k*120) gray = k*17;
++        {out_r,out_g,out_b} = {camera_r,camera_g,camera_b};
++        if (rst_n && de && y < 11'd96) {out_r,out_g,out_b} = color;
++        else if (rst_n && de && y < 11'd192) {out_r,out_g,out_b} = {gray,gray,gray};
++    end
++endmodule

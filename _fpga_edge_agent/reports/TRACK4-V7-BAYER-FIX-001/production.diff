@@ -1,0 +1,26 @@
+--- baseline/raw_to_rgb.v
++++ candidate/raw_to_rgb.v
+@@ -328,8 +328,9 @@
+ 
+ wire [P_DEPTH+1:0] w_r_00_00_l0	= r_bayer_11_00_1P_1 + r_bayer_01_11_2P_1 + r_bayer_01_00_1P_1 + r_bayer_11_11_2P_1;
+ wire [P_DEPTH+1:0] w_g_00_00_l0	= r_bayer_11_00_1P_0 + r_bayer_01_00_1P_0 + r_bayer_00_00_1P_1 + r_bayer_00_11_2P_1;
+-wire [P_DEPTH  :0] w_r_00_00_h0 = r_bayer_00_01_0P_0 + r_bayer_00_00_1P_0;
+-wire [P_DEPTH  :0] w_b_00_00_h0 = r_bayer_11_00_1P_1 + r_bayer_01_00_1P_1;
++// BG centre row: the high-slot G takes R vertically and B horizontally.
++wire [P_DEPTH  :0] w_r_00_00_h0 = r_bayer_11_00_1P_1 + r_bayer_01_00_1P_1;
++wire [P_DEPTH  :0] w_b_00_00_h0 = r_bayer_00_01_0P_0 + r_bayer_00_00_1P_0;
+ 
+ always@(posedge i_pclk)
+ begin
+@@ -393,9 +394,9 @@
+ 				r_g_00_00_1P[P_DEPTH-1:0]	<= w_g_00_00_l0>>2;//(((r_bayer_11_00_1P_0 >> 1) + (r_bayer_01_00_1P_0 >> 1)) >> 1) + (((r_bayer_00_00_1P_1 >> 1) + (r_bayer_00_11_2P_1 >> 1)) >> 1);
+ 				r_b_00_00_1P[P_DEPTH-1:0]	<= r_bayer_00_00_1P_0; 
+ 				
+-				r_r_00_00_1P[PW-1:P_DEPTH]	<= w_r_00_00_h0>>1;//(r_bayer_00_01_0P_0 >> 1) + (r_bayer_00_00_1P_0 >> 1);
++				r_r_00_00_1P[PW-1:P_DEPTH]	<= w_r_00_00_h0>>1;
+ 				r_g_00_00_1P[PW-1:P_DEPTH]	<= r_bayer_00_00_1P_1;				
+-				r_b_00_00_1P[PW-1:P_DEPTH]	<= w_b_00_00_h0>>1;//(r_bayer_11_00_1P_1 >> 1) + (r_bayer_01_00_1P_1 >> 1);
++				r_b_00_00_1P[PW-1:P_DEPTH]	<= w_b_00_00_h0>>1;
+ 				
+ 			end
+ 		end

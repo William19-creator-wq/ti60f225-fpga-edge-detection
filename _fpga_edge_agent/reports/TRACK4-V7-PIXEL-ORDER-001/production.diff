@@ -1,0 +1,14 @@
+--- DETAIL/rtl/ti60f225_oob_top.v
++++ PIXEL_ORDER/rtl/ti60f225_oob_top.v
+@@ -573,7 +573,10 @@
+ /*i*/.i_clk			(i_mipi_rx_pclk      ),
+ /*i*/.i_vs			(w_mipi_rx_vs	),
+ /*i*/.i_de			(w_mipi_rx_de & w_mipi_rx_hs	),
+-/*i*/.vin 			({w_mipi_rx_data[39:32],w_mipi_rx_data[29:22],w_mipi_rx_data[19:12],w_mipi_rx_data[9:2]}	),
++// PIXEL-ORDER-001: RAW10 P0 is bits[9:0]. DDR unpack emits the MS halfword first;
++// each downstream two-pixel word emits its low byte first. Pack {P1,P0,P3,P2}
++// so the visible stream is P0,P1,P2,P3 (the old packing yielded P2,P3,P0,P1).
++/*i*/.vin 			({w_mipi_rx_data[19:12],w_mipi_rx_data[9:2],w_mipi_rx_data[39:32],w_mipi_rx_data[29:22]}	),
+                      
+ /*i*/.o_clk			(vid_clk_dvi2),//(i_mipi_rx_pclk	),                  
+ /*i*/.fifo_rd_period(fifo_rd_period),//(fifo_rd_period  ),

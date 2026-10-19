@@ -1,0 +1,124 @@
+--- RGB/rtl/colorcard_overlay.v
++++ CARD/rtl/colorcard_overlay.v
+@@ -1,4 +1,4 @@
+-// 1920 宽诊断色卡：前96行是白黄青绿紫红蓝黑，随后96行是16级灰阶。
++// 空间细节诊断A区：第0..191行，直接RGB细线/棋盘格。
+ // 单像素时钟域；DE/VS原样旁路，不增加延迟；其余行逐位保留相机RGB。
+ module colorcard_overlay (
+     input wire clk, rst_n, vs, de,
+@@ -8,9 +8,8 @@
+     reg vs_q, de_q;
+     reg [11:0] x;
+     reg [10:0] y;
+-    reg [23:0] color;
+-    reg [7:0] gray;
+-    integer k;
++    wire [7:0] gray;
++    detail_pattern_gray pattern(.pixel_x(x[10:0]),.local_y(y[7:0]),.gray(gray));
+     // x表示当前即将被编码器采样的像素；行号只在整段DE结束后推进。
+     always @(posedge clk) begin
+         if (!rst_n) begin
+@@ -25,19 +24,7 @@
+         end
+     end
+     always @* begin
+-        if      (x < 12'd240)  color = 24'hffffff;
+-        else if (x < 12'd480)  color = 24'hffff00;
+-        else if (x < 12'd720)  color = 24'h00ffff;
+-        else if (x < 12'd960)  color = 24'h00ff00;
+-        else if (x < 12'd1200) color = 24'hff00ff;
+-        else if (x < 12'd1440) color = 24'hff0000;
+-        else if (x < 12'd1680) color = 24'h0000ff;
+-        else                  color = 24'h000000;
+-        gray = 8'd0;
+-        for (k=1; k<16; k=k+1)
+-            if (x >= k*120) gray = k*17;
+         {out_r,out_g,out_b} = {camera_r,camera_g,camera_b};
+-        if (rst_n && de && y < 11'd96) {out_r,out_g,out_b} = color;
+-        else if (rst_n && de && y < 11'd192) {out_r,out_g,out_b} = {gray,gray,gray};
++        if (rst_n && de && y < 11'd192) {out_r,out_g,out_b} = {gray,gray,gray};
+     end
+ endmodule
+--- RGB/rtl/detail_pattern_gray.v
++++ CARD/rtl/detail_pattern_gray.v
+@@ -0,0 +1,22 @@
++// 六列线宽依次为1/2/4/8/16/32像素；三行依次是竖线、横线、棋盘格。
++// 组合输出，没有改变视频拍数。32/224灰度避免全0/全1掩盖数据位问题。
++module detail_pattern_gray(
++    input wire [10:0] pixel_x,
++    input wire [7:0] local_y,
++    output wire [7:0] gray
++);
++    reg [2:0] width_log2;
++    reg bright;
++    always @* begin
++        if(pixel_x<11'd320) width_log2=0;
++        else if(pixel_x<11'd640) width_log2=1;
++        else if(pixel_x<11'd960) width_log2=2;
++        else if(pixel_x<11'd1280) width_log2=3;
++        else if(pixel_x<11'd1600) width_log2=4;
++        else width_log2=5;
++        if(local_y<8'd64) bright=pixel_x[width_log2];
++        else if(local_y<8'd128) bright=local_y[width_log2];
++        else bright=pixel_x[width_log2]^local_y[width_log2];
++    end
++    assign gray=bright ? 8'd224 : 8'd32;
++endmodule
+--- RGB/rtl/rawcard_overlay.v
++++ CARD/rtl/rawcard_overlay.v
+@@ -1,5 +1,5 @@
+-// 在已有两像素RAW流中插入已知BGGR样本，适配P11及现有HDMI红蓝旁路交换。
+-// 第224..319行八色，第320..415行16级灰阶。相机数据在其余区域逐位通过。
++// 空间细节诊断B区：第224..415行，插入灰色场景对应的BGGR细线/棋盘格。
++// 每个RAW位置单独计算，不把同一字的两个像素复制。相机其他区域逐位通过。
+ // 不修改同步、不增加拍数；首行相位在VS下降沿归零，与现有debayer计数一致。
+ module rawcard_overlay (
+     input wire clk, rst_n, vs, de,
+@@ -11,9 +11,10 @@
+     reg [9:0] word_x;
+     reg [10:0] line_y;
+     assign raw_y_odd = line_y[0];
+-    reg [23:0] rgb;
+-    reg [7:0] gray;
+-    integer k;
++    wire [7:0] gray_low,gray_high;
++    wire [10:0] local_y=line_y-11'd224;
++    detail_pattern_gray low_pattern(.pixel_x({word_x,1'b0}),.local_y(local_y[7:0]),.gray(gray_low));
++    detail_pattern_gray high_pattern(.pixel_x({word_x,1'b1}),.local_y(local_y[7:0]),.gray(gray_high));
+     always @(posedge clk) begin
+         if (!rst_n) begin vs_q<=0;de_q<=0;word_x<=0;line_y<=0; end
+         else begin
+@@ -26,22 +27,9 @@
+         end
+     end
+     always @* begin
+-        // 高电平192、低电平32，避免仅凭全0/全1验证数据通路。
+-        if      (word_x<10'd120) rgb=24'hc0c0c0;
+-        else if (word_x<10'd240) rgb=24'hc0c020;
+-        else if (word_x<10'd360) rgb=24'h20c0c0;
+-        else if (word_x<10'd480) rgb=24'h20c020;
+-        else if (word_x<10'd600) rgb=24'hc020c0;
+-        else if (word_x<10'd720) rgb=24'hc02020;
+-        else if (word_x<10'd840) rgb=24'h2020c0;
+-        else                   rgb=24'h202020;
+-        gray=0;
+-        for(k=1;k<16;k=k+1) if(word_x>=k*60) gray=k*17;
+-        if(line_y>=11'd320) rgb={gray,gray,gray};
+         out_raw=camera_raw;
+         if(rst_n && de && line_y>=11'd224 && line_y<11'd416) begin
+-            if(line_y[0]) out_raw={rgb[23:16],rgb[15:8]}; // 奇数行：低G、高R
+-            else          out_raw={rgb[15:8],rgb[7:0]};   // 偶数行：低B、高G
++            out_raw={gray_high,gray_low};
+         end
+     end
+ endmodule
+--- RGB/ti60f225_oob.xml
++++ CARD/ti60f225_oob.xml
+@@ -11,6 +11,7 @@
+         <efx:design_file name="rtl/rawcard_overlay.v" version="default" library="default" />
+         <efx:design_file name="rtl/raw_bggr_balance.v" version="default" library="default" />
+         <efx:design_file name="rtl/camera_fps_monitor.v" version="default" library="default" />
++        <efx:design_file name="rtl/detail_pattern_gray.v" version="default" library="default" />
+         <efx:design_file name="rtl/user_dual_port_ram.v" version="default" library="default" />
+         <efx:design_file name="rtl/dual_clock_fifo.v" version="default" library="default" />
+         <efx:design_file name="rtl/true_dual_port_ram.v" version="default" library="default" />

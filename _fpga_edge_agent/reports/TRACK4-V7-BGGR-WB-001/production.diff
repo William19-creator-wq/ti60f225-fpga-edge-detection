@@ -1,0 +1,98 @@
+--- RGB/rtl/ti60f225_oob_top.v
++++ CARD/rtl/ti60f225_oob_top.v
+@@ -770,15 +770,20 @@
+ wire [15:0] g_gain;
+ wire [15:0] b_gain;
+ 
+-// PH-1/3: P00; 固定实验模式。Debugger的gain/gamma控件在本实验中不控制画面。
+-localparam BAYER_Y_PHASE_XOR = 1'b0;
+-localparam BAYER_RB_SWAP = 1'b0;
+-// 人工RAW只覆盖中部色卡；相机其余数据及原同步逐位保留。
++// 实测RAW行标记支持BGGR，采用P11；Debugger gain/gamma控件不控制画面。
++localparam BAYER_Y_PHASE_XOR = 1'b1;
++localparam BAYER_RB_SWAP = 1'b1;
++// 相机RAW先扣黑电平并白平衡，随后注入已知BGGR色卡；同步及拍数保持。
+ wire [15:0] diagnostic_raw;
+ wire diagnostic_raw_y_odd;
++wire [15:0] balanced_camera_raw;
++raw_bggr_balance balance_inst (
++    .enable(vid_rst_n && ch0_de), .row_odd(diagnostic_raw_y_odd),
++    .raw_in({ch0_b,ch0_g}), .raw_out(balanced_camera_raw)
++);
+ rawcard_overlay rawcard_inst (
+     .clk(vid_clk_dvi2), .rst_n(vid_rst_n), .vs(ch0_vs), .de(ch0_de),
+-    .camera_raw({ch0_b,ch0_g}), .out_raw(diagnostic_raw), .raw_y_odd(diagnostic_raw_y_odd)
++    .camera_raw(balanced_camera_raw), .out_raw(diagnostic_raw), .raw_y_odd(diagnostic_raw_y_odd)
+ );
+ debayer_top_2to1 #(.Y_PHASE_XOR(BAYER_Y_PHASE_XOR), .RB_SWAP(BAYER_RB_SWAP)) debayer_top
+ (
+--- RGB/ti60f225_oob.xml
++++ CARD/ti60f225_oob.xml
+@@ -9,6 +9,7 @@
+         <efx:design_file name="rtl/ti60f225_oob_top.v" version="default" library="default" />
+         <efx:design_file name="rtl/colorcard_overlay.v" version="default" library="default" />
+         <efx:design_file name="rtl/rawcard_overlay.v" version="default" library="default" />
++        <efx:design_file name="rtl/raw_bggr_balance.v" version="default" library="default" />
+         <efx:design_file name="rtl/user_dual_port_ram.v" version="default" library="default" />
+         <efx:design_file name="rtl/dual_clock_fifo.v" version="default" library="default" />
+         <efx:design_file name="rtl/true_dual_port_ram.v" version="default" library="default" />
+--- RGB/rtl/rawcard_overlay.v
++++ CARD/rtl/rawcard_overlay.v
+@@ -1,4 +1,4 @@
+-// 在已有两像素RAW流中插入已知GBRG样本，适配P00及现有HDMI红蓝旁路交换。
++// 在已有两像素RAW流中插入已知BGGR样本，适配P11及现有HDMI红蓝旁路交换。
+ // 第224..319行八色，第320..415行16级灰阶。相机数据在其余区域逐位通过。
+ // 不修改同步、不增加拍数；首行相位在VS下降沿归零，与现有debayer计数一致。
+ module rawcard_overlay (
+@@ -40,8 +40,8 @@
+         if(line_y>=11'd320) rgb={gray,gray,gray};
+         out_raw=camera_raw;
+         if(rst_n && de && line_y>=11'd224 && line_y<11'd416) begin
+-            if(line_y[0]) out_raw={rgb[15:8],rgb[23:16]}; // 奇数行：低R、高G
+-            else          out_raw={rgb[7:0],rgb[15:8]};   // 偶数行：低G、高B
++            if(line_y[0]) out_raw={rgb[23:16],rgb[15:8]}; // 奇数行：低G、高R
++            else          out_raw={rgb[15:8],rgb[7:0]};   // 偶数行：低B、高G
+         end
+     end
+ endmodule
+--- RGB/rtl/raw_bggr_balance.v
++++ CARD/rtl/raw_bggr_balance.v
+@@ -0,0 +1,38 @@
++// BGGR实测校正：偶数行低B/高G，奇数行低G/高R。
++// 组合变换，不新增流水拍；row_odd必须与当前raw_in同拍。
++// 暗场15..16取黑电平16。white_tag_01未饱和，Q8增益R=317,G=256,B=582。
++// 人工RAW色卡在本模块之后插入；LA探针仍采校正之前的原始字节。
++module raw_bggr_balance (
++    input wire enable,
++    input wire row_odd,
++    input wire [15:0] raw_in,
++    output wire [15:0] raw_out
++);
++    function [7:0] subtract_black;
++        input [7:0] sample;
++        begin subtract_black=(sample>8'd16)?sample-8'd16:8'd0; end
++    endfunction
++    function [7:0] red_balance;
++        input [7:0] sample;
++        reg [17:0] x, scaled;
++        begin
++            x={10'd0,subtract_black(sample)};
++            // 317=256+64-4+1；显式18位，最大值75891+128，不溢出。
++            scaled=(x<<8)+(x<<6)-(x<<2)+x+18'd128;
++            red_balance=(scaled>=18'd65280)?8'd255:scaled[15:8];
++        end
++    endfunction
++    function [7:0] blue_balance;
++        input [7:0] sample;
++        reg [17:0] x, scaled;
++        begin
++            x={10'd0,subtract_black(sample)};
++            // 582=512+64+4+2；最大值139098+128，不使用回绕截断。
++            scaled=(x<<9)+(x<<6)+(x<<2)+(x<<1)+18'd128;
++            blue_balance=(scaled>=18'd65280)?8'd255:scaled[15:8];
++        end
++    endfunction
++    assign raw_out=!enable ? raw_in : row_odd ?
++        {red_balance(raw_in[15:8]),subtract_black(raw_in[7:0])} :
++        {subtract_black(raw_in[15:8]),blue_balance(raw_in[7:0])};
++endmodule

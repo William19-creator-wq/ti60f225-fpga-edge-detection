@@ -1,0 +1,98 @@
+--- BAYER-FIX/rtl/debayer/debayer_top_2to1.v
++++ P01/rtl/debayer/debayer_top_2to1.v
+@@ -1,4 +1,5 @@
+ module debayer_top_2to1
++#(parameter Y_PHASE_XOR = 1'b0, parameter RB_SWAP = 1'b0)
+ (
+ 	input			in_pclk,
+ 	input			in_rstn,
+@@ -104,7 +105,9 @@
+ 		raw_to_rgb
+ 		#(
+ 			.P_DEPTH	(8),
+-			.LEGACY		(1'b1)
++			.LEGACY		(1'b1),
++			.Y_PHASE_XOR(Y_PHASE_XOR),
++			.RB_SWAP(RB_SWAP)
+ 		)
+ 		inst_raw_to_rgb
+ 		(
+--- BAYER-FIX/rtl/debayer/raw_to_rgb.v
++++ P01/rtl/debayer/raw_to_rgb.v
+@@ -2,7 +2,10 @@
+ #(
+ 	parameter	P_DEPTH			= 10,
+ 	parameter	PW				= P_DEPTH*2,
+-	parameter	LEGACY			= 1'b1
++	parameter	LEGACY			= 1'b1,
++	// PH-2: 编译期颜色解释；不改变窗口、计数、槽顺序或流水延迟。
++	parameter Y_PHASE_XOR = 1'b0,
++	parameter RB_SWAP = 1'b0
+ )
+ (
+ 	input			i_arstn,
+@@ -347,7 +350,7 @@
+ 
+ 			
+ 
+-		end else if (r_y_cnt[0])begin //偶数行
++		end else if (r_y_cnt[0] ^ Y_PHASE_XOR)begin // PH-2：只改变最终插值分支，边界逻辑保持
+ 			/* R Gr RG R */
+ 			// if (r_valid_1P)
+ 			// begin
+@@ -411,8 +414,8 @@
+ assign	o_valid	= r_valid_2P;
+ assign	o_x_cnt	= r_x_cnt_2P;	
+ assign	o_y_cnt	= r_y_cnt_2P;
+-assign	o_r		= r_r_00_00_1P;
++assign	o_r		= RB_SWAP ? r_b_00_00_1P : r_r_00_00_1P;
+ assign	o_g		= r_g_00_00_1P;
+-assign	o_b		= r_b_00_00_1P;
++assign	o_b		= RB_SWAP ? r_r_00_00_1P : r_b_00_00_1P;
+ 
+ endmodule
+--- BAYER-FIX/rtl/ti60f225_oob_top.v
++++ P01/rtl/ti60f225_oob_top.v
+@@ -770,7 +770,10 @@
+ wire [15:0] g_gain;
+ wire [15:0] b_gain;
+ 
+-debayer_top_2to1 debayer_top
++// PH-1/3: P01; 固定实验模式。Debugger的gain/gamma控件在本实验中不控制画面。
++localparam BAYER_Y_PHASE_XOR = 1'b1;
++localparam BAYER_RB_SWAP = 1'b0;
++debayer_top_2to1 #(.Y_PHASE_XOR(BAYER_Y_PHASE_XOR), .RB_SWAP(BAYER_RB_SWAP)) debayer_top
+ (
+ 	.in_pclk		  (vid_clk_dvi2),//(i_mipi_rx_pclk ),
+ 	.in_rstn		  (vid_rst_n	),
+@@ -780,9 +783,9 @@
+ 	.raw_de_i		  (ch0_de		      ),
+ 	.raw_valid_i	(ch0_de	        ),
+ 	.raw_datax4_i	({ch0_b,ch0_g}	),
+-	.r_gain       (|r_gain? r_gain:255 ),
+-  .g_gain       (|g_gain? g_gain:255 ),
+-  .b_gain       (|b_gain? b_gain:255 ),
++	.r_gain       (16'h0100),
++  .g_gain       (16'h0100),
++  .b_gain       (16'h0100),
+ 	.rgb_vs_o		  (rgb_vs         ),
+ 	.rgb_hs_o		  (rgb_hs         ),
+ 	.rgb_de_o		  (rgb_de         ),
+@@ -954,6 +957,8 @@
+ wire gamma_hs;
+ wire gamma_vs;
+ wire gamma_sel;
++wire vio_gamma_sel_unused; // 保留调试接口，但实验旁路由常量确定，避免多驱动。
++assign gamma_sel = 1'b0;
+ 
+ wire [7:0] con_rdata ;
+ wire [7:0] con_gdata ;
+@@ -1047,7 +1052,7 @@
+     .vio0_g_gain        ( g_gain              ),
+     .vio0_b_gain        ( b_gain              ),
+ 
+-    .vio0_gamma_sel     (gamma_sel),
++    .vio0_gamma_sel     (vio_gamma_sel_unused),
+     .la0_clk            ( vid_clk_dvi2        ),
+     .la0_ch0_g          ( ch0_g               ),
+     .la0_ch0_b          ( ch0_b               ),

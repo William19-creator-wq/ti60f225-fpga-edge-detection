@@ -1,27 +1,26 @@
-# 当前状态（2026-10-19）
+# Ti60F225 FPGA 图像处理与 DDR 帧缓存
 
-推荐基线是 `TRACK4-V7-ALGORITHM-BRIDGE-001`，不是最新尝试的 DISPLAY-HALF。完整操作和下一步见[交接说明](HANDOFF_2026-10-19.md)。
+更新日期：2026-10-30。当前功能版本：2026-10-29 DDR 帧缓存完整版（完整 M5 Canny 已启用）。
 
-| 版本 | 软件证据 | 实机证据 | 接手结论 |
-|---|---|---|---|
-| BGGR-WB | 黑电平／BGGR 通道增益验证与构建通过 | 用户确认颜色恢复；同光源白纸正常 | 颜色回退基线，尚无后续像素顺序修正 |
-| FPS | 计数器仿真、构建通过 | 三次抓取：1920×1080，约 12.660 FPS | 独立测量版，不代表所有后续 bit 已复测 |
-| PIXEL-ORDER | 实际 ser2par/DDR buffer/par2ser 链对照，连续／气泡／回压；每版本 11,520 像素 | 用户细线对照：条纹完整，中间稍软／细彩边，下方实时 | 修正每四像素交换；不宣称所有清晰度问题均解决 |
-| ALGORITHM-BRIDGE | 全尺寸两帧 4,147,200 像素逐像素比对；模式、故障、复位；setup ≥0.464 ns，hold ≥0.026 ns | 2026-10-18 用户：“五区都实时变化，边缘位置正常” | **推荐基线** |
-| ALGORITHM-CONTROL | 全尺寸三帧 6,220,800 像素；七模式小图、消抖、故障；setup ≥0.231 ns，hold ≥0.027 ns | 未取得针对该 bit 的验收 | 待验证候选，不能借用五分区的实机通过 |
-| DISPLAY-HALF | 构建与时序通过；setup ≥0.410 ns，hold ≥0.027 ns | 用户明确报告黑屏无信号并要求回退 | **失败，停止推荐** |
+摄像头采集 → Efinity 官方 DDR3 Soft Controller 5.16 → 完整帧存储 → 按帧读取 → 图像处理 → HDMI 1920×1080@60Hz。
 
-## 证据索引
+当前已由用户实板确认：M0实时彩色与M5 Canny持续更新；冻结与恢复；冻结后同一源帧调参；最近60帧回放、自动暂停、前后逐帧；A/B双帧彩色比较及退出恢复。A/B各960×540，上下留黑边。
 
-- [五分区实机反馈](../_fpga_edge_agent/reports/TRACK4-V7-ALGORITHM-BRIDGE-001/hardware-live-five-region-20261018.json)、[软件检查](../_fpga_edge_agent/reports/TRACK4-V7-ALGORITHM-BRIDGE-001/checks.json)、[构建与 bit 清单](../_fpga_edge_agent/artifacts/staging/TRACK4-V7-ALGORITHM-BRIDGE-001/manifest.json)。
-- [按键版说明与验证范围](../_fpga_edge_agent/reports/TRACK4-V7-ALGORITHM-CONTROL-001/按键与同画面对照_交付说明.md)。
-- [真实帧率结果](../_fpga_edge_agent/reports/TRACK4-V7-FPS-001/实际采集帧率结果_20261018.md)。三个抓取文件每份重复发送一个最近完整帧的统计包，不是 189 个独立帧样本；参考时钟使用配置的 50 MHz，未外部校准。
-- [BGGR 校准](../_fpga_edge_agent/reports/TRACK4-V7-BGGR-WB-001/calibration.json)、[颜色实机反馈](../_fpga_edge_agent/reports/TRACK4-V7-BGGR-WB-001/hardware-color-observation-001.json)。
-- [像素顺序链路证据](../_fpga_edge_agent/reports/TRACK4-V7-PIXEL-ORDER-001/data-path-evidence.json)、[官方 v7 来源对照](../_fpga_edge_agent/reports/TRACK4-V7-PIXEL-ORDER-001/official-v7-origin.json)。
-- [本次源码哈希核对](export/20261019/source-input-verification.json)、[导出文件清单](export/20261019/included-files.csv)。
+- [操作、地址分配与验收状态](DDR_FRAMEBUFFER_2026-10-29.md)
+- [Efinity工程入口](../projects/ti60_ddr_framebuffer_20261029/ti60f225_oob.xml)
+- [完整匹配源码压缩包](../artifacts/ddr-framebuffer-20261029/Ti60F225_DDR_Framebuffer_source.zip)
+- [当前比特流](../artifacts/ddr-framebuffer-20261029/Ti60F225_DDR_Framebuffer.bit)（下载原始文件后，使用Efinity Programmer执行JTAG下载）
+- [SHA256](../artifacts/ddr-framebuffer-20261029/SHA256.txt)、[构建与硬件清单](../artifacts/ddr-framebuffer-20261029/manifest.json)、[用户实板确认](../artifacts/ddr-framebuffer-20261029/hardware-observations.json)
+- [ReadAhead 2026-10-28 回退比特流](../artifacts/ddr-framebuffer-20261029/Ti60F225_Canny_ReadAhead_20261028.bit)
 
-## 仍未证明
+开发板Ti60F225 DemoBoard V4，摄像头SC431HAI。工具Efinity2026.1.132，官方DDR IP版本5.16。使用板载256MiB DDR3，RAW8保存1920×1080完整图像，64个2MiB源帧槽，保留最多60个完成历史帧；约30fps时片段约2秒。断电或重新下载后重新采集。
 
-HDMI 1920×1080@60Hz 不等于相机采集 60 FPS，也不等于镜头能分辨对应的细节。当前五分区 bit 的采集 FPS、长时间稳定性、丢帧情况和算法实机数值一致性仍需测量。完整 Canny、冻结重处理和形状识别尚未接入推荐基线。原 031/refine 不出相机画面的根因未闭环，不能写成“重构 demo10 后已全部修好”。
+三个按键：模式键短按切M0～M5；长按约0.8秒开关菜单；菜单内短按选I0～I6，＋／－调整。I2的P0/P1/P2/P3对应实时/冻结/播放/暂停；I3逐帧，I4/I5选择A/B，I6开关比较。详见操作说明。
 
-历史 manifest 中的 `WAITING_HUMAN_PROGRAM`、`hardware_passed:false` 是登记时的快照；后到的实机反馈单独保存，不篡改旧证据。正式 PostgreSQL 未配置；本次只做本地审计与 GitHub 交接更新。
+构建资源54418/60800 XLR，160/160 DSP，252/256 RAM；最终17组setup与17组hold均通过，最小裕量0.072ns/0.026ns。比特流SHA256：`a8dec524877131305c29e95d43f6a45aa15ffb2b56a07084999d0f6b7d55cca9`。
+
+功能确认、构建时序、性能稳定性分开记录。尚未完成全部P5定量验收，包括受控60秒FPS及基线90%对照、10分钟稳定性、独立高低地址BIST等；屏幕统计字段也未覆盖原计划全部内容。五小时期限未达到。用户接受当前版本并要求停止优化；未完成的遥测草稿、M5_OFF诊断版和失败构建未作为本次推荐版本上传。
+
+解压源码后，用Efinity打开工程XML。部分历史辅助脚本含原开发机路径，不是通用构建入口；不要执行旧的一次性迁移脚本。第三方IP仍需合法安装的Efinity环境，仓库不含工具安装包、个人许可证或凭据。已有历史和第三方权利说明保留。
+
+[更新前的README存档](history/README_before_DDR_20261030.md)。历史文档中的“当前版本”仅指其当时日期，以本页为最新入口。

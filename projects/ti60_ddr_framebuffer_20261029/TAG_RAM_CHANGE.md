@@ -1,0 +1,1 @@
+Full-scope synchronous tag RAM candidate. Preserves256cachelines and full1080p Canny; adds one cycle for non-forwarded resident hit. Recent/read-ahead hits unchanged. Dirty writeback/flush/abort tests and throughput required. ParentPNRfailed; board remains M5offtrial.

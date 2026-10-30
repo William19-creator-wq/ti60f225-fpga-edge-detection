@@ -1,0 +1,1 @@
+Equivalent OSD glyph sharing candidate. Full HS-corrected functional design, same display latency and controls. Does not reduce resolution, modes, history depth or comparison. Parent hs_line_fit_build continues independently. Equivalence and capacity pending.

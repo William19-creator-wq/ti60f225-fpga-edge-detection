@@ -1,0 +1,1 @@
+Original generation-stage records copied unchanged. Their integrated/hardware flags describe the earlier generation stage; current integration, build and hardware function records are in the delivery manifest and hardware-observations.json. settings.json and generated IP sources are in source archive ip/frame_ddr3/.

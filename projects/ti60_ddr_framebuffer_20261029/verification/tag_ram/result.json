@@ -1,0 +1,13 @@
+{
+  "change": "Replace256x5 asynchronous tag register/mux with one256x16 synchronousRAM; valid/dirty fence reset. Cache256lines,1080p algorithm retained. Onecycle extra for nonforwardedresidenthit, flushCHECK priming.",
+  "tests": "verification/tag_ram/tag-ram-cache-ordered.log PASS434operations; oldregisterreference same434PASS",
+  "coverage": "hit/read-ahead/claim, tagconflicts, dirtywriteback, fullflush, reconfigure, abortdrain",
+  "microbenchmark": {
+    "old_ns": 186085,
+    "new_ns": 191205,
+    "slowdown_percent": 2.7514307977537067,
+    "limitation": "cache-directedmicrobenchmark only, not fullM5throughput proof"
+  },
+  "expected_resource_effect": "remove1280tagFF and tagmux/decode logic; addsoneRAM; awaitingmap",
+  "hardware_passed": false
+}
